@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ورود | سامانه بازدید فروشگاهی دیلی‌مارکت</title>
+  <meta name="theme-color" content="#8b0014" />
+  <style>
+    @font-face {
+      font-family: "Vazir";
+      src: url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2"),
+           url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff") format("woff");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Vazir";
+      src: url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2") format("woff2"),
+           url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff") format("woff");
+      font-weight: bold;
+      font-style: normal;
+      font-display: swap;
+    }
+    :root {
+      --bg-1:#050816;
+      --bg-2:#0d1226;
+      --card:#140b12;
+      --card-2:#1d1118;
+      --line:rgba(255,255,255,.08);
+      --text:#f7f7fa;
+      --muted:#b8bdc9;
+      --accent:#d6001c;
+      --accent-2:#ff2f45;
+      --accent-3:#8a0012;
+      --field:#2a2f3d;
+      --field-focus:#343a4a;
+      --shadow:0 24px 80px rgba(0,0,0,.45);
+      --radius-xl:34px;
+      --radius-lg:22px;
+      --radius-md:16px;
+      --radius-sm:12px;
+    }
+
+    * { box-sizing: border-box; }
+    html,body { height:100%; }
+    body {
+      margin:0;
+      font-family: "Vazir", Tahoma, Arial, "Segoe UI", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 50% 32%, rgba(214,0,28,.38), rgba(214,0,28,0) 28%),
+        radial-gradient(circle at 50% 80%, rgba(120,8,24,.22), rgba(120,8,24,0) 32%),
+        linear-gradient(180deg, #020617 0%, #080d1f 45%, #040815 100%);
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+    }
+
+    .ambient {
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.9;
+      background:
+        radial-gradient(ellipse at center, rgba(255,24,55,.10) 0%, rgba(255,24,55,0) 40%),
+        radial-gradient(ellipse at top, rgba(255,0,34,.08) 0%, rgba(255,0,34,0) 36%);
+      filter: blur(16px);
+    }
+
+    .shell {
+      width:min(100%, 430px);
+      padding:24px;
+    }
+
+    .phone-frame {
+      background:#020307;
+      border-radius:42px;
+      padding:14px;
+      box-shadow: 0 26px 70px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.03);
+      position:relative;
+    }
+
+    .notch {
+      position:absolute;
+      top:12px;
+      left:50%;
+      transform:translateX(-50%);
+      width:122px;
+      height:24px;
+      border-radius:0 0 18px 18px;
+      background:#020307;
+      z-index:4;
+      box-shadow:0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .screen {
+      min-height:760px;
+      border-radius:34px;
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(180deg, #b40017 0%, #d6001c 22%, #8b0014 58%, #120910 100%);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+      padding:72px 28px 28px;
+    }
+
+    .screen::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 50% 10%, rgba(255,255,255,.12), transparent 23%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0) 28%);
+      pointer-events:none;
+    }
+
+    .header {
+      text-align:center;
+      margin-top:8px;
+      position:relative;
+      z-index:1;
+    }
+
+    .logo-wrap {
+      width:min(88%, 280px);
+      margin:0 auto 10px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .logo {
+      display:block;
+      width:100%;
+      height:auto;
+      object-fit:contain;
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,.20));
+    }
+
+    .product-name {
+      margin:14px 0 0;
+      font-weight:800;
+      font-size:1.18rem;
+      letter-spacing:0;
+    }
+
+    .product-subtitle {
+      margin:8px auto 0;
+      max-width:270px;
+      color:rgba(255,255,255,.82);
+      font-size:.88rem;
+      line-height:1.8;
+    }
+
+    .form-panel {
+      margin-top:68px;
+      padding:0 4px;
+      position:relative;
+      z-index:1;
+    }
+
+    .welcome {
+      text-align:center;
+      margin-bottom:26px;
+    }
+
+    .welcome h2 {
+      margin:0;
+      font-size:1.62rem;
+      font-weight:800;
+    }
+
+    .welcome p {
+      margin:10px 0 0;
+      color:rgba(255,255,255,.85);
+      font-size:.92rem;
+    }
+
+    form { display:grid; gap:16px; }
+
+    .field {
+      position:relative;
+      background:rgba(26,32,45,.92);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:999px;
+      min-height:60px;
+      display:flex;
+      align-items:center;
+      transition: .2s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+    }
+
+    .field:focus-within {
+      background:rgba(36,42,56,.98);
+      border-color:rgba(255,255,255,.13);
+      transform:translateY(-1px);
+    }
+
+    .field svg {
+      width:20px; height:20px;
+      margin:0 16px 0 10px;
+      fill:none;
+      stroke:#bfc5d1;
+      stroke-width:1.8;
+      flex:0 0 auto;
+    }
+
+    .field input {
+      width:100%;
+      min-width:0;
+      background:transparent;
+      border:none;
+      outline:none;
+      color:#fff;
+      font-size:.98rem;
+      font-family:inherit;
+      padding:18px 0 18px 16px;
+      text-align:right;
+    }
+
+    .field input::placeholder { color:#adb4c1; }
+
+    .toggle-password {
+      border:none;
+      background:transparent;
+      color:#d9dce3;
+      cursor:pointer;
+      padding:10px 16px;
+      font-size:.82rem;
+      font-family:inherit;
+    }
+
+    .meta-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-top:-2px;
+      color:#f4f4f4;
+      font-size:.82rem;
+    }
+
+    .meta-row-single {
+      justify-content:flex-start;
+    }
+
+    .remember {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:rgba(255,255,255,.82);
+    }
+
+    .remember input { accent-color:#fff; }
+
+    .help-link {
+      color:#fff;
+      text-decoration:none;
+      opacity:.88;
+    }
+
+    .help-link:hover { opacity:1; text-decoration:underline; }
+
+    .submit-btn {
+      margin-top:8px;
+      border:none;
+      border-radius:999px;
+      min-height:58px;
+      font-size:1rem;
+      font-weight:800;
+      cursor:pointer;
+      font-family:inherit;
+      color:#fff;
+      background:linear-gradient(180deg, #ff1800 0%, #f40000 28%, #d60000 100%);
+      box-shadow:0 16px 28px rgba(101,0,0,.34), inset 0 1px 0 rgba(255,255,255,.18);
+      transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    }
+
+    .submit-btn:hover {
+      transform:translateY(-2px);
+      box-shadow:0 22px 32px rgba(101,0,0,.42), inset 0 1px 0 rgba(255,255,255,.18);
+      filter:brightness(1.04);
+    }
+
+    .submit-btn:active { transform:translateY(0); }
+
+    .submit-btn[disabled] { opacity:.65; cursor:not-allowed; transform:none; }
+
+    .footer-note {
+      text-align:center;
+      margin-top:20px;
+      color:rgba(255,255,255,.86);
+      font-size:.8rem;
+      line-height:1.8;
+    }
+
+    .footer-note strong { color:#fff; }
+
+    .status-box {
+      min-height:24px;
+      margin-top:12px;
+      text-align:center;
+      font-size:.84rem;
+      font-weight:700;
+      color:#fff;
+    }
+
+    .status-box.error { color:#ffe2e6; }
+    .status-box.success { color:#d8ffe4; }
+
+    .glow-ring {
+      position:absolute;
+      inset:auto 18px 16px 18px;
+      height:120px;
+      background:radial-gradient(circle at 50% 0%, rgba(255,50,77,.18), rgba(255,50,77,0) 70%);
+      pointer-events:none;
+      filter:blur(24px);
+    }
+
+    @media (max-width: 520px) {
+      .shell { width:100%; padding:10px; }
+      .phone-frame { border-radius:30px; padding:10px; }
+      .screen { min-height:100dvh; border-radius:24px; padding:68px 20px 24px; }
+      body { display:block; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient"></div>
+
+  <main class="shell">
+    <div class="phone-frame">
+      <div class="notch"></div>
+      <section class="screen">
+        <div class="header">
+          <div class="logo-wrap">
+            <img
+              class="logo"
+              alt="لوگوی دیلی‌مارکت"
+              src="data:image/webp;base64,UklGRlYoAABXRUJQVlA4WAoAAAAQAAAAzwIAjQAAQUxQSAwkAAABCYdt20gS7OTe0fRf8GYyc08BEf2fAH0y8vnbC2RJma2IdB/4BODtCtJGz1eHiIie/RGfrLykE//irjmdIhrxAxw6GBFazg0hPU4uxsA2SDejsYXGmC2lDRfbgKQ8uKgvmQdsjaGcs/E8YNvSbacLivSxtrdxAeOYhGxbY+zZLZ/Gx7GkyjtCm3QkYUOHWsIekjDmwuULe9KibjR5FRKZJ2InzCXzEsA7VktJ3O/Fa0Gk9rlrk4gwduoKA+YKwAaESj6zDxQu1tM2dXHyGzIzIvZkW/UilCjzq5TAicxVRIRky5b9XR+nUipSdBgQ2kiSJHVGBH/SMzuz9wCIiAk4Pzj+yzag59pjWD+JfmkoQ85Tipfu/OTct7PMnpK83Pmh2Zchlc5nkreen1XPLyVXY7OPahUY+6JahWxgnQO9HSSVOtUQxFuYq/P+g66aRrr3TqLc5hTmh1FubGw81p1zjmclU1Fe7xa8x6FzDtAqAO2xDsArWH2J8xjF27h6cLo33GHnVi287jPQ42HhTAsItHQqd+OSF9GhfXHbnm2Xrmtbahe37a5ddVvtqtHeWu2xIaa0bV1RHY+Nba57i/eG8MSSahtQaG3rJkXTAjS0zfI3AtgXLXK7Odfp1q+GLfbFzpRLt4Og/Wqq8036zI11Ob973waYPQTiMdzYdmM3D6QaWB05dhMuYt/dfxUWgIzQkBAffxYxARMguZEkR5LcI/s40V++k2O383hnzW3X3jMiJsDTtm1r3OrWdpz3LShJxYYyQxw7sR1mGMw8JjMzM3QZe7PF+Admb3aZmXnOwcxPyIlBVyPlklyOvM0trYiYAMu2bbtuG63z3gNEpUp9/3J9X845lyxSAN675+yGoLsP5Vi9iJgAT7dtK26sbducobSdeDEzMzNz6aYac5WZ/wAzM/N9mPkkORnsBDOmZJZkUShw71mwrQhFhGXfdykiJgCBXH/42//nV7dk3C+ed3/1d881ZrhvzAXpn3/D2mq35dF9Ye5GnH+pGdmYF/eBa2tbtyUJtrLY3weG/1iAAFw+ju7zMl3biAHRNzjatfu7tE90w8SusuOrudP9I7Lqwfb3dyEmdeL7fvy4+P9Gqjj6M4hp++Yf+tpRHVIFoO8CwuSRIdQPYQokyyVVCd3wP7kwT735Zz8BFp+TCkn2ICNAAggCAtxBTZjBVDsIVhoAlZYwmDrUrt15r2Fmqgyxvhm4xLEvftubii+YbvhCdq1xkDGAWJdtW7dlW9czI+HBTMb0+tL09mYeNSoT11bAGVm0euLQ7Fg93Pr0677u4RoVKZq1boAcACOxr4ITzS88FOWDifDZceqgUlt+ZGysaxAlFVKtlwdbBzPaK0emO/Q14w88OdWdcb1zLz4zS98v/LrHxzuySoAN7kXojK6cqaLw68/0cIOBkWuTOLCmJ59mwzxdaKADmOt81aOfbWJ9GHujf/0kXpNmv/+l8cQZAjP8meNeVSBubhIpiou/eYUqPBeTa7CmcXBwVX4nVkwpDh9wANehb/siAPUBEJ39w894RXb8h5/qsbtETHQnZ+FR7aCKFMV7/3HORdELlyAK6wCDmcetKDx4yeafyKkIPi24HTOK2sIDW+SKTwB5Y3UiBpGcUFruQMlkvcmOowJdhqwKFC85gu27DSO7skS+4T45Ush9US03z7RonHRQJEewaQxSlA4v5VShr+ELYVgR42tA+cNTOzjM0EtPFfELExiFXfPaHchdeVyOHCXLo8P1GpUYBoQhM2AY3C/luuyM4nXqaogGkOzUe6ZCkvQoOZZXACKxCI9mpkqIHI0OiCmviO+O3TI3WaeU4NCUGDhd+wArBBp9kpps/IUahBRbh7yoxhC7BTfhupXdIl57jzLF6PHUBoqnN1EJpJ8yU965nCFFkWQLzirBCGUBDrjaby3sXS+puRij3SRoYqXozx6ItNCDZ3IokbEzPYqoyKgMQ0050NuFS7dKSkYCBhfl6t29CtK2R5aBSCoLO63UqkJhGY6aMOh+QUiZJfYibNukg1IpLCo6y6616EwXRGXWiBHUOMGBy3aClOKu6QWiTZfpRLFTVDZoNRwlk020Qqwq2uKKDpipiQE8KjdScrfi3vzpbSiVbhdUEQlmJkSKpqAxhqhMHXHEpHgNBhPr6agx6UF7ic7FVaS7BQiF3Ky3LNPIFyJElXoFI4jB1wDt0pxJQ6yMBUSP4V+aS0XlEAUdbVUcJJcljSQyqlS4Mr4CBF2/blPgvctd9Cy0z02lYc+cKCa5Y91AaRAtylQlMnlRMFMMSoMWwNH7PcgQzCNPC+oF6Jn7AyiBRe3po1QByda+N2IaNtYJZVRqrglKEJN4TcYOYOtPjHapKdG/dv8kknL54VGPmpJTfewiiCKe+pYfRZpKWi0TlU8NYdBq8IJw9skVDPUTaC795UPIgfPCWSYQBkTHPztWgoSJumkjOsL5kKpVNTjDzLJGgxIzBitTz83Sl6TGH71cIrBD+eoXf5pnV+LmcyUUs1OrQdiyVqMhVDmKgWImFnyZOZOFX/bQTCP12mrUyzdu3gTpVOQf//ToXDMJtb3Rrs/WAMcmRFUMhAZ1xoyqDSVxpwpqwhFMGnJx9+y52Yxrty6enSw5VAuw/Gn08vm5lq6/tbKgYdIgYT9shA6Sm+YCJ6salIqBEsysNBqY96yTBGw1QvRVRaObhGxvvLKEQpapVSGUzHzQTHJRPUXcmYIY9F1CGP3JfhAYu1KFRNX1kKII5o0qrhYliKnqUMWsAbqL6Lt2kVDAsqV1D2larxE5qyKGYqAKYjTkycDanf4aB2nKT8zl4qBgBDHVgSoWDunLJRoUX/yNS1b7FL4ONMoOi0Nc2WYI4Ytjf3hfl/tSkPJgDjKVNBoWWKAAOrCI4aogGm3tz34noJB9FQCMBtnsCBAgCNAODTxDnmxGNETqI5AEAgQhADpw0I07hvBF77f/vIqckhBzlg3IiERugGGSQAcZZQMW2bQhsj4GsJxDwwh7koIOEBbuWolIrrD552dKcRTHURzFciIqkfP9j5QxJkbPysxj33fPbbdD7CTzdNBosiADssnRdrsZn9bTqS6Xa+A1qtVqAJAOMANf1snE3Bky5qI3aiprtVqNNEmzh/NpKwgTe67ntmrbmw0AIA3iSmAt0kC8udaM/cAPfN8PVSqjJi4IwyCMwjdv3h6VSo6kynPsx/jw4fLUrG1tbNQ9H2GIPFchR9bJAGGrOTbdbtWzWAsf56XTqCwuLixXI9vk4FopD4MMuvzUT9t1mav/7RuciFafG03SWlyLxd1YAVi3tr58b35mtd1piwVZUK07SgPIGvUIIMivDkkQFBAEkURJZY0xtn1vFs2KR5B5UeEb9ksQnnryoe7Hn7u1mYPuBDImiuJgeTb+3C0hbZSTAWgdZcSU4YpB0f6qn9y4duvOVg66c5ewcRzHfvnW6AtrIIRggN5MhEKOt9/2wQ+f6iytAcxJNth+yRoPP7M+P0NfI+4IYlctnnr4VOODW7glShotMinzJ8MiJ8B3JxGAscwIxK611eVbD/5dgCAgeqEm9kdttukeAcAbHx2dqGH7ooanrOc6drZjQAMi0w1AILz8/MU70GCiBsNMHAeuZ0ryOp9aQWztINA+u368iR34oguPUyhmAaJM/Ym5SNoPsgSpZ1G49nJoZkimBdFq+t9HhjiAVIesA2Wg0pqnw1oJ2UPPLUYe9SArQg0+ovftTRR968xTXdN+OIg5QM+i/JlnrzOUZuPL74kHDqHRgEUmc3gypSw6x8JDIztoDxeGRYA4tPuaYq9CNox7kvWeW0LFJrA52eyRF1MUuCJZ7AYb2BLP8sIimIZAxOtHXj6sAQMqaVRGDo/8YCSjyXSMPceXFzdtMB6ZvVOz+1l2uudtMMq9skTNMH46s4IDZIw3N4Ji0epia3uw7QvPdQaiAdQnd/hRcjmGUpYntx0OGko1ZLQazBHKaba93WP9oSXcQGLpsT8ci/YvbeSLDzuKbv36/ZjWe//30JQtOkh2K7q2rTmRPn2xKQ0i/cLXL6ABasgr2pXPvPQhYmgZheseB4waHcqKvk7A2ba2wV3aARFFXzGCfVx826EirzuOBPlbN09ARQemm/+8Q0yB6jU8gwZjkxm7C7IBtaH1RcwND+g9XqWdIGYiD4Xzr5vuBN1ol9oNbxpM9LG/2R1FDC76cQK4/TcjIfbDnc/9y5u4m9uJaRC448MBQEd5ot0WZ+8w1IznplcwGUcHlIka2DJfd99t7fL6wNXjuDOggjqjR12CJ94KqPjcyMa1Qgaur8eDjQxPXbLTnS2UJYLTZwLbi2xx0IlCL2DyDU9gwKvdguTejFwuL4lw6LVDxScRRioy6NLBGMVnvJwx5Kbjp4O9qB7Xx1EhmTs38/TZ4K5bg+WNCQ+BbOilHYdFB4y6EA2mLGWDKeVJXVYbxzRcsHw5wo2IloYeRQ3iTu6wR14KEK+Ohipu3YnkGkKXQQMsOgs2JsUeK40Gqw66/fRthl22cCZkK/MQcnA9gIZCogAmHhwHXt8azL3hYyAeWbgnWdC9DN282jDtUS0YCPEZ9W4MHZauJHuhQ/jOdZENMH9i9rGO6fXecPthRA8U2pevR6HI+7EX5SN6dLXF3kpxOFiVt0aP5kY2ShPRBa2ZLPCCVAV0WBVdaNCLhIqpC3rPTMHLjj7vzTggo0K0sDTebI0k6ov8KzyRnG2ggbQgCgrQsPSAq2+VdredEMnyl5675Q52qi5qVEgnnTg/ABgIaJBJWbLGpTHUcj7fG2EgMwDpv/B23GxHIEgkIEF7I6Q1Evo1JrG9ONHp5rsMrrxwMElWbH3RTlnHIJaTzCbLX3HERYoiIiLNLLz3RU9VdJEHcaVTj/9NCLyjr9BnVUlEFJ3jM7JzduRWbQ449mvQzJpzi3O9eprVU7ezPUbebrf9etuPMcZx1LPUvt/GccsXr9+8yiZOnPGmYtSWs3yQIBxZTlOcjuBL47Q2tWerduTkm5VSutKi3JFTb7Z1Xbd13ZbY1m3djrqXxhpFJ0Z5Bh4NQQ0hQ03Zg1eOdMfa9TR2QO7XD0/tTsczjnNsNkzDHZuzUxLeDpVuBnCBBmik04ijKIpcvlNVY4wcR2YqK/U8NUaNofXF+UVUnz73ZauUGByZZG/FNjeooLxm//GLp47ThI2f+ZM5k0zEc/VSxPq3/oSsUqmkUlWeXP/bY6CKDVIeoWcYlcJu8q3Rdr2exGHsAbGdTkEQRAKHf/k3b0RJhFtZ4JT4Vcc114CQGfs6EHdr3/6tR0rwiz20J1hh4Yer+9w4AER+/c9++9l6MogmElQCzDyN/9aXlFD81REMR6ea9vSx3//rRag30HSPU33r8BpQS/qqNH0W9wVKv+snQkeC+VEGFWpY54KtPZA8i+XfHXIEAOT2M7NQIlO3Rrn5nW0xxDCI94FOw+FY1iCMfpXntP/3TIdJ3MQI59GRVxtOSK+6R8oe/dnTDviFwRCNMaUN4TA5/vgkiJ2Cf24eadbTkhyBS8V2H1jjqxJbYFfXHlp2zk1CiUbLwazaMnOP4tC3fiMyWmMjBdRgGhZ+D7CF8piPPaXaQsQUfBMrRUFZQKzCC5bFw7uhWFZs8fkLtxeQ1KIOp+wQle6dWevFn8XVXKsAjWHgh760kgVszMZ7AVictynQjCjVuQYbmcKDDd8oHI5TWOjzgylvJSNzLc6r0gh9LTeBeOB3LKCRmAbRs4XlakFZammuG6iHpbtxGo2sJC9PQQwVnNgWR0yj4dgWS3wFbb2ZCIL4tDR4T6UbBlUZ9vEW8updZ7vp+RqVRGVRyod3Ba3vvJJjludzj9JhUPyBioBpPBRRJgtugNCl41VER1hteGOwsUNj1nEMKFo1I1kuDUsrdX+a0gfv5JR42npyW5SQDYOIW94SDDlaRjVEiapt1FXHdt6RNPcupnBFGpWlwJUwbmrh2gdWSDidekyDDfcFlVBPhgDCppOTyyCtYHmRHWnDIasugzeGdQQhezyYlhySpqXVwhIqaZVdL8ZcCE9BzMILEkc4aWdDEdexNQLIAnLIEmlDVLlhUBWiDh9pkNJzdao010pQsZqCnGFCDULRWzoeYtsdjjQqBjeA2CwxbkdZkHWqDSccdisC3xGEDKqOJCYkz6h7K2m0TnHNGUkpS/QYfIUoetGYi4ql2xgCo+mL2RFogLw8jYaRCX/gSFLdikgdzmuQCCsYaIIjLdHsqKSJppUh0UA27srI6okNNgQLDtoLcbEOWkNAewzCCWHIU8f1yx051p51lfbumOj2KsLohIS3vWWDrJaowWxdPehO+nKymaAM0SgWVn0ZYzRhC4pR9KJ3tU44MJKY9kozExQPdwbQcm449naExKZeUmFyvY/LeOqPno/3h7T9AY1htxf5xYF0BrKe/aNnoxTkZ65Too17MU43d1CDyQjwtafcr+QYDbP/t7Nnc7nJIAK+ii+rITbNMBk0F4PKErOTn5VR/pvf86niE93ehx1Bb2HD9ZiSd+BP/81f+lASMXn4A1QsCvYS6q1ilBjHman8mpO5i3GOGsYWvWyvVnYMOxfL67QIHzU/mehcHWG5oxZ9Xj6WzDh9eBsVEp7/2Qk4KjqxM7e+SXhhT/jVsb68Tll/eIof/elVcBcBApTD6vJmGX7MHATkzHz9BxQXmPTCq2fQvhNmxvITN4wyZ9ZkDqDU3I5fy4sF1tBwxNvhBdtY66bRfXzR6s437/T5dk6JYv2h+0ZbKHqzY+s3Eb5bNz0oWhz0aLhHA9fvf+56eZe9s9Uz0U3KDLDTgLlzqx9hrhCo66Xmj+ewfQf05tanPqIMmXnw5H/f3KKPubt4nWJtGTYcuZ4su15DxU0G2dkXn+fxcsvMrFRJJUklSQhJIIQm/JON/kZAQRFEEURQQMHfieBdGI1f+tLcygBgnnvoeis0kgpJ1Pva7Pr7EA3bVXEvF29WvZ8zjau389qjoxU3DIxVyYW1WvfYw89ipfg7ojRtTs7PgDnK7LiZKfWpXc+lHAiIc86FydhqrwHmSoDs4jf925vv3gri2BhjVCUhwDm5IAiiaLn3McWbEppQo2lCCCEhhBpBRHLOO79yfvVHS5v1lBj5zt9EdVwfn54eL9fbcez7MfZjP/ZUVWZmSZWpe/qnBKLGCCmTVCpaVYlJtFKaigYSMBrUGt3JZq1O6X63vbreCmLL4mmTehO327du5RQXUY2pvVQ/E9ZlKt547Im8zvzMYrnj2ePZ2KGVQ91aYq6YGPmAOgvzRw/Xrm2BKCdMS96gP3zm/IYxex2NiZM0HWuG0a0cRLkTX7G5vX2nXm202u2Ov9+uSRU+iuNaq9sdGf9oI0fFMB9ffDDflZVUZWZW1XhWUxEfpWmaZQ+vzn+6EIbdrGOhDaXgWuPcreMYo7KqsqoyS6J0n9IEfxRBFAX8fSAYRVQiqiitoKggrHn2WN3QWBSyms1tSlathl5ddsbV++uEEK297wFgG81OaOxQmDS7IeVSbgDOP3zs/feN8tUBU2osoR6ZP7uY7wdQMPBB5Nhbl3F3GIRhGNmRKSHkXRBEcbJNuS2rGQVH1jmQCqSSClUjKpIPgjAId2ELWq+hvgWmgBmgIF7wTWqA9kAAUewGKoFmodpbetZck+8uE2C09tQkgOjRQGXAVlvg6LIDM1TW3kW6LaJfHeoOeTbuVnkYYCTSNlAJdcyrJc/zS4QBaLkClLfQb+0X8ogqMBkW4qmV3pobrt1q9wJU21AqAPUg07ZShfL6sLLQ3/Cy4wKeqs2PPLBaZHjD9sZTsVp6zSKI8pzp10E/uj4H9RB0kWOSRFUxrSyachWA4BkZVdzsrJXdVCUJLhvWpgExf1fQYUbndt3BnqJewzYbTWgvQZV15UWwM5UdzykEFRdKpdUluynGW2CCf1JOe+YtEOfGIhxiMpqtoEfTaEhYmy7RKxcmbF6AYGKdfQL8iot01bHV2nTg5A+ojb8KoDtRPcSQ1l9oQj2k4wF2XFVvmLxtoZxobdFmYLmT0rd8ulNvRAGKG3dJK6yPNnl4weWHatxLtOcir+0i4cKYQU65faEG9e9OnUpFTW6S2LrxOjB/bM2dAiGsPLAGHVawdXkyRq/dpUKMKwHUm5mZjJgLofxQ/4TaXIjMRva5OeEQuZdzZW0IAth68Y7BoeWLj8VQL6OrNWJKaMx5SLp83yaUB9i751yiz/Rnt5FydRT7HM2PIH9y/AsgAGTxswv+gCLuc8aDS4GYHhk13MavroZQ6/npXPvAublRQt/j41+WfkahOzCVQoP8ydHps9YHU+Po8QOJCHF/U7g6bcyapndQh6aQ1Z6ZYD+4zxwl1B9x8krPoZ7s8L5SBO2j18RLMQpwuVNjV9nywQRxcAL7e3AoBs24uRhiTmj98oJrrjs9wfDzrAHRZ/HMMzndB+G5sFKYI1q37SL/nDgamXYB52eOWA4Wgu1MbnzplXYfyyPXioxpf+GmCXf79xkOymemhLKl4dc/V3JMn4xsdQ11ZSJDXIJVhWDbNnCgfSBJV5eZN8GunMkZVBY3OyVHA4RAc/a+S/jWj71f2p8kx43IGFjG+U3DZHTvSmckASgzArl5/CiIfsXnup7Sj4HvGqIi5djTj3nhYk2gIROIpbOrNmeCg7FHX4sNAtwebjZADQgi4qnzT77QwWu+63u6gPYj4J1bG9sMbm62SSHMzwp5sp3gc3U4zIZIO7UW+YD6JG/zNVNp40pYvhFaNcjpnpkfQqtJ0tRwicDmxYu3AyLPIlE+v/4yiMHNabneDMDBAFFt4l8eaoGC88n/LQfYh9WqvP06Gkx0H3qdwnZiUnSadt5Z9dpSJuDVarcm4Vj0mTdceJs9vF2E14ypQtE2z98ZgsPbnxufi0O1j4PIW3/6b28j72F79dKyA1LYlraeGouBbgRvSiA4CEf/dXTFBQBq6Is/+mAXkBW8AYFAqvI/D21jFMgXHshREUynBOZaZ59rkbLiUEOL2Ov/+kJEIX0BAuj+xysxtgfX99XQTdG9TaAILf+XOwxYI9h6q3aoQzfglO40ImDuPvb0TFXKgT4SQBDunQt3XuEAKgY01s+cObmW0t+qh9j1jX/6W9eC8dHH2bGLD12coa/d4wgAxMqd8Y33UMG8ofK/HoTexXgRC7V29vy5UzXA+qmPdiN2bkzeeXW0TUFJMwQBYu7KnW8gC72mvHAspXRlT6kQAMI7Fyuvw64yOHz10cdn6G/Fgtlm+e1X/zdepPRSCn0vPtq7u7Q8P/H6C9plsHL5wnI3S7Ikcr564iDwOu03PrrhQHxahi4/dmammaVxFN7jwsD3Ou3VqusDxK6uLhgiIW0FcEwYvccfPjraadT7FbSdTqu1evfGJUDYIMvDxqwNfLe1XW42APaSdnl+fA+G4WSNqQSe19qcOR8A1A4QxuoXXp5s1JLYB4GKKEeOHKEf+EF1Ye72BiCsR56jp4gqomAEoJI1cRxHgR94zfmZqVvrEKgJhAKfzS8uLM510iSNQ1WGcg/91ka1PHU7iAPJbAAQLkgWjq7Mj3U7jaAqL5Iqijq1rbXluQpGjpCwhslNl0tCQrF1473oMRAEwdiZc8eWpyNJqI8gyXRXZqcnx8uRiYUZAx+Pj4viIyFq1duN9cXK8HAJstZvF3LCXr00tYd8RY/5qFpMbIkQIECVVY3Vyr2bV6qhQ1jsLRQ2Dq3PTY5njXoaeS+3kFWqPK5PT09PH95vbaxvrLVCG0iQU3K8uMTz0EqltEqzRgS5H7HXabUatdW11VporAEUz+3qaZqG3vvAVUiVsVEQ+K0WZbtGPYmjMPDGF4kyNg5Dv9tBypvvui4Si43LJ/rSv95pNFqj4yONehJ48s2g225Wq41Ot91uIk39+qdfnJbTKUxkYw2fesnLX3cSWew2ClOihVZJQvAXZ0pUz3bn6t+R588+t+Xs48iRY2RlsQSh73nbbaTqW0ktDnwQyEkKdLdqZI4xwsD3Dfqs8PyzREQVFCUISSUTR3EU+l6EjAqj0glWhsCoSgJKZtTfMVQiorIJslgYdzfbWRIHDtsK/W5nO8ZOAkrh8Wf4BNQnobVlYeFCG5UC2Jl7SP2j+n+xxc7sXe9IRAQ+oWTC2HsCsL2ArW2J9QSgLAACVEkCIEoXoHueAAnJRWhhguRythZfiiwKYZiMXQkQECCkG3FH3EWAhAw219OC9hhWEsj0wvd25ACd6giijwJiRoCQru5SKbojZJDY3RntIhziWjy+aUwGTKyNQA8w/Ko70C6ZbW54QnNdypZS0+b1G41d96W03NdMoWuP/9ARRu9CZjKkebNLDIr01ssCltZcWX29Pjrc7knwE//3NZpHztTAXIMmWhgcFuGnYOsnhZS17WVp6HZGoE1IKOieeXwjNwlb7D76JtqBIXRaUzKWT4cMf5Q0et0S/u9XKDfmnznz4SYlqzILYoCM6SaT+dXj0dD57jtPDDxSG4/MsJEj6+OfAaYyxI2zr8EAGdTkNpSIla8aMcdmSVaf/yPhAEEAYuO1oNHsLc22wZAo9+aUAw0OMCa3kVg2+vkPJi4ybdNr/6PRw//pCkS4dPrc1CcbZjjKnpgfBgeK22QDSoLo/cDLTxgBBNTgJcPSUy20OEQ3N4H+H2DJ0cMr8zdeucVeCtEDIoQBMlReBRNBeOYHXzY2tdwWUu1LTBx94JoR2HEHUPYEAQEy/JMOy+JLZzddAGCoNNF//CEQA6Y3tYU0w3OfKxnbbbjhGKOqwGiiJpa0JARbEI3W/W2Mxk0ip2/Pdb3wvf/IL/7hj33NlbYZOKY8nokD2c4b11OhqaKOd//98HTZx0iC0PsgCHwdx5vj4MwsldaHer3mnaQGu1rKngjqjalDje2PX/vwuNOTFEe1rKlr1zaPkodj/vysBV6SLJSm4nw/dGM8HbmflVWSUH+MKo0QisVRuuaGsgdL33Z1ouZta+P1736Z3Uvk4w88cKQTsPW5//jmSelQDB9Nm4m9dEQdMPZzY8KFUvhVQNDbyCcNUBmi7paobBndtbWj0/S193zoPcf2sMZjpz892uLuzz7+hY8dAw/BRGMxduyl5bGFHExnb4ZUOp/WPQ3ymM0VOBnjZnp4GjMBJr7vDaVgh6z7wAkg76OXfepDEHX4BeTdOipNclsbjgPq4kM1FK/YufkWCFkW9t4GhthVsVtxAKhfuZIbYndjSv6hmJHlETYjOHj3ds7BVNx4plxE2HruVNZu/eeHdxic1cX1mOQPnTZM7E4481dwKO4I0x1mifXmjevoYAJo6Zk1KhvGEy0wY6//+nUVANb+vUmaZzFzDGpx8ynvUAy40/Q44beXpnIZB1TB+4+zYDo3Fo5CyLLb//xL12WDiau/vYzo1AaIwZ31i1d8/49p5oePqzdBdLpPjL6WMLX5lTM7xWK2PFUisv6G9xwBewNG3vdqhKcOIQrq1e8fwTJfk6H2EhxwfXTsFUMYbMTUZK+kIlE8PqHsvez1JSQeetNL4OfHKazS64cgFpnL45cJexPt6urMFkHaqQHqp0soUlsKyOHICSdZ6eVH4eqJFQJOjGCZyzEvPWEhS1iY6p0rMyeHQIuBN0xOHrcsCOU1on1hYiVzjh4BZpToHKIhvI5DDon63MTt7Te/AgCEwdfsVSEdFYI5fyMz2w9hNwXTCWEbd1RC5B2igfa1J8dHH9lslo4MAyCEwdiQHlgA4kbMjtiPrU2TLKq0sPP2JxRX9VANeMXmP/7S9wIgHcFiUKazGXqmCLbyzzn25+p0DCXxb29i6x9ewYqwPhbArTS44/c9B0AQBmmxdaVagpXyIxCV/7rtbF+IlesBEgobVxrc/PN/AhvMcvbJziEbIM2GTz38xBNzYKB9IMCB+/xYHCOnsqVvaBSg81zDkL7wGbAXw9/424D/b7fZchmHv/ixhfEm+5JAfeXWZglOfrKjrRC0i6PeazhDfNnLTxpwN/Hh70fcLylcOPHgc1dHvXMuR0WEhpAlEJI1duva+aEhCLk1tlrJdi4TmGw730yNuyXjxlGAgcj54E/fkOw+ib7tqanl4+srEwxzUN1cnpvpvPso8p6+/af/s07f13/vXzbFrio/cebUOMDOf/3pv0877qcUBtHK0tzkeL1Wq4WBDwPv5TDK2UhSVlZsbBSFURT5XqvRqK+NEACVL/HZa/+43suCnY0P/+d/3swZsDUztjLdCfNbH76WeO63FDID0oneyGgjTdOsFgXeVVV4Ok+Vjtu+3/zQd1utttuq1mPspCMJeRev0JjM7rz/MSYNQKIGQba9kYNk9yZWUDggJAQAAJA+AJ0BKtACjgA+USCNRCOiIRdPpBg4BQS0t34x3bdisXQB/AKVcID8AP0A/gHr/9M/wA/QD+AaWmpomO5Et5d/o34UfoB/OfyjoAXWMkANKA5bP0R7Av8O/l3+84AD9TyJAu8XIT6JGHaJxl6A5tn3iArbmE6G8ZCn82FQXKGYoGIDEBUZzSKISE3ccxAYgMKyAolM+WZS7NRmjRre92iWhh1jIQI5kcyOKVvwY1vi3lpAkWAj7JraTLGGVo5uoNKD25lqENAXuj9XBDlz2oIEPpHTT9kFfl18ryKBOffvOSqxZFEjgYgKo/eoSXLrOb9KmF8QCjzZ3Hd3XJ7YFvv1IZVmmZmHZ1tzBOVH+UC4WPb9h6zJzwHAleXIwTY3YQRCYz9rKNrDpduaxDHbY2Xb6ml9/KRvQf2eW6Pgq7iHPphyPSqiR7oFAFmBLAU1D0MAoePAbmW4E3ODSfFvLe6wjzuiVIadtPMTMprcSMKPrVzq4SavP3T4+2aCYnYgG2XYgbdwScCU9ijFZzdz5QPfyTS77CbbWRgdyz035zo0oNGVnQCCpiZmPcLdHjMx7gKaRypusCJR7hnEHN6CnwxrzasL+/F12m5G8uUKxhJ978jogRzI5kcyOLH+K4/ej5WXtGZiAwk3EFFwIO/nrQF9G8vai7Re3gb91AngAP7oawstpq74DvXcrbxwDWM3bWk4oP0OCd7sgl9YxJP6HADx+hwEB51Ob6H4iQsWLX3cy6MvvS+h/H6HLv6KYgQa6fGy+Sk+yVRYDGALlk87l/0Upp/Q/j9D0lSOnmCEf/Rh1c/m9p9EOFVQ7SGfKhC4tgAoUH6HIb9Dkb4mut/7ZxttTCuONBxBg7rTV6ruwh4kjvwIF+3Z8GY61b8VYquoS+A3oT1OEv80t76diZlDz3DrSz36H8foe061AvGaXSDsI0aZECk6lv5C6yFeKXVUH2nZ6xsqTSEgWfrlxynzNLU/2UDyysxRD60r3anjVTiw/2igZOZG87wAWrwUAkYfw0RlzAoCPRzmpDdgO7vO07MlfNfcVyS3ksyjtXK6tx+j+NV8mTwd/p854AZrjD/+D7iBOPcwctsJkDOJky4/IrmjYiJl4eFqsv6wvaNWDfrwaowDdCn9NcGJi0hKvEKElxk6aXEKB/xq/L4E/jHVnv3kvHm/3X4hOyN+6UdOVkFIpT6nR5mqRwStP8tgOsT33apZf2knWq76Kn4SMhsoGpiVUfd6EaSjw/RaD9FVDyw8/os5a6AAFnP//UGZdAtKfj/5/iA2jrgER/K9R4p+/Q8lEf6KaTABrYG61Sy0l2VxoemWsS0Lenoc3xyECKHPOBZOd8vm/UWXdaEXN+KZJ9FLIKy+A1qOLR+5VXxa4Hr4dKnb9/fZR39a//9nw//+zgAAAAA="
+            />
+          </div>
+          <div class="product-name">چک لیست</div>
+        </div>
+
+        <div class="form-panel">
+          <div class="welcome">
+            <h2>خوش آمدید</h2>
+            <p>برای ادامه، کد کاربری و رمز عبور خود را وارد کنید</p>
+          </div>
+
+          <form id="loginForm" novalidate>
+            <label class="field" aria-label="کد کاربری">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 21a8 8 0 0 0-16 0"></path>
+                <circle cx="12" cy="8" r="4"></circle>
+              </svg>
+              <input id="username" name="username" type="text" inputmode="numeric" autocomplete="username" placeholder="کد کاربری" required />
+            </label>
+
+            <label class="field" aria-label="رمز عبور">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+                <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+              </svg>
+              <input id="password" name="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="رمز عبور" required />
+              <button class="toggle-password" type="button" id="togglePassword">نمایش</button>
+            </label>
+
+            <div class="meta-row meta-row-single">
+              <label class="remember"><input type="checkbox" id="rememberMe" /> مرا به خاطر بسپار</label>
+            </div>
+
+            <button class="submit-btn" id="submitBtn" type="submit">ورود به سامانه</button>
+
+            <div class="status-box" id="statusBox"></div>
+          </form>
+
+          <div class="footer-note">
+            نسخه اولیه سامانه مدیریت بازدید فروشگاهی <strong>دیلی‌مارکت</strong>
+          </div>
+        </div>
+
+        <div class="glow-ring"></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const CONFIG = {
+      API_BASE_URL: '', // آدرس Web App گوگل اپس اسکریپت در مرحله بعد اینجا قرار می‌گیرد
+      DEMO_MODE: true
+    };
+
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const rememberMeInput = document.getElementById('rememberMe');
+    const statusBox = document.getElementById('statusBox');
+    const submitBtn = document.getElementById('submitBtn');
+    const togglePasswordBtn = document.getElementById('togglePassword');
+
+    const demoUsers = {
+      '10001': { password: '50001', role: 'executive', name: 'مدیر اجرایی', redirect: 'executive-dashboard.html' },
+      '20001': { password: '60001', role: 'regional', name: 'مدیر منطقه', redirect: 'regional-dashboard.html' },
+      '30001': { password: '70001', role: 'areahead', name: 'رئیس ناحیه', redirect: 'areahead-dashboard.html' }
+    };
+
+    function setStatus(message = '', type = '') {
+      statusBox.textContent = message;
+      statusBox.className = 'status-box' + (type ? ' ' + type : '');
+    }
+
+    function setLoading(isLoading) {
+      submitBtn.disabled = isLoading;
+      submitBtn.textContent = isLoading ? 'در حال بررسی...' : 'ورود به سامانه';
+    }
+
+    function saveRememberedUser() {
+      if (rememberMeInput.checked) {
+        localStorage.setItem('dmRememberedUsername', usernameInput.value.trim());
+      } else {
+        localStorage.removeItem('dmRememberedUsername');
+      }
+    }
+
+    function loadRememberedUser() {
+      const remembered = localStorage.getItem('dmRememberedUsername');
+      if (remembered) {
+        usernameInput.value = remembered;
+        rememberMeInput.checked = true;
+      }
+    }
+
+    togglePasswordBtn.addEventListener('click', () => {
+      const isPassword = passwordInput.getAttribute('type') === 'password';
+      passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+      togglePasswordBtn.textContent = isPassword ? 'پنهان' : 'نمایش';
+    });
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      setStatus('');
+
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      if (!username || !password) {
+        setStatus('لطفاً کد کاربری و رمز عبور را وارد کنید.', 'error');
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        if (CONFIG.DEMO_MODE) {
+          await new Promise(resolve => setTimeout(resolve, 700));
+          const user = demoUsers[username];
+          if (!user || user.password !== password) {
+            throw new Error('کد کاربری یا رمز عبور صحیح نیست.');
+          }
+
+          saveRememberedUser();
+          localStorage.setItem('dmCurrentUser', JSON.stringify({
+            username,
+            role: user.role,
+            name: user.name,
+            loginAt: new Date().toISOString()
+          }));
+
+          setStatus(`ورود موفق بود. در حال انتقال به پنل ${user.name}...`, 'success');
+
+          setTimeout(() => {
+            window.location.href = user.redirect;
+          }, 900);
+          return;
+        }
+
+        if (!CONFIG.API_BASE_URL) {
+          throw new Error('آدرس سرویس لاگین هنوز تنظیم نشده است.');
+        }
+
+        const response = await fetch(CONFIG.API_BASE_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'login',
+            username,
+            password
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('ارتباط با سرور برقرار نشد.');
+        }
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.message || 'ورود ناموفق بود.');
+        }
+
+        saveRememberedUser();
+        localStorage.setItem('dmCurrentUser', JSON.stringify(result.user));
+        setStatus('ورود موفق بود. در حال انتقال...', 'success');
+
+        setTimeout(() => {
+          switch (result.user.role) {
+            case 'executive':
+              window.location.href = 'executive-dashboard.html';
+              break;
+            case 'regional':
+              window.location.href = 'regional-dashboard.html';
+              break;
+            case 'areahead':
+              window.location.href = 'areahead-dashboard.html';
+              break;
+            default:
+              window.location.href = 'dashboard.html';
+          }
+        }, 800);
+      } catch (error) {
+        setStatus(error.message || 'خطا در ورود به سامانه', 'error');
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    loadRememberedUser();
+  </script>
+</body>
+</html>

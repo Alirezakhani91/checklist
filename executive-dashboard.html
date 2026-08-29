@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مدیر اجرایی | دیلی‌مارکت</title>
+<style>
+@font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2");font-display:swap}
+*{box-sizing:border-box} body{margin:0;font-family:Vazir,Tahoma,sans-serif;background:#f6f7fb;color:#151821;min-height:100vh}
+header{background:linear-gradient(135deg,#8f0015,#d6001c);color:#fff;padding:22px 24px;box-shadow:0 10px 30px rgba(120,0,15,.18)}
+.wrap{width:min(1100px,calc(100% - 28px));margin:auto} .top{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{font-size:1.5rem;font-weight:900} .brand small{display:block;font-size:.78rem;font-weight:400;opacity:.8;margin-top:5px}
+button{font:inherit;border:0;border-radius:12px;padding:10px 16px;cursor:pointer;background:rgba(255,255,255,.16);color:#fff}
+main{padding:34px 0} .hero{background:#fff;border:1px solid #eceef4;border-radius:24px;padding:28px;box-shadow:0 12px 36px rgba(20,25,40,.07)}
+.badge{display:inline-flex;background:#fff0f2;color:#a90017;padding:8px 12px;border-radius:999px;font-size:.82rem;font-weight:800}
+h1{margin:18px 0 8px;font-size:1.8rem} p{color:#6d7280;line-height:1.9;margin:0} .name{color:#970016;font-weight:900}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px} .card{border:1px solid #eef0f4;background:#fafbfc;border-radius:18px;padding:18px}
+.card strong{display:block;font-size:1rem;margin-bottom:8px} .card span{font-size:.85rem;color:#7a7f8d} .loading{opacity:.65}
+@media(max-width:700px){.grid{grid-template-columns:1fr} .top{align-items:flex-start} header{padding:18px 8px} main{padding:20px 0} .hero{padding:22px}}
+</style>
+</head>
+<body>
+<header><div class="wrap top"><div class="brand">دیلی مارکت<small>چک لیست</small></div><button onclick="DMAuth.logout()">خروج</button></div></header>
+<main class="wrap">
+<section class="hero loading" id="hero">
+<span class="badge">مدیر اجرایی</span>
+<h1>در حال بررسی دسترسی...</h1>
+<p id="desc">لطفاً چند لحظه صبر کنید.</p>
+<div class="grid">
+<div class="card"><strong>ورود امن</strong><span>Session کاربر از سرور بررسی می‌شود.</span></div>
+<div class="card"><strong>سطح دسترسی</strong><span>داشبورد مدیریتی کل شبکه</span></div>
+<div class="card"><strong>مرحله بعد</strong><span>این صفحه در مرحله بعد به داشبورد کامل تبدیل می‌شود.</span></div>
+</div>
+</section>
+</main>
+<script src="app-config.js"></script><script src="auth-client.js"></script>
+<script>
+(async function(){
+ try{
+   const result=await DMAuth.validateSession('EXECUTIVE_MANAGER');
+   if(!result.ok){ DMAuth.clearAuth(); location.replace('index.html'); return; }
+   const u=result.user;
+   document.querySelector('h1').innerHTML='خوش آمدید، <span class="name">'+escapeHtml(u.fullName)+'</span>';
+   document.getElementById('desc').textContent='داشبورد مدیریتی کل شبکه';
+   document.getElementById('hero').classList.remove('loading');
+ }catch(e){ DMAuth.clearAuth(); location.replace('index.html'); }
+})();
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+</script>
+</body></html>
