@@ -288,7 +288,7 @@ button{cursor:pointer}
     <nav class="nav">
       <button class="nav-btn active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/><path d="m7 10 2 2 4-4"/></svg>برنامه امروز</button>
       <button class="nav-btn" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>بازدید خارج برنامه</button>
-      <button class="nav-btn disabled"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق بازدید <small>به‌زودی</small></button>
+      <button class="nav-btn" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق بازدید</button>
     </nav>
     <div class="side-foot"><button class="logout" onclick="DMAuth.logout()">خروج از حساب</button></div>
   </aside>
@@ -341,7 +341,7 @@ button{cursor:pointer}
     <nav class="mobile-bottom">
       <button class="mobile-nav active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>امروز</button>
       <button class="mobile-nav" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>خارج برنامه</button>
-      <button class="mobile-nav"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق</button>
+      <button class="mobile-nav" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق</button>
       <button class="mobile-nav" onclick="DMAuth.logout()"><svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3M14 3h6v18h-6"/></svg>خروج</button>
     </nav>
   </main>
