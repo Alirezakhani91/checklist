@@ -3,88 +3,334 @@
 
   const CFG = window.DM_CONFIG || {};
 
-  function getSession() {
+  const SESSION_KEY =
+    CFG.SESSION_STORAGE_KEY || 'dmSession';
+
+  const USER_KEY =
+    CFG.USER_STORAGE_KEY || 'dmCurrentUser';
+
+
+  function safeJsonParse(value) {
     try {
-      return JSON.parse(localStorage.getItem(CFG.SESSION_STORAGE_KEY || 'dmSession') || 'null');
+      return JSON.parse(value || 'null');
     } catch (_) {
       return null;
     }
   }
+
+
+  function getSession() {
+    return safeJsonParse(
+      localStorage.getItem(SESSION_KEY)
+    );
+  }
+
 
   function getUser() {
-    try {
-      return JSON.parse(localStorage.getItem(CFG.USER_STORAGE_KEY || 'dmCurrentUser') || 'null');
-    } catch (_) {
-      return null;
-    }
+    return safeJsonParse(
+      localStorage.getItem(USER_KEY)
+    );
   }
+
 
   function clearAuth() {
-    localStorage.removeItem(CFG.SESSION_STORAGE_KEY || 'dmSession');
-    localStorage.removeItem(CFG.USER_STORAGE_KEY || 'dmCurrentUser');
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(USER_KEY);
   }
+
 
   function saveAuth(payload) {
-    localStorage.setItem(CFG.SESSION_STORAGE_KEY || 'dmSession', JSON.stringify({
-      token: payload.sessionToken,
-      expiresAt: payload.expiresAt
-    }));
-    localStorage.setItem(CFG.USER_STORAGE_KEY || 'dmCurrentUser', JSON.stringify(payload.user));
+
+    if (
+      !payload ||
+      !payload.sessionToken ||
+      !payload.user
+    ) {
+      return false;
+    }
+
+    localStorage.setItem(
+      SESSION_KEY,
+      JSON.stringify({
+        token: String(payload.sessionToken),
+        expiresAt: payload.expiresAt || null
+      })
+    );
+
+    localStorage.setItem(
+      USER_KEY,
+      JSON.stringify(payload.user)
+    );
+
+    return true;
   }
 
-  function jsonp(action, params) {
-    return new Promise((resolve, reject) => {
-      const base = CFG.APPS_SCRIPT_URL;
-      if (!base || base.includes('PASTE_YOUR')) {
-        reject(new Error('آدرس Apps Script هنوز در app-config.js تنظیم نشده است.'));
-        return;
-      }
 
-      const cb = '__dm_cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-      const script = document.createElement('script');
-      const query = new URLSearchParams(Object.assign({}, params || {}, { action, callback: cb }));
-      const timeout = setTimeout(() => cleanup(new Error('پاسخی از سرور دریافت نشد.')), 15000);
+  function isExpired(expiresAt) {
 
-      function cleanup(err, data) {
-        clearTimeout(timeout);
-        delete window[cb];
-        script.remove();
-        if (err) reject(err); else resolve(data);
-      }
+    if (!expiresAt) {
+      return false;
+    }
 
-      window[cb] = (data) => cleanup(null, data);
-      script.onerror = () => cleanup(new Error('ارتباط با سرور برقرار نشد.'));
-      script.src = base + (base.includes('?') ? '&' : '?') + query.toString();
-      document.head.appendChild(script);
-    });
+    const time =
+      new Date(expiresAt).getTime();
+
+    return (
+      !Number.isFinite(time) ||
+      time <= Date.now()
+    );
   }
+
+
+  /*
+   ===============================
+   PAGE SESSION CHECK
+   ===============================
+  */
 
   async function validateSession(expectedRole) {
+
     const session = getSession();
-    if (!session || !session.token) return { ok: false, reason: 'NO_SESSION' };
+    const user = getUser();
 
-    const result = await jsonp('validateSession', { token: session.token });
-    if (!result || !result.success) {
+
+    if (
+      !session ||
+      !session.token ||
+      !user
+    ) {
+      return {
+        ok: false,
+        reason: 'NO_SESSION'
+      };
+    }
+
+
+    if (isExpired(session.expiresAt)) {
+
       clearAuth();
-      return { ok: false, reason: 'INVALID_SESSION' };
+
+      return {
+        ok: false,
+        reason: 'SESSION_EXPIRED'
+      };
     }
 
-    if (expectedRole && result.user.role !== expectedRole) {
-      return { ok: false, reason: 'WRONG_ROLE', user: result.user };
+
+    if (
+      expectedRole &&
+      String(user.role || '') !==
+      String(expectedRole)
+    ) {
+
+      return {
+        ok: false,
+        reason: 'WRONG_ROLE',
+        user: user
+      };
     }
 
-    localStorage.setItem(CFG.USER_STORAGE_KEY || 'dmCurrentUser', JSON.stringify(result.user));
-    return { ok: true, user: result.user, expiresAt: result.expiresAt };
+
+    return {
+      ok: true,
+      user: user,
+      expiresAt: session.expiresAt,
+      token: session.token
+    };
   }
+
+
+  /*
+   ===============================
+   GET SESSION TOKEN
+   ===============================
+  */
+
+  function getToken() {
+
+    const session = getSession();
+
+    if (
+      !session ||
+      !session.token ||
+      isExpired(session.expiresAt)
+    ) {
+      return '';
+    }
+
+    return String(session.token);
+  }
+
+
+  /*
+   ===============================
+   API GET
+   ===============================
+  */
+
+  async function apiGet(action, params) {
+
+    const base =
+      CFG.APPS_SCRIPT_URL;
+
+    if (!base) {
+      throw new Error(
+        'آدرس سرویس تنظیم نشده است.'
+      );
+    }
+
+
+    const query =
+      new URLSearchParams(
+        Object.assign(
+          {},
+          params || {},
+          {
+            action: action,
+            token: getToken()
+          }
+        )
+      );
+
+
+    const url =
+      base +
+      (base.includes('?') ? '&' : '?') +
+      query.toString();
+
+
+    const response =
+      await fetch(
+        url,
+        {
+          method: 'GET',
+          redirect: 'follow',
+          cache: 'no-store'
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        'ارتباط با سرور برقرار نشد.'
+      );
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      data &&
+      (
+        data.code === 'SESSION_INVALID' ||
+        data.code === 'USER_INACTIVE'
+      )
+    ) {
+
+      clearAuth();
+
+      location.replace(
+        'index.html'
+      );
+
+      throw new Error(
+        'نشست شما پایان یافته است.'
+      );
+    }
+
+
+    return data;
+  }
+
+
+  /*
+   ===============================
+   LOGOUT
+   ===============================
+  */
 
   async function logout() {
-    const session = getSession();
-    if (session && session.token) {
-      try { await jsonp('logout', { token: session.token }); } catch (_) {}
-    }
+
+    const token =
+      getToken();
+
+    const base =
+      CFG.APPS_SCRIPT_URL;
+
+
+    /*
+      اول از سمت مرورگر Session را پاک می‌کنیم
+      تا حتی اگر Apps Script پاسخ نداد
+      کاربر داخل صفحه گیر نکند
+    */
+
     clearAuth();
-    location.href = 'index.html';
+
+
+    if (
+      token &&
+      base
+    ) {
+
+      try {
+
+        const url =
+          base +
+          (base.includes('?') ? '&' : '?') +
+          new URLSearchParams({
+            action: 'logout',
+            token: token
+          }).toString();
+
+
+        fetch(
+          url,
+          {
+            method: 'GET',
+            mode: 'no-cors',
+            keepalive: true
+          }
+        ).catch(
+          function () {}
+        );
+
+      } catch (_) {}
+
+    }
+
+
+    location.replace(
+      'index.html'
+    );
   }
 
-  window.DMAuth = { getSession, getUser, clearAuth, saveAuth, validateSession, logout, jsonp };
+
+  /*
+   ===============================
+   EXPOSE FUNCTIONS
+   ===============================
+  */
+
+  window.DMAuth = {
+
+    getSession: getSession,
+
+    getUser: getUser,
+
+    getToken: getToken,
+
+    clearAuth: clearAuth,
+
+    saveAuth: saveAuth,
+
+    validateSession: validateSession,
+
+    apiGet: apiGet,
+
+    logout: logout
+  };
+
 })();
