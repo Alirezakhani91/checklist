@@ -236,7 +236,7 @@ button{cursor:pointer}
   .grid{display:block}.panel{border-radius:19px}.panel + .panel{margin-top:12px}.panel-head{padding:16px}.panel-body{padding:13px}
   .store-item{grid-template-columns:36px minmax(0,1fr);padding:11px}.seq{width:34px;height:34px}.store-action{grid-column:1/-1}.store-action .action-btn{width:100%;padding:11px}.store-name{font-size:.82rem}
   .side-panel{display:none}
-  .mobile-bottom{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;bottom:0;right:0;left:0;height:66px;background:rgba(255,255,255,.97);backdrop-filter:blur(15px);border-top:1px solid var(--line);z-index:50;padding-bottom:env(safe-area-inset-bottom)}
+  .mobile-bottom{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;right:0;left:0;height:66px;background:rgba(255,255,255,.97);backdrop-filter:blur(15px);border-top:1px solid var(--line);z-index:50;padding-bottom:env(safe-area-inset-bottom)}
   .mobile-nav{border:0;background:transparent;color:#7c8492;font-size:.59rem;display:grid;place-items:center;align-content:center;gap:3px}.mobile-nav.active{color:var(--red);font-weight:900}.mobile-nav svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.9}
   .modal{align-items:end;padding:0}.modal-card{width:100%;max-height:92vh;border-radius:24px 24px 0 0}.modal-head{padding:17px}.modal-body{padding:17px}.modal-foot{padding:12px 17px calc(14px + env(safe-area-inset-bottom))}.gps-metrics{grid-template-columns:repeat(3,1fr)}
   .toast-wrap{left:10px;right:10px;bottom:80px}.toast{max-width:none}
@@ -288,6 +288,7 @@ button{cursor:pointer}
     <nav class="nav">
       <button class="nav-btn active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/><path d="m7 10 2 2 4-4"/></svg>برنامه امروز</button>
       <button class="nav-btn" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>بازدید خارج برنامه</button>
+      <button class="nav-btn" onclick="location.href='alerts.html'"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/><path d="M12 9v5M12 17h.01"/></svg>هشدارهای من</button>
       <button class="nav-btn" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق بازدید</button>
     </nav>
     <div class="side-foot"><button class="logout" onclick="DMAuth.logout()">خروج از حساب</button></div>
@@ -341,6 +342,7 @@ button{cursor:pointer}
     <nav class="mobile-bottom">
       <button class="mobile-nav active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>امروز</button>
       <button class="mobile-nav" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>خارج برنامه</button>
+      <button class="mobile-nav" onclick="location.href='alerts.html'"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/></svg>هشدار</button>
       <button class="mobile-nav" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق</button>
       <button class="mobile-nav" onclick="DMAuth.logout()"><svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3M14 3h6v18h-6"/></svg>خروج</button>
     </nav>
