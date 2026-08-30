@@ -174,7 +174,7 @@ button{cursor:pointer}
 /* ===== BUTTONS ===== */
 .btn{border:0;border-radius:13px;padding:11px 14px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:7px}
 .btn.primary{background:linear-gradient(135deg,#e00026,#bd001f);color:#fff}
-.btn.dark{background:#181c26;color:#fff}.btn.ghost{background:#fff;border:1px solid var(--line);color:#4f5766}.btn.warn{background:#fff3d3;color:#8b6300}.btn.danger{background:#fff0f2;color:#a9001a}
+.btn.dark{background:#181c26;color:#fff}.btn.correct{background:#edf3ff;color:#2855c7;border:1px solid #cedaff}.btn.ghost{background:#fff;border:1px solid var(--line);color:#4f5766}.btn.warn{background:#fff3d3;color:#8b6300}.btn.danger{background:#fff0f2;color:#a9001a}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 
 /* ===== MODALS ===== */
@@ -245,6 +245,7 @@ button{cursor:pointer}
 @media(max-width:430px){
   .stat{display:block}.stat-icon{margin-bottom:9px}.gps-metrics{grid-template-columns:1fr 1fr}.gps-metrics .metric:last-child{grid-column:1/-1}.modal-foot{display:grid;grid-template-columns:1fr}.modal-foot .btn{width:100%}
 }
+
 
 
 /* ===== CHECKLIST ===== */
@@ -434,7 +435,7 @@ const state={
   data:null,
   route:null,
   stores:[],
-  settings:{geoRadiusM:300,gpsMaxAccuracyM:250,gpsSampleCount:3},
+  settings:{geoRadiusM:300,gpsMaxAccuracyM:250,gpsSampleCount:3,locationCorrectionMaxAccuracyM:30,locationCorrectionMinSamples:3},
   gpsTarget:null,
   gpsBest:null,
   gpsSamples:[],
@@ -495,7 +496,7 @@ function renderAll(){
 function renderActive(){
   const box=document.getElementById('activeBox'),v=state.data.openVisit;
   if(!v){box.classList.add('hidden');return;}
-  box.classList.remove('hidden');box.classList.toggle('pending',v.visitStatus==='WAITING_LOCATION_APPROVAL');
+  box.classList.remove('hidden');box.classList.toggle('pending',v.visitStatus==='WAITING_LOCATION_APPROVAL'||v.visitStatus==='WAITING_LOCATION_CORRECTION');
   const s=storeByCode(v.storeCode);
   document.getElementById('activeTitle').textContent=(s?.storeName||v.storeCode)+' · کد '+v.storeCode;
   const actions=document.getElementById('activeActions');
@@ -503,6 +504,10 @@ function renderActive(){
     document.getElementById('activeLabel').textContent='در انتظار تأیید مدیر منطقه';
     document.getElementById('activeMeta').textContent='درخواست ثبت شده است. پس از تأیید مدیر منطقه، بازدید فعال می‌شود.';
     actions.innerHTML=`<button class="btn ghost" onclick="reloadData()">بررسی وضعیت</button><button class="btn danger" onclick="cancelPending('${esc(v.visitId)}')">لغو درخواست</button>`;
+  }else if(v.visitStatus==='WAITING_LOCATION_CORRECTION'){
+    document.getElementById('activeLabel').textContent='در انتظار تأیید اصلاح لوکیشن';
+    document.getElementById('activeMeta').textContent='GPS واقعی فروشگاه برای مدیر منطقه ارسال شده است. با تأیید او، مختصات فروشگاه اصلاح و چک‌لیست باز می‌شود.';
+    actions.innerHTML=`<button class="btn ghost" onclick="reloadData()">بررسی وضعیت</button><button class="btn danger" onclick="cancelLocationCorrection('${esc(v.visitId)}')">لغو درخواست</button>`;
   }else{
     document.getElementById('activeLabel').textContent='بازدید فعال';
     document.getElementById('activeMeta').textContent=`حضور تأیید شده · فاصله ${mText(v.distanceToStoreM)} · مرحله بعد چک‌لیست`;
@@ -519,6 +524,7 @@ function statusAction(item){
   if(item.uiStatus==='COMPLETED')return `<button class="action-btn done" disabled>تکمیل شده</button>`;
   if(item.uiStatus==='IN_PROGRESS')return `<button class="action-btn continue" onclick="openChecklist('${esc(item.visit?.visitId||item.visitId||'')}')">ادامه بازدید</button>`;
   if(item.uiStatus==='WAITING_APPROVAL')return `<button class="action-btn wait" disabled>در انتظار تأیید</button>`;
+  if(item.uiStatus==='WAITING_CORRECTION')return `<button class="action-btn wait" disabled>در انتظار اصلاح لوکیشن</button>`;
   return `<button class="action-btn primary" onclick="openGps('${esc(item.storeCode)}','${esc(item.routeItemId)}',true,'')" ${hasOpen?'disabled':''}>شروع بازدید</button>`;
 }
 
@@ -526,7 +532,7 @@ function renderRoute(){
   const list=document.getElementById('routeList'),items=state.route.items||[];
   if(!items.length){list.innerHTML=`<div class="empty"><strong>برای امروز Route ثبت نشده است</strong><span>در صورت نیاز می‌توانی بازدید خارج از برنامه ثبت کنی.</span></div>`;return;}
   list.innerHTML=items.map((x,i)=>{
-    const cls=x.uiStatus==='COMPLETED'?'completed':x.uiStatus==='IN_PROGRESS'?'inprogress':x.uiStatus==='WAITING_APPROVAL'?'pending':'';
+    const cls=x.uiStatus==='COMPLETED'?'completed':x.uiStatus==='IN_PROGRESS'?'inprogress':(x.uiStatus==='WAITING_APPROVAL'||x.uiStatus==='WAITING_CORRECTION')?'pending':'';
     const gps=String(x.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="tag red">GPS نیازمند بررسی</span>':'';
     return `<div class="store-item ${cls}"><div class="seq">${x.sequenceNo||i+1}</div><div><div class="store-name">${esc(x.storeName)}</div><div class="store-code">کد ${esc(x.storeCode)}</div><div class="tags">${priorityTag(x)}${gps}${x.distanceFromPreviousM?`<span class="tag">${mText(x.distanceFromPreviousM)} از قبلی</span>`:''}</div></div><div class="store-action">${statusAction(x)}</div></div>`;
   }).join('');
@@ -587,7 +593,7 @@ async function scanAndStart(){
 
   if(!state.gpsBest){
     const msg=gpsErrorText(state.gpsLastError);
-    showGpsFailure(msg,null,true);
+    showGpsFailure(msg,null,true,false,null);
     return;
   }
 
@@ -613,9 +619,9 @@ async function scanAndStart(){
       return;
     }
 
-    if(res.canRequestApproval){showGpsFailure(res.message,res.gps,true);return;}
-    showGpsFailure(res.message||'شروع بازدید ناموفق بود.',res.gps,false);
-  }catch(e){showGpsFailure(e.message||'ارتباط با سرور برقرار نشد.',null,false);}
+    if(res.canRequestApproval){showGpsFailure(res.message,res.gps,true,!!res.canRequestCorrection,res.correctionRule||null);return;}
+    showGpsFailure(res.message||'شروع بازدید ناموفق بود.',res.gps,false,false,null);
+  }catch(e){showGpsFailure(e.message||'ارتباط با سرور برقرار نشد.',null,false,false,null);}
 }
 
 function gpsErrorText(e){
@@ -626,14 +632,21 @@ function gpsErrorText(e){
   return e.message||'موقعیت GPS دریافت نشد.';
 }
 
-function showGpsFailure(message,gps,canApprove){
+function showGpsFailure(message,gps,canApprove,canCorrect=false,correctionRule=null){
   document.getElementById('gpsTitle').textContent='تأیید خودکار انجام نشد';
-  document.getElementById('gpsDesc').textContent='در صورت حضور واقعی در فروشگاه، می‌توانی درخواست تأیید برای مدیر منطقه ارسال کنی.';
+  const rule=correctionRule||{maxAccuracyM:state.settings.locationCorrectionMaxAccuracyM||30,minSamples:state.settings.locationCorrectionMinSamples||3};
+  document.getElementById('gpsDesc').textContent=canCorrect
+    ? 'اگر لوکیشن ثبت‌شده فروشگاه اشتباه است، GPS فعلی را برای اصلاح به مدیر منطقه ارسال کن.'
+    : 'در صورت حضور واقعی در فروشگاه، می‌توانی درخواست تأیید برای مدیر منطقه ارسال کنی.';
   const box=document.getElementById('gpsResult');box.className='gps-result error';box.textContent=message||'موقعیت تأیید نشد.';
   if(gps){document.getElementById('gpsMetrics').classList.remove('hidden');document.getElementById('metricAccuracy').textContent=mText(gps.accuracyM);document.getElementById('metricDistance').textContent=mText(gps.distanceM);}
-  document.getElementById('gpsFoot').innerHTML=canApprove
-    ? `<button class="btn ghost" onclick="closeGpsModal()">انصراف</button><button class="btn warn" onclick="requestManagerApproval()">درخواست تأیید مدیر منطقه</button><button class="btn primary" onclick="scanAndStart()">تلاش دوباره GPS</button>`
-    : `<button class="btn ghost" onclick="closeGpsModal()">بستن</button><button class="btn primary" onclick="scanAndStart()">تلاش دوباره</button>`;
+  if(canApprove){
+    const correctionBtn=canCorrect?`<button class="btn correct" onclick="requestLocationCorrection()">📍 لوکیشن فروشگاه اشتباه است</button>`:'';
+    document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" onclick="closeGpsModal()">انصراف</button>${correctionBtn}<button class="btn warn" onclick="requestManagerApproval()">درخواست تأیید حضور</button><button class="btn primary" onclick="scanAndStart()">GPS دوباره</button>`;
+    if(!canCorrect&&state.gpsBest){document.getElementById('gpsDesc').textContent+=` برای پیشنهاد اصلاح لوکیشن، دقت GPS باید حداکثر ${rule.maxAccuracyM} متر و حداقل ${rule.minSamples} نمونه باشد.`;}
+  }else{
+    document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" onclick="closeGpsModal()">بستن</button><button class="btn primary" onclick="scanAndStart()">تلاش دوباره</button>`;
+  }
 }
 
 async function requestManagerApproval(){
@@ -651,7 +664,31 @@ async function requestManagerApproval(){
     document.getElementById('gpsTitle').textContent='درخواست ارسال شد';
     document.getElementById('gpsDesc').textContent='مدیر منطقه می‌تواند حضور شما را تأیید یا رد کند.';
     document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">متوجه شدم</button>`;
-  }catch(e){showGpsFailure(e.message||'ثبت درخواست ناموفق بود.',null,true);}
+  }catch(e){showGpsFailure(e.message||'ثبت درخواست ناموفق بود.',null,true,false,null);}
+}
+
+async function requestLocationCorrection(){
+  const b=state.gpsBest;
+  if(!b){toast('ابتدا GPS را دریافت کن.','error');return;}
+  const maxAcc=Number(state.settings.locationCorrectionMaxAccuracyM||30),minSamples=Number(state.settings.locationCorrectionMinSamples||3);
+  if(Number(b.accuracy)>maxAcc||state.gpsSamples.length<minSamples){
+    toast(`برای اصلاح لوکیشن، دقت GPS باید حداکثر ${maxAcc} متر و حداقل ${minSamples} نمونه باشد.`,'error');return;
+  }
+  const s=storeByCode(state.gpsTarget.storeCode);
+  if(!confirm(`لوکیشن ثبت‌شده ${s?.storeName||state.gpsTarget.storeCode} اشتباه است؟\nGPS فعلی برای مدیر منطقه ارسال می‌شود و فقط بعد از تأیید او مختصات فروشگاه تغییر می‌کند.`))return;
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" disabled>در حال ارسال موقعیت صحیح...</button>`;
+  try{
+    const res=await DMAuth.apiPost('requestStoreLocationCorrection',{
+      storeCode:state.gpsTarget.storeCode,routeItemId:state.gpsTarget.routeItemId,
+      lat:b.lat,lng:b.lng,accuracy:b.accuracy,gpsSampleCount:state.gpsSamples.length,
+      unplannedReason:state.gpsTarget.unplannedReason
+    },40000);
+    if(!res.success)throw new Error(res.message||'ثبت درخواست اصلاح ناموفق بود.');
+    const box=document.getElementById('gpsResult');box.className='gps-result warn';box.textContent=res.message||'موقعیت پیشنهادی ارسال شد.';
+    document.getElementById('gpsTitle').textContent='درخواست اصلاح لوکیشن ارسال شد';
+    document.getElementById('gpsDesc').textContent='تا تصمیم مدیر منطقه، مختصات فعلی فروشگاه تغییر نمی‌کند. پس از تأیید، لوکیشن اصلاح و چک‌لیست باز می‌شود.';
+    document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">متوجه شدم</button>`;
+  }catch(e){showGpsFailure(e.message||'ثبت درخواست اصلاح ناموفق بود.',null,true,false,null);}
 }
 
 
@@ -823,6 +860,11 @@ async function cancelPending(visitId){
   setLoading(true,'در حال لغو درخواست...');
   try{const r=await DMAuth.apiPost('cancelPendingApproval',{visitId},30000);if(!r.success)throw new Error(r.message);toast(r.message||'درخواست لغو شد.','success');await loadData(true);}catch(e){toast(e.message||'خطا','error');}finally{setLoading(false);}
 }
+async function cancelLocationCorrection(visitId){
+  if(!confirm('درخواست اصلاح لوکیشن لغو شود؟'))return;
+  setLoading(true,'در حال لغو درخواست اصلاح...');
+  try{const r=await DMAuth.apiPost('cancelPendingLocationCorrection',{visitId},30000);if(!r.success)throw new Error(r.message);toast(r.message||'درخواست اصلاح لغو شد.','success');await loadData(true);}catch(e){toast(e.message||'خطا','error');}finally{setLoading(false);}
+}
 async function cancelVisit(visitId){
   if(!confirm('شروع این بازدید لغو شود؟ این کار در Audit ثبت می‌شود.'))return;
   setLoading(true,'در حال لغو شروع بازدید...');
@@ -831,7 +873,7 @@ async function cancelVisit(visitId){
 
 function schedulePendingPoll(){
   if(state.pendingPoll)clearTimeout(state.pendingPoll);
-  if(state.data?.openVisit?.visitStatus==='WAITING_LOCATION_APPROVAL'){
+  if(state.data?.openVisit?.visitStatus==='WAITING_LOCATION_APPROVAL'||state.data?.openVisit?.visitStatus==='WAITING_LOCATION_CORRECTION'){
     state.pendingPoll=setTimeout(async()=>{await loadData(true);},20000);
   }
 }
