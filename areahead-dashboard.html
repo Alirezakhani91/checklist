@@ -435,11 +435,12 @@ const state={
   data:null,
   route:null,
   stores:[],
-  settings:{geoRadiusM:400,softPassRadiusM:1500,gpsMaxAccuracyM:300,gpsSampleCount:5,locationCorrectionMaxAccuracyM:80,locationCorrectionMinSamples:3},
+  settings:{geoRadiusM:400,softPassRadiusM:1500,gpsMaxAccuracyM:300,gpsSampleCount:5,nearestStoreConflictRadiusM:250,nearestStoreConflictAdvantageM:300,locationCorrectionMaxAccuracyM:80,locationCorrectionMinSamples:3},
   gpsTarget:null,
   gpsBest:null,
   gpsSamples:[],
   gpsLastError:null,
+  gpsDecision:null,
   pendingPoll:null,
   checklistVisitId:'',
   checklistData:null,
@@ -542,7 +543,7 @@ function openGps(storeCode,routeItemId,planned,unplannedReason){
   if(state.data.openVisit){toast('ابتدا بازدید باز فعلی را تعیین تکلیف کنید.','error');return;}
   const s=storeByCode(storeCode);if(!s)return;
   state.gpsTarget={storeCode,routeItemId:routeItemId||'',planned:!!planned,unplannedReason:unplannedReason||''};
-  state.gpsBest=null;state.gpsSamples=[];state.gpsLastError=null;
+  state.gpsBest=null;state.gpsSamples=[];state.gpsLastError=null;state.gpsDecision=null;
   document.getElementById('gpsStoreTitle').textContent=s.storeName;
   document.getElementById('gpsStoreSub').textContent='کد '+s.storeCode+' · Auto تا '+(state.settings.geoRadiusM||400)+' متر · تأیید ساده تا '+(state.settings.softPassRadiusM||1500)+' متر';
   resetGpsUI();document.getElementById('gpsModal').classList.remove('hidden');
@@ -570,7 +571,7 @@ function getOnePosition(){
 
 async function scanAndStart(){
   const count=Math.max(3,Number(state.settings.gpsSampleCount||5));
-  state.gpsSamples=[];state.gpsBest=null;state.gpsLastError=null;
+  state.gpsSamples=[];state.gpsBest=null;state.gpsLastError=null;state.gpsDecision=null;
   document.getElementById('gpsVisual').classList.add('scanning');
   document.getElementById('gpsTitle').textContent='در حال بررسی GPS...';
   document.getElementById('gpsDesc').textContent=`در حال دریافت ${count} نمونه موقعیت و انتخاب دقیق‌ترین نتیجه.`;
@@ -609,6 +610,7 @@ async function scanAndStart(){
       unplannedReason:state.gpsTarget.unplannedReason
     },40000);
 
+    state.gpsDecision=res||null;
     if(res.gps){document.getElementById('metricDistance').textContent=mText(res.gps.distanceM);document.getElementById('metricAccuracy').textContent=mText(res.gps.accuracyM);}
 
     if(res.success){
@@ -638,6 +640,9 @@ function showGpsFailure(message,gps,canApprove,canCorrect=false,correctionRule=n
   const rule=correctionRule||{maxAccuracyM:state.settings.locationCorrectionMaxAccuracyM||80,minSamples:state.settings.locationCorrectionMinSamples||3};
   if(canSoftPass){
     document.getElementById('gpsDesc').textContent='اگر واقعاً در محل فروشگاه هستی، حضور خودت را تأیید کن. این مورد در Audit ثبت می‌شود و نیازی به انتظار برای مدیر منطقه ندارد.';
+  }else if(state.gpsDecision&&state.gpsDecision.nearestStore){
+    const n=state.gpsDecision.nearestStore;
+    document.getElementById('gpsDesc').textContent=`GPS فعلی به یک فروشگاه دیگر دیلی‌مارکت (${n.distanceM!=null?mText(n.distanceM):'نزدیک'}) بسیار نزدیک‌تر است؛ برای جلوگیری از ثبت بازدید اشتباه، تأیید مدیر منطقه لازم است.`;
   }else if(canCorrect){
     document.getElementById('gpsDesc').textContent='اگر لوکیشن ثبت‌شده فروشگاه اشتباه است، GPS فعلی را برای اصلاح به مدیر منطقه ارسال کن.';
   }else{
@@ -664,6 +669,7 @@ async function confirmSoftPresence(){
       unplannedReason:state.gpsTarget.unplannedReason
     },40000);
     if(!res.success){
+      state.gpsDecision=res||state.gpsDecision;
       if(res.canRequestApproval){showGpsFailure(res.message,res.gps,true,false,null,false,null);return;}
       throw new Error(res.message||'ثبت حضور ناموفق بود.');
     }
@@ -682,7 +688,7 @@ async function requestManagerApproval(){
       storeCode:state.gpsTarget.storeCode,
       routeItemId:state.gpsTarget.routeItemId,
       lat:b?b.lat:'',lng:b?b.lng:'',accuracy:b?b.accuracy:'',gpsAttemptCount:state.gpsSamples.length||1,
-      reason:b?'GPS_NOT_VERIFIED':'GPS_UNAVAILABLE',unplannedReason:state.gpsTarget.unplannedReason
+      reason:(state.gpsDecision&&state.gpsDecision.approvalReason)?state.gpsDecision.approvalReason:(b?'GPS_NOT_VERIFIED':'GPS_UNAVAILABLE'),unplannedReason:state.gpsTarget.unplannedReason
     },40000);
     if(!res.success)throw new Error(res.message||'ثبت درخواست ناموفق بود.');
     const box=document.getElementById('gpsResult');box.className='gps-result warn';box.textContent=res.message||'درخواست ثبت شد.';
