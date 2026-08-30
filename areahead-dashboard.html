@@ -435,7 +435,7 @@ const state={
   data:null,
   route:null,
   stores:[],
-  settings:{geoRadiusM:300,gpsMaxAccuracyM:250,gpsSampleCount:3,locationCorrectionMaxAccuracyM:30,locationCorrectionMinSamples:3},
+  settings:{geoRadiusM:400,softPassRadiusM:1500,gpsMaxAccuracyM:300,gpsSampleCount:5,locationCorrectionMaxAccuracyM:80,locationCorrectionMinSamples:3},
   gpsTarget:null,
   gpsBest:null,
   gpsSamples:[],
@@ -544,7 +544,7 @@ function openGps(storeCode,routeItemId,planned,unplannedReason){
   state.gpsTarget={storeCode,routeItemId:routeItemId||'',planned:!!planned,unplannedReason:unplannedReason||''};
   state.gpsBest=null;state.gpsSamples=[];state.gpsLastError=null;
   document.getElementById('gpsStoreTitle').textContent=s.storeName;
-  document.getElementById('gpsStoreSub').textContent='کد '+s.storeCode+' · شعاع مجاز '+(state.settings.geoRadiusM||300)+' متر';
+  document.getElementById('gpsStoreSub').textContent='کد '+s.storeCode+' · Auto تا '+(state.settings.geoRadiusM||400)+' متر · تأیید ساده تا '+(state.settings.softPassRadiusM||1500)+' متر';
   resetGpsUI();document.getElementById('gpsModal').classList.remove('hidden');
 }
 function closeGpsModal(){document.getElementById('gpsModal').classList.add('hidden');}
@@ -569,7 +569,7 @@ function getOnePosition(){
 }
 
 async function scanAndStart(){
-  const count=Math.max(2,Number(state.settings.gpsSampleCount||3));
+  const count=Math.max(3,Number(state.settings.gpsSampleCount||5));
   state.gpsSamples=[];state.gpsBest=null;state.gpsLastError=null;
   document.getElementById('gpsVisual').classList.add('scanning');
   document.getElementById('gpsTitle').textContent='در حال بررسی GPS...';
@@ -586,14 +586,14 @@ async function scanAndStart(){
     document.getElementById('metricSamples').textContent=`${state.gpsSamples.length}/${count}`;
     document.getElementById('metricAccuracy').textContent=state.gpsBest?mText(state.gpsBest.accuracy):'—';
     document.getElementById('metricDistance').textContent='در حال بررسی';
-    if(i<count-1)await new Promise(r=>setTimeout(r,650));
+    if(i<count-1)await new Promise(r=>setTimeout(r,800));
   }
 
   document.getElementById('gpsVisual').classList.remove('scanning');
 
   if(!state.gpsBest){
     const msg=gpsErrorText(state.gpsLastError);
-    showGpsFailure(msg,null,true,false,null);
+    showGpsFailure(msg,null,false,false,null,true,{reason:'GPS_UNAVAILABLE'});
     return;
   }
 
@@ -619,8 +619,9 @@ async function scanAndStart(){
       return;
     }
 
-    if(res.canRequestApproval){showGpsFailure(res.message,res.gps,true,!!res.canRequestCorrection,res.correctionRule||null);return;}
-    showGpsFailure(res.message||'شروع بازدید ناموفق بود.',res.gps,false,false,null);
+    if(res.canSoftPass){showGpsFailure(res.message,res.gps,!!res.canRequestApproval,!!res.canRequestCorrection,res.correctionRule||null,true,res.softPass||null);return;}
+    if(res.canRequestApproval){showGpsFailure(res.message,res.gps,true,!!res.canRequestCorrection,res.correctionRule||null,false,null);return;}
+    showGpsFailure(res.message||'شروع بازدید ناموفق بود.',res.gps,false,false,null,false,null);
   }catch(e){showGpsFailure(e.message||'ارتباط با سرور برقرار نشد.',null,false,false,null);}
 }
 
@@ -632,21 +633,45 @@ function gpsErrorText(e){
   return e.message||'موقعیت GPS دریافت نشد.';
 }
 
-function showGpsFailure(message,gps,canApprove,canCorrect=false,correctionRule=null){
-  document.getElementById('gpsTitle').textContent='تأیید خودکار انجام نشد';
-  const rule=correctionRule||{maxAccuracyM:state.settings.locationCorrectionMaxAccuracyM||30,minSamples:state.settings.locationCorrectionMinSamples||3};
-  document.getElementById('gpsDesc').textContent=canCorrect
-    ? 'اگر لوکیشن ثبت‌شده فروشگاه اشتباه است، GPS فعلی را برای اصلاح به مدیر منطقه ارسال کن.'
-    : 'در صورت حضور واقعی در فروشگاه، می‌توانی درخواست تأیید برای مدیر منطقه ارسال کنی.';
-  const box=document.getElementById('gpsResult');box.className='gps-result error';box.textContent=message||'موقعیت تأیید نشد.';
-  if(gps){document.getElementById('gpsMetrics').classList.remove('hidden');document.getElementById('metricAccuracy').textContent=mText(gps.accuracyM);document.getElementById('metricDistance').textContent=mText(gps.distanceM);}
-  if(canApprove){
-    const correctionBtn=canCorrect?`<button class="btn correct" onclick="requestLocationCorrection()">📍 لوکیشن فروشگاه اشتباه است</button>`:'';
-    document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" onclick="closeGpsModal()">انصراف</button>${correctionBtn}<button class="btn warn" onclick="requestManagerApproval()">درخواست تأیید حضور</button><button class="btn primary" onclick="scanAndStart()">GPS دوباره</button>`;
-    if(!canCorrect&&state.gpsBest){document.getElementById('gpsDesc').textContent+=` برای پیشنهاد اصلاح لوکیشن، دقت GPS باید حداکثر ${rule.maxAccuracyM} متر و حداقل ${rule.minSamples} نمونه باشد.`;}
+function showGpsFailure(message,gps,canApprove,canCorrect=false,correctionRule=null,canSoftPass=false,softPass=null){
+  document.getElementById('gpsTitle').textContent=canSoftPass?'نیاز به تأیید ساده حضور':'تأیید خودکار انجام نشد';
+  const rule=correctionRule||{maxAccuracyM:state.settings.locationCorrectionMaxAccuracyM||80,minSamples:state.settings.locationCorrectionMinSamples||3};
+  if(canSoftPass){
+    document.getElementById('gpsDesc').textContent='اگر واقعاً در محل فروشگاه هستی، حضور خودت را تأیید کن. این مورد در Audit ثبت می‌شود و نیازی به انتظار برای مدیر منطقه ندارد.';
+  }else if(canCorrect){
+    document.getElementById('gpsDesc').textContent='اگر لوکیشن ثبت‌شده فروشگاه اشتباه است، GPS فعلی را برای اصلاح به مدیر منطقه ارسال کن.';
   }else{
-    document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" onclick="closeGpsModal()">بستن</button><button class="btn primary" onclick="scanAndStart()">تلاش دوباره</button>`;
+    document.getElementById('gpsDesc').textContent='فاصله با GPS معتبر زیاد است؛ برای ادامه درخواست تأیید حضور برای مدیر منطقه ارسال کن.';
   }
+  const box=document.getElementById('gpsResult');box.className=canSoftPass?'gps-result warn':'gps-result error';box.textContent=message||'موقعیت تأیید نشد.';
+  if(gps){document.getElementById('gpsMetrics').classList.remove('hidden');document.getElementById('metricAccuracy').textContent=mText(gps.accuracyM);document.getElementById('metricDistance').textContent=mText(gps.distanceM);}
+  const correctionBtn=canCorrect?`<button class="btn correct" onclick="requestLocationCorrection()">📍 لوکیشن فروشگاه اشتباه است</button>`:'';
+  const softBtn=canSoftPass?`<button class="btn warn" onclick="confirmSoftPresence()">بله، در فروشگاه هستم</button>`:'';
+  const managerBtn=canApprove?`<button class="btn warn" onclick="requestManagerApproval()">درخواست تأیید مدیر منطقه</button>`:'';
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" onclick="closeGpsModal()">انصراف</button>${correctionBtn}${softBtn}${managerBtn}<button class="btn primary" onclick="scanAndStart()">GPS دوباره</button>`;
+  if(!canCorrect&&state.gpsBest&&correctionRule){document.getElementById('gpsDesc').textContent+=` برای اصلاح مختصات، GPS باید حداکثر ${rule.maxAccuracyM} متر و حداقل ${rule.minSamples} نمونه باشد.`;}
+}
+
+async function confirmSoftPresence(){
+  if(!confirm('تأیید می‌کنید که در حال حاضر در محل همین فروشگاه حضور دارید؟'))return;
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" disabled>در حال ثبت حضور...</button>`;
+  try{
+    const b=state.gpsBest;
+    const res=await DMAuth.apiPost('confirmSoftPresence',{
+      storeCode:state.gpsTarget.storeCode,
+      routeItemId:state.gpsTarget.routeItemId,
+      lat:b?b.lat:'',lng:b?b.lng:'',accuracy:b?b.accuracy:'',gpsAttemptCount:state.gpsSamples.length||0,
+      unplannedReason:state.gpsTarget.unplannedReason
+    },40000);
+    if(!res.success){
+      if(res.canRequestApproval){showGpsFailure(res.message,res.gps,true,false,null,false,null);return;}
+      throw new Error(res.message||'ثبت حضور ناموفق بود.');
+    }
+    const box=document.getElementById('gpsResult');box.className='gps-result success';box.textContent=res.message||'حضور ثبت شد.';
+    document.getElementById('gpsTitle').textContent='بازدید آغاز شد';
+    document.getElementById('gpsDesc').textContent='حضور شما به‌صورت تأیید ساده ثبت شد و می‌توانی چک‌لیست را ادامه بدهی.';
+    document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">ادامه به بازدید</button>`;
+  }catch(e){showGpsFailure(e.message||'ثبت حضور ناموفق بود.',null,false,false,null,true,null);}
 }
 
 async function requestManagerApproval(){
@@ -670,7 +695,7 @@ async function requestManagerApproval(){
 async function requestLocationCorrection(){
   const b=state.gpsBest;
   if(!b){toast('ابتدا GPS را دریافت کن.','error');return;}
-  const maxAcc=Number(state.settings.locationCorrectionMaxAccuracyM||30),minSamples=Number(state.settings.locationCorrectionMinSamples||3);
+  const maxAcc=Number(state.settings.locationCorrectionMaxAccuracyM||80),minSamples=Number(state.settings.locationCorrectionMinSamples||3);
   if(Number(b.accuracy)>maxAcc||state.gpsSamples.length<minSamples){
     toast(`برای اصلاح لوکیشن، دقت GPS باید حداکثر ${maxAcc} متر و حداقل ${minSamples} نمونه باشد.`,'error');return;
   }
