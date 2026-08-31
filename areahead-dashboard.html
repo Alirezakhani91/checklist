@@ -274,6 +274,23 @@ button{cursor:pointer}
   .checklist-modal{background:#f5f6f9}.checklist-top{height:auto;min-height:68px;padding:12px 14px}.checklist-top h2{font-size:.98rem}.checklist-top p{font-size:.66rem;max-width:250px}.checklist-top-actions .draft-btn{display:none}.checklist-layout{display:block;overflow:auto}.checklist-main{overflow:visible;padding:12px 10px 110px}.checklist-side{border:0;border-bottom:1px solid var(--line);padding:12px 10px;background:#f5f6f9}.checklist-progress-card{border-radius:16px;padding:13px}.checklist-side-meta{display:none}.section-nav{display:flex;overflow:auto;margin-top:10px;gap:6px}.section-nav button{white-space:nowrap;padding:8px 10px;font-size:.66rem}.check-section{border-radius:18px;margin-bottom:11px}.check-section-head{padding:13px 14px}.check-subsection{padding:3px 13px 0}.question-card{padding:13px 0}.question-text{font-size:.78rem}.answer-options{margin:10px 0 0;grid-template-columns:repeat(3,1fr);gap:6px}.answer-options.two{grid-template-columns:repeat(2,1fr)}.answer-btn{padding:10px 4px;font-size:.68rem}.question-no{width:25px;height:25px;border-radius:8px}.checklist-bottom{left:0;padding:10px 10px calc(10px + env(safe-area-inset-bottom));display:block}.checklist-bottom-info{display:none}.checklist-bottom-actions{display:grid;grid-template-columns:.8fr 1.4fr}.checklist-bottom-actions>*{width:100%}.checklist-save-status{text-align:right;margin:0 0 7px}.checklist-close{width:36px;height:36px}.checklist-top-actions{gap:5px}
 }
 
+
+.action-stack{display:flex;gap:7px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+.action-btn.cannot{background:#fff4e8;color:#9a5200;border:1px solid #f3d5b2}
+.cannot-tag{background:#fff0e1!important;color:#a15300!important}
+.notes-card{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+.notes-card h4{margin:0 0 5px;font-size:.86rem}.notes-card p{margin:0 0 10px;color:var(--muted);font-size:.68rem;line-height:1.8}
+.notes-card textarea{width:100%;min-height:110px;resize:vertical;border:1px solid #dfe3ea;border-radius:14px;padding:12px;font-family:inherit;font-size:.78rem;outline:0;background:#fafbfc}
+.notes-card textarea:focus{border-color:#bdc6d6;background:#fff;box-shadow:0 0 0 3px rgba(49,94,251,.07)}
+.cannot-modal .reason-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.reason-option{border:1px solid var(--line);background:#fff;border-radius:13px;padding:11px;text-align:right;font-family:inherit;font-weight:800;font-size:.72rem;color:#424957}
+.reason-option.active{border-color:#d00024;background:#fff5f6;color:#b3001d;box-shadow:0 0 0 2px rgba(201,0,34,.06)}
+.cannot-note{width:100%;min-height:90px;border:1px solid var(--line);border-radius:13px;padding:11px;font-family:inherit;resize:vertical;margin-top:10px}
+.route-delegated-banner{display:none;margin-bottom:12px;padding:12px 14px;border-radius:16px;background:#eef5ff;border:1px solid #dbe8ff;color:#2f5389;font-size:.72rem;line-height:1.8}
+.route-delegated-banner.show{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.route-delegated-banner button{border:0;background:#315efb;color:#fff;border-radius:11px;padding:9px 12px;font-family:inherit;font-weight:900}
+@media(max-width:820px){.action-stack{display:grid;grid-template-columns:1fr 1fr;width:100%}.action-stack .action-btn{width:100%}.cannot-modal .reason-grid{grid-template-columns:1fr}.route-delegated-banner.show{display:block}.route-delegated-banner button{width:100%;margin-top:8px}}
+
 </style>
 </head>
 
@@ -289,6 +306,7 @@ button{cursor:pointer}
     <nav class="nav">
       <button class="nav-btn active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/><path d="m7 10 2 2 4-4"/></svg>برنامه امروز</button>
       <button class="nav-btn" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>بازدید خارج برنامه</button>
+      <button class="nav-btn hidden" id="selfRouteNav" onclick="location.href='areahead-route.html'"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0-3 3"/></svg>برنامه‌ریزی مسیر من</button>
       <button class="nav-btn" onclick="location.href='alerts.html'"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/><path d="M12 9v5M12 17h.01"/></svg>هشدارهای من</button>
       <button class="nav-btn" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق بازدید</button>
     </nav>
@@ -327,6 +345,8 @@ button{cursor:pointer}
         </div>
       </section>
 
+      <div class="route-delegated-banner" id="routeDelegatedBanner"><span><strong>مسیر‌بندی این ناحیه به شما واگذار شده است.</strong><br>برنامه هفتگی را خودتان می‌چینید؛ سیستم اجازه نمی‌دهد فروشگاه‌های سررسید ۱۴ روزه از برنامه جا بمانند.</span><button onclick="location.href='areahead-route.html'">برنامه‌ریزی مسیر من</button></div>
+
       <section class="grid">
         <div class="panel">
           <div class="panel-head"><div><h3>Route امروز</h3><p id="routeMeta">ترتیب تعیین‌شده توسط مدیر منطقه</p></div><span class="date-pill" id="routeBadge">—</span></div>
@@ -344,6 +364,7 @@ button{cursor:pointer}
       <button class="mobile-nav active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>امروز</button>
       <button class="mobile-nav" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>خارج برنامه</button>
       <button class="mobile-nav" onclick="location.href='alerts.html'"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/></svg>هشدار</button>
+      <button class="mobile-nav hidden" id="selfRouteMobileNav" onclick="location.href='areahead-route.html'"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0-3 3"/></svg>مسیر من</button>
       <button class="mobile-nav" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق</button>
       <button class="mobile-nav" onclick="DMAuth.logout()"><svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3M14 3h6v18h-6"/></svg>خروج</button>
     </nav>
@@ -386,6 +407,26 @@ button{cursor:pointer}
     <div class="checklist-bottom-actions">
       <button class="draft-btn" id="draftBtn" onclick="saveChecklistDraft(true)">ذخیره موقت</button>
       <button class="finish-btn" id="finishChecklistBtn" onclick="finishChecklist()">ثبت نهایی و پایان بازدید</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- CANNOT VISIT MODAL -->
+<div class="modal hidden cannot-modal" id="cannotVisitModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div><h3>امکان بازدید ندارم</h3><p id="cannotVisitStoreSub">—</p></div>
+      <button class="modal-close" onclick="closeCannotVisitModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin:0;color:#6f7786;font-size:.74rem;line-height:1.9">قبل از حذف یا جابه‌جایی برنامه، مدیر منطقه را مطلع کن. این اعلام به معنی انجام بازدید نیست و سابقه ۱۴ روزه فروشگاه را Reset نمی‌کند.</p>
+      <div class="reason-grid" id="cannotReasonGrid"></div>
+      <textarea class="cannot-note" id="cannotVisitNote" placeholder="توضیحات تکمیلی (برای گزینه «سایر» الزامی است)"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeCannotVisitModal()">انصراف</button>
+      <button class="btn warn" id="cannotVisitSubmitBtn" onclick="submitCannotVisit()">اطلاع به مدیر منطقه</button>
     </div>
   </div>
 </div>
@@ -445,7 +486,10 @@ const state={
   checklistVisitId:'',
   checklistData:null,
   checklistAnswers:{},
+  checklistNotes:'',
   checklistDirty:false,
+  cannotVisitTarget:null,
+  cannotVisitReason:'',
   checklistSaving:false,
   checklistSaveTimer:null
 };
@@ -490,7 +534,14 @@ function renderAll(){
   document.getElementById('statPending').textContent=state.data.summary?.pendingApproval??0;
   document.getElementById('radiusRule').textContent=(state.settings.geoRadiusM||300)+' متر';
   document.getElementById('routeBadge').textContent=(state.route.items?.length||0)+' بازدید';
-  document.getElementById('routeMeta').textContent=state.route.routeId?'ترتیب تعیین‌شده توسط مدیر منطقه':'برای امروز Route ثبت نشده است.';
+  const routeSource=String(state.route.sourceType||'').toUpperCase();
+  document.getElementById('routeMeta').textContent=state.route.routeId
+    ? (routeSource==='AREA_HEAD'?'مسیر ثبت‌شده توسط شما':'ترتیب تعیین‌شده توسط مدیر منطقه')
+    :'برای امروز Route ثبت نشده است.';
+  const canSelf=!!state.data.canSelfRoute;
+  document.getElementById('selfRouteNav').classList.toggle('hidden',!canSelf);
+  document.getElementById('selfRouteMobileNav').classList.toggle('hidden',!canSelf);
+  document.getElementById('routeDelegatedBanner').classList.toggle('show',canSelf);
   renderActive();renderRoute();
 }
 
@@ -526,7 +577,8 @@ function statusAction(item){
   if(item.uiStatus==='IN_PROGRESS')return `<button class="action-btn continue" onclick="openChecklist('${esc(item.visit?.visitId||item.visitId||'')}')">ادامه بازدید</button>`;
   if(item.uiStatus==='WAITING_APPROVAL')return `<button class="action-btn wait" disabled>در انتظار تأیید</button>`;
   if(item.uiStatus==='WAITING_CORRECTION')return `<button class="action-btn wait" disabled>در انتظار اصلاح لوکیشن</button>`;
-  return `<button class="action-btn primary" onclick="openGps('${esc(item.storeCode)}','${esc(item.routeItemId)}',true,'')" ${hasOpen?'disabled':''}>شروع بازدید</button>`;
+  const reported=item.cannotVisit?`<span class="tag cannot-tag">عدم امکان بازدید اعلام شده</span>`:'';
+  return `<div class="action-stack"><button class="action-btn primary" onclick="openGps('${esc(item.storeCode)}','${esc(item.routeItemId)}',true,'')" ${hasOpen?'disabled':''}>شروع بازدید</button><button class="action-btn cannot" onclick="openCannotVisitModal('${esc(item.routeItemId)}','${esc(item.storeCode)}')" ${item.cannotVisit?'disabled':''}>${item.cannotVisit?'اطلاع داده شد':'امکان بازدید ندارم'}</button>${reported}</div>`;
 }
 
 function renderRoute(){
@@ -537,6 +589,45 @@ function renderRoute(){
     const gps=String(x.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="tag red">GPS نیازمند بررسی</span>':'';
     return `<div class="store-item ${cls}"><div class="seq">${x.sequenceNo||i+1}</div><div><div class="store-name">${esc(x.storeName)}</div><div class="store-code">کد ${esc(x.storeCode)}</div><div class="tags">${priorityTag(x)}${gps}${x.distanceFromPreviousM?`<span class="tag">${mText(x.distanceFromPreviousM)} از قبلی</span>`:''}</div></div><div class="store-action">${statusAction(x)}</div></div>`;
   }).join('');
+}
+
+
+function openCannotVisitModal(routeItemId,storeCode){
+  const item=(state.route.items||[]).find(x=>x.routeItemId===routeItemId);
+  if(!item)return;
+  if(item.uiStatus!=='NOT_STARTED'){toast('فقط قبل از شروع بازدید می‌توان عدم امکان مراجعه را اعلام کرد.','error');return;}
+  state.cannotVisitTarget={routeItemId,storeCode};
+  state.cannotVisitReason='';
+  document.getElementById('cannotVisitStoreSub').textContent=(item.storeName||storeCode)+' · کد '+storeCode;
+  document.getElementById('cannotVisitNote').value='';
+  const reasons=state.data.cannotVisitReasons||{};
+  document.getElementById('cannotReasonGrid').innerHTML=Object.keys(reasons).map(k=>`<button class="reason-option" data-reason="${esc(k)}" onclick="selectCannotReason('${esc(k)}',this)">${esc(reasons[k])}</button>`).join('');
+  document.getElementById('cannotVisitModal').classList.remove('hidden');
+}
+function closeCannotVisitModal(){document.getElementById('cannotVisitModal').classList.add('hidden');state.cannotVisitTarget=null;state.cannotVisitReason='';}
+function selectCannotReason(code,btn){
+  state.cannotVisitReason=code;
+  document.querySelectorAll('#cannotReasonGrid .reason-option').forEach(x=>x.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+async function submitCannotVisit(){
+  if(!state.cannotVisitTarget)return;
+  if(!state.cannotVisitReason){toast('دلیل عدم امکان بازدید را انتخاب کن.','error');return;}
+  const note=document.getElementById('cannotVisitNote').value.trim();
+  if(state.cannotVisitReason==='OTHER'&&!note){toast('برای گزینه «سایر» توضیح بنویس.','error');return;}
+  const btn=document.getElementById('cannotVisitSubmitBtn');btn.disabled=true;
+  try{
+    const res=await DMAuth.apiPost('reportCannotVisit',{
+      routeItemId:state.cannotVisitTarget.routeItemId,
+      reasonCode:state.cannotVisitReason,
+      note
+    },40000);
+    if(!res.success)throw new Error(res.message||'ارسال اطلاع ناموفق بود.');
+    closeCannotVisitModal();
+    toast(res.message||'به مدیر منطقه اطلاع داده شد.','success');
+    await reloadData();
+  }catch(e){toast(e.message||'خطا در ارسال اطلاع','error');}
+  finally{btn.disabled=false;}
 }
 
 function openGps(storeCode,routeItemId,planned,unplannedReason){
@@ -726,11 +817,16 @@ async function requestLocationCorrection(){
 /* ===== CHECKLIST ===== */
 function checklistLocalKey(visitId){return 'dmChecklistDraft:'+visitId;}
 function loadLocalChecklistDraft(visitId){
-  try{return JSON.parse(localStorage.getItem(checklistLocalKey(visitId))||'{}')||{};}catch(_){return {};}
+  try{
+    const raw=localStorage.getItem(checklistLocalKey(visitId));if(!raw)return null;
+    const parsed=JSON.parse(raw);
+    if(parsed&&parsed.answers)return parsed;
+    return {answers:parsed||{},notes:''}; // backward compatibility
+  }catch(_){return null;}
 }
 function saveLocalChecklistDraft(){
   if(!state.checklistVisitId)return;
-  try{localStorage.setItem(checklistLocalKey(state.checklistVisitId),JSON.stringify(state.checklistAnswers||{}));}catch(_){}
+  try{localStorage.setItem(checklistLocalKey(state.checklistVisitId),JSON.stringify({answers:state.checklistAnswers||{},notes:state.checklistNotes||''}));}catch(_){}
 }
 function clearLocalChecklistDraft(visitId){try{localStorage.removeItem(checklistLocalKey(visitId));}catch(_){}}
 
@@ -742,8 +838,9 @@ async function openChecklist(visitId){
     if(!res.success)throw new Error(res.message||'چک‌لیست دریافت نشد.');
     state.checklistVisitId=visitId;state.checklistData=res;
     const local=loadLocalChecklistDraft(visitId);
-    state.checklistAnswers=Object.assign({},res.answers||{},local||{});
-    state.checklistDirty=Object.keys(local||{}).some(k=>String(local[k]||'')!==String((res.answers||{})[k]||''));
+    state.checklistAnswers=Object.assign({},res.answers||{},local?.answers||{});
+    state.checklistNotes=local?.notes!=null?String(local.notes):String(res.visitNotes||'');
+    state.checklistDirty=Object.keys(local?.answers||{}).some(k=>String(local.answers[k]||'')!==String((res.answers||{})[k]||'')) || (local&&String(local.notes||'')!==String(res.visitNotes||''));
     document.getElementById('checklistStoreTitle').textContent=res.store?.storeName||'چک‌لیست فروشگاه';
     document.getElementById('checklistStoreSub').textContent='کد '+(res.store?.storeCode||'')+' · '+(res.readOnly?'بازدید تکمیل شده':'بازدید فعال');
     document.getElementById('checklistVisitId').textContent=visitId;
@@ -775,7 +872,9 @@ function renderChecklist(){
     qs.forEach(q=>{const sub=q.subsection||'سایر';if(!sm[sub]){sm[sub]=[];subs.push(sub);}sm[sub].push(q);});
     const answered=qs.filter(q=>state.checklistAnswers[q.questionId]).length;
     return `<section class="check-section" id="checksec-${safeDomId(section)}"><div class="check-section-head"><h3>${esc(section)}</h3><span>${answered} از ${qs.length} پاسخ داده شده</span></div><div class="check-subsection">${subs.map(sub=>`<div class="check-sub-title">${esc(sub)}</div>${sm[sub].map(q=>renderChecklistQuestion(q,readOnly)).join('')}`).join('')}</div></section>`;
-  }).join('');
+  }).join('')+`<section class="notes-card"><h4>توضیحات بازدید</h4><p>اگر نکته، مشکل یا موضوعی برای پیگیری وجود دارد اینجا بنویس. این بخش اختیاری است.</p><textarea id="visitNotesInput" ${readOnly?'disabled':''} maxlength="3000" placeholder="توضیحات بازدید...">${esc(state.checklistNotes||'')}</textarea></section>`;
+  const notesInput=document.getElementById('visitNotesInput');
+  if(notesInput&&!readOnly)notesInput.addEventListener('input',()=>{state.checklistNotes=notesInput.value;state.checklistDirty=true;saveLocalChecklistDraft();setChecklistSaveStatus('تغییرات هنوز روی سرور ذخیره نشده‌اند.','saving');if(state.checklistSaveTimer)clearTimeout(state.checklistSaveTimer);state.checklistSaveTimer=setTimeout(()=>saveChecklistDraft(false),1200);});
   document.getElementById('checklistSectionNav').innerHTML=sections.map(section=>{
     const qs=map[section];const complete=qs.every(q=>!q.required||state.checklistAnswers[q.questionId]);
     return `<button class="${complete?'complete':''}" onclick="scrollChecklistSection('${safeDomId(section)}',this)">${esc(section)} · ${qs.filter(q=>state.checklistAnswers[q.questionId]).length}/${qs.length}</button>`;
@@ -784,7 +883,7 @@ function renderChecklist(){
   document.getElementById('draftBtn').disabled=readOnly;
   document.getElementById('topDraftBtn').disabled=readOnly;
   if(readOnly)document.getElementById('checklistBottomInfo').textContent='این چک‌لیست قبلاً نهایی شده و فقط قابل مشاهده است.';
-  else document.getElementById('checklistBottomInfo').textContent='برای پایان بازدید باید به تمام ۲۱ سؤال پاسخ داده شود.';
+  else document.getElementById('checklistBottomInfo').textContent=`برای پایان بازدید باید به همه ${template.filter(q=>q.required).length} سؤال اجباری پاسخ داده شود. توضیحات انتهایی اختیاری است.`;
   updateChecklistProgress();
 }
 
@@ -795,12 +894,15 @@ function renderChecklistQuestion(q,readOnly){
   const buttons=options.map((opt,i)=>{
     let cls='';
     if(value===opt){
-      if(q.responseType==='YES_NO')cls=i===0?'yes':'no';
+      if(q.responseType==='ACHIEVEMENT')cls=opt==='محقق شده'?'great':'bad';
+      else if(q.responseType==='WASTE_RATE')cls=opt==='کمتر از نیم درصد'?'great':'bad';
+      else if(q.responseType==='YES_NO')cls=i===0?'yes':'no';
       else cls=i===0?'bad':i===1?'good':'great';
     }
     return `<button class="answer-btn ${value===opt?'selected '+cls:''}" ${readOnly?'disabled':''} onclick="setChecklistAnswer('${esc(q.questionId)}','${esc(opt)}')">${esc(opt)}</button>`;
   }).join('');
-  return `<div class="question-card" id="question-${esc(q.questionId)}"><div class="question-top"><div class="question-no">${q.sortOrder}</div><div><div class="question-text">${esc(q.questionText)}</div><div class="question-sub">${q.required?'پاسخ الزامی':'اختیاری'} · ${esc(q.responseType==='YES_NO'?'انجام شده / انجام نشده':'ضعیف / خوب / عالی')}</div></div></div><div class="answer-options ${two?'two':''}">${buttons}</div></div>`;
+  const typeLabel=q.responseType==='ACHIEVEMENT'?'محقق شده / محقق نشده':q.responseType==='WASTE_RATE'?'بالای نیم درصد / کمتر از نیم درصد':q.responseType==='YES_NO'?'انجام شده / انجام نشده':'ضعیف / خوب / عالی';
+  return `<div class="question-card" id="question-${esc(q.questionId)}"><div class="question-top"><div class="question-no">${q.sortOrder}</div><div><div class="question-text">${esc(q.questionText)}</div><div class="question-sub">${q.required?'پاسخ الزامی':'اختیاری'} · ${esc(typeLabel)}</div></div></div><div class="answer-options ${two?'two':''}">${buttons}</div></div>`;
 }
 
 function setChecklistAnswer(questionId,value){
@@ -829,7 +931,7 @@ async function saveChecklistDraft(showToast=false){
   if(!state.checklistVisitId||state.checklistData?.readOnly||state.checklistSaving)return;
   state.checklistSaving=true;setChecklistSaveStatus('در حال ذخیره پیش‌نویس...','saving');
   try{
-    const res=await DMAuth.apiPost('saveChecklistDraft',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{})},40000);
+    const res=await DMAuth.apiPost('saveChecklistDraft',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{}),visitNotes:state.checklistNotes||''},40000);
     if(!res.success)throw new Error(res.message||'ذخیره پیش‌نویس ناموفق بود.');
     state.checklistDirty=false;clearLocalChecklistDraft(state.checklistVisitId);setChecklistSaveStatus('پیش‌نویس ذخیره شد.','saved');
     if(showToast)toast('پیش‌نویس چک‌لیست ذخیره شد.','success');
@@ -853,9 +955,9 @@ async function finishChecklist(){
   if(!confirm('چک‌لیست نهایی شود و این بازدید پایان پیدا کند؟ پس از ثبت نهایی امکان ویرایش وجود ندارد.'))return;
   setLoading(true,'در حال ثبت نهایی و پایان بازدید...');
   try{
-    const res=await DMAuth.apiPost('completeChecklist',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{})},50000);
+    const res=await DMAuth.apiPost('completeChecklist',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{}),visitNotes:state.checklistNotes||''},50000);
     if(!res.success){if(res.code==='CHECKLIST_INCOMPLETE'){highlightMissingQuestions();}throw new Error(res.message||'ثبت نهایی ناموفق بود.');}
-    clearLocalChecklistDraft(state.checklistVisitId);state.checklistDirty=false;
+    clearLocalChecklistDraft(state.checklistVisitId);state.checklistDirty=false;state.checklistNotes='';
     document.getElementById('checklistMain').innerHTML=`<div class="checklist-complete-box"><div class="complete-icon">✓</div><h3>بازدید با موفقیت تکمیل شد</h3><p>چک‌لیست ثبت شد، زمان پایان بازدید ذخیره شد و وضعیت این فروشگاه در Route امروز به «تکمیل شده» تغییر کرد.</p><button class="btn primary" onclick="closeChecklist();reloadData()">بازگشت به برنامه امروز</button></div>`;
     document.getElementById('checklistSectionNav').innerHTML='';document.getElementById('checklistBottomInfo').textContent=`مدت بازدید: ${res.durationMinutes||0} دقیقه`;
     document.getElementById('finishChecklistBtn').disabled=true;document.getElementById('draftBtn').disabled=true;document.getElementById('topDraftBtn').disabled=true;setChecklistSaveStatus('ثبت نهایی انجام شد.','saved');
