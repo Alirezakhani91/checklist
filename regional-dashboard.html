@@ -83,6 +83,15 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 @media(max-width:1150px){.performance-kpis{grid-template-columns:repeat(2,1fr)}.performance-dark{grid-template-columns:230px 1fr}.performance-grid{grid-template-columns:1fr}}
 @media(max-width:820px){.performance-hero{display:block}.performance-hero h2{font-size:1.25rem}.performance-hero p{font-size:.75rem}.performance-periods{margin-top:12px}.performance-kpis{grid-template-columns:repeat(2,1fr);gap:8px}.performance-kpi{padding:13px;border-radius:15px}.performance-kpi strong{font-size:1.18rem}.performance-dark{grid-template-columns:1fr;padding:17px;border-radius:18px;gap:16px}.performance-minis{grid-template-columns:repeat(2,1fr)}.performance-grid{display:block}.performance-panel{margin-top:11px;border-radius:17px}.performance-panel-head{padding:14px}.performance-trend{height:220px;padding:13px}.performance-table{min-width:0}.performance-table thead{display:none}.performance-table,.performance-table tbody,.performance-table tr,.performance-table td{display:block;width:100%}.performance-table tr{padding:10px 12px;border-bottom:1px solid var(--line)}.performance-table td{border:0;padding:5px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.performance-table td:before{content:attr(data-label);font-size:.62rem;color:#8b929e}.performance-table .performance-name{display:block}.performance-table .performance-name:before,.performance-table .performance-action:before{display:none}.performance-table .performance-action{justify-content:flex-end}.mobile-bottom{grid-template-columns:repeat(7,1fr)}}
 
+
+.route-owner{margin:0 18px 14px;border:1px solid var(--line);border-radius:18px;padding:14px;background:#fafbfc}
+.route-owner-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.route-owner-head h4{margin:0;font-size:.82rem}.route-owner-head p{margin:4px 0 0;color:var(--muted);font-size:.65rem;line-height:1.7}
+.owner-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.owner-option{border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px;text-align:right;font-family:inherit;color:#424957}.owner-option strong{display:block;font-size:.76rem}.owner-option span{display:block;color:#7d8593;font-size:.61rem;margin-top:5px;line-height:1.7}.owner-option.active{border-color:#c90022;background:#fff5f7;box-shadow:0 0 0 2px rgba(201,0,34,.05)}.owner-option.active strong{color:#ad001d}
+.delegated-info{display:none;margin:0 18px 14px;padding:12px 14px;border-radius:14px;background:#eef5ff;border:1px solid #d9e7ff;color:#31558d;font-size:.69rem;line-height:1.8}.delegated-info.show{display:block}
+.cannot-panel{margin:0 18px 14px;border:1px solid #f0d8bb;background:#fffaf4;border-radius:18px;overflow:hidden}.cannot-panel.hidden-panel{display:none}.cannot-head{padding:13px 15px;border-bottom:1px solid #f4e5d2;display:flex;justify-content:space-between}.cannot-head h4{margin:0;font-size:.8rem}.cannot-head span{font-size:.62rem;color:#9c641f}.cannot-list{padding:9px 13px;display:grid;gap:7px}.cannot-row{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#fff;border:1px solid #f1e6d8;border-radius:13px;padding:10px}.cannot-row strong{font-size:.72rem}.cannot-row p{margin:4px 0 0;color:#7c6d5a;font-size:.61rem;line-height:1.7}.cannot-row button{border:0;background:#f0f2f5;color:#444b58;border-radius:10px;padding:8px 10px;font-family:inherit;font-weight:800;font-size:.62rem}
+.planner.manager-delegated .weekbar,.planner.manager-delegated .day-tabs,.planner.manager-delegated .workspace,.planner.manager-delegated .savebar{opacity:.55}
+@media(max-width:820px){.owner-options{grid-template-columns:1fr}.route-owner,.delegated-info,.cannot-panel{margin-left:10px;margin-right:10px}.cannot-row{display:block}.cannot-row button{width:100%;margin-top:8px}}
+
 </style>
 </head>
 <body>
@@ -121,7 +130,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
           <article class="overview-kpi"><div class="k-top"><div><strong id="ovOverdue">—</strong><div class="k-label">فروشگاه ۱۴+ روز بدون بازدید</div><div class="k-sub" id="ovWarns">— مورد در هشدار ۱۰/۱۲ روز</div></div><span class="k-icon red"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/><path d="M12 9v5M12 17h.01"/></svg></span></div></article>
           <article class="overview-kpi"><div class="k-top"><div><strong id="ovGpsPending">—</strong><div class="k-label">در انتظار تأیید GPS</div><div class="k-sub" id="ovGpsOverrides">— Override امروز</div></div><span class="k-icon amber"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z"/><circle cx="12" cy="10" r="2"/></svg></span></div></article>
           <article class="overview-kpi"><div class="k-top"><div><strong id="ovUnplanned">—</strong><div class="k-label">بازدید خارج برنامه امروز</div><div class="k-sub">ثبت‌شده توسط رؤسای ناحیه</div></div><span class="k-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></div></article>
-          <article class="overview-kpi"><div class="k-top"><div><strong id="ovWeak">—</strong><div class="k-label">پاسخ «ضعیف» امروز</div><div class="k-sub">در چک‌لیست‌های ثبت‌شده</div></div><span class="k-icon red"><svg viewBox="0 0 24 24"><path d="M4 18V9M10 18V5M16 18v-7M22 18H2"/></svg></span></div></article>
+          <article class="overview-kpi"><div class="k-top"><div><strong id="ovWeak">—</strong><div class="k-label">پاسخ نیازمند توجه امروز</div><div class="k-sub">در چک‌لیست‌های ثبت‌شده</div></div><span class="k-icon red"><svg viewBox="0 0 24 24"><path d="M4 18V9M10 18V5M16 18v-7M22 18H2"/></svg></span></div></article>
         </section>
 
         <section class="ops-strip">
@@ -132,7 +141,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
         <div class="overview-grid">
           <section class="overview-panel">
             <div class="overview-panel-head"><div><h3>پایش رؤسای ناحیه امروز</h3><p>افراد نیازمند توجه در ابتدای جدول نمایش داده می‌شوند.</p></div><span class="today-note" id="ovHeadsMeta">—</span></div>
-            <div class="head-table-wrap"><table class="head-table"><thead><tr><th>رئیس ناحیه</th><th>وضعیت امروز</th><th>برنامه</th><th>تکمیل</th><th>پیشرفت</th><th>۷ روز اخیر</th><th>ضعیف امروز</th><th>آخرین فعالیت</th><th></th></tr></thead><tbody id="overviewHeadsBody"></tbody></table></div>
+            <div class="head-table-wrap"><table class="head-table"><thead><tr><th>رئیس ناحیه</th><th>وضعیت امروز</th><th>برنامه</th><th>تکمیل</th><th>پیشرفت</th><th>۷ روز اخیر</th><th>نیازمند توجه</th><th>آخرین فعالیت</th><th></th></tr></thead><tbody id="overviewHeadsBody"></tbody></table></div>
           </section>
 
           <aside class="overview-panel">
@@ -147,7 +156,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
             <div class="trend-wrap"><div class="trend-chart" id="overviewTrend"></div></div>
           </section>
           <section class="overview-panel">
-            <div class="overview-panel-head"><div><h3>بیشترین پاسخ‌های ضعیف امروز</h3><p>برای شناسایی سریع نقاط مسئله‌دار چک‌لیست</p></div></div>
+            <div class="overview-panel-head"><div><h3>بیشترین پاسخ‌های نیازمند توجه</h3><p>برای شناسایی سریع نقاط مسئله‌دار چک‌لیست</p></div></div>
             <div class="weak-list" id="overviewWeakList"></div>
           </section>
         </div>
@@ -171,7 +180,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
           <article class="performance-kpi"><strong id="rpHeads">—%</strong><div class="pk-label">فعالیت رؤسای ناحیه</div><div class="pk-sub" id="rpHeadsSub">—</div></article>
           <article class="performance-kpi"><strong id="rpOverride">—%</strong><div class="pk-label">نرخ GPS Override</div><div class="pk-sub" id="rpOverrideSub">—</div></article>
           <article class="performance-kpi"><strong id="rpUnplanned">—%</strong><div class="pk-label">بازدید خارج برنامه</div><div class="pk-sub" id="rpUnplannedSub">—</div></article>
-          <article class="performance-kpi"><strong id="rpWeak">—%</strong><div class="pk-label">نرخ پاسخ ضعیف</div><div class="pk-sub" id="rpWeakSub">—</div></article>
+          <article class="performance-kpi"><strong id="rpWeak">—%</strong><div class="pk-label">نرخ موارد نیازمند توجه</div><div class="pk-sub" id="rpWeakSub">—</div></article>
           <article class="performance-kpi"><strong id="rpDuration">—</strong><div class="pk-label">میانگین مدت بازدید</div><div class="pk-sub">دقیقه</div></article>
         </section>
 
@@ -181,7 +190,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
             <div class="performance-mini"><strong id="rpPlanned">0</strong><span>بازدید برنامه‌ریزی‌شده</span></div>
             <div class="performance-mini"><strong id="rpCompleted">0</strong><span>کل بازدید تکمیل‌شده</span></div>
             <div class="performance-mini"><strong id="rpVisitedStores">0</strong><span>فروشگاه بازدیدشده</span></div>
-            <div class="performance-mini"><strong id="rpWeakCount">0</strong><span>پاسخ ضعیف</span></div>
+            <div class="performance-mini"><strong id="rpWeakCount">0</strong><span>نیازمند توجه</span></div>
           </div>
         </section>
 
@@ -191,14 +200,14 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
             <div class="performance-trend" id="regionalPerformanceTrend"></div>
           </section>
           <section class="performance-panel">
-            <div class="performance-panel-head"><div><h3>پرتکرارترین پاسخ‌های ضعیف</h3><p>موضوعات نیازمند پیگیری در چک‌لیست‌ها</p></div></div>
+            <div class="performance-panel-head"><div><h3>پرتکرارترین موارد نیازمند توجه</h3><p>موضوعات نیازمند پیگیری در چک‌لیست‌ها</p></div></div>
             <div class="performance-weak" id="regionalPerformanceWeak"></div>
           </section>
         </div>
 
         <section class="performance-panel">
           <div class="performance-panel-head"><div><h3>رتبه‌بندی رؤسای ناحیه</h3><p>برای مقایسه منصفانه، نرخ‌ها در کنار حجم عملیات نمایش داده شده‌اند.</p></div><div class="search"><input id="regionalPerfSearch" oninput="renderRegionalPerformanceHeads()" placeholder="جستجوی رئیس ناحیه..."></div></div>
-          <div class="performance-table-wrap"><table class="performance-table"><thead><tr><th>رتبه</th><th>رئیس ناحیه</th><th>امتیاز</th><th>برنامه</th><th>تکمیل</th><th>تحقق</th><th>میانگین روزانه</th><th>پوشش</th><th>خارج برنامه</th><th>Override</th><th>ضعیف</th><th>مدت</th><th></th></tr></thead><tbody id="regionalPerformanceBody"></tbody></table></div>
+          <div class="performance-table-wrap"><table class="performance-table"><thead><tr><th>رتبه</th><th>رئیس ناحیه</th><th>امتیاز</th><th>برنامه</th><th>تکمیل</th><th>تحقق</th><th>میانگین روزانه</th><th>پوشش</th><th>خارج برنامه</th><th>Override</th><th>نیازمند توجه</th><th>مدت</th><th></th></tr></thead><tbody id="regionalPerformanceBody"></tbody></table></div>
           <div class="performance-formula">امتیاز عملکرد = ۵۰٪ تحقق برنامه + ۲۰٪ فعالیت میدانی + ۲۰٪ پوشش فروشگاه‌ها + ۱۰٪ کیفیت چک‌لیست. Override و بازدید خارج برنامه برای پایش نمایش داده می‌شوند اما به‌صورت خودکار امتیاز را کم نمی‌کنند.</div>
         </section>
       </div>
@@ -222,6 +231,19 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
             <button class="btn btn-primary" id="smartBtn" onclick="suggestRoutes()"><svg viewBox="0 0 24 24"><path d="m12 3 1.8 4.6L18 9.4l-4.2 1.8L12 16l-1.8-4.8L6 9.4l4.2-1.8zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg>پیشنهاد هوشمند مسیر</button>
           </div>
         </div>
+
+        <div class="route-owner">
+          <div class="route-owner-head"><div><h4>مسئول مسیر‌بندی این رئیس ناحیه</h4><p>یکی از دو مدل را انتخاب کن. در حالت رئیس ناحیه، Guard چهارده‌روزه اجازه جا افتادن فروشگاه‌های سررسیدشده را نمی‌دهد.</p></div></div>
+          <div class="owner-options">
+            <button class="owner-option" id="ownerManagerBtn" onclick="setPlanningMode('REGIONAL_MANAGER')"><strong>مسیر‌بندی توسط مدیر منطقه</strong><span>همین Route Planner فعلی در اختیار شماست.</span></button>
+            <button class="owner-option" id="ownerAreaBtn" onclick="setPlanningMode('AREA_HEAD')"><strong>مسیر‌بندی توسط رئیس ناحیه</strong><span>رئیس ناحیه برنامه خودش را می‌چیند؛ SLA بازدید ۱۴ روزه اجباری کنترل می‌شود.</span></button>
+          </div>
+        </div>
+        <div class="delegated-info" id="delegatedInfo"><strong>مسیر‌بندی به رئیس ناحیه واگذار شده است.</strong> Routeهای ثبت‌شده را می‌بینی، اما برای جلوگیری از ویرایش همزمان، تا زمانی که حالت را به «مدیر منطقه» برنگردانی این Planner قابل ویرایش نیست.</div>
+        <section class="cannot-panel hidden-panel" id="cannotPanel">
+          <div class="cannot-head"><h4>اعلام‌های «امکان بازدید ندارم»</h4><span id="cannotCount">0 مورد باز</span></div>
+          <div class="cannot-list" id="cannotList"></div>
+        </section>
 
         <div class="weekbar">
           <div class="week-nav"><button onclick="shiftWeek(-7)" title="هفته قبل">›</button><button onclick="shiftWeek(7)" title="هفته بعد">‹</button></div>
@@ -377,7 +399,7 @@ const state={
   weekStartIso:'',todayIso:'',days:[],selectedDayIso:'',filter:'ALL',dirty:false,sourceType:'MANUAL',dragIndex:null,moveIndex:null,
   activeView:'overview',gpsMode:'approval',approvals:[],approvalFilter:'PENDING',approvalSummary:{pending:0,approved:0,rejected:0},decisionApprovalId:'',
   corrections:[],correctionFilter:'PENDING',correctionSummary:{pending:0,approved:0,rejected:0},correctionDecisionId:'',
-  overview:null,overviewLoaded:false,routeLoaded:false,performance:null,performanceLoaded:false,performancePeriodDays:7
+  overview:null,overviewLoaded:false,routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],performance:null,performanceLoaded:false,performancePeriodDays:7
 };
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -416,7 +438,7 @@ async function loadBootstrap(areaHeadId){
     const res=await DMAuth.apiPost('regionalBootstrap',{weekStartIso:state.weekStartIso,areaHeadUserId:areaHeadId||state.areaHeadId||''},35000);
     if(!res.success)throw new Error(res.message||'دریافت اطلاعات ناموفق بود.');
     state.summary=res.summary||{};state.settings=res.settings||state.settings;state.areaHeads=res.areaHeads||[];state.todayIso=res.todayIso||iso(new Date());
-    state.areaHeadId=res.selectedAreaHead?.userId||'';state.stores=res.selectedAreaHead?.stores||[];state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
+    state.areaHeadId=res.selectedAreaHead?.userId||'';state.stores=res.selectedAreaHead?.stores||[];state.planningMode=res.selectedAreaHead?.planningMode||'REGIONAL_MANAGER';state.cannotVisitNotices=res.selectedAreaHead?.cannotVisitNotices||[];state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
     state.days=(res.week?.days||[]).map((d,i)=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||''}));
     state.selectedDayIso=state.days.some(d=>d.dateIso===state.selectedDayIso)?state.selectedDayIso:(state.days[0]?.dateIso||'');
     state.dirty=false;state.sourceType='MANUAL';state.routeLoaded=true;
@@ -425,7 +447,7 @@ async function loadBootstrap(areaHeadId){
   finally{setLoading(false);}
 }
 
-function renderAll(){renderSummary();renderAreaHeads();renderWeek();renderDays();renderRoute();renderStorePool();renderSaveState();}
+function renderAll(){renderSummary();renderAreaHeads();renderPlanningMode();renderCannotVisitNotices();renderWeek();renderDays();renderRoute();renderStorePool();renderSaveState();}
 function renderSummary(){
   document.getElementById('statHeads').textContent=state.summary.areaHeads??0;
   document.getElementById('statStores').textContent=state.summary.stores??0;
@@ -436,7 +458,47 @@ function renderSummary(){
 }
 function renderAreaHeads(){
   const sel=document.getElementById('areaHeadSelect');
-  sel.innerHTML=state.areaHeads.map(a=>`<option value="${esc(a.userId)}" ${a.userId===state.areaHeadId?'selected':''}>${esc(a.fullName)} · ${a.storeCount} فروشگاه</option>`).join('');
+  sel.innerHTML=state.areaHeads.map(a=>`<option value="${esc(a.userId)}" ${a.userId===state.areaHeadId?'selected':''}>${esc(a.fullName)} · ${a.storeCount} فروشگاه${a.planningMode==='AREA_HEAD'?' · مسیر با رئیس ناحیه':''}${a.cannotVisitOpen?` · ⚠ ${a.cannotVisitOpen} اعلام`:''}</option>`).join('');
+}
+function managerCanEditRoutes(){return state.planningMode!=='AREA_HEAD';}
+function renderPlanningMode(){
+  const delegated=state.planningMode==='AREA_HEAD';
+  document.getElementById('ownerManagerBtn').classList.toggle('active',!delegated);
+  document.getElementById('ownerAreaBtn').classList.toggle('active',delegated);
+  document.getElementById('delegatedInfo').classList.toggle('show',delegated);
+  document.querySelector('#routeView .planner')?.classList.toggle('manager-delegated',delegated);
+  const save=document.getElementById('saveBtn'),smart=document.getElementById('smartBtn');
+  if(save)save.disabled=delegated;if(smart)smart.disabled=delegated;
+}
+async function setPlanningMode(mode){
+  if(!state.areaHeadId)return;
+  if(mode===state.planningMode)return;
+  const msg=mode==='AREA_HEAD'
+    ?'مسیر‌بندی به رئیس ناحیه واگذار شود؟ از این پس خودش Route را می‌چیند و سیستم پوشش ۱۴ روزه را کنترل می‌کند.'
+    :'مسیر‌بندی دوباره در اختیار مدیر منطقه قرار بگیرد؟';
+  if(!confirm(msg))return;
+  setLoading(true,'در حال تغییر مسئول مسیر‌بندی...');
+  try{
+    const r=await DMAuth.apiPost('setRoutePlanningMode',{areaHeadUserId:state.areaHeadId,mode},40000);
+    if(!r.success)throw new Error(r.message||'تغییر حالت ناموفق بود.');
+    toast(r.message||'حالت مسیر‌بندی تغییر کرد.','success');
+    await loadBootstrap(state.areaHeadId);
+  }catch(e){toast(e.message||'خطا در تغییر حالت مسیر‌بندی','error')}
+  finally{setLoading(false)}
+}
+function renderCannotVisitNotices(){
+  const a=state.cannotVisitNotices||[],panel=document.getElementById('cannotPanel'),list=document.getElementById('cannotList');
+  panel.classList.toggle('hidden-panel',!a.length);
+  document.getElementById('cannotCount').textContent=a.length+' مورد باز';
+  list.innerHTML=a.map(x=>`<div class="cannot-row"><div><strong>فروشگاه ${esc(x.storeCode)} · ${esc(x.reasonLabel||'عدم امکان بازدید')}</strong><p>${x.note?esc(x.note)+' · ':''}${x.reportedAt?faDateTimeRegional(x.reportedAt):''}${x.status==='ACKNOWLEDGED'?' · بررسی شده':''}</p></div>${x.status==='REPORTED'?`<button onclick="ackCannotVisit('${esc(x.exceptionId)}')">بررسی شد</button>`:'<span class="tag green">بررسی شده</span>'}</div>`).join('');
+}
+function faDateTimeRegional(v){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(v));}catch(_){return v||''}}
+async function ackCannotVisit(exceptionId){
+  try{
+    const r=await DMAuth.apiPost('regionalResolveCannotVisit',{exceptionId},35000);
+    if(!r.success)throw new Error(r.message||'ثبت بررسی ناموفق بود.');
+    toast(r.message||'بررسی شد.','success');await loadBootstrap(state.areaHeadId);
+  }catch(e){toast(e.message||'خطا','error')}
 }
 function renderWeek(){
   if(!state.weekStartIso)return;const start=parseIso(state.weekStartIso),end=addDays(start,6);
@@ -507,6 +569,7 @@ function renderStorePool(){
 }
 function setFilter(f){state.filter=f;document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));renderStorePool();}
 function addStore(code){
+  if(!managerCanEditRoutes()){toast('مسیر‌بندی این رئیس ناحیه به خودش واگذار شده است.','error');return;}
   const d=selectedDay(),s=state.storeMap[code];
   if(!d||!s||d.items.some(x=>x.storeCode===code))return;
   if(isPastDay(d)){toast('برنامه روز گذشته قابل تغییر نیست.','error');return;}
@@ -516,6 +579,7 @@ function addStore(code){
   if(d.items.length>state.settings.dailyMax)toast('تعداد بازدید این روز از استاندارد روزانه بیشتر شد. ثبت همچنان مجاز است.');
 }
 function removeItem(i){
+  if(!managerCanEditRoutes()){toast('مسیر‌بندی این رئیس ناحیه به خودش واگذار شده است.','error');return;}
   const d=selectedDay(),item=d?.items?.[i];
   if(!d||!item)return;
   if(isPastDay(d)){toast('برنامه روز گذشته قابل تغییر نیست.','error');return;}
@@ -523,6 +587,7 @@ function removeItem(i){
   d.items.splice(i,1);recalcDistances(d);markDirty('MANUAL');renderDays();renderRoute();renderStorePool();
 }
 function moveItem(i,delta){
+  if(!managerCanEditRoutes())return;
   const d=selectedDay(),j=i+delta;
   if(!d||isPastDay(d)||j<0||j>=d.items.length)return;
   if(itemIsLocked(d.items[i])||itemIsLocked(d.items[j])){toast('بازدید شروع‌شده در جای خود قفل است.','error');return;}
@@ -530,6 +595,7 @@ function moveItem(i,delta){
   recalcDistances(d);markDirty('MANUAL');renderRoute();
 }
 function dragStart(e,i){
+  if(!managerCanEditRoutes()){e.preventDefault();return;}
   const d=selectedDay();
   if(!d||isPastDay(d)||itemIsLocked(d.items[i])){e.preventDefault();return;}
   state.dragIndex=i;e.currentTarget.classList.add('dragging');setTimeout(()=>e.currentTarget.classList.remove('dragging'),300);
@@ -543,6 +609,7 @@ function dropItem(e,target){
   recalcDistances(d);markDirty('MANUAL');renderRoute();
 }
 function openMoveModal(i){
+  if(!managerCanEditRoutes()){toast('مسیر‌بندی به رئیس ناحیه واگذار شده است.','error');return;}
   const source=selectedDay();if(!source||isPastDay(source))return;
   const item=source.items[i];if(!item)return;
   if(itemIsLocked(item)){toast('فروشگاهی که بازدیدش شروع شده قابل انتقال نیست.','error');return;}
@@ -569,6 +636,7 @@ function confirmMove(targetIso){
 }
 function recalcDistances(d){d.items.forEach((x,i)=>x.distanceFromPreviousM=i?Math.round(distanceM(d.items[i-1],x)):0);}
 function clearSelectedDay(){
+  if(!managerCanEditRoutes()){toast('مسیر‌بندی به رئیس ناحیه واگذار شده است.','error');return;}
   const d=selectedDay();if(!d)return;
   if(isPastDay(d)){toast('برنامه روز گذشته قابل تغییر نیست.','error');return;}
   const locked=d.items.filter(itemIsLocked),editable=d.items.filter(x=>!itemIsLocked(x));
@@ -578,6 +646,7 @@ function clearSelectedDay(){
   d.items=locked;recalcDistances(d);markDirty('MANUAL');renderDays();renderRoute();renderStorePool();
 }
 function optimizeSelectedDay(){
+  if(!managerCanEditRoutes()){toast('مسیر‌بندی به رئیس ناحیه واگذار شده است.','error');return;}
   const d=selectedDay();if(!d||d.items.length<3)return;
   if(isPastDay(d)){toast('برنامه روز گذشته قابل بازچینی نیست.','error');return;}
   if(hasLockedItems(d)){toast('برای حفظ ترتیب بازدیدهای شروع‌شده، بهینه‌سازی خودکار این روز غیرفعال است؛ فروشگاه‌های شروع‌نشده را دستی جابه‌جا کن.','error');return;}
@@ -591,8 +660,8 @@ function optimizeSelectedDay(){
   toast(flagged.length?'مسیر با مختصات معتبر بازچینی شد؛ فروشگاه‌های GPS مشکوک در انتها نگه داشته شدند.':'ترتیب این روز بر اساس نزدیکی جغرافیایی بازچینی شد.','success');
 }
 
-async function suggestRoutes(){if(!state.areaHeadId)return;setLoading(true,'در حال ساخت Route پیشنهادی...');try{const res=await DMAuth.apiPost('suggestWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,targetDaily:state.settings.dailyTarget||4},35000);if(!res.success)throw new Error(res.message||'ساخت Route ناموفق بود.');const byDate={};state.days.forEach(d=>byDate[d.dateIso]=d);res.days.forEach(sd=>{const d=byDate[sd.dateIso];if(!d)return;if(isPastDay(d)||hasLockedItems(d))return;d.items=(sd.items||[]).map(x=>Object.assign({},state.storeMap[x.storeCode]||{},x,{locked:false,visitId:''}));recalcDistances(d);});state.sourceType='SMART';state.dirty=true;renderDays();renderRoute();renderStorePool();renderSaveState();toast('Route پیشنهادی هفته ساخته شد؛ می‌توانی قبل از ثبت هر بخش را تغییر بدهی.','success');}catch(e){toast(e.message||'خطا در ساخت Route','error');}finally{setLoading(false);}}
-async function saveWeek(){if(!state.areaHeadId)return;const plan=state.days.map((d,i)=>({dateIso:d.dateIso,dateFa:faDateLong(d.dateIso),storeCodes:d.items.map(x=>x.storeCode)}));const low=plan.filter(x=>x.storeCodes.length<state.settings.dailyMin).length,high=plan.filter(x=>x.storeCodes.length>state.settings.dailyMax).length;if((low||high)&&!confirm(`در ${low+high} روز تعداد بازدید خارج از استاندارد ۳ تا ۵ است. با همین برنامه ثبت شود؟`))return;setLoading(true,'در حال ثبت برنامه هفتگی...');try{const res=await DMAuth.apiPost('saveWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,sourceType:state.sourceType,planJson:JSON.stringify(plan)},45000);if(!res.success)throw new Error(res.message||'ثبت برنامه ناموفق بود.');state.dirty=false;renderSaveState();toast(res.message||'برنامه ثبت شد؛ بازدیدهای شروع‌شده بدون تغییر حفظ شدند.','success');await loadBootstrap(state.areaHeadId);}catch(e){toast(e.message||'خطا در ثبت برنامه','error');}finally{setLoading(false);}}
+async function suggestRoutes(){if(!managerCanEditRoutes()){toast('مسیر‌بندی این رئیس ناحیه به خودش واگذار شده است.','error');return;}if(!state.areaHeadId)return;setLoading(true,'در حال ساخت Route پیشنهادی...');try{const res=await DMAuth.apiPost('suggestWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,targetDaily:state.settings.dailyTarget||4},35000);if(!res.success)throw new Error(res.message||'ساخت Route ناموفق بود.');const byDate={};state.days.forEach(d=>byDate[d.dateIso]=d);res.days.forEach(sd=>{const d=byDate[sd.dateIso];if(!d)return;if(isPastDay(d)||hasLockedItems(d))return;d.items=(sd.items||[]).map(x=>Object.assign({},state.storeMap[x.storeCode]||{},x,{locked:false,visitId:''}));recalcDistances(d);});state.sourceType='SMART';state.dirty=true;renderDays();renderRoute();renderStorePool();renderSaveState();toast('Route پیشنهادی هفته ساخته شد؛ می‌توانی قبل از ثبت هر بخش را تغییر بدهی.','success');}catch(e){toast(e.message||'خطا در ساخت Route','error');}finally{setLoading(false);}}
+async function saveWeek(){if(!state.areaHeadId)return;if(!managerCanEditRoutes()){toast('برای ویرایش Route ابتدا مسیر‌بندی را به مدیر منطقه برگردانید.','error');return;}const plan=state.days.map((d,i)=>({dateIso:d.dateIso,dateFa:faDateLong(d.dateIso),storeCodes:d.items.map(x=>x.storeCode)}));const low=plan.filter(x=>x.storeCodes.length<state.settings.dailyMin).length,high=plan.filter(x=>x.storeCodes.length>state.settings.dailyMax).length;if((low||high)&&!confirm(`در ${low+high} روز تعداد بازدید خارج از استاندارد ۳ تا ۵ است. با همین برنامه ثبت شود؟`))return;setLoading(true,'در حال ثبت برنامه هفتگی...');try{const res=await DMAuth.apiPost('saveWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,sourceType:state.sourceType,planJson:JSON.stringify(plan)},45000);if(!res.success)throw new Error(res.message||'ثبت برنامه ناموفق بود.');state.dirty=false;renderSaveState();toast(res.message||'برنامه ثبت شد؛ بازدیدهای شروع‌شده بدون تغییر حفظ شدند.','success');await loadBootstrap(state.areaHeadId);}catch(e){toast(e.message||'خطا در ثبت برنامه','error');}finally{setLoading(false);}}
 async function changeAreaHead(id){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟')){renderAreaHeads();return;}state.areaHeadId=id;await loadBootstrap(id);}
 async function shiftWeek(n){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟'))return;state.weekStartIso=iso(addDays(parseIso(state.weekStartIso),n));state.selectedDayIso='';await loadBootstrap(state.areaHeadId);}
 async function goCurrentWeek(){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟'))return;state.weekStartIso=iso(saturdayStart(new Date()));state.selectedDayIso='';await loadBootstrap(state.areaHeadId);}
@@ -675,7 +744,7 @@ function renderOverviewTrend(rows){
 
 function renderOverviewWeak(rows){
   const el=document.getElementById('overviewWeakList');
-  if(!rows.length){el.innerHTML='<div class="overview-empty"><strong>پاسخ ضعیفی ثبت نشده</strong>برای بازدیدهای امروز مورد «ضعیف» نداریم.</div>';return;}
+  if(!rows.length){el.innerHTML='<div class="overview-empty"><strong>مورد نیازمند توجهی ثبت نشده</strong>برای بازدیدهای امروز مورد نیازمند توجه نداریم.</div>';return;}
   el.innerHTML=rows.map(x=>`<div class="weak-card"><div><div class="weak-question">${esc(x.questionText||x.questionId)}</div><div class="weak-section">${esc(x.section||'چک‌لیست')}</div></div><span class="weak-count">${x.count||0}</span></div>`).join('');
 }
 
@@ -753,7 +822,7 @@ function renderRegionalPerformanceTrend(rows){
 
 function renderRegionalPerformanceWeak(rows){
   const el=document.getElementById('regionalPerformanceWeak');
-  if(!rows.length){el.innerHTML='<div class="overview-empty"><strong>پاسخ ضعیفی ثبت نشده</strong>در این دوره موردی وجود ندارد.</div>';return;}
+  if(!rows.length){el.innerHTML='<div class="overview-empty"><strong>مورد نیازمند توجهی ثبت نشده</strong>در این دوره موردی وجود ندارد.</div>';return;}
   el.innerHTML=rows.map(x=>`<div class="performance-weak-row"><div><strong>${esc(x.questionText||x.questionId)}</strong><span>${esc(x.section||'چک‌لیست')}</span></div><div class="performance-weak-count">${x.count||0}</div></div>`).join('');
 }
 
@@ -762,7 +831,7 @@ function renderRegionalPerformanceHeads(){
   const arr=(state.performance?.areaHeads||[]).filter(h=>!q||String(h.fullName).toLowerCase().includes(q)||String(h.userId).toLowerCase().includes(q));
   const body=document.getElementById('regionalPerformanceBody');
   if(!arr.length){body.innerHTML='<tr><td colspan="13" class="overview-empty">رئیس ناحیه‌ای پیدا نشد.</td></tr>';return;}
-  body.innerHTML=arr.map(h=>`<tr><td data-label="رتبه"><div class="performance-rank ${h.rank<=3?'top':''}">${h.rank}</div></td><td class="performance-name" data-label="رئیس ناحیه"><strong>${esc(h.fullName)}</strong><span>${h.storeCount} فروشگاه</span></td><td data-label="امتیاز"><span class="performance-score ${regionalScoreClass(h.performanceScore)}">${h.performanceScore}</span></td><td data-label="برنامه">${h.planned}</td><td data-label="تکمیل">${h.completedPlanned}</td><td data-label="تحقق">${h.completionRate}%</td><td data-label="میانگین روزانه">${h.avgDailyVisits}</td><td data-label="پوشش">${h.coverageRate}%</td><td data-label="خارج برنامه">${h.unplannedRate}%</td><td data-label="Override">${h.overrideRate}%</td><td data-label="ضعیف">${h.weakRate}%</td><td data-label="مدت">${h.avgDuration} دقیقه</td><td class="performance-action"><button class="performance-route-btn" onclick="openAreaHeadRoute('${esc(h.userId)}')">Route</button></td></tr>`).join('');
+  body.innerHTML=arr.map(h=>`<tr><td data-label="رتبه"><div class="performance-rank ${h.rank<=3?'top':''}">${h.rank}</div></td><td class="performance-name" data-label="رئیس ناحیه"><strong>${esc(h.fullName)}</strong><span>${h.storeCount} فروشگاه</span></td><td data-label="امتیاز"><span class="performance-score ${regionalScoreClass(h.performanceScore)}">${h.performanceScore}</span></td><td data-label="برنامه">${h.planned}</td><td data-label="تکمیل">${h.completedPlanned}</td><td data-label="تحقق">${h.completionRate}%</td><td data-label="میانگین روزانه">${h.avgDailyVisits}</td><td data-label="پوشش">${h.coverageRate}%</td><td data-label="خارج برنامه">${h.unplannedRate}%</td><td data-label="Override">${h.overrideRate}%</td><td data-label="نیازمند توجه">${h.weakRate}%</td><td data-label="مدت">${h.avgDuration} دقیقه</td><td class="performance-action"><button class="performance-route-btn" onclick="openAreaHeadRoute('${esc(h.userId)}')">Route</button></td></tr>`).join('');
 }
 
 async function switchView(view){
