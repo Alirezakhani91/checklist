@@ -374,7 +374,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 const DAY_NAMES=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنج‌شنبه','جمعه'];
 const state={
   user:null,summary:null,settings:{dailyMin:3,dailyTarget:4,dailyMax:5},areaHeads:[],areaHeadId:'',stores:[],storeMap:{},
-  weekStartIso:'',days:[],selectedDayIso:'',filter:'ALL',dirty:false,sourceType:'MANUAL',dragIndex:null,moveIndex:null,
+  weekStartIso:'',todayIso:'',days:[],selectedDayIso:'',filter:'ALL',dirty:false,sourceType:'MANUAL',dragIndex:null,moveIndex:null,
   activeView:'overview',gpsMode:'approval',approvals:[],approvalFilter:'PENDING',approvalSummary:{pending:0,approved:0,rejected:0},decisionApprovalId:'',
   corrections:[],correctionFilter:'PENDING',correctionSummary:{pending:0,approved:0,rejected:0},correctionDecisionId:'',
   overview:null,overviewLoaded:false,routeLoaded:false,performance:null,performanceLoaded:false,performancePeriodDays:7
@@ -415,7 +415,7 @@ async function loadBootstrap(areaHeadId){
   try{
     const res=await DMAuth.apiPost('regionalBootstrap',{weekStartIso:state.weekStartIso,areaHeadUserId:areaHeadId||state.areaHeadId||''},35000);
     if(!res.success)throw new Error(res.message||'دریافت اطلاعات ناموفق بود.');
-    state.summary=res.summary||{};state.settings=res.settings||state.settings;state.areaHeads=res.areaHeads||[];
+    state.summary=res.summary||{};state.settings=res.settings||state.settings;state.areaHeads=res.areaHeads||[];state.todayIso=res.todayIso||iso(new Date());
     state.areaHeadId=res.selectedAreaHead?.userId||'';state.stores=res.selectedAreaHead?.stores||[];state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
     state.days=(res.week?.days||[]).map((d,i)=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||''}));
     state.selectedDayIso=state.days.some(d=>d.dateIso===state.selectedDayIso)?state.selectedDayIso:(state.days[0]?.dateIso||'');
@@ -445,10 +445,18 @@ function renderWeek(){
 function dayCountClass(n){if(n>=state.settings.dailyMin&&n<=state.settings.dailyMax)return'ok';if(n>state.settings.dailyMax)return'high';return'low';}
 function renderDays(){
   const tabs=document.getElementById('dayTabs');
-  tabs.innerHTML=state.days.map((d,i)=>`<button class="day-tab ${d.dateIso===state.selectedDayIso?'active':''} ${dayCountClass(d.items.length)} ${isDayLocked(d)?'locked':''}" onclick="selectDay('${d.dateIso}')"><div class="day-name">${DAY_NAMES[i]||''}</div><div class="day-date">${faDateShort(d.dateIso)}</div><span class="day-count">${d.items.length} بازدید</span></button>`).join('');
+  tabs.innerHTML=state.days.map((d,i)=>{
+    const past=isPastDay(d),started=hasLockedItems(d);
+    return `<button class="day-tab ${d.dateIso===state.selectedDayIso?'active':''} ${dayCountClass(d.items.length)} ${past?'locked':''}" onclick="selectDay('${d.dateIso}')"><div class="day-name">${DAY_NAMES[i]||''}</div><div class="day-date">${faDateShort(d.dateIso)}</div><span class="day-count">${d.items.length} بازدید${started&&!past?' · درحال اجرا':''}</span></button>`;
+  }).join('');
 }
 function selectedDay(){return state.days.find(d=>d.dateIso===state.selectedDayIso)||null;}
-function isDayLocked(d){return !!(d&&d.items&&d.items.some(x=>x.locked||String(x.visitId||'').trim()));}
+function itemIsLocked(item){return !!(item&&(item.locked||String(item.visitId||'').trim()));}
+function hasLockedItems(d){return !!(d&&d.items&&d.items.some(itemIsLocked));}
+function isPastDay(d){return !!(d&&state.todayIso&&String(d.dateIso)<String(state.todayIso));}
+// Legacy name kept for compatibility. A whole day is read-only only when it is in the past.
+// Today remains editable even after some visits have started.
+function isDayLocked(d){return isPastDay(d);}
 function selectDay(dateIso){state.selectedDayIso=dateIso;renderDays();renderRoute();renderStorePool();}
 function statusTag(item){
   const level=item.priorityLevel||'NORMAL';
@@ -460,46 +468,90 @@ function statusTag(item){
 }
 function renderRoute(){
   const d=selectedDay();if(!d)return;
-  const idx=state.days.indexOf(d),locked=isDayLocked(d);
+  const idx=state.days.indexOf(d),past=isPastDay(d),started=hasLockedItems(d);
   document.getElementById('routeTitle').textContent=`Route ${DAY_NAMES[idx]} · ${faDateShort(d.dateIso)}`;
-  document.getElementById('routeSubtitle').textContent=locked?'این Route شروع شده و فقط قابل مشاهده است.':`${d.items.length} فروشگاه در برنامه این روز`;
-  const status=document.getElementById('routeStatus'),txt=document.getElementById('routeStatusText');status.className='route-status '+dayCountClass(d.items.length);
-  if(locked)txt.innerHTML='<span class="lock-note">🔒 Route شروع شده و قفل است</span>';
+
+  if(past) document.getElementById('routeSubtitle').textContent='این روز گذشته و فقط قابل مشاهده است.';
+  else if(started) document.getElementById('routeSubtitle').textContent='برنامه امروز قابل ویرایش است؛ فقط فروشگاه‌هایی که بازدیدشان شروع شده قفل می‌مانند.';
+  else document.getElementById('routeSubtitle').textContent=`${d.items.length} فروشگاه در برنامه این روز`;
+
+  const status=document.getElementById('routeStatus'),txt=document.getElementById('routeStatusText');
+  status.className='route-status '+dayCountClass(d.items.length);
+
+  if(past) txt.innerHTML='<span class="lock-note">🔒 برنامه روز گذشته قابل تغییر نیست</span>';
+  else if(started) txt.innerHTML='<span class="lock-note">🔒 بازدیدهای شروع‌شده قفل‌اند · فروشگاه‌های باقی‌مانده را می‌توانی اضافه، حذف یا جابه‌جا کنی</span>';
   else if(d.items.length<state.settings.dailyMin)txt.innerHTML=`<strong>${d.items.length} بازدید</strong> · کمتر از استاندارد روزانه ${state.settings.dailyMin} تا ${state.settings.dailyMax} فروشگاه`;
   else if(d.items.length>state.settings.dailyMax)txt.innerHTML=`<strong>${d.items.length} بازدید</strong> · بیشتر از استاندارد روزانه؛ ثبت مجاز است ولی بهتر است بررسی شود.`;
   else txt.innerHTML=`<strong>${d.items.length} بازدید</strong> · تعداد بازدید این روز در محدوده استاندارد است.`;
+
   const list=document.getElementById('routeList');
-  if(!d.items.length){list.innerHTML=`<div class="empty-route"><div><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0-3 3"/></svg><strong>برای این روز هنوز Route نداریم</strong><span>از فروشگاه‌های سمت چپ/پایین اضافه کن یا پیشنهاد هوشمند مسیر را بزن.</span></div></div>`;return;}
+  if(!d.items.length){
+    list.innerHTML=`<div class="empty-route"><div><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0-3 3"/></svg><strong>برای این روز هنوز Route نداریم</strong><span>از فروشگاه‌های سمت چپ/پایین اضافه کن یا Route پیشنهادی بساز.</span></div></div>`;
+    return;
+  }
+
   list.innerHTML=d.items.map((item,i)=>{
-    const itemLocked=locked||item.locked;
+    const prev=i?d.items[i-1]:null,dist=i?distanceText(item.distanceFromPreviousM||distanceM(prev,item)):'شروع Route';
     const loc=String(item.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="tag red">GPS نیازمند بررسی</span>':'';
-    const dist=i>0?`<span class="tag gray">${distanceText(item.distanceFromPreviousM||distanceM(d.items[i-1],item))} از قبلی</span>`:'';
-    return `<div class="route-item ${itemLocked?'route-locked':''}" draggable="${!itemLocked}" data-index="${i}" ondragstart="dragStart(event,${i})" ondragover="event.preventDefault()" ondrop="dropItem(event,${i})"><div class="seq">${i+1}</div><div class="route-info"><div class="route-name">${esc(item.storeName)}</div><div class="route-code">کد ${esc(item.storeCode)}</div><div class="route-meta">${statusTag(item)}${dist}${loc}${itemLocked?'<span class="tag gray">قفل شده</span>':''}</div></div><div class="route-tools"><button class="tool" title="بالا" onclick="moveItem(${i},-1)" ${i===0||itemLocked?'disabled':''}><svg viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg></button><button class="tool" title="پایین" onclick="moveItem(${i},1)" ${i===d.items.length-1||itemLocked?'disabled':''}><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button><button class="tool move-day-btn" title="انتقال به روز دیگر" onclick="openMoveModal(${i})" ${itemLocked?'disabled':''}><svg viewBox="0 0 24 24"><path d="M4 12h13M13 7l5 5-5 5"/></svg></button><button class="tool remove" title="حذف" onclick="removeItem(${i})" ${itemLocked?'disabled':''}><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M7 6l1 14h8l1-14"/></svg></button></div></div>`;
+    const itemLocked=past||itemIsLocked(item);
+    return `<div class="route-item ${itemLocked?'route-locked':''}" draggable="${!itemLocked}" data-index="${i}" ondragstart="dragStart(event,${i})" ondragover="event.preventDefault()" ondrop="dropItem(event,${i})"><div class="seq">${i+1}</div><div class="route-info"><div class="route-name">${esc(item.storeName)}</div><div class="route-code">کد ${esc(item.storeCode)}</div><div class="route-meta">${statusTag(item)}${dist?`<span class="tag gray">${dist}</span>`:''}${loc}${itemLocked?'<span class="tag gray">بازدید شروع شده · قفل</span>':''}</div></div><div class="route-tools"><button class="tool" title="بالا" onclick="moveItem(${i},-1)" ${i===0||itemLocked||itemIsLocked(d.items[i-1])?'disabled':''}><svg viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg></button><button class="tool" title="پایین" onclick="moveItem(${i},1)" ${i===d.items.length-1||itemLocked||itemIsLocked(d.items[i+1])?'disabled':''}><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button><button class="tool move-day-btn" title="انتقال به روز دیگر" onclick="openMoveModal(${i})" ${itemLocked?'disabled':''}><svg viewBox="0 0 24 24"><path d="M4 12h13M13 7l5 5-5 5"/></svg></button><button class="tool remove" title="حذف" onclick="removeItem(${i})" ${itemLocked?'disabled':''}><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M7 6l1 14h8l1-14"/></svg></button></div></div>`;
   }).join('');
 }
 function renderStorePool(){
   const d=selectedDay();if(!d)return;const q=toEn(document.getElementById('storeSearch').value).toLowerCase();const today=new Set(d.items.map(x=>x.storeCode));
   let arr=state.stores.filter(s=>{const hay=(s.storeCode+' '+s.storeName).toLowerCase();if(q&&!hay.includes(q))return false;if(state.filter==='LOCATION')return String(s.locationStatus||'OK').toUpperCase()!=='OK';if(state.filter!=='ALL')return s.priorityLevel===state.filter;return true;});
   arr.sort((a,b)=>priorityRank(b.priorityLevel)-priorityRank(a.priorityLevel)||Number(b.daysSinceLastVisit||0)-Number(a.daysSinceLastVisit||0)||String(a.storeName).localeCompare(String(b.storeName),'fa'));
-  document.getElementById('poolSub').textContent=`${state.stores.length} فروشگاه · تکرار فروشگاه در روزهای مختلف مجاز است.`;
+  document.getElementById('poolSub').textContent=isPastDay(d)?'برنامه روز گذشته فقط قابل مشاهده است.':`${state.stores.length} فروشگاه · برنامه امروز حتی بعد از شروع بازدید قابل اصلاح است.`;
   const list=document.getElementById('storeList');
-  list.innerHTML=arr.length?arr.map(s=>`<div class="store-card"><div><h5>${esc(s.storeName)}</h5><p>کد ${esc(s.storeCode)} · ${esc(s.priorityLabel||'')}</p><div class="route-meta">${statusTag(s)}${String(s.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="tag red">GPS مشکوک</span>':''}<span class="tag gray">۷ روز: ${s.visits7||0} بازدید</span></div></div>${today.has(s.storeCode)?'<span class="already">در Route امروز</span>':`<button class="add" onclick="addStore('${esc(s.storeCode)}')">+</button>`}</div>`).join(''):'<div class="empty-route" style="min-height:150px"><div><strong>فروشگاهی پیدا نشد</strong><span>فیلتر یا عبارت جستجو را تغییر بده.</span></div></div>';
+  list.innerHTML=arr.length?arr.map(s=>`<div class="store-card"><div><h5>${esc(s.storeName)}</h5><p>کد ${esc(s.storeCode)} · ${esc(s.priorityLabel||'')}</p><div class="route-meta">${statusTag(s)}${String(s.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="tag red">GPS مشکوک</span>':''}<span class="tag gray">۷ روز: ${s.visits7||0} بازدید</span></div></div>${today.has(s.storeCode)?'<span class="already">در Route این روز</span>':isPastDay(d)?'<span class="already">روز گذشته</span>':`<button class="add" onclick="addStore('${esc(s.storeCode)}')">+</button>`}</div>`).join(''):'<div class="empty-route" style="min-height:150px"><div><strong>فروشگاهی پیدا نشد</strong><span>فیلتر یا عبارت جستجو را تغییر بده.</span></div></div>';
 }
 function setFilter(f){state.filter=f;document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));renderStorePool();}
-function addStore(code){const d=selectedDay(),s=state.storeMap[code];if(!d||!s||d.items.some(x=>x.storeCode===code))return;if(isDayLocked(d)){toast('این Route شروع شده و قابل تغییر نیست.','error');return;}const prev=d.items[d.items.length-1];d.items.push(Object.assign({},s,{distanceFromPreviousM:prev?Math.round(distanceM(prev,s)):0,plannedReason:'برنامه مدیر منطقه'}));markDirty('MANUAL');renderDays();renderRoute();renderStorePool();if(d.items.length>state.settings.dailyMax)toast('تعداد بازدید این روز از استاندارد ۵ فروشگاه بیشتر شد. ثبت همچنان مجاز است.');}
-function removeItem(i){const d=selectedDay();if(!d||isDayLocked(d)||d.items[i]?.locked)return;d.items.splice(i,1);recalcDistances(d);markDirty('MANUAL');renderDays();renderRoute();renderStorePool();}
-function moveItem(i,delta){const d=selectedDay(),j=i+delta;if(!d||isDayLocked(d)||j<0||j>=d.items.length||d.items[i]?.locked)return;[d.items[i],d.items[j]]=[d.items[j],d.items[i]];recalcDistances(d);markDirty('MANUAL');renderRoute();}
-function dragStart(e,i){const d=selectedDay();if(isDayLocked(d)){e.preventDefault();return;}state.dragIndex=i;e.currentTarget.classList.add('dragging');setTimeout(()=>e.currentTarget.classList.remove('dragging'),300);}
-function dropItem(e,target){e.preventDefault();const d=selectedDay(),from=state.dragIndex;if(d==null||isDayLocked(d)||from==null||from===target)return;const item=d.items[from];if(item?.locked)return;d.items.splice(from,1);d.items.splice(target,0,item);state.dragIndex=null;recalcDistances(d);markDirty('MANUAL');renderRoute();}
+function addStore(code){
+  const d=selectedDay(),s=state.storeMap[code];
+  if(!d||!s||d.items.some(x=>x.storeCode===code))return;
+  if(isPastDay(d)){toast('برنامه روز گذشته قابل تغییر نیست.','error');return;}
+  const prev=d.items[d.items.length-1];
+  d.items.push(Object.assign({},s,{locked:false,visitId:'',plannedStatus:'PLANNED',distanceFromPreviousM:prev?Math.round(distanceM(prev,s)):0,plannedReason:'برنامه مدیر منطقه'}));
+  markDirty('MANUAL');renderDays();renderRoute();renderStorePool();
+  if(d.items.length>state.settings.dailyMax)toast('تعداد بازدید این روز از استاندارد روزانه بیشتر شد. ثبت همچنان مجاز است.');
+}
+function removeItem(i){
+  const d=selectedDay(),item=d?.items?.[i];
+  if(!d||!item)return;
+  if(isPastDay(d)){toast('برنامه روز گذشته قابل تغییر نیست.','error');return;}
+  if(itemIsLocked(item)){toast('این فروشگاه بازدیدش شروع شده و قابل حذف نیست؛ سایر فروشگاه‌های امروز قابل تغییرند.','error');return;}
+  d.items.splice(i,1);recalcDistances(d);markDirty('MANUAL');renderDays();renderRoute();renderStorePool();
+}
+function moveItem(i,delta){
+  const d=selectedDay(),j=i+delta;
+  if(!d||isPastDay(d)||j<0||j>=d.items.length)return;
+  if(itemIsLocked(d.items[i])||itemIsLocked(d.items[j])){toast('بازدید شروع‌شده در جای خود قفل است.','error');return;}
+  [d.items[i],d.items[j]]=[d.items[j],d.items[i]];
+  recalcDistances(d);markDirty('MANUAL');renderRoute();
+}
+function dragStart(e,i){
+  const d=selectedDay();
+  if(!d||isPastDay(d)||itemIsLocked(d.items[i])){e.preventDefault();return;}
+  state.dragIndex=i;e.currentTarget.classList.add('dragging');setTimeout(()=>e.currentTarget.classList.remove('dragging'),300);
+}
+function dropItem(e,target){
+  e.preventDefault();
+  const d=selectedDay(),from=state.dragIndex;
+  if(!d||isPastDay(d)||from==null||from===target)return;
+  if(itemIsLocked(d.items[from])||itemIsLocked(d.items[target])){toast('نمی‌توان یک فروشگاه را از روی بازدید شروع‌شده عبور داد.','error');return;}
+  const item=d.items[from];d.items.splice(from,1);d.items.splice(target,0,item);state.dragIndex=null;
+  recalcDistances(d);markDirty('MANUAL');renderRoute();
+}
 function openMoveModal(i){
-  const source=selectedDay();if(!source||isDayLocked(source))return;
+  const source=selectedDay();if(!source||isPastDay(source))return;
   const item=source.items[i];if(!item)return;
+  if(itemIsLocked(item)){toast('فروشگاهی که بازدیدش شروع شده قابل انتقال نیست.','error');return;}
   state.moveIndex=i;
   document.getElementById('moveStoreLabel').textContent=`${item.storeName} · کد ${item.storeCode}`;
   document.getElementById('moveDays').innerHTML=state.days.map((d,idx)=>{
-    const current=d.dateIso===source.dateIso,locked=isDayLocked(d),duplicate=d.items.some(x=>x.storeCode===item.storeCode);
-    const disabled=current||locked||duplicate;
-    const note=current?'روز فعلی':locked?'Route شروع شده':duplicate?'این فروشگاه در این روز وجود دارد':`${d.items.length} بازدید`;
+    const current=d.dateIso===source.dateIso,past=isPastDay(d),duplicate=d.items.some(x=>x.storeCode===item.storeCode);
+    const disabled=current||past||duplicate;
+    const note=current?'روز فعلی':past?'روز گذشته':duplicate?'این فروشگاه در این روز وجود دارد':`${d.items.length} بازدید`;
     return `<button class="move-day ${disabled?'disabled':''}" ${disabled?'disabled':''} onclick="confirmMove('${d.dateIso}')"><strong>${DAY_NAMES[idx]} · ${faDateShort(d.dateIso)}</strong><span>${note}</span></button>`;
   }).join('');
   document.getElementById('moveModal').classList.remove('hidden');
@@ -507,19 +559,40 @@ function openMoveModal(i){
 function closeMoveModal(){state.moveIndex=null;document.getElementById('moveModal').classList.add('hidden');}
 function confirmMove(targetIso){
   const source=selectedDay(),target=state.days.find(d=>d.dateIso===targetIso),i=state.moveIndex;
-  if(!source||!target||i==null||isDayLocked(source)||isDayLocked(target))return;
-  const item=source.items[i];if(!item||target.items.some(x=>x.storeCode===item.storeCode))return;
+  if(!source||!target||i==null||isPastDay(source)||isPastDay(target))return;
+  const item=source.items[i];
+  if(!item||itemIsLocked(item)||target.items.some(x=>x.storeCode===item.storeCode))return;
   source.items.splice(i,1);
-  target.items.push(Object.assign({},item,{locked:false,visitId:'',distanceFromPreviousM:0,plannedReason:'برنامه مدیر منطقه'}));
+  target.items.push(Object.assign({},item,{locked:false,visitId:'',plannedStatus:'PLANNED',distanceFromPreviousM:0,plannedReason:'برنامه مدیر منطقه'}));
   recalcDistances(source);recalcDistances(target);markDirty('MANUAL');closeMoveModal();renderDays();renderRoute();renderStorePool();
   toast(`فروشگاه به ${DAY_NAMES[state.days.indexOf(target)]} منتقل شد.`,'success');
 }
 function recalcDistances(d){d.items.forEach((x,i)=>x.distanceFromPreviousM=i?Math.round(distanceM(d.items[i-1],x)):0);}
-function clearSelectedDay(){const d=selectedDay();if(!d)return;if(isDayLocked(d)){toast('این Route شروع شده و قابل پاک کردن نیست.','error');return;}if(!confirm('Route این روز پاک شود؟'))return;d.items=[];markDirty('MANUAL');renderDays();renderRoute();renderStorePool();}
-function optimizeSelectedDay(){const d=selectedDay();if(!d||d.items.length<3)return;if(isDayLocked(d)){toast('Route شروع‌شده قابل بازچینی نیست.','error');return;}const valid=d.items.filter(x=>String(x.locationStatus||'OK').toUpperCase()==='OK');const flagged=d.items.filter(x=>String(x.locationStatus||'OK').toUpperCase()!=='OK');if(valid.length<2){toast('مختصات معتبر کافی برای بازچینی جغرافیایی وجود ندارد.','error');return;}valid.sort((a,b)=>priorityRank(b.priorityLevel)-priorityRank(a.priorityLevel));const remain=[...valid];const out=[remain.shift()];while(remain.length){const cur=out[out.length-1];let bi=0,bd=Infinity;remain.forEach((x,i)=>{const dist=distanceM(cur,x);if(dist<bd){bd=dist;bi=i;}});out.push(remain.splice(bi,1)[0]);}d.items=out.concat(flagged);recalcDistances(d);markDirty('MANUAL');renderRoute();toast(flagged.length?'مسیر با مختصات معتبر بازچینی شد؛ فروشگاه‌های GPS مشکوک در انتها نگه داشته شدند.':'ترتیب این روز بر اساس نزدیکی جغرافیایی بازچینی شد.','success');}
+function clearSelectedDay(){
+  const d=selectedDay();if(!d)return;
+  if(isPastDay(d)){toast('برنامه روز گذشته قابل تغییر نیست.','error');return;}
+  const locked=d.items.filter(itemIsLocked),editable=d.items.filter(x=>!itemIsLocked(x));
+  if(!editable.length){toast('همه فروشگاه‌های این Route شروع شده‌اند و چیزی برای حذف باقی نمانده است.','error');return;}
+  const msg=locked.length?`همه ${editable.length} فروشگاه شروع‌نشده از برنامه امروز حذف شوند؟ ${locked.length} فروشگاه شروع‌شده حفظ می‌شوند.`:'Route این روز پاک شود؟';
+  if(!confirm(msg))return;
+  d.items=locked;recalcDistances(d);markDirty('MANUAL');renderDays();renderRoute();renderStorePool();
+}
+function optimizeSelectedDay(){
+  const d=selectedDay();if(!d||d.items.length<3)return;
+  if(isPastDay(d)){toast('برنامه روز گذشته قابل بازچینی نیست.','error');return;}
+  if(hasLockedItems(d)){toast('برای حفظ ترتیب بازدیدهای شروع‌شده، بهینه‌سازی خودکار این روز غیرفعال است؛ فروشگاه‌های شروع‌نشده را دستی جابه‌جا کن.','error');return;}
+  const valid=d.items.filter(x=>String(x.locationStatus||'OK').toUpperCase()==='OK');
+  const flagged=d.items.filter(x=>String(x.locationStatus||'OK').toUpperCase()!=='OK');
+  if(valid.length<2){toast('مختصات معتبر کافی برای بازچینی جغرافیایی وجود ندارد.','error');return;}
+  valid.sort((a,b)=>priorityRank(b.priorityLevel)-priorityRank(a.priorityLevel));
+  const remain=[...valid],out=[remain.shift()];
+  while(remain.length){const cur=out[out.length-1];let bi=0,bd=Infinity;remain.forEach((x,i)=>{const dist=distanceM(cur,x);if(dist<bd){bd=dist;bi=i;}});out.push(remain.splice(bi,1)[0]);}
+  d.items=out.concat(flagged);recalcDistances(d);markDirty('MANUAL');renderRoute();
+  toast(flagged.length?'مسیر با مختصات معتبر بازچینی شد؛ فروشگاه‌های GPS مشکوک در انتها نگه داشته شدند.':'ترتیب این روز بر اساس نزدیکی جغرافیایی بازچینی شد.','success');
+}
 
-async function suggestRoutes(){if(!state.areaHeadId)return;setLoading(true,'در حال ساخت Route پیشنهادی...');try{const res=await DMAuth.apiPost('suggestWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,targetDaily:state.settings.dailyTarget||4},35000);if(!res.success)throw new Error(res.message||'ساخت Route ناموفق بود.');const byDate={};state.days.forEach(d=>byDate[d.dateIso]=d);res.days.forEach(sd=>{const d=byDate[sd.dateIso];if(!d)return;if(isDayLocked(d))return;d.items=(sd.items||[]).map(x=>Object.assign({},state.storeMap[x.storeCode]||{},x));recalcDistances(d);});state.sourceType='SMART';state.dirty=true;renderDays();renderRoute();renderStorePool();renderSaveState();toast('Route پیشنهادی هفته ساخته شد؛ می‌توانی قبل از ثبت هر بخش را تغییر بدهی.','success');}catch(e){toast(e.message||'خطا در ساخت Route','error');}finally{setLoading(false);}}
-async function saveWeek(){if(!state.areaHeadId)return;const plan=state.days.map((d,i)=>({dateIso:d.dateIso,dateFa:faDateLong(d.dateIso),storeCodes:d.items.map(x=>x.storeCode)}));const low=plan.filter(x=>x.storeCodes.length<state.settings.dailyMin).length,high=plan.filter(x=>x.storeCodes.length>state.settings.dailyMax).length;if((low||high)&&!confirm(`در ${low+high} روز تعداد بازدید خارج از استاندارد ۳ تا ۵ است. با همین برنامه ثبت شود؟`))return;setLoading(true,'در حال ثبت برنامه هفتگی...');try{const res=await DMAuth.apiPost('saveWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,sourceType:state.sourceType,planJson:JSON.stringify(plan)},45000);if(!res.success)throw new Error(res.message||'ثبت برنامه ناموفق بود.');state.dirty=false;renderSaveState();toast(res.message||'برنامه ثبت شد.','success');await loadBootstrap(state.areaHeadId);}catch(e){toast(e.message||'خطا در ثبت برنامه','error');}finally{setLoading(false);}}
+async function suggestRoutes(){if(!state.areaHeadId)return;setLoading(true,'در حال ساخت Route پیشنهادی...');try{const res=await DMAuth.apiPost('suggestWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,targetDaily:state.settings.dailyTarget||4},35000);if(!res.success)throw new Error(res.message||'ساخت Route ناموفق بود.');const byDate={};state.days.forEach(d=>byDate[d.dateIso]=d);res.days.forEach(sd=>{const d=byDate[sd.dateIso];if(!d)return;if(isPastDay(d)||hasLockedItems(d))return;d.items=(sd.items||[]).map(x=>Object.assign({},state.storeMap[x.storeCode]||{},x,{locked:false,visitId:''}));recalcDistances(d);});state.sourceType='SMART';state.dirty=true;renderDays();renderRoute();renderStorePool();renderSaveState();toast('Route پیشنهادی هفته ساخته شد؛ می‌توانی قبل از ثبت هر بخش را تغییر بدهی.','success');}catch(e){toast(e.message||'خطا در ساخت Route','error');}finally{setLoading(false);}}
+async function saveWeek(){if(!state.areaHeadId)return;const plan=state.days.map((d,i)=>({dateIso:d.dateIso,dateFa:faDateLong(d.dateIso),storeCodes:d.items.map(x=>x.storeCode)}));const low=plan.filter(x=>x.storeCodes.length<state.settings.dailyMin).length,high=plan.filter(x=>x.storeCodes.length>state.settings.dailyMax).length;if((low||high)&&!confirm(`در ${low+high} روز تعداد بازدید خارج از استاندارد ۳ تا ۵ است. با همین برنامه ثبت شود؟`))return;setLoading(true,'در حال ثبت برنامه هفتگی...');try{const res=await DMAuth.apiPost('saveWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,sourceType:state.sourceType,planJson:JSON.stringify(plan)},45000);if(!res.success)throw new Error(res.message||'ثبت برنامه ناموفق بود.');state.dirty=false;renderSaveState();toast(res.message||'برنامه ثبت شد؛ بازدیدهای شروع‌شده بدون تغییر حفظ شدند.','success');await loadBootstrap(state.areaHeadId);}catch(e){toast(e.message||'خطا در ثبت برنامه','error');}finally{setLoading(false);}}
 async function changeAreaHead(id){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟')){renderAreaHeads();return;}state.areaHeadId=id;await loadBootstrap(id);}
 async function shiftWeek(n){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟'))return;state.weekStartIso=iso(addDays(parseIso(state.weekStartIso),n));state.selectedDayIso='';await loadBootstrap(state.areaHeadId);}
 async function goCurrentWeek(){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟'))return;state.weekStartIso=iso(saturdayStart(new Date()));state.selectedDayIso='';await loadBootstrap(state.areaHeadId);}
