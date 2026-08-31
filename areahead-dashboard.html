@@ -895,13 +895,14 @@ function renderChecklistQuestion(q,readOnly){
     let cls='';
     if(value===opt){
       if(q.responseType==='ACHIEVEMENT')cls=opt==='محقق شده'?'great':'bad';
+      else if(q.responseType==='TARGET_80')cls=(opt==='بالاتر از 80 درصد'||opt==='بالاتر از ۸۰ درصد')?'great':'bad';
       else if(q.responseType==='WASTE_RATE')cls=opt==='کمتر از نیم درصد'?'great':'bad';
       else if(q.responseType==='YES_NO')cls=i===0?'yes':'no';
       else cls=i===0?'bad':i===1?'good':'great';
     }
     return `<button class="answer-btn ${value===opt?'selected '+cls:''}" ${readOnly?'disabled':''} onclick="setChecklistAnswer('${esc(q.questionId)}','${esc(opt)}')">${esc(opt)}</button>`;
   }).join('');
-  const typeLabel=q.responseType==='ACHIEVEMENT'?'محقق شده / محقق نشده':q.responseType==='WASTE_RATE'?'بالای نیم درصد / کمتر از نیم درصد':q.responseType==='YES_NO'?'انجام شده / انجام نشده':'ضعیف / خوب / عالی';
+  const typeLabel=q.responseType==='TARGET_80'?'بالاتر از 80 درصد / زیر 80 درصد':q.responseType==='ACHIEVEMENT'?'محقق شده / محقق نشده':q.responseType==='WASTE_RATE'?'بالای نیم درصد / کمتر از نیم درصد':q.responseType==='YES_NO'?'انجام شده / انجام نشده':'ضعیف / خوب / عالی';
   return `<div class="question-card" id="question-${esc(q.questionId)}"><div class="question-top"><div class="question-no">${q.sortOrder}</div><div><div class="question-text">${esc(q.questionText)}</div><div class="question-sub">${q.required?'پاسخ الزامی':'اختیاری'} · ${esc(typeLabel)}</div></div></div><div class="answer-options ${two?'two':''}">${buttons}</div></div>`;
 }
 
