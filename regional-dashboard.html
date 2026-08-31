@@ -747,6 +747,12 @@ function updateGpsBadge(){
   const a=document.getElementById('approvalModeCount');if(a)a.textContent=String(ap);
   const c=document.getElementById('correctionModeCount');if(c)c.textContent=String(cp);
 }
+// Backward-compatible helper used by Overview.
+// Keeps the old caller working while the new GPS badge also includes location-correction requests.
+function updateApprovalBadge(count){
+  state.approvalSummary = Object.assign({}, state.approvalSummary || {}, {pending:Number(count||0)});
+  updateGpsBadge();
+}
 async function loadGpsCurrentMode(){
   if(state.gpsMode==='correction')await loadCorrections(state.correctionFilter);else await loadApprovals(state.approvalFilter);
 }
