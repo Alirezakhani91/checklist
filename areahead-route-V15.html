@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>برنامه‌ریزی مسیر من | دیلی مارکت</title>
+<script src="auth-client.js"></script>
+<style>
+@font-face{font-family:Vazir;src:local("Vazirmatn"),local("Vazir")}
+:root{--red:#c90022;--red2:#9e001b;--ink:#141821;--muted:#747c8b;--bg:#f4f6f9;--card:#fff;--line:#e5e8ee;--green:#17865c;--amber:#c88500;--orange:#d86614;--blue:#315efb;--shadow:0 14px 42px rgba(20,28,48,.07)}
+*{box-sizing:border-box}body{margin:0;font-family:Vazir,Tahoma,sans-serif;background:var(--bg);color:var(--ink)}
+button,input{font-family:inherit}.hidden{display:none!important}
+.loading{position:fixed;inset:0;background:rgba(244,246,249,.92);z-index:999;display:grid;place-items:center}.loading-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px 26px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px}.spin{width:24px;height:24px;border:3px solid #eee;border-top-color:var(--red);border-radius:50%;animation:s .7s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
+.app{display:grid;grid-template-columns:270px minmax(0,1fr);min-height:100vh}.side{background:#171c27;color:#fff;padding:24px 17px;position:sticky;top:0;height:100vh}.brand strong{font-size:1.15rem}.brand span{display:block;color:#aeb5c3;font-size:.7rem;margin-top:5px}.user{margin-top:24px;padding:13px;background:#202735;border-radius:15px}.user strong{display:block;font-size:.82rem}.user span{display:block;color:#aab2c1;font-size:.64rem;margin-top:4px}.side button{width:100%;border:0;border-radius:12px;padding:11px;margin-top:10px;background:#252d3d;color:#fff;font-weight:800}.side button.primary{background:linear-gradient(135deg,#d70025,#aa001c)}
+.main{min-width:0}.top{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:0 25px;position:sticky;top:0;z-index:20}.top h1{margin:0;font-size:1.08rem}.top p{margin:5px 0 0;color:var(--muted);font-size:.68rem}.content{padding:22px 24px 100px;max-width:1500px;margin:auto}
+.hero{background:linear-gradient(135deg,#171e2a,#232c3c);color:#fff;border-radius:24px;padding:22px;display:flex;justify-content:space-between;gap:18px;align-items:center}.hero h2{margin:0;font-size:1.35rem}.hero p{margin:8px 0 0;color:#bec6d3;font-size:.75rem;line-height:1.9}.hero .badge{background:rgba(255,255,255,.1);padding:10px 13px;border-radius:14px;font-size:.7rem;white-space:nowrap}
+.sla{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.kpi{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px}.kpi strong{font-size:1.2rem}.kpi span{display:block;color:var(--muted);font-size:.65rem;margin-top:4px}.kpi.red strong{color:var(--red)}.kpi.orange strong{color:var(--orange)}
+.guard{background:#fff;border:1px solid var(--line);border-radius:20px;margin-bottom:15px;overflow:hidden}.guard-head{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.guard-head h3{margin:0;font-size:.9rem}.guard-head p{margin:4px 0 0;color:var(--muted);font-size:.65rem}.btn{border:0;border-radius:12px;padding:10px 13px;font-weight:900;font-size:.7rem}.btn.red{background:var(--red);color:#fff}.btn.ghost{background:#f2f4f7;color:#404755;border:1px solid var(--line)}.mandatory-list{padding:10px 16px;display:grid;gap:7px}.mandatory{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border-radius:13px;background:#fafbfc;border:1px solid #edf0f4}.mandatory.bad{background:#fff5f6;border-color:#ffd8df}.mandatory strong{font-size:.73rem}.mandatory span{font-size:.62rem;color:var(--muted)}.mandatory .due{font-weight:900;color:#b2001c}
+.tabs{display:flex;gap:7px;overflow:auto;padding:3px 0 12px}.day{min-width:120px;border:1px solid var(--line);background:#fff;border-radius:15px;padding:10px;text-align:right}.day.active{border-color:#cc0022;box-shadow:0 0 0 2px rgba(201,0,34,.06)}.day.past{opacity:.55}.day strong{display:block;font-size:.74rem}.day span{display:block;color:var(--muted);font-size:.6rem;margin-top:4px}
+.workspace{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(330px,.7fr);gap:14px}.panel{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden}.ph{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.ph h3{margin:0;font-size:.9rem}.ph p{margin:4px 0 0;color:var(--muted);font-size:.65rem}.route,.pool{padding:12px;display:grid;gap:8px;max-height:600px;overflow:auto}.item{display:grid;grid-template-columns:35px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid #edf0f4;border-radius:14px;padding:10px}.item.locked{background:#f7f8fa}.seq{width:32px;height:32px;border-radius:10px;background:#f0f2f6;display:grid;place-items:center;font-weight:900;font-size:.7rem}.info strong{display:block;font-size:.75rem}.info span{display:block;color:var(--muted);font-size:.6rem;margin-top:4px}.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.tag{padding:4px 7px;border-radius:999px;background:#f0f2f6;color:#606878;font-size:.58rem;font-weight:800}.tag.red{background:#ffe9ee;color:#ae001d}.tag.orange{background:#fff0e2;color:#9f4b00}.tag.yellow{background:#fff6d8;color:#876100}.tag.blue{background:#edf2ff;color:#315efb}.tools{display:flex;gap:5px}.tools button{width:30px;height:30px;border:1px solid var(--line);background:#fff;border-radius:9px;font-weight:900}.tools button.remove{color:#b40020}.tools button:disabled{opacity:.35}
+.search{padding:10px 12px;border-bottom:1px solid var(--line)}.search input{width:100%;border:1px solid var(--line);background:#fafbfc;border-radius:12px;padding:10px 12px;outline:0}.pool-card{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid #edf0f4;border-radius:13px;padding:10px}.pool-card strong{font-size:.72rem}.pool-card span{display:block;color:var(--muted);font-size:.6rem;margin-top:4px}.add{width:34px;height:34px;border:0;border-radius:10px;background:#edf2ff;color:#315efb;font-size:1.15rem}.already{font-size:.6rem;color:#8a909b}
+.save{position:fixed;bottom:0;right:270px;left:0;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;z-index:30}.save-info{font-size:.68rem;color:var(--muted)}.save-actions{display:flex;gap:8px}.toastwrap{position:fixed;left:16px;bottom:85px;z-index:999;display:grid;gap:8px}.toast{background:#202631;color:#fff;padding:11px 13px;border-radius:12px;font-size:.7rem;box-shadow:var(--shadow)}.toast.error{background:#a9001c}.toast.success{background:#157a55}
+.empty{text-align:center;padding:30px 15px;color:var(--muted);font-size:.7rem}
+.mobiletop{display:none}
+@media(max-width:900px){.app{display:block}.side{display:none}.mobiletop{display:flex;position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);padding:12px 14px;justify-content:space-between;align-items:center}.mobiletop strong{font-size:.85rem}.mobiletop button{border:0;background:#f0f2f6;border-radius:10px;padding:8px 10px}.top{display:none}.content{padding:12px 10px 110px}.hero{display:block;border-radius:18px;padding:17px}.hero .badge{display:inline-block;margin-top:12px}.sla{grid-template-columns:repeat(2,1fr);gap:7px}.workspace{display:block}.panel{border-radius:17px;margin-top:10px}.route,.pool{max-height:none}.item{grid-template-columns:32px minmax(0,1fr)}.tools{grid-column:1/-1;justify-content:flex-end}.save{right:0;padding:10px;display:block}.save-actions{display:grid;grid-template-columns:1fr 1.3fr;margin-top:7px}.save-actions .btn{width:100%}.save-info{text-align:center}.guard-head{display:block}.guard-head .btn{width:100%;margin-top:8px}.mandatory{display:block}.mandatory .due{display:block;margin-top:5px}}
+</style>
+</head>
+<body>
+<div class="loading" id="loading"><div class="loading-card"><div class="spin"></div><strong id="loadingText">در حال دریافت برنامه...</strong></div></div>
+<div class="mobiletop"><strong>برنامه‌ریزی مسیر من</strong><button onclick="location.href='areahead-dashboard.html'">امروز</button></div>
+<div class="app">
+<aside class="side">
+  <div class="brand"><strong>دیلی مارکت</strong><span>چک لیست · برنامه‌ریزی مسیر</span></div>
+  <div class="user"><strong id="sideName">رئیس ناحیه</strong><span id="sideRegion">—</span></div>
+  <button class="primary">برنامه‌ریزی مسیر من</button>
+  <button onclick="location.href='areahead-dashboard.html'">برنامه امروز</button>
+  <button onclick="location.href='alerts.html'">هشدارهای من</button>
+  <button onclick="location.href='visit-history.html'">سوابق بازدید</button>
+  <button onclick="DMAuth.logout()">خروج</button>
+</aside>
+<main class="main">
+<header class="top"><div><h1>برنامه‌ریزی مسیر من</h1><p>اختیار Route توسط مدیر منطقه به شما واگذار شده است؛ پوشش ۱۴ روزه توسط سیستم کنترل می‌شود.</p></div><button class="btn ghost" onclick="reload()">بروزرسانی</button></header>
+<div class="content">
+  <section class="hero"><div><h2>آزادی مسیر، با تعهد پوشش</h2><p>شما ترتیب و روز بازدیدها را انتخاب می‌کنید؛ اما هیچ فروشگاهی که تا پایان هفته به سقف ۱۴ روز می‌رسد نباید از برنامه جا بماند.</p></div><span class="badge" id="weekLabel">هفته جاری</span></section>
+  <section class="sla">
+    <div class="kpi"><strong id="kStores">—</strong><span>فروشگاه زیرمجموعه</span></div>
+    <div class="kpi red"><strong id="kMandatory">—</strong><span>بازدید اجباری این هفته</span></div>
+    <div class="kpi orange"><strong id="kViolations">—</strong><span>هنوز بدون برنامه معتبر</span></div>
+    <div class="kpi"><strong id="kPlanned">—</strong><span>کل بازدیدهای برنامه</span></div>
+  </section>
+  <section class="guard">
+    <div class="guard-head"><div><h3>کنترل SLA چهارده‌روزه</h3><p>فروشگاه‌های این بخش باید حداکثر تا تاریخ مشخص‌شده در Route قرار بگیرند.</p></div><button class="btn red" onclick="autoPlaceMandatory()">افزودن خودکار اجباری‌ها</button></div>
+    <div class="mandatory-list" id="mandatoryList"></div>
+  </section>
+  <div class="tabs" id="dayTabs"></div>
+  <section class="workspace">
+    <div class="panel">
+      <div class="ph"><div><h3 id="routeTitle">Route روز</h3><p id="routeSub">فروشگاه‌ها را اضافه و ترتیب را تنظیم کن.</p></div></div>
+      <div class="route" id="routeList"></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><div><h3>فروشگاه‌های من</h3><p>اولویت‌ها بر اساس فاصله از آخرین بازدید مشخص شده‌اند.</p></div></div>
+      <div class="search"><input id="search" placeholder="جستجوی کد یا نام فروشگاه..." oninput="renderPool()"></div>
+      <div class="pool" id="pool"></div>
+    </div>
+  </section>
+</div>
+<div class="save">
+  <div class="save-info" id="saveInfo">تغییری ثبت نشده است.</div>
+  <div class="save-actions"><button class="btn ghost" onclick="reload()">لغو تغییرات</button><button class="btn red" id="saveBtn" onclick="saveWeek()">ثبت برنامه هفته</button></div>
+</div>
+</main>
+</div>
+<div class="toastwrap" id="toastwrap"></div>
+<script>
+const DAY_NAMES=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
+const state={user:null,data:null,days:[],stores:[],storeMap:{},selectedIso:'',todayIso:'',dirty:false,sla:null,settings:{dailyMin:3,dailyMax:5}};
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function toast(m,t=''){const w=document.getElementById('toastwrap'),e=document.createElement('div');e.className='toast '+t;e.textContent=m;w.appendChild(e);setTimeout(()=>e.remove(),4200)}
+function setLoading(v,t){document.getElementById('loading').classList.toggle('hidden',!v);if(t)document.getElementById('loadingText').textContent=t}
+function parseIso(s){return new Date(s+'T12:00:00')}function iso(d){return d.toISOString().slice(0,10)}
+function faDate(s){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{month:'short',day:'numeric'}).format(parseIso(s))}catch(_){return s}}
+function priority(s){const d=Number(s.daysSinceLastVisit);if(d>=999)return['blue','بدون سابقه'];if(d>=14)return['red',d+' روز'];if(d>=12)return['orange','۱۲+ روز'];if(d>=10)return['yellow','۱۰+ روز'];return['',d+' روز']}
+function isPast(d){return d.dateIso<state.todayIso}function locked(x){return !!(x.locked||String(x.visitId||''))}
+async function init(){const a=await DMAuth.validateSession('AREA_HEAD');if(!a.ok){location.replace('index.html');return}state.user=a.user;document.getElementById('sideName').textContent=a.user.fullName||'رئیس ناحیه';document.getElementById('sideRegion').textContent=a.user.regionalManagerName||'';await reload()}
+async function reload(){setLoading(true,'در حال دریافت برنامه و SLA...');try{const r=await DMAuth.apiPost('areaHeadRouteBootstrap',{},50000);if(!r.success){if(r.code==='SELF_ROUTING_NOT_ALLOWED'){toast(r.message,'error');setTimeout(()=>location.replace('areahead-dashboard.html'),1400);return}throw new Error(r.message||'خطا');}state.data=r;state.todayIso=r.todayIso;state.settings=r.settings||state.settings;state.stores=r.stores||[];state.storeMap={};state.stores.forEach(x=>state.storeMap[x.storeCode]=x);state.days=(r.week?.days||[]).map(d=>({dateIso:d.dateIso,items:(d.items||[]).map(x=>Object.assign({},state.storeMap[x.storeCode]||{},x))}));state.selectedIso=state.days.find(d=>!isPast(d))?.dateIso||state.days[0]?.dateIso||'';state.sla=r.sla||{mandatory:[],violations:[]};state.dirty=false;render()}catch(e){toast(e.message||'خطا در دریافت اطلاعات','error')}finally{setLoading(false)}}
+function render(){document.getElementById('weekLabel').textContent=(state.data?.week?.startIso?faDate(state.data.week.startIso):'')+' تا '+(state.days.length?faDate(state.days[state.days.length-1].dateIso):'');document.getElementById('kStores').textContent=state.stores.length;renderDays();renderRoute();renderPool();refreshClientSla()}
+function renderDays(){document.getElementById('dayTabs').innerHTML=state.days.map((d,i)=>`<button class="day ${d.dateIso===state.selectedIso?'active':''} ${isPast(d)?'past':''}" onclick="selectDay('${d.dateIso}')"><strong>${DAY_NAMES[i]} · ${faDate(d.dateIso)}</strong><span>${d.items.length} بازدید${d.items.some(locked)?' · دارای مورد قفل':''}</span></button>`).join('')}
+function selectDay(s){state.selectedIso=s;renderDays();renderRoute();renderPool()}
+function selected(){return state.days.find(d=>d.dateIso===state.selectedIso)}
+function renderRoute(){const d=selected();if(!d)return;document.getElementById('routeTitle').textContent=`Route ${DAY_NAMES[state.days.indexOf(d)]} · ${faDate(d.dateIso)}`;document.getElementById('routeSub').textContent=isPast(d)?'این روز گذشته و فقط قابل مشاهده است.':'فروشگاه‌های شروع‌شده قفل می‌مانند؛ بقیه قابل تغییرند.';const el=document.getElementById('routeList');if(!d.items.length){el.innerHTML='<div class="empty">برای این روز هنوز فروشگاهی انتخاب نشده است.</div>';return}el.innerHTML=d.items.map((x,i)=>{const p=priority(x),lk=isPast(d)||locked(x);return `<div class="item ${lk?'locked':''}"><div class="seq">${i+1}</div><div class="info"><strong>${esc(x.storeName)}</strong><span>کد ${esc(x.storeCode)}</span><div class="tags"><span class="tag ${p[0]}">${esc(p[1])}</span>${lk?'<span class="tag">قفل بازدید</span>':''}</div></div><div class="tools"><button onclick="move(${i},-1)" ${lk||i===0||locked(d.items[i-1])?'disabled':''}>↑</button><button onclick="move(${i},1)" ${lk||i===d.items.length-1||locked(d.items[i+1])?'disabled':''}>↓</button><button class="remove" onclick="removeItem(${i})" ${lk?'disabled':''}>×</button></div></div>`}).join('')}
+function renderPool(){const d=selected();if(!d)return;const q=document.getElementById('search').value.trim().toLowerCase(),inDay=new Set(d.items.map(x=>x.storeCode));let a=state.stores.filter(x=>!q||(x.storeCode+' '+x.storeName).toLowerCase().includes(q));a.sort((x,y)=>Number(y.daysSinceLastVisit||0)-Number(x.daysSinceLastVisit||0));document.getElementById('pool').innerHTML=a.map(x=>{const p=priority(x);return `<div class="pool-card"><div><strong>${esc(x.storeName)}</strong><span>کد ${esc(x.storeCode)} · ${esc(p[1])} از آخرین بازدید</span></div>${inDay.has(x.storeCode)?'<span class="already">در همین روز</span>':isPast(d)?'<span class="already">روز گذشته</span>':`<button class="add" onclick="addStore('${esc(x.storeCode)}')">+</button>`}</div>`}).join('')}
+function addStore(c){const d=selected(),s=state.storeMap[c];if(!d||!s||isPast(d)||d.items.some(x=>x.storeCode===c))return;d.items.push(Object.assign({},s,{locked:false,visitId:'',plannedStatus:'PLANNED'}));dirty();renderRoute();renderPool();renderDays();refreshClientSla()}
+function removeItem(i){const d=selected(),x=d?.items[i];if(!d||!x||isPast(d)||locked(x))return;d.items.splice(i,1);dirty();renderRoute();renderPool();renderDays();refreshClientSla()}
+function move(i,z){const d=selected(),j=i+z;if(!d||isPast(d)||j<0||j>=d.items.length||locked(d.items[i])||locked(d.items[j]))return;[d.items[i],d.items[j]]=[d.items[j],d.items[i]];dirty();renderRoute()}
+function dirty(){state.dirty=true;document.getElementById('saveInfo').textContent='تغییرات ذخیره نشده‌اند.'}
+function currentPlan(){return state.days.map(d=>({dateIso:d.dateIso,storeCodes:d.items.map(x=>x.storeCode)}))}
+function clientSla(){const open=state.data?.cannotVisitNotices||[];const blocked={};open.forEach(x=>{(blocked[x.storeCode]??={})[x.routeDateIso]=true});const mandatory=(state.data?.sla?.mandatory||[]).map(m=>{const dates=[];state.days.forEach(d=>{if(d.dateIso<state.todayIso||d.dateIso>m.effectiveDeadlineIso)return;if((blocked[m.storeCode]||{})[d.dateIso])return;if(d.items.some(x=>x.storeCode===m.storeCode))dates.push(d.dateIso)});return Object.assign({},m,{scheduledIso:dates[0]||''})});return{mandatory,violations:mandatory.filter(x=>!x.scheduledIso)}}
+function refreshClientSla(){
+  const s=clientSla();state.sla=s;
+  const capacityWarnings=state.data?.sla?.capacityWarnings||[];
+  document.getElementById('kMandatory').textContent=s.mandatory.length;
+  document.getElementById('kViolations').textContent=s.violations.length;
+  document.getElementById('kPlanned').textContent=state.days.reduce((a,d)=>a+d.items.length,0);
+  let content=s.mandatory.length?s.mandatory.map(x=>`<div class="mandatory ${x.scheduledIso?'':'bad'}"><div><strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong><span>${x.noHistory?'بدون سابقه در سامانه؛ مهلت از زمان واگذاری Self-Routing محاسبه شده':x.daysSinceLastVisit+' روز از آخرین بازدید'}</span></div><div class="due">${x.scheduledIso?'برنامه: '+faDate(x.scheduledIso):'حداکثر تا '+faDate(x.effectiveDeadlineIso)}</div></div>`).join(''):'<div class="empty">در این هفته فروشگاه اجباری جدیدی وجود ندارد.</div>';
+  if(capacityWarnings.length){
+    const w=capacityWarnings[0];
+    content=`<div class="mandatory bad"><div><strong>⚠️ ظرفیت بازدید نیازمند توجه مدیر منطقه است</strong><span>تا ${faDate(w.dateIso)} تعداد ${w.dueCount} بازدید اجباری داریم، در حالی که ظرفیت استاندارد تجمعی ${w.capacity} بازدید است. سیستم Route غیرواقعی تحمیل نمی‌کند؛ این وضعیت باید مدیریتی تعیین تکلیف شود.</span></div><div class="due">${w.overflow} بازدید مازاد</div></div>`+content;
+  }
+  document.getElementById('mandatoryList').innerHTML=content;
+  document.getElementById('saveInfo').textContent=s.violations.length?`${s.violations.length} فروشگاه اجباری هنوز تعیین تکلیف نشده است.`:(capacityWarnings.length?'پوشش ثبت‌شده است؛ اما هشدار ظرفیت مدیریتی وجود دارد.':(state.dirty?'تغییرات ذخیره نشده‌اند.':'برنامه از نظر پوشش ۱۴ روزه قابل ثبت است.'));
+}
+function autoPlaceMandatory(){const s=clientSla();if(!s.violations.length){toast('همه فروشگاه‌های اجباری در برنامه هستند.','success');return}let added=0;s.violations.forEach(m=>{let candidates=state.days.filter(d=>!isPast(d)&&d.dateIso<=m.effectiveDeadlineIso&&!d.items.some(x=>x.storeCode===m.storeCode));if(!candidates.length)return;candidates.sort((a,b)=>(a.items.length-b.items.length)||a.dateIso.localeCompare(b.dateIso));const d=candidates[0],st=state.storeMap[m.storeCode];if(st){d.items.push(Object.assign({},st,{locked:false,visitId:'',plannedStatus:'PLANNED'}));added++}});if(added){dirty();renderDays();renderRoute();renderPool();refreshClientSla();toast(`${added} فروشگاه اجباری به برنامه اضافه شد.`,'success')}else toast('برای برخی فروشگاه‌های اجباری روز مجاز خالی وجود ندارد؛ مدیر منطقه باید تعیین تکلیف کند.','error')}
+async function saveWeek(){const s=clientSla();if(s.violations.length){toast(`ابتدا ${s.violations.length} فروشگاه اجباری را تا مهلتشان در Route قرار بده.`,'error');return}if(!confirm('برنامه هفتگی ثبت شود؟'))return;setLoading(true,'در حال ثبت برنامه...');try{const plan=state.days.map(d=>({dateIso:d.dateIso,dateFa:'',storeCodes:d.items.map(x=>x.storeCode)}));const r=await DMAuth.apiPost('areaHeadSaveWeekRoutes',{weekStartIso:state.data.week.startIso,planJson:JSON.stringify(plan)},60000);if(!r.success){if(r.code==='SLA_COVERAGE_REQUIRED'){state.data.sla=r.sla;refreshClientSla()}throw new Error(r.message||'ثبت برنامه ناموفق بود.')}toast(r.message||'برنامه ثبت شد.','success');await reload()}catch(e){toast(e.message||'خطا در ثبت برنامه','error')}finally{setLoading(false)}}
+init();
+</script>
+</body>
+</html>
