@@ -399,7 +399,7 @@ const state={
   weekStartIso:'',todayIso:'',days:[],selectedDayIso:'',filter:'ALL',dirty:false,sourceType:'MANUAL',dragIndex:null,moveIndex:null,
   activeView:'overview',gpsMode:'approval',approvals:[],approvalFilter:'PENDING',approvalSummary:{pending:0,approved:0,rejected:0},decisionApprovalId:'',
   corrections:[],correctionFilter:'PENDING',correctionSummary:{pending:0,approved:0,rejected:0},correctionDecisionId:'',
-  overview:null,overviewLoaded:false,routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],performance:null,performanceLoaded:false,performancePeriodDays:7
+  overview:null,overviewLoaded:false,routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:7
 };
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -433,10 +433,16 @@ async function init(){
 }
 
 async function loadBootstrap(areaHeadId){
+  const requestedId=String(areaHeadId||state.areaHeadId||'').trim();
+  const seq=++state.bootstrapSeq;
   setLoading(true,'در حال دریافت اطلاعات منطقه...');
   try{
-    const res=await DMAuth.apiPost('regionalBootstrap',{weekStartIso:state.weekStartIso,areaHeadUserId:areaHeadId||state.areaHeadId||''},35000);
+    const res=await DMAuth.apiPost('regionalBootstrap',{weekStartIso:state.weekStartIso,areaHeadUserId:requestedId},35000);
+    if(seq!==state.bootstrapSeq)return;
     if(!res.success)throw new Error(res.message||'دریافت اطلاعات ناموفق بود.');
+    if(requestedId&&String(res.selectedAreaHead?.userId||'').trim()!==requestedId){
+      throw new Error('اطلاعات رئیس ناحیه انتخاب‌شده با پاسخ سرور همخوانی ندارد. صفحه را بروزرسانی کنید.');
+    }
     state.summary=res.summary||{};state.settings=res.settings||state.settings;state.areaHeads=res.areaHeads||[];state.todayIso=res.todayIso||iso(new Date());
     state.areaHeadId=res.selectedAreaHead?.userId||'';state.stores=res.selectedAreaHead?.stores||[];state.planningMode=res.selectedAreaHead?.planningMode||'REGIONAL_MANAGER';state.cannotVisitNotices=res.selectedAreaHead?.cannotVisitNotices||[];state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
     state.days=(res.week?.days||[]).map((d,i)=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||''}));
@@ -444,7 +450,7 @@ async function loadBootstrap(areaHeadId){
     state.dirty=false;state.sourceType='MANUAL';state.routeLoaded=true;
     renderAll();
   }catch(e){toast(e.message||'خطا در دریافت اطلاعات','error');}
-  finally{setLoading(false);}
+  finally{if(seq===state.bootstrapSeq)setLoading(false);}
 }
 
 function renderAll(){renderSummary();renderAreaHeads();renderPlanningMode();renderCannotVisitNotices();renderWeek();renderDays();renderRoute();renderStorePool();renderSaveState();}
@@ -458,7 +464,7 @@ function renderSummary(){
 }
 function renderAreaHeads(){
   const sel=document.getElementById('areaHeadSelect');
-  sel.innerHTML=state.areaHeads.map(a=>`<option value="${esc(a.userId)}" ${a.userId===state.areaHeadId?'selected':''}>${esc(a.fullName)} · ${a.storeCount} فروشگاه${a.planningMode==='AREA_HEAD'?' · مسیر با رئیس ناحیه':''}${a.cannotVisitOpen?` · ⚠ ${a.cannotVisitOpen} اعلام`:''}</option>`).join('');
+  sel.innerHTML=state.areaHeads.map(a=>`<option value="${esc(a.userId)}" ${String(a.userId||'').trim()===String(state.areaHeadId||'').trim()?'selected':''}>${esc(a.fullName)} · ${a.storeCount} فروشگاه · ${a.planningMode==='AREA_HEAD'?'مسیر: رئیس ناحیه':'مسیر: مدیر منطقه'}${a.cannotVisitOpen?` · ⚠ ${a.cannotVisitOpen} اعلام`:''}</option>`).join('');
 }
 function managerCanEditRoutes(){return state.planningMode!=='AREA_HEAD';}
 function renderPlanningMode(){
@@ -471,20 +477,48 @@ function renderPlanningMode(){
   if(save)save.disabled=delegated;if(smart)smart.disabled=delegated;
 }
 async function setPlanningMode(mode){
-  if(!state.areaHeadId)return;
-  if(mode===state.planningMode)return;
+  const targetId=String(state.areaHeadId||'').trim();
+  if(!targetId){toast('ابتدا رئیس ناحیه را انتخاب کنید.','error');return;}
+
+  const target=state.areaHeads.find(a=>String(a.userId||'').trim()===targetId);
+  const targetName=target?.fullName||'این رئیس ناحیه';
+
+  if(mode===state.planningMode){
+    toast(`این تنظیم همین حالا برای ${targetName} فعال است.`);
+    return;
+  }
+
   const msg=mode==='AREA_HEAD'
-    ?'مسیر‌بندی به رئیس ناحیه واگذار شود؟ از این پس خودش Route را می‌چیند و سیستم پوشش ۱۴ روزه را کنترل می‌کند.'
-    :'مسیر‌بندی دوباره در اختیار مدیر منطقه قرار بگیرد؟';
+    ?`مسیر‌بندی فقط برای «${targetName}» به خود رئیس ناحیه واگذار شود؟`
+    :`مسیر‌بندی فقط برای «${targetName}» دوباره در اختیار مدیر منطقه قرار بگیرد؟`;
+
   if(!confirm(msg))return;
-  setLoading(true,'در حال تغییر مسئول مسیر‌بندی...');
+
+  setLoading(true,'در حال تغییر دسترسی همین رئیس ناحیه...');
   try{
-    const r=await DMAuth.apiPost('setRoutePlanningMode',{areaHeadUserId:state.areaHeadId,mode},40000);
+    const r=await DMAuth.apiPost('setRoutePlanningMode',{areaHeadUserId:targetId,mode},40000);
     if(!r.success)throw new Error(r.message||'تغییر حالت ناموفق بود.');
-    toast(r.message||'حالت مسیر‌بندی تغییر کرد.','success');
-    await loadBootstrap(state.areaHeadId);
-  }catch(e){toast(e.message||'خطا در تغییر حالت مسیر‌بندی','error')}
-  finally{setLoading(false)}
+
+    if(String(r.areaHeadUserId||'').trim()!==targetId){
+      throw new Error('پاسخ سرور مربوط به رئیس ناحیه دیگری بود؛ تغییر اعمال نشد.');
+    }
+
+    // Update only the target head locally; no other head's mode is touched.
+    const row=state.areaHeads.find(a=>String(a.userId||'').trim()===targetId);
+    if(row)row.planningMode=r.planningMode;
+    state.planningMode=r.planningMode;
+
+    renderAreaHeads();
+    renderPlanningMode();
+    toast(r.message||`دسترسی ${targetName} تغییر کرد.`,'success');
+
+    // Reload exactly the same selected head to verify persistence.
+    await loadBootstrap(targetId);
+  }catch(e){
+    toast(e.message||'خطا در تغییر حالت مسیر‌بندی','error');
+  }finally{
+    setLoading(false);
+  }
 }
 function renderCannotVisitNotices(){
   const a=state.cannotVisitNotices||[],panel=document.getElementById('cannotPanel'),list=document.getElementById('cannotList');
