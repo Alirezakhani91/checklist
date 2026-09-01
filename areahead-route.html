@@ -6,6 +6,34 @@
 <title>برنامه‌ریزی مسیر من | دیلی مارکت</title>
 <script src="app-config.js"></script>
 <script src="auth-client.js"></script>
+
+<script id="dm-firstpaint-script">
+(function(){
+  function install(){
+    var overlay=document.getElementById('loading')||document.getElementById('loadingScreen');
+    if(!overlay)return;
+    var card=overlay.querySelector('.loader,.loader-card,.loading-card')||overlay;
+    if(card.querySelector('.dm-firstpaint-fallback'))return;
+
+    var old=card.querySelector('strong');
+    var detail=old&&old.textContent?old.textContent.trim():'در حال آماده‌سازی اطلاعات سامانه';
+    if(old)old.style.display='none';
+
+    var box=document.createElement('div');
+    box.className='dm-firstpaint-fallback';
+    box.innerHTML=
+      '<strong class="dm-firstpaint-title">در حال دریافت و به‌روزرسانی اطلاعات…</strong>'+
+      '<span class="dm-firstpaint-detail"></span>'+
+      '<div class="dm-firstpaint-track"><div class="dm-firstpaint-bar"></div></div>';
+    box.querySelector('.dm-firstpaint-detail').textContent=detail;
+    card.appendChild(box);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+})();
+</script>
+
+<script src="dm-loading.js"></script>
 <style>
 @font-face{font-family:Vazir;src:local("Vazirmatn"),local("Vazir")}
 :root{--red:#c90022;--red2:#9e001b;--ink:#141821;--muted:#747c8b;--bg:#f4f6f9;--card:#fff;--line:#e5e8ee;--green:#17865c;--amber:#c88500;--orange:#d86614;--blue:#315efb;--shadow:0 14px 42px rgba(20,28,48,.07)}
@@ -25,6 +53,46 @@ button,input{font-family:inherit}.hidden{display:none!important}
 .mobiletop{display:none}
 @media(max-width:900px){.app{display:block}.side{display:none}.mobiletop{display:flex;position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);padding:12px 14px;justify-content:space-between;align-items:center}.mobiletop strong{font-size:.85rem}.mobiletop button{border:0;background:#f0f2f6;border-radius:10px;padding:8px 10px}.top{display:none}.content{padding:12px 10px 110px}.hero{display:block;border-radius:18px;padding:17px}.hero .badge{display:inline-block;margin-top:12px}.sla{grid-template-columns:repeat(2,1fr);gap:7px}.workspace{display:block}.panel{border-radius:17px;margin-top:10px}.route,.pool{max-height:none}.item{grid-template-columns:32px minmax(0,1fr)}.tools{grid-column:1/-1;justify-content:flex-end}.save{right:0;padding:10px;display:block}.save-actions{display:grid;grid-template-columns:1fr 1.3fr;margin-top:7px}.save-actions .btn{width:100%}.save-info{text-align:center}.guard-head{display:block}.guard-head .btn{width:100%;margin-top:8px}.mandatory{display:block}.mandatory .due{display:block;margin-top:5px}}
 </style>
+
+<style id="dm-firstpaint-style">
+/* First-paint loading fallback.
+   This exists so no spinner is ever visible while dm-loading.js is still downloading. */
+#loading:not(.hidden) .spinner,
+#loading:not(.hidden) .spin,
+#loadingScreen:not(.hidden) .spinner,
+#loadingScreen:not(.hidden) .spin{display:none!important}
+
+.dm-firstpaint-fallback{display:block;width:min(370px,calc(100vw - 46px));direction:rtl;text-align:right}
+.dm-firstpaint-title{display:block;font-weight:900;font-size:.9rem;line-height:1.8;color:#161b24}
+.dm-firstpaint-detail{display:block;margin-top:3px;font-size:.65rem;line-height:1.8;color:#7c8492}
+.dm-firstpaint-track{height:9px;margin-top:16px;border-radius:999px;overflow:hidden;background:#edf0f4;direction:ltr}
+.dm-firstpaint-bar{
+  width:8%;height:100%;border-radius:inherit;
+  background:linear-gradient(90deg,#aa001d,#d60025,#ef4862);
+  animation:dmFirstPaintProgress 7s cubic-bezier(.18,.72,.28,1) forwards;
+  position:relative
+}
+.dm-firstpaint-bar:after{
+  content:"";position:absolute;inset:0;width:30%;
+  transform:translateX(-140%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
+  animation:dmFirstPaintShine 1.25s linear infinite
+}
+@keyframes dmFirstPaintProgress{
+  0%{width:8%}12%{width:24%}35%{width:49%}60%{width:68%}82%{width:79%}100%{width:86%}
+}
+@keyframes dmFirstPaintShine{to{transform:translateX(430%)}}
+@media(max-width:600px){
+  .dm-firstpaint-fallback{width:min(330px,calc(100vw - 38px))}
+  .dm-firstpaint-title{font-size:.84rem}
+  .dm-firstpaint-track{height:8px;margin-top:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  .dm-firstpaint-bar{animation:none;width:55%}
+  .dm-firstpaint-bar:after{animation:none}
+}
+</style>
+
 </head>
 <body>
 <div class="loading" id="loading"><div class="loading-card"><div class="spin"></div><strong id="loadingText">در حال دریافت برنامه...</strong></div></div>
@@ -78,7 +146,7 @@ const DAY_NAMES=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چ�
 const state={user:null,data:null,days:[],stores:[],storeMap:{},selectedIso:'',todayIso:'',dirty:false,sla:null,settings:{dailyMin:3,dailyMax:5}};
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function toast(m,t=''){const w=document.getElementById('toastwrap'),e=document.createElement('div');e.className='toast '+t;e.textContent=m;w.appendChild(e);setTimeout(()=>e.remove(),4200)}
-function setLoading(v,t){document.getElementById('loading').classList.toggle('hidden',!v);if(t)document.getElementById('loadingText').textContent=t}
+function setLoading(v,t){DMLoading.set(!!v,t||'', 'loading');}
 function parseIso(s){return new Date(s+'T12:00:00')}function iso(d){return d.toISOString().slice(0,10)}
 function faDate(s){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{month:'short',day:'numeric'}).format(parseIso(s))}catch(_){return s}}
 function priority(s){const d=Number(s.daysSinceLastVisit);if(d>=999)return['blue','بدون سابقه'];if(d>=14)return['red',d+' روز'];if(d>=12)return['orange','۱۲+ روز'];if(d>=10)return['yellow','۱۰+ روز'];return['',d+' روز']}
