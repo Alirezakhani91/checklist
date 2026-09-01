@@ -56,6 +56,11 @@
       .dm-progress-overlay .dm-original-loader-text{
         display:none!important;
       }
+      .dm-progress-overlay .dm-loading-ui ~ .dm-firstpaint-fallback,
+      .dm-progress-overlay .dm-firstpaint-fallback ~ .dm-loading-ui + .dm-firstpaint-fallback,
+      .dm-progress-overlay .dm-loading-ui + .dm-firstpaint-fallback{
+        display:none!important;
+      }
       .dm-loading-copy{display:block}
       .dm-loading-title{
         display:block;
