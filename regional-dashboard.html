@@ -908,13 +908,12 @@ async function reloadCurrentView(){
 
 async function loadApprovalBadge(){
   try{
-    const [a,c]=await Promise.all([
-      DMAuth.apiPost('regionalLocationApprovals',{status:'PENDING'},25000),
-      DMAuth.apiPost('regionalLocationCorrections',{status:'PENDING'},25000)
-    ]);
-    if(a?.success)state.approvalSummary=Object.assign(state.approvalSummary,a.summary||{pending:a.approvals?.length||0});
-    if(c?.success)state.correctionSummary=Object.assign(state.correctionSummary,c.summary||{pending:c.corrections?.length||0});
-    updateGpsBadge();
+    const r=await DMAuth.apiPost('regionalGpsBadgeCounts',{},18000);
+    if(r?.success){
+      state.approvalSummary=Object.assign(state.approvalSummary,{pending:Number(r.approvalsPending||0)});
+      state.correctionSummary=Object.assign(state.correctionSummary,{pending:Number(r.correctionsPending||0)});
+      updateGpsBadge();
+    }
   }catch(_){}
 }
 function updateGpsBadge(){
