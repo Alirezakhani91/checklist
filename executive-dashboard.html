@@ -24,6 +24,46 @@
 @media(max-width:820px){body{padding-bottom:68px}.app{display:block}.sidebar,.topbar{display:none}.mobile-head{display:flex;height:67px;position:sticky;top:0;z-index:35;background:linear-gradient(135deg,#ad001b,#dc0027);color:#fff;align-items:center;justify-content:space-between;padding:0 15px}.mobile-head strong{font-size:1.05rem}.mobile-head span{display:block;font-size:.62rem;opacity:.76;margin-top:2px}.mobile-user{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.15);display:grid;place-items:center;font-weight:900}.content{width:calc(100% - 18px);margin:15px auto 25px}.hero{display:block}.hero h2{font-size:1.25rem}.hero p{font-size:.76rem}.datepill{display:inline-flex;margin-top:10px}.kpis{gap:8px}.kpi{padding:13px;border-radius:16px}.kpi .n{font-size:1.22rem}.kpi .l{font-size:.67rem}.ki{width:36px;height:36px;border-radius:11px}.progress-card{grid-template-columns:1fr;padding:18px;border-radius:19px;gap:18px}.darkstats{grid-template-columns:repeat(2,1fr)}.grid2,.lower{display:block}.panel{margin-top:11px;border-radius:18px}.panel-head{padding:15px;display:block}.search input{width:100%;margin-top:10px}.table{min-width:0}.table thead{display:none}.table,.table tbody,.table tr,.table td{display:block;width:100%}.table tr{padding:10px 12px;border-bottom:1px solid var(--line)}.table td{border:0;padding:5px 0;display:flex;justify-content:space-between;gap:14px;align-items:center}.table td:before{content:attr(data-label);color:#8a909c;font-size:.64rem}.table .namecell{display:block}.table .namecell:before,.table .actioncell:before{display:none}.table .actioncell{justify-content:flex-end}.trend{padding:15px}.drawer{width:100vw}.drawer-kpis{grid-template-columns:repeat(2,1fr)}.mobile-bottom{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;left:0;right:0;height:66px;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:50}.mobile-bottom button{border:0;background:transparent;color:#777f8e;font-size:.61rem;display:grid;place-items:center;align-content:center;gap:3px}.mobile-bottom button.active{color:var(--red);font-weight:800}.mobile-bottom svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}.toastwrap{left:9px;right:9px;bottom:78px}.toast{max-width:none}.periods{margin-top:12px}}
 @media(max-width:430px){.kpis{grid-template-columns:1fr 1fr}.kpi{display:block}.ki{margin-bottom:9px}.darkstats{grid-template-columns:1fr 1fr}.period{flex:1;text-align:center}}
 </style>
+
+<style id="dm-firstpaint-style">
+/* First-paint loading fallback.
+   This exists so no spinner is ever visible while dm-loading.js is still downloading. */
+#loading:not(.hidden) .spinner,
+#loading:not(.hidden) .spin,
+#loadingScreen:not(.hidden) .spinner,
+#loadingScreen:not(.hidden) .spin{display:none!important}
+
+.dm-firstpaint-fallback{display:block;width:min(370px,calc(100vw - 46px));direction:rtl;text-align:right}
+.dm-firstpaint-title{display:block;font-weight:900;font-size:.9rem;line-height:1.8;color:#161b24}
+.dm-firstpaint-detail{display:block;margin-top:3px;font-size:.65rem;line-height:1.8;color:#7c8492}
+.dm-firstpaint-track{height:9px;margin-top:16px;border-radius:999px;overflow:hidden;background:#edf0f4;direction:ltr}
+.dm-firstpaint-bar{
+  width:8%;height:100%;border-radius:inherit;
+  background:linear-gradient(90deg,#aa001d,#d60025,#ef4862);
+  animation:dmFirstPaintProgress 7s cubic-bezier(.18,.72,.28,1) forwards;
+  position:relative
+}
+.dm-firstpaint-bar:after{
+  content:"";position:absolute;inset:0;width:30%;
+  transform:translateX(-140%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
+  animation:dmFirstPaintShine 1.25s linear infinite
+}
+@keyframes dmFirstPaintProgress{
+  0%{width:8%}12%{width:24%}35%{width:49%}60%{width:68%}82%{width:79%}100%{width:86%}
+}
+@keyframes dmFirstPaintShine{to{transform:translateX(430%)}}
+@media(max-width:600px){
+  .dm-firstpaint-fallback{width:min(330px,calc(100vw - 38px))}
+  .dm-firstpaint-title{font-size:.84rem}
+  .dm-firstpaint-track{height:8px;margin-top:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  .dm-firstpaint-bar{animation:none;width:55%}
+  .dm-firstpaint-bar:after{animation:none}
+}
+</style>
+
 </head>
 <body>
 <div class="loading" id="loading"><div class="loader"><div class="spin"></div><strong id="loadingText">در حال دریافت اطلاعات...</strong></div></div>
@@ -103,12 +143,40 @@
 <div class="toastwrap" id="toastWrap"></div>
 <script src="app-config.js"></script>
 <script src="auth-client.js"></script>
+
+<script id="dm-firstpaint-script">
+(function(){
+  function install(){
+    var overlay=document.getElementById('loading')||document.getElementById('loadingScreen');
+    if(!overlay)return;
+    var card=overlay.querySelector('.loader,.loader-card,.loading-card')||overlay;
+    if(card.querySelector('.dm-firstpaint-fallback'))return;
+
+    var old=card.querySelector('strong');
+    var detail=old&&old.textContent?old.textContent.trim():'در حال آماده‌سازی اطلاعات سامانه';
+    if(old)old.style.display='none';
+
+    var box=document.createElement('div');
+    box.className='dm-firstpaint-fallback';
+    box.innerHTML=
+      '<strong class="dm-firstpaint-title">در حال دریافت و به‌روزرسانی اطلاعات…</strong>'+
+      '<span class="dm-firstpaint-detail"></span>'+
+      '<div class="dm-firstpaint-track"><div class="dm-firstpaint-bar"></div></div>';
+    box.querySelector('.dm-firstpaint-detail').textContent=detail;
+    card.appendChild(box);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+})();
+</script>
+
+<script src="dm-loading.js"></script>
 <script>
 const state={user:null,view:'overview',overview:null,managers:[],performance:null,periodDays:7,activeRegion:null,activeRegionData:null};
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function initials(n){const p=String(n||'م').trim().split(/\s+/);return (p[0]?.[0]||'م')+(p[1]?.[0]||'')}
 function faDate(s){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{month:'short',day:'numeric',year:'numeric'}).format(new Date(s+'T12:00:00'))}catch(_){return s}}
-function setLoading(on,text){document.getElementById('loading').classList.toggle('hidden',!on);if(text)document.getElementById('loadingText').textContent=text}
+function setLoading(on,text){DMLoading.set(!!on,text||'', 'loading');}
 function toast(msg,type=''){const w=document.getElementById('toastWrap'),e=document.createElement('div');e.className='toast '+type;e.textContent=msg;w.appendChild(e);setTimeout(()=>e.remove(),4000)}
 function stateBadge(s){if(s==='ATTENTION')return '<span class="state attn">نیازمند توجه</span>';if(s==='NOT_STARTED')return '<span class="state wait">شروع‌نشده</span>';if(s==='ACTIVE')return '<span class="state active">در حال فعالیت</span>';if(s==='NO_PLAN')return '<span class="state gray">بدون برنامه</span>';return '<span class="state ok">عادی</span>'}
 function priorityTag(x){if(x.priorityLevel==='NO_HISTORY')return '<span class="tag blue">بدون سابقه</span>';if(x.priorityLevel==='OVERDUE')return '<span class="tag red">۱۴+ روز</span>';if(x.priorityLevel==='WARN12')return '<span class="tag orange">۱۲ روز</span>';if(x.priorityLevel==='WARN10')return '<span class="tag yellow">۱۰ روز</span>';return '<span class="tag">عادی</span>'}
