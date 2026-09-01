@@ -23,6 +23,7 @@
 #loadingScreen:not(.hidden) .spin{display:none!important}
 
 .dm-firstpaint-fallback{display:block;width:min(370px,calc(100vw - 46px));direction:rtl;text-align:right}
+.dm-loading-ui + .dm-firstpaint-fallback,.dm-loading-ui ~ .dm-firstpaint-fallback{display:none!important}
 .dm-firstpaint-title{display:block;font-weight:900;font-size:.9rem;line-height:1.8;color:#161b24}
 .dm-firstpaint-detail{display:block;margin-top:3px;font-size:.65rem;line-height:1.8;color:#7c8492}
 .dm-firstpaint-track{height:9px;margin-top:16px;border-radius:999px;overflow:hidden;background:#edf0f4;direction:ltr}
@@ -73,6 +74,11 @@
     var overlay=document.getElementById('loading')||document.getElementById('loadingScreen');
     if(!overlay)return;
     var card=overlay.querySelector('.loader,.loader-card,.loading-card')||overlay;
+    if(card.querySelector('.dm-loading-ui')){
+      var stale=card.querySelector('.dm-firstpaint-fallback');
+      if(stale) stale.remove();
+      return;
+    }
     if(card.querySelector('.dm-firstpaint-fallback'))return;
 
     var old=card.querySelector('strong');
