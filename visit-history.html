@@ -135,6 +135,7 @@
 </script>
 
 <script src="dm-loading.js"></script>
+<script src="dm-instant.js"></script>
 <script>
 const state={user:null,role:'',days:30,page:1,options:{regionalManagers:[],areaHeads:[]},data:null};
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -165,7 +166,16 @@ function downloadBase64(r){const bin=atob(r.base64),b=new Uint8Array(bin.length)
 async function exportHistory(){setLoading(true,'در حال ساخت فایل Excel...');try{const r=await DMAuth.apiPost('exportVisitHistoryXlsx',params(1),90000);if(!r.success)throw new Error(r.message||'ساخت خروجی ناموفق بود.');downloadBase64(r);toast(`${r.rowCount||0} ردیف در Excel آماده شد.`)}catch(e){toast(e.message||'خطا در خروجی Excel','error')}finally{setLoading(false)}}
 function approvalStatusFa(s){s=String(s||'').toUpperCase();return s==='APPROVED'?'تأییدشده':s==='REJECTED'?'ردشده':s==='PENDING'?'در انتظار':s||'—'}
 function auditActionFa(a){const m={VISIT_STARTED:'شروع بازدید',VISIT_SOFT_PASS:'تأیید ساده حضور و شروع بازدید',LOCATION_APPROVAL_REQUESTED:'درخواست تأیید GPS',LOCATION_APPROVED:'تأیید موقعیت توسط مدیر',LOCATION_REJECTED:'رد موقعیت توسط مدیر',LOCATION_APPROVAL_CANCELLED:'لغو درخواست GPS',LOCATION_CORRECTION_REQUESTED:'درخواست اصلاح لوکیشن',LOCATION_CORRECTION_APPROVED:'تأیید و اعمال اصلاح لوکیشن',LOCATION_CORRECTION_REJECTED:'رد اصلاح لوکیشن',LOCATION_CORRECTION_CANCELLED:'لغو درخواست اصلاح لوکیشن',VISIT_START_CANCELLED:'لغو شروع بازدید',CHECKLIST_DRAFT_SAVED:'ذخیره پیش‌نویس چک‌لیست',CHECKLIST_COMPLETED:'تکمیل چک‌لیست و پایان بازدید'};return m[a]||a}
-document.getElementById('query').addEventListener('keydown',e=>{if(e.key==='Enter')loadHistory(1)});init().catch(e=>{setLoading(false);toast(e.message||'خطای غیرمنتظره','error')});
+document.getElementById('query').addEventListener('keydown',e=>{if(e.key==='Enter')loadHistory(1)});
+DMInstant.on('visitHistory',(r,requestParams)=>{
+  if(!r||!r.success)return;
+  const current=params(state.page||1);
+  const same=JSON.stringify(requestParams||{})===JSON.stringify(current||{});
+  if(!same)return;
+  state.data=r;state.page=r.pagination.page;state.options=r.options||state.options;renderOptions();renderSummary();renderVisits();renderPagination();
+});
+
+init().catch(e=>{setLoading(false);toast(e.message||'خطای غیرمنتظره','error')});
 </script>
 </body>
 </html>
