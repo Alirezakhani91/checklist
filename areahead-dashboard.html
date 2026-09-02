@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b5001d">
-<!-- Daily Market Area Head Dashboard V22.3 - Colorful Sales Subsections -->
+<!-- Daily Market Area Head Dashboard V24 Route First No Overview -->
 <title>رئیس ناحیه | چک لیست دیلی مارکت</title>
 
 <style>
@@ -967,7 +967,7 @@ button{cursor:pointer}
     <div class="brand"><strong>دیلی مارکت</strong><span>چک لیست · بازدید فروشگاهی</span></div>
     <div class="user-mini"><div class="avatar" id="sideAvatar">ر</div><div><strong id="sideName">رئیس ناحیه</strong><span id="sideRegion">پنل بازدید</span></div></div>
     <nav class="nav">
-      <button class="nav-btn active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/><path d="m7 10 2 2 4-4"/></svg>برنامه امروز</button>
+      <button class="nav-btn active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/><path d="m7 10 2 2 4-4"/></svg>مسیر و Route امروز</button>
       <button class="nav-btn" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>بازدید خارج برنامه</button>
       <button class="nav-btn hidden" id="selfRouteNav" onclick="location.href='areahead-route.html'"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0-3 3"/></svg>برنامه‌ریزی مسیر من</button>
       <button class="nav-btn" onclick="location.href='alerts.html'"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/><path d="M12 9v5M12 17h.01"/></svg>هشدارهای من</button>
@@ -977,25 +977,19 @@ button{cursor:pointer}
   </aside>
 
   <main class="main">
-    <div class="mobile-head"><div class="mobile-brand">دیلی مارکت<small>برنامه بازدید امروز</small></div><div class="mobile-user" id="mobileAvatar">ر</div></div>
+    <div class="mobile-head"><div class="mobile-brand">دیلی مارکت<small>مسیر و Route امروز</small></div><div class="mobile-user" id="mobileAvatar">ر</div></div>
 
     <header class="topbar">
-      <div><h1>بازدید فروشگاه‌ها</h1><p id="topUserText">برنامه امروز رئیس ناحیه</p></div>
+      <div><h1>مسیر بازدید فروشگاه‌ها</h1><p id="topUserText">Route امروز رئیس ناحیه</p></div>
       <button class="icon-btn" onclick="reloadData()" title="بروزرسانی"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg></button>
     </header>
 
     <div class="content">
       <section class="hero">
-        <div><h2>برنامه امروز شما</h2><p>برای شروع هر بازدید، حضور شما در محدوده فروشگاه بررسی می‌شود.</p></div>
+        <div><h2>Route امروز شما</h2><p>مسیر امروز مستقیماً نمایش داده می‌شود؛ برای شروع بازدید، حضور شما در محدوده فروشگاه بررسی می‌شود.</p></div>
         <span class="date-pill" id="todayLabel">—</span>
       </section>
 
-      <section class="stats">
-        <div class="stat"><div><div class="stat-num" id="statPlanned">—</div><div class="stat-label">برنامه امروز</div></div><div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div></div>
-        <div class="stat"><div><div class="stat-num" id="statDone">—</div><div class="stat-label">تکمیل شده</div></div><div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg></div></div>
-        <div class="stat"><div><div class="stat-num" id="statRemaining">—</div><div class="stat-label">باقی‌مانده</div></div><div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div></div>
-        <div class="stat"><div><div class="stat-num" id="statPending">—</div><div class="stat-label">در انتظار تأیید</div></div><div class="stat-icon yellow"><svg viewBox="0 0 24 24"><path d="M12 3 2.8 20h18.4z"/><path d="M12 9v5M12 17h.01"/></svg></div></div>
-      </section>
 
       <section class="active-box hidden" id="activeBox">
         <div class="active-row">
@@ -1012,7 +1006,7 @@ button{cursor:pointer}
 
       <section class="grid">
         <div class="panel">
-          <div class="panel-head"><div><h3>Route امروز</h3><p id="routeMeta">ترتیب تعیین‌شده توسط مدیر منطقه</p></div><span class="date-pill" id="routeBadge">—</span></div>
+          <div class="panel-head"><div><h3>مسیر و Route امروز</h3><p id="routeMeta">ترتیب تعیین‌شده توسط مدیر منطقه</p></div><span class="date-pill" id="routeBadge">—</span></div>
           <div class="panel-body"><div class="route-list" id="routeList"></div></div>
         </div>
 
@@ -1024,7 +1018,7 @@ button{cursor:pointer}
     </div>
 
     <nav class="mobile-bottom">
-      <button class="mobile-nav active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>امروز</button>
+      <button class="mobile-nav active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>Route</button>
       <button class="mobile-nav" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>خارج برنامه</button>
       <button class="mobile-nav" onclick="location.href='alerts.html'"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/></svg>هشدار</button>
       <button class="mobile-nav hidden" id="selfRouteMobileNav" onclick="location.href='areahead-route.html'"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0-3 3"/></svg>مسیر من</button>
@@ -1225,10 +1219,6 @@ async function loadData(silent=false){
 
 function renderAll(){
   document.getElementById('todayLabel').textContent=faDate(state.data.serverDateIso);
-  document.getElementById('statPlanned').textContent=state.data.summary?.planned??0;
-  document.getElementById('statDone').textContent=state.data.summary?.completed??0;
-  document.getElementById('statRemaining').textContent=state.data.summary?.remaining??0;
-  document.getElementById('statPending').textContent=state.data.summary?.pendingApproval??0;
   document.getElementById('radiusRule').textContent=(state.settings.geoRadiusM||300)+' متر';
   document.getElementById('routeBadge').textContent=(state.route.items?.length||0)+' بازدید';
   const routeSource=String(state.route.sourceType||'').toUpperCase();
