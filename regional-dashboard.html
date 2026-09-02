@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b4001b">
-<!-- Daily Market Regional Dashboard V23.5 GPS Live Center - Checklist Performance Sync -->
+<!-- Daily Market Regional Dashboard V24 Route First No Overview - Checklist Performance Sync -->
 <title>مدیر منطقه | چک لیست دیلی مارکت</title>
 <style>
 @font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2");font-display:swap;font-weight:400}
@@ -150,8 +150,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
     <div class="brand"><div class="brand-title">دیلی مارکت</div><div class="brand-sub">چک لیست · مدیریت بازدید</div></div>
     <div class="manager-mini"><div class="avatar" id="sideAvatar">م</div><div><strong id="sideName">مدیر منطقه</strong><span>پنل مدیریت منطقه</span></div></div>
     <nav class="nav">
-      <button class="nav-btn active" id="navOverview" onclick="switchView('overview')"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4zM14 20h6V11h-6zM14 4h6v3h-6zM4 20h6v-3H4z"/></svg>نمای کلی</button>
-      <button class="nav-btn" id="navRoute" onclick="switchView('route')"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 3 3v0a3 3 0 0 1-3 3H9a3 3 0 0 0-3 3"/></svg>برنامه و Route</button>
+      <button class="nav-btn active" id="navRoute" onclick="switchView('route')"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 3 3v0a3 3 0 0 1-3 3H9a3 3 0 0 0-3 3"/></svg>برنامه و Route</button>
       <button class="nav-btn" id="navGps" onclick="switchView('gps')"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z"/><circle cx="12" cy="10" r="2"/></svg>تأیید GPS <span class="nav-count zero" id="gpsNavCount">0</span></button>
       <button class="nav-btn" id="navPerformance" onclick="switchView('performance')"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>گزارش عملکرد</button>
       <button class="nav-btn" onclick="location.href='alerts.html'"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/><path d="M12 9v5M12 17h.01"/></svg>مرکز هشدارها</button>
@@ -161,56 +160,10 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
   </aside>
 
   <main class="main">
-    <div class="mobile-head"><div class="mobile-brand">دیلی مارکت<small>مدیریت Route</small></div><div class="mobile-user" id="mobileAvatar">م</div></div>
+    <div class="mobile-head"><div class="mobile-brand">دیلی مارکت<small>مسیر و Route</small></div><div class="mobile-user" id="mobileAvatar">م</div></div>
     <header class="topbar"><div><h1 id="topTitle">مدیریت بازدید فروشگاه‌ها</h1><p id="regionText">در حال دریافت اطلاعات...</p></div><div class="top-actions"><button class="icon-btn" title="بارگذاری مجدد" onclick="reloadCurrentView()"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg></button></div></header>
 
     <div class="content">
-      <div id="overviewView" class="overview-view">
-        <div class="overview-hero">
-          <div><h2>نمای کلی عملیات منطقه</h2><p>وضعیت امروز رؤسای ناحیه، پیشرفت بازدیدها، فروشگاه‌های نیازمند توجه و کیفیت چک‌لیست.</p></div>
-          <span class="overview-date" id="overviewDate">امروز · —</span>
-        </div>
-
-        <section class="overview-kpis">
-          <article class="overview-kpi"><div class="k-top"><div><strong id="ovPlanned">—</strong><div class="k-label">بازدید برنامه‌ریزی‌شده امروز</div><div class="k-sub" id="ovHeadsWithRoute">— رئیس ناحیه Route دارند</div></div><span class="k-icon blue"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0-3 3"/></svg></span></div></article>
-          <article class="overview-kpi"><div class="k-top"><div><strong id="ovCompleted">—</strong><div class="k-label">بازدید تکمیل‌شده امروز</div><div class="k-sub" id="ovCompletionText">—٪ تحقق برنامه</div></div><span class="k-icon green"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg></span></div></article>
-          <article class="overview-kpi"><div class="k-top"><div><strong id="ovActive">—</strong><div class="k-label">بازدید در حال انجام</div><div class="k-sub" id="ovRemaining">— بازدید باقی مانده</div></div><span class="k-icon blue"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></span></div></article>
-          <article class="overview-kpi"><div class="k-top"><div><strong id="ovNotStarted">—</strong><div class="k-label">رئیس ناحیه بدون شروع امروز</div><div class="k-sub">دارای Route ولی هنوز بدون Visit</div></div><span class="k-icon red"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M18 8v5M18 17h.01"/></svg></span></div></article>
-          <article class="overview-kpi"><div class="k-top"><div><strong id="ovOverdue">—</strong><div class="k-label">فروشگاه ۱۴+ روز بدون بازدید</div><div class="k-sub" id="ovWarns">— مورد در هشدار ۱۰/۱۲ روز</div></div><span class="k-icon red"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/><path d="M12 9v5M12 17h.01"/></svg></span></div></article>
-          <article class="overview-kpi"><div class="k-top"><div><strong id="ovGpsPending">—</strong><div class="k-label">در انتظار تأیید GPS</div><div class="k-sub" id="ovGpsOverrides">— Override امروز</div></div><span class="k-icon amber"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z"/><circle cx="12" cy="10" r="2"/></svg></span></div></article>
-          <article class="overview-kpi"><div class="k-top"><div><strong id="ovUnplanned">—</strong><div class="k-label">بازدید خارج برنامه امروز</div><div class="k-sub">ثبت‌شده توسط رؤسای ناحیه</div></div><span class="k-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></div></article>
-          <article class="overview-kpi"><div class="k-top"><div><strong id="ovWeak">—</strong><div class="k-label">پاسخ نیازمند توجه امروز</div><div class="k-sub">در چک‌لیست‌های ثبت‌شده</div></div><span class="k-icon red"><svg viewBox="0 0 24 24"><path d="M4 18V9M10 18V5M16 18v-7M22 18H2"/></svg></span></div></article>
-        </section>
-
-        <section class="ops-strip">
-          <div><h3>پیشرفت عملیات امروز</h3><p>نسبت بازدیدهای تکمیل‌شده به برنامه ثبت‌شده امروز منطقه</p><div class="ops-number"><span id="ovProgressNumber">0%</span> <span>تحقق برنامه</span></div></div>
-          <div><div class="ops-progress"><span id="ovProgressBar"></span></div><div class="ops-meta"><div class="ops-mini"><strong id="ovHeadsStarted">—</strong><span>رئیس ناحیه شروع کرده</span></div><div class="ops-mini"><strong id="ovVisitsToday">—</strong><span>Visit ایجادشده امروز</span></div><div class="ops-mini"><strong id="ovNoHistory">—</strong><span>فروشگاه بدون سابقه</span></div><div class="ops-mini"><strong id="ovStores">—</strong><span>کل فروشگاه منطقه</span></div></div></div>
-        </section>
-
-        <div class="overview-grid">
-          <section class="overview-panel">
-            <div class="overview-panel-head"><div><h3>پایش رؤسای ناحیه امروز</h3><p>افراد نیازمند توجه در ابتدای جدول نمایش داده می‌شوند.</p></div><span class="today-note" id="ovHeadsMeta">—</span></div>
-            <div class="head-table-wrap"><table class="head-table"><thead><tr><th>رئیس ناحیه</th><th>وضعیت امروز</th><th>برنامه</th><th>تکمیل</th><th>پیشرفت</th><th>۷ روز اخیر</th><th>نیازمند توجه</th><th>آخرین فعالیت</th><th></th></tr></thead><tbody id="overviewHeadsBody"></tbody></table></div>
-          </section>
-
-          <aside class="overview-panel">
-            <div class="overview-panel-head"><div><h3>فروشگاه‌های نیازمند توجه</h3><p>اولویت بر اساس فاصله از آخرین بازدید</p></div><button class="panel-link" onclick="switchView('route')">مدیریت Route</button></div>
-            <div class="attention-list" id="overviewWatchlist"></div>
-          </aside>
-        </div>
-
-        <div class="overview-lower">
-          <section class="overview-panel">
-            <div class="overview-panel-head"><div><h3>روند ۷ روز اخیر</h3><p>برنامه ثبت‌شده در مقابل بازدید تکمیل‌شده</p></div><div class="trend-legend"><span class="planned">برنامه</span><span class="completed">تکمیل</span></div></div>
-            <div class="trend-wrap"><div class="trend-chart" id="overviewTrend"></div></div>
-          </section>
-          <section class="overview-panel">
-            <div class="overview-panel-head"><div><h3>بیشترین پاسخ‌های نیازمند توجه</h3><p>برای شناسایی سریع نقاط مسئله‌دار چک‌لیست</p></div></div>
-            <div class="weak-list" id="overviewWeakList"></div>
-          </section>
-        </div>
-      </div>
-
 
       <div id="performanceView" class="performance-view hidden">
         <div class="performance-hero">
@@ -278,7 +231,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
         </section>
       </div>
 
-      <div id="routeView" class="hidden">
+      <div id="routeView">
       <div class="welcome"><div><h2>برنامه‌ریزی بازدید رؤسای ناحیه</h2><p>Route پیشنهادی سیستم بر اساس اولویت بازدید و نزدیکی جغرافیایی ساخته می‌شود و کاملاً قابل ویرایش است.</p></div><span class="pill">استاندارد روزانه: ۳ تا ۵ فروشگاه</span></div>
 
       <section class="stats">
@@ -403,8 +356,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
     </div>
 
     <nav class="mobile-bottom">
-      <button class="mobile-nav active" id="mobileOverviewNav" onclick="switchView('overview')"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4zM14 20h6V11h-6z"/></svg>نمای کلی</button>
-      <button class="mobile-nav" id="mobileRouteNav" onclick="switchView('route')"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0-3 3"/></svg>Route</button>
+      <button class="mobile-nav active" id="mobileRouteNav" onclick="switchView('route')"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0-3 3"/></svg>Route</button>
       <button class="mobile-nav" id="mobileGpsNav" onclick="switchView('gps')"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z"/></svg>GPS</button>
       <button class="mobile-nav" id="mobilePerformanceNav" onclick="switchView('performance')"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>عملکرد</button>
       <button class="mobile-nav" onclick="location.href='alerts.html'"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/></svg>هشدار</button>
@@ -497,9 +449,9 @@ const DAY_NAMES=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چ�
 const state={
   user:null,summary:null,settings:{dailyMin:3,dailyTarget:4,dailyMax:5},areaHeads:[],areaHeadId:'',stores:[],storeMap:{},
   weekStartIso:'',todayIso:'',days:[],selectedDayIso:'',filter:'ALL',dirty:false,sourceType:'MANUAL',dragIndex:null,moveIndex:null,
-  activeView:'overview',gpsMode:'approval',approvals:[],approvalFilter:'PENDING',approvalSummary:{pending:0,approved:0,rejected:0},decisionApprovalId:'',
+  activeView:'route',gpsMode:'approval',approvals:[],approvalFilter:'PENDING',approvalSummary:{pending:0,approved:0,rejected:0},decisionApprovalId:'',
   corrections:[],correctionFilter:'PENDING',correctionSummary:{pending:0,approved:0,rejected:0},correctionDecisionId:'',
-  overview:null,overviewLoaded:false,routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:7,performanceRefreshTimer:null
+  routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:7,performanceRefreshTimer:null
 };
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -527,8 +479,9 @@ async function init(){
   document.getElementById('sideName').textContent=state.user.fullName||'مدیر منطقه';
   document.getElementById('sideAvatar').textContent=initials(state.user.fullName);
   document.getElementById('mobileAvatar').textContent=initials(state.user.fullName);
-  document.getElementById('regionText').textContent=(state.user.regionalManagerName||state.user.fullName)+' · پایش عملیات امروز';
-  await loadOverview();
+  document.getElementById('topTitle').textContent='مدیریت Route و مسیر بازدید';
+  document.getElementById('regionText').textContent=(state.user.regionalManagerName||state.user.fullName)+' · برنامه‌ریزی و مدیریت مسیر رؤسای ناحیه';
+  await loadBootstrap('');
   await loadApprovalBadge();
 }
 
@@ -802,86 +755,6 @@ async function goCurrentWeek(){if(state.dirty&&!confirm('تغییرات ذخیر
 async function reloadData(){if(state.dirty&&!confirm('تغییرات ذخیره نشده لغو شود؟'))return;await loadBootstrap(state.areaHeadId);}
 
 
-function overviewStateLabel(st){return ({COMPLETED:'تکمیل برنامه',ACTIVE:'در حال فعالیت',PENDING_GPS:'در انتظار GPS',NOT_STARTED:'شروع نکرده',NO_ROUTE:'بدون Route'})[String(st||'').toUpperCase()]||st;}
-function overviewStateClass(st){return String(st||'no_route').toLowerCase();}
-function overviewTime(value){if(!value)return '—';try{return new Intl.DateTimeFormat('fa-IR',{hour:'2-digit',minute:'2-digit'}).format(new Date(value));}catch(_){return '—';}}
-function overviewDateLabel(value){if(!value)return '—';try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).format(parseIso(value));}catch(_){return value;}}
-
-async function loadOverview(){
-  setLoading(true,'در حال آماده‌سازی نمای مدیریتی...');
-  try{
-    const res=await DMAuth.apiPost('regionalOverview',{},40000);
-    if(!res.success)throw new Error(res.message||'دریافت نمای مدیریتی ناموفق بود.');
-    state.overview=res;state.overviewLoaded=true;
-    renderOverview();
-    if(res.summary)updateApprovalBadge(res.summary.pendingGpsToday||0);
-  }catch(e){toast(e.message||'خطا در دریافت نمای کلی','error');}
-  finally{setLoading(false);}
-}
-
-function renderOverview(){
-  const data=state.overview||{},s=data.summary||{};
-  document.getElementById('overviewDate').textContent='امروز · '+overviewDateLabel(data.todayIso);
-  document.getElementById('ovPlanned').textContent=s.plannedToday??0;
-  document.getElementById('ovHeadsWithRoute').textContent=`${s.headsWithRoute||0} رئیس ناحیه Route دارند`;
-  document.getElementById('ovCompleted').textContent=s.completedToday??0;
-  document.getElementById('ovCompletionText').textContent=`${s.completionPercent||0}٪ تحقق برنامه`;
-  document.getElementById('ovActive').textContent=s.activeToday??0;
-  document.getElementById('ovRemaining').textContent=`${s.remainingToday||0} بازدید باقی مانده`;
-  document.getElementById('ovNotStarted').textContent=s.headsNotStarted??0;
-  document.getElementById('ovOverdue').textContent=s.overdue??0;
-  document.getElementById('ovWarns').textContent=`${Number(s.warn10||0)+Number(s.warn12||0)} مورد در هشدار ۱۰/۱۲ روز`;
-  document.getElementById('ovGpsPending').textContent=s.pendingGpsToday??0;
-  document.getElementById('ovGpsOverrides').textContent=`${s.gpsOverridesToday||0} Override امروز`;
-  document.getElementById('ovUnplanned').textContent=s.unplannedToday??0;
-  document.getElementById('ovWeak').textContent=s.weakAnswersToday??0;
-  document.getElementById('ovProgressNumber').textContent=`${s.completionPercent||0}%`;
-  document.getElementById('ovProgressBar').style.width=`${Math.max(0,Math.min(100,Number(s.completionPercent||0)))}%`;
-  document.getElementById('ovHeadsStarted').textContent=s.headsStarted??0;
-  document.getElementById('ovVisitsToday').textContent=s.visitsToday??0;
-  document.getElementById('ovNoHistory').textContent=s.noHistory??0;
-  document.getElementById('ovStores').textContent=s.stores??0;
-  document.getElementById('ovHeadsMeta').textContent=`${s.areaHeads||0} رئیس ناحیه · ${s.stores||0} فروشگاه`;
-  renderOverviewHeads(data.areaHeads||[]);
-  renderOverviewWatchlist(data.watchlist||[]);
-  renderOverviewTrend(data.trend7||[]);
-  renderOverviewWeak(data.weakQuestions||[]);
-}
-
-function renderOverviewHeads(rows){
-  const body=document.getElementById('overviewHeadsBody');
-  if(!rows.length){body.innerHTML='<tr><td colspan="9"><div class="overview-empty"><strong>رئیس ناحیه‌ای پیدا نشد</strong>اطلاعات ساختار منطقه را بررسی کنید.</div></td></tr>';return;}
-  body.innerHTML=rows.map(h=>`<tr>
-    <td><div class="head-name">${esc(h.fullName||h.userId)}</div><div class="head-sub">${h.storeCount||0} فروشگاه</div></td>
-    <td><span class="head-status ${overviewStateClass(h.state)}">${esc(overviewStateLabel(h.state))}</span>${h.pendingGps?` <span class="approval-chip pending">${h.pendingGps} GPS</span>`:''}</td>
-    <td>${h.plannedToday||0}</td><td><strong>${h.completedToday||0}</strong>${h.activeToday?` <span class="tag blue">${h.activeToday} فعال</span>`:''}</td>
-    <td><span class="mini-progress"><span style="width:${Math.max(0,Math.min(100,Number(h.completionPercent||0)))}%"></span></span><span class="pct">${h.completionPercent||0}٪</span></td>
-    <td>${h.visits7||0}<div class="head-sub">میانگین ${h.avgDuration7||0} دقیقه</div></td>
-    <td>${h.weakAnswersToday?`<span class="attention-badge overdue">${h.weakAnswersToday}</span>`:'0'}</td>
-    <td>${overviewTime(h.lastActivity)}</td>
-    <td><button class="head-route-btn" onclick="openAreaHeadRoute('${esc(h.userId)}')">Route</button></td>
-  </tr>`).join('');
-}
-
-function renderOverviewWatchlist(rows){
-  const el=document.getElementById('overviewWatchlist');
-  if(!rows.length){el.innerHTML='<div class="overview-empty"><strong>فروشگاه بحرانی نداریم</strong>همه فروشگاه‌ها در بازه عادی بازدید هستند.</div>';return;}
-  el.innerHTML=rows.map(x=>`<div class="attention-card"><div class="attention-top"><div><div class="attention-name">${esc(x.storeName||x.storeCode)}</div><div class="attention-code">کد ${esc(x.storeCode)} · ${esc(x.areaHeadName||'')}</div></div><span class="attention-badge ${String(x.priorityLevel||'').toLowerCase()}">${esc(x.priorityLabel||'')}</span></div><div class="attention-meta"><span class="attention-chip">۷ روز: ${x.visits7||0} بازدید</span>${String(x.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="attention-chip">GPS مشکوک</span>':''}</div></div>`).join('');
-}
-
-function renderOverviewTrend(rows){
-  const el=document.getElementById('overviewTrend');
-  if(!rows.length){el.innerHTML='<div class="overview-empty"><strong>داده‌ای برای روند وجود ندارد</strong></div>';return;}
-  const max=Math.max(1,...rows.map(x=>Math.max(Number(x.planned||0),Number(x.completed||0))));
-  el.innerHTML=rows.map(x=>{const p=Math.round((Number(x.planned||0)/max)*100),c=Math.round((Number(x.completed||0)/max)*100);return `<div class="trend-day"><div class="trend-bars"><span class="trend-bar planned" style="height:${Math.max(2,p)}%" title="برنامه ${x.planned||0}"></span><span class="trend-bar completed" style="height:${Math.max(2,c)}%" title="تکمیل ${x.completed||0}"></span></div><div class="trend-count">${x.completed||0}/${x.planned||0}</div><div class="trend-label">${faDateShort(x.dateIso)}</div></div>`;}).join('');
-}
-
-function renderOverviewWeak(rows){
-  const el=document.getElementById('overviewWeakList');
-  if(!rows.length){el.innerHTML='<div class="overview-empty"><strong>مورد نیازمند توجهی ثبت نشده</strong>برای بازدیدهای امروز مورد نیازمند توجه نداریم.</div>';return;}
-  el.innerHTML=rows.map(x=>`<div class="weak-card"><div><div class="weak-question">${esc(x.questionText||x.questionId)}</div><div class="weak-section">${esc(x.section||'چک‌لیست')}</div></div><span class="weak-count">${x.count||0}</span></div>`).join('');
-}
-
 async function openAreaHeadRoute(id){
   if(state.dirty&&!confirm('تغییرات Route ذخیره نشده است. ادامه می‌دهید؟'))return;
   state.areaHeadId=id;state.routeLoaded=false;
@@ -996,40 +869,55 @@ function stopPerformanceAutoRefresh(){if(state.performanceRefreshTimer){clearInt
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopPerformanceAutoRefresh();else if(state.activeView==='performance')startPerformanceAutoRefresh();});
 
 async function switchView(view){
-  if(view==='performance')startPerformanceAutoRefresh();else stopPerformanceAutoRefresh();
+  if(!['route','gps','performance'].includes(view))view='route';
+
+  if(view==='performance')startPerformanceAutoRefresh();
+  else stopPerformanceAutoRefresh();
+
   if(view===state.activeView){
-    if(view==='overview'&&!state.overviewLoaded)await loadOverview();
-    else if(view==='route'&&!state.routeLoaded)await loadBootstrap(state.areaHeadId);
+    if(view==='route'&&!state.routeLoaded)await loadBootstrap(state.areaHeadId);
     else if(view==='performance'&&!state.performanceLoaded)await loadRegionalPerformance();
+    else if(view==='gps')await loadGpsCurrentMode();
     return;
   }
+
   if(state.activeView==='route'&&state.dirty&&!confirm('تغییرات Route ذخیره نشده است. بدون ذخیره از این بخش خارج شوید؟'))return;
+
   state.activeView=view;
-  document.getElementById('overviewView').classList.toggle('hidden',view!=='overview');
+
   document.getElementById('performanceView').classList.toggle('hidden',view!=='performance');
   document.getElementById('routeView').classList.toggle('hidden',view!=='route');
   document.getElementById('gpsView').classList.toggle('hidden',view!=='gps');
-  document.getElementById('navOverview').classList.toggle('active',view==='overview');
+
   document.getElementById('navPerformance').classList.toggle('active',view==='performance');
   document.getElementById('navRoute').classList.toggle('active',view==='route');
   document.getElementById('navGps').classList.toggle('active',view==='gps');
-  document.getElementById('mobileOverviewNav').classList.toggle('active',view==='overview');
+
   document.getElementById('mobilePerformanceNav').classList.toggle('active',view==='performance');
   document.getElementById('mobileRouteNav').classList.toggle('active',view==='route');
   document.getElementById('mobileGpsNav').classList.toggle('active',view==='gps');
-  const titles={overview:'نمای کلی عملیات منطقه',performance:'تحلیل عملکرد منطقه',route:'مدیریت بازدید فروشگاه‌ها',gps:'تأیید موقعیت رؤسای ناحیه'};
-  const suffix={overview:' · پایش عملیات امروز',performance:' · تحلیل عملکرد ۷ / ۱۴ / ۳۰ روزه',route:' · برنامه‌ریزی و پایش رؤسای ناحیه',gps:' · بررسی درخواست‌های GPS'};
-  document.getElementById('topTitle').textContent=titles[view]||'مدیریت بازدید فروشگاه‌ها';
-  document.getElementById('regionText').textContent=(state.user.regionalManagerName||state.user.fullName)+(suffix[view]||'');
-  if(view==='overview')await loadOverview();
-  else if(view==='performance')await loadRegionalPerformance();
+
+  const titles={
+    performance:'تحلیل عملکرد منطقه',
+    route:'مدیریت Route و مسیر بازدید',
+    gps:'تأیید موقعیت رؤسای ناحیه'
+  };
+  const suffix={
+    performance:' · تحلیل عملکرد ۷ / ۱۴ / ۳۰ روزه',
+    route:' · برنامه‌ریزی و مدیریت مسیر رؤسای ناحیه',
+    gps:' · بررسی درخواست‌های GPS'
+  };
+
+  document.getElementById('topTitle').textContent=titles[view];
+  document.getElementById('regionText').textContent=(state.user.regionalManagerName||state.user.fullName)+suffix[view];
+
+  if(view==='performance')await loadRegionalPerformance();
   else if(view==='route'&&!state.routeLoaded)await loadBootstrap(state.areaHeadId);
   else if(view==='gps')await loadGpsCurrentMode();
 }
 
 async function reloadCurrentView(){
-  if(state.activeView==='overview')await loadOverview();
-  else if(state.activeView==='performance')await loadRegionalPerformance(true);
+  if(state.activeView==='performance')await loadRegionalPerformance(true);
   else if(state.activeView==='gps')await loadGpsCurrentMode();
   else await reloadData();
 }
@@ -1049,12 +937,6 @@ function updateGpsBadge(){
   const el=document.getElementById('gpsNavCount');if(el){el.textContent=String(count);el.classList.toggle('zero',!count);}
   const a=document.getElementById('approvalModeCount');if(a)a.textContent=String(ap);
   const c=document.getElementById('correctionModeCount');if(c)c.textContent=String(cp);
-}
-// Backward-compatible helper used by Overview.
-// Keeps the old caller working while the new GPS badge also includes location-correction requests.
-function updateApprovalBadge(count){
-  state.approvalSummary = Object.assign({}, state.approvalSummary || {}, {pending:Number(count||0)});
-  updateGpsBadge();
 }
 async function loadGpsCurrentMode(){
   if(state.gpsMode==='correction')await loadCorrections(state.correctionFilter);else await loadApprovals(state.approvalFilter);
@@ -1240,13 +1122,6 @@ async function confirmRejectCorrection(){
 
 window.addEventListener('beforeunload',e=>{if(state.dirty){e.preventDefault();e.returnValue='';}});
 
-DMInstant.on('regionalOverview',(res)=>{
-  if(!res||!res.success)return;
-  state.overview=res;state.overviewLoaded=true;renderOverview();
-  if(res.summary)updateApprovalBadge(res.summary.pendingGpsToday||0);
-  const first=(res.areaHeads||[])[0];
-  if(first?.userId)DMInstant.prefetch('regionalBootstrap',{weekStartIso:state.weekStartIso,areaHeadUserId:first.userId},45000);
-});
 DMInstant.on('regionalBootstrap',(res,params)=>{
   if(!res||!res.success)return;
   if(params.weekStartIso!==state.weekStartIso)return;
@@ -1262,15 +1137,6 @@ DMInstant.on('regionalPerformance',(res,params)=>{
   if(!res||!res.success||Number(params.periodDays||7)!==Number(state.performancePeriodDays||7))return;
   state.performance=res;state.performanceLoaded=true;renderRegionalPerformance();
 });
-/* V23.1: live regional overview refresh */
-setInterval(function(){
-  try{
-    if(document.hidden)return;
-    const pane=document.getElementById('pane-overview');
-    if(!pane||!pane.classList.contains('active'))return;
-    if(typeof loadOverview==='function')loadOverview(true);
-  }catch(_){}
-},30000);
 
 init().catch(e=>{setLoading(false);toast(e.message||'خطای غیرمنتظره','error');});
 </script>
