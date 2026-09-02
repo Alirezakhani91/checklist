@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b5001d">
-<!-- Daily Market Area Head Dashboard V22 - Visual Sectioned Checklist -->
+<!-- Daily Market Area Head Dashboard V22.1 - Strong Colored Section Backgrounds -->
 <title>رئیس ناحیه | چک لیست دیلی مارکت</title>
 
 <style>
@@ -345,7 +345,7 @@ button{cursor:pointer}
   margin-bottom:24px;
   border:1px solid var(--sec-border);
   border-radius:24px;
-  background:#fff;
+  background:linear-gradient(180deg,var(--sec-soft) 0%, color-mix(in srgb,var(--sec-soft) 78%, #ffffff) 100%);
   overflow:hidden;
   box-shadow:0 12px 34px rgba(20,28,48,.045);
   scroll-margin-top:18px;
@@ -366,7 +366,7 @@ button{cursor:pointer}
   padding:17px 22px 15px 20px;
   border-bottom:1px solid var(--sec-border);
   background:
-    linear-gradient(135deg,var(--sec-soft) 0%,#fff 72%);
+    linear-gradient(135deg,color-mix(in srgb,var(--sec-accent) 12%, #ffffff) 0%, var(--sec-soft-2) 46%, var(--sec-soft) 100%);
   display:block;
 }
 .check-section-head-main{
@@ -460,15 +460,19 @@ button{cursor:pointer}
 
 /* Subsection creates another, softer visual hierarchy */
 .check-subsection{
-  padding:5px 20px 5px;
+  padding:8px 20px 10px;
+  background:color-mix(in srgb,var(--sec-soft) 55%, #ffffff);
 }
 .check-sub-group{
-  padding:7px 0 4px;
+  padding:10px 12px 8px;
+  background:rgba(255,255,255,.42);
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:18px;
 }
 .check-sub-group + .check-sub-group{
-  border-top:1px dashed #e6e9ef;
-  margin-top:5px;
-  padding-top:12px;
+  border-top:0;
+  margin-top:10px;
+  padding-top:10px;
 }
 .check-sub-title{
   display:inline-flex;
@@ -493,11 +497,15 @@ button{cursor:pointer}
 
 /* Questions inherit their section accent */
 .question-card{
-  padding:16px 2px;
-  border-bottom:1px solid #eef1f4;
+  padding:16px 10px;
+  border-bottom:1px solid rgba(39,49,65,.08);
+  background:rgba(255,255,255,.34);
+  border-radius:14px;
+  margin-bottom:8px;
 }
 .question-card:last-child{
   border-bottom:0;
+  margin-bottom:0;
 }
 .question-card.missing{
   background:#fff8f9;
@@ -625,7 +633,7 @@ button{cursor:pointer}
     margin-top:10px;
   }
   .check-subsection{
-    padding:3px 13px 4px;
+    padding:5px 13px 8px;
   }
   .check-sub-title{
     font-size:.59rem;
