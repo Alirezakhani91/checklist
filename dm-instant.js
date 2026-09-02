@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '23.3.0';
+  const VERSION = '23.5.0';
   const PREFIX = 'dmInstant:v20:';
   const MAX_ENTRIES = 28;
   const MAX_ITEM_CHARS = 780000;
@@ -13,9 +13,6 @@
     'regionalBootstrap',
     'regionalOverview',
     'regionalPerformance',
-    'regionalGpsBadgeCounts',
-    'regionalLocationApprovals',
-    'regionalLocationCorrections',
     'executiveOverview',
     'executivePerformance',
     'adminBootstrap',
@@ -32,7 +29,6 @@
   const DAILY = new Set([
     'areaHeadBootstrap',
     'regionalOverview',
-    'regionalGpsBadgeCounts',
     'executiveOverview',
     'adminBootstrap',
     'adminPilotBootstrap'
