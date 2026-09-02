@@ -177,6 +177,7 @@
 </script>
 
 <script src="dm-loading.js"></script>
+<script src="dm-instant.js"></script>
 <script>
 const state={user:null,view:'overview',overview:null,managers:[],performance:null,periodDays:7,activeRegion:null,activeRegionData:null};
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -209,6 +210,16 @@ function renderRegionDrawer(r){const s=r.summary||{},a=r.areaHeads||[];document.
 async function openAreaHead(id){setLoading(true,'در حال دریافت فروشگاه‌های رئیس ناحیه...');try{const r=await DMAuth.apiPost('executiveAreaHeadDetail',{areaHeadUserId:id},40000);if(!r.success)throw new Error(r.message||'خطا');document.getElementById('drawerTitle').textContent='رئیس ناحیه · '+r.areaHeadName;document.getElementById('drawerSub').textContent=r.regionalManagerName+' · '+r.stores.length+' فروشگاه';renderAreaHeadDrawer(r);document.getElementById('drawerBackdrop').classList.add('open')}catch(e){toast(e.message,'error')}finally{setLoading(false)}}
 function renderAreaHeadDrawer(r){const arr=r.stores||[];const back=state.activeRegionData?'<button class="backbtn" onclick="renderRegionBack()">بازگشت به منطقه</button>':'';document.getElementById('drawerBody').innerHTML=`${back}<section class="drawer-section"><div class="drawer-title">وضعیت فروشگاه‌ها</div><div class="store-list">${arr.map(x=>{let visit='';if(x.visitStatus==='COMPLETED')visit='<span class="tag green">تکمیل‌شده امروز</span>';else if(x.visitStatus==='IN_PROGRESS')visit='<span class="tag blue">در حال بازدید</span>';else if(x.visitStatus==='WAITING_LOCATION_APPROVAL')visit='<span class="tag yellow">انتظار GPS</span>';else if(x.plannedToday)visit=`<span class="tag">Route #${x.sequenceNo}</span>`;return `<div class="store-row"><div><strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong><p>${esc(x.priorityLabel||'')} · ۷ روز ${x.visits7} بازدید</p><div class="tags">${priorityTag(x)}${visit}${String(x.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="tag red">GPS مشکوک</span>':''}</div></div></div>`}).join('')||'<div class="empty">فروشگاهی وجود ندارد.</div>'}</div></section>`}
 function renderRegionBack(){if(state.activeRegionData){document.getElementById('drawerTitle').textContent='منطقه · '+state.activeRegionData.regionalManagerName;document.getElementById('drawerSub').textContent='Drill-down رؤسای ناحیه و فروشگاه‌های نیازمند توجه';renderRegionDrawer(state.activeRegionData)}}
+
+DMInstant.on('executiveOverview',(r)=>{
+  if(!r||!r.success)return;
+  state.overview=r;state.managers=r.managers||[];renderOverview();
+});
+DMInstant.on('executivePerformance',(r,params)=>{
+  if(!r||!r.success||Number(params.periodDays||7)!==Number(state.periodDays||7))return;
+  state.performance=r;renderPerformance();
+});
+
 init().catch(e=>{setLoading(false);toast(e.message||'خطای غیرمنتظره','error')});
 </script>
 </body>
