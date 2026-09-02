@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b4001b">
-<!-- Daily Market Regional Dashboard V23.1 - Checklist Performance Sync -->
+<!-- Daily Market Regional Dashboard V23.5 GPS Live Center - Checklist Performance Sync -->
 <title>مدیر منطقه | چک لیست دیلی مارکت</title>
 <style>
 @font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2");font-display:swap;font-weight:400}
@@ -1036,10 +1036,10 @@ async function reloadCurrentView(){
 
 async function loadApprovalBadge(){
   try{
-    const r=await DMAuth.apiPost('regionalGpsBadgeCounts',{},18000);
+    const r=await DMAuth.apiPost('regionalGpsCenter',{summaryOnly:true,approvalStatus:'PENDING',correctionStatus:'PENDING'},18000);
     if(r?.success){
-      state.approvalSummary=Object.assign(state.approvalSummary,{pending:Number(r.approvalsPending||0)});
-      state.correctionSummary=Object.assign(state.correctionSummary,{pending:Number(r.correctionsPending||0)});
+      state.approvalSummary=r.approvalSummary||state.approvalSummary;
+      state.correctionSummary=r.correctionSummary||state.correctionSummary;
       updateGpsBadge();
     }
   }catch(_){}
@@ -1072,17 +1072,25 @@ async function switchGpsMode(mode){
 async function loadApprovals(status='PENDING'){
   setLoading(true,'در حال دریافت درخواست‌های GPS...');
   try{
-    const res=await DMAuth.apiPost('regionalLocationApprovals',{status:status},30000);
+    const res=await DMAuth.apiPost('regionalGpsCenter',{
+      approvalStatus:status,
+      correctionStatus:state.correctionFilter||'PENDING'
+    },30000);
     if(!res.success)throw new Error(res.message||'دریافت درخواست‌ها ناموفق بود.');
+
     state.approvals=res.approvals||[];
-    state.approvalSummary=res.summary||state.approvalSummary;
+    state.approvalSummary=res.approvalSummary||state.approvalSummary;
+    state.correctionSummary=res.correctionSummary||state.correctionSummary;
+
     document.getElementById('approvalPendingCount').textContent=state.approvalSummary.pending||0;
     document.getElementById('approvalApprovedCount').textContent=state.approvalSummary.approved||0;
     document.getElementById('approvalRejectedCount').textContent=state.approvalSummary.rejected||0;
     updateGpsBadge();
     renderApprovals();
-  }catch(e){toast(e.message||'خطا در دریافت درخواست‌ها','error');}
-  finally{setLoading(false);}
+  }catch(e){
+    console.error('[GPS Center approvals]',e);
+    toast(e.message||'خطا در دریافت درخواست‌ها','error');
+  }finally{setLoading(false);}
 }
 
 async function setApprovalFilter(status){
@@ -1159,15 +1167,25 @@ async function confirmRejectApproval(){
 async function loadCorrections(status='PENDING'){
   setLoading(true,'در حال دریافت درخواست‌های اصلاح لوکیشن...');
   try{
-    const res=await DMAuth.apiPost('regionalLocationCorrections',{status:status},30000);
+    const res=await DMAuth.apiPost('regionalGpsCenter',{
+      approvalStatus:state.approvalFilter||'PENDING',
+      correctionStatus:status
+    },30000);
     if(!res.success)throw new Error(res.message||'دریافت درخواست‌های اصلاح ناموفق بود.');
-    state.corrections=res.corrections||[];state.correctionSummary=res.summary||state.correctionSummary;
+
+    state.corrections=res.corrections||[];
+    state.correctionSummary=res.correctionSummary||state.correctionSummary;
+    state.approvalSummary=res.approvalSummary||state.approvalSummary;
+
     document.getElementById('correctionPendingCount').textContent=state.correctionSummary.pending||0;
     document.getElementById('correctionApprovedCount').textContent=state.correctionSummary.approved||0;
     document.getElementById('correctionRejectedCount').textContent=state.correctionSummary.rejected||0;
-    updateGpsBadge();renderCorrections();
-  }catch(e){toast(e.message||'خطا در دریافت درخواست‌های اصلاح','error');}
-  finally{setLoading(false);}
+    updateGpsBadge();
+    renderCorrections();
+  }catch(e){
+    console.error('[GPS Center corrections]',e);
+    toast(e.message||'خطا در دریافت درخواست‌های اصلاح','error');
+  }finally{setLoading(false);}
 }
 async function setCorrectionFilter(status){
   state.correctionFilter=status;
@@ -1244,14 +1262,6 @@ DMInstant.on('regionalPerformance',(res,params)=>{
   if(!res||!res.success||Number(params.periodDays||7)!==Number(state.performancePeriodDays||7))return;
   state.performance=res;state.performanceLoaded=true;renderRegionalPerformance();
 });
-DMInstant.on('regionalGpsBadgeCounts',(r)=>{
-  if(!r||!r.success)return;
-  state.approvalSummary=Object.assign(state.approvalSummary,{pending:Number(r.approvalsPending||0)});
-  state.correctionSummary=Object.assign(state.correctionSummary,{pending:Number(r.correctionsPending||0)});
-  updateGpsBadge();
-});
-
-
 /* V23.1: live regional overview refresh */
 setInterval(function(){
   try{
