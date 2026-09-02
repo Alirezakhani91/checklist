@@ -273,6 +273,7 @@
 </script>
 
 <script src="dm-loading.js"></script>
+<script src="dm-instant.js"></script>
 <script>
 const state={data:null,currentTab:'overview',editStore:null,storeData:null,storeLoaded:false,storePage:1,storePageSize:50,storeFileRows:[],storeHeaders:[],storeMappings:{},importPayload:[],importPreview:null,editingStore:null,managerData:null,managerLoaded:false,editingManager:null,managerDeletePreview:null,areaHeadData:null,areaHeadLoaded:false,editingAreaHead:null,areaHeadDeletePreview:null};
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -353,6 +354,12 @@ function openGps(code){const s=(state.data.gpsStores||[]).find(x=>x.storeCode===
 async function saveGpsStore(){const s=state.editStore;if(!s)return;loading(true,'در حال ذخیره مختصات...');try{const r=await DMAuth.apiPost('adminUpdateStoreLocation',{storeCode:s.storeCode,lat:editLat.value,lng:editLng.value,locationStatus:editStatus.value},30000);if(!r.success)throw new Error(r.message);toast(r.message,'success');closeGpsModal();await loadAll();}catch(e){toast(e.message,'error');}finally{loading(false);}}
 function renderErrors(){const d=state.data;if(!d)return;const arr=d.errors||[];errorsCount.textContent=`${arr.length} خطای اخیر`;errorsBody.innerHTML=arr.map(e=>`<tr><td>${fmtDate(e.occurredAt)}</td><td><span class="badge gray">${esc(e.action||'—')}</span></td><td><strong>${esc(e.message)}</strong></td><td>${esc(e.requestId||'—')}</td><td title="${esc(e.details)}" style="max-width:320px;overflow:hidden;text-overflow:ellipsis">${esc(e.details||'—')}</td></tr>`).join('')||'<tr><td colspan="5"><span class="badge green">خطای ثبت‌شده‌ای وجود ندارد</span></td></tr>';}
 async function maintenance(command){if(!confirm('این عملیات نگهداری اجرا شود؟'))return;loading(true,'در حال اجرای عملیات نگهداری...');try{const r=await DMAuth.apiPost('adminMaintenance',{command},45000);if(!r.success)throw new Error(r.message);toast(r.message,'success');await loadAll();}catch(e){toast(e.message,'error');}finally{loading(false);}}
+
+DMInstant.on('adminBootstrap',(r)=>{if(!r||!r.success)return;state.data=r;renderAll();});
+DMInstant.on('adminRegionalManagersBootstrap',(r)=>{if(!r||!r.success)return;state.managerData=r;state.managerLoaded=true;renderRegionalManagers();renderRegionalManagerHistory();});
+DMInstant.on('adminAreaHeadsBootstrap',(r)=>{if(!r||!r.success)return;state.areaHeadData=r;state.areaHeadLoaded=true;renderAreaHeadFilters();renderAreaHeads();renderAreaHeadHistory();});
+DMInstant.on('adminStoreMasterBootstrap',(r)=>{if(!r||!r.success)return;state.storeData=r;state.storeLoaded=true;renderStoreMaster();});
+
 init().catch(e=>{loading(false);toast(e.message||'خطای غیرمنتظره','error');});
 </script>
 </body>
