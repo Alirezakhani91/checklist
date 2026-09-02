@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b5001d">
-<!-- Daily Market Area Head Dashboard V22.2 - Distinct Luxe Sales Sections -->
+<!-- Daily Market Area Head Dashboard V22.3 - Colorful Sales Subsections -->
 <title>رئیس ناحیه | چک لیست دیلی مارکت</title>
 
 <style>
@@ -781,6 +781,59 @@ button{cursor:pointer}
   color:var(--sec-accent-dark);
   box-shadow:0 2px 8px rgba(15,23,42,.04);
 }
+
+
+/* colorful sales sub-sections */
+.check-sub-group{
+  --sub-accent:var(--sec-accent);
+  --sub-accent-dark:var(--sec-accent-dark);
+  --sub-soft:color-mix(in srgb,var(--sec-soft) 78%, #ffffff);
+  --sub-soft-2:color-mix(in srgb,var(--sec-soft-2) 70%, #ffffff);
+  --sub-border:color-mix(in srgb,var(--sec-accent) 14%, #e3e8ef);
+}
+.check-sub-group[class*="subtheme-"]{
+  background:linear-gradient(180deg,var(--sub-soft) 0%, var(--sub-soft-2) 100%);
+  border:1px solid var(--sub-border);
+  box-shadow:0 10px 24px rgba(15,23,42,.05), inset 0 1px 0 rgba(255,255,255,.82);
+}
+.check-sub-group[class*="subtheme-"] .check-sub-title{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:900;
+  color:#fff;
+  background:linear-gradient(135deg,var(--sub-accent) 0%, var(--sub-accent-dark) 100%);
+  box-shadow:0 8px 18px color-mix(in srgb,var(--sub-accent) 24%, transparent);
+}
+.check-sub-group[class*="subtheme-"] .check-sub-title::before{
+  content:"";
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 0 0 4px rgba(255,255,255,.14);
+}
+.check-sub-group[class*="subtheme-"] .question-card{
+  border-color:color-mix(in srgb,var(--sub-accent) 14%, #e8edf3);
+  background:linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.92) 100%);
+}
+.check-sub-group[class*="subtheme-"] .question-no{
+  background:linear-gradient(180deg, color-mix(in srgb,var(--sub-soft) 92%, #ffffff) 0%, #ffffff 100%);
+  border-color:color-mix(in srgb,var(--sub-accent) 20%, #dfe7ee);
+  color:var(--sub-accent-dark);
+}
+.check-sub-group.subtheme-dairy{--sub-accent:#2793ef;--sub-accent-dark:#166fbe;--sub-soft:#eff8ff;--sub-soft-2:#dff0ff;--sub-border:#bfdffd}
+.check-sub-group.subtheme-meat{--sub-accent:#d34a68;--sub-accent-dark:#aa2f4a;--sub-soft:#fff0f4;--sub-soft-2:#ffe0e8;--sub-border:#f4c6d2}
+.check-sub-group.subtheme-produce{--sub-accent:#32965a;--sub-accent-dark:#237142;--sub-soft:#effaf2;--sub-soft-2:#ddf3e5;--sub-border:#c7e9d3}
+.check-sub-group.subtheme-beverage{--sub-accent:#14a4b8;--sub-accent-dark:#0f7f8e;--sub-soft:#eefcff;--sub-soft-2:#dcf5f8;--sub-border:#c1e9ef}
+.check-sub-group.subtheme-grocery{--sub-accent:#d08b1f;--sub-accent-dark:#a96e11;--sub-soft:#fff8eb;--sub-soft-2:#ffefcf;--sub-border:#f0deb3}
+.check-sub-group.subtheme-frozen{--sub-accent:#586be3;--sub-accent-dark:#3d4fc1;--sub-soft:#f1f4ff;--sub-soft-2:#e1e7ff;--sub-border:#cfd7fb}
+.check-sub-group.subtheme-bakery{--sub-accent:#b56a35;--sub-accent-dark:#8e4f22;--sub-soft:#fbf3ee;--sub-soft-2:#f2e3d6;--sub-border:#e7d2c2}
+.check-sub-group.subtheme-household{--sub-accent:#7c5bd7;--sub-accent-dark:#6043b8;--sub-soft:#f5f2ff;--sub-soft-2:#ebe4ff;--sub-border:#ddd3fa}
+.check-sub-group.subtheme-default{--sub-accent:#4d7b7a;--sub-accent-dark:#386060;--sub-soft:#eff8f7;--sub-soft-2:#e0efed;--sub-border:#cee2df}
+
 .question-text{
   font-size:.93rem;
   line-height:1.9;
@@ -1520,6 +1573,21 @@ function checklistSectionTheme(section,index){
   return'theme-general-'+((Number(index||0)%4)+1);
 }
 
+function checklistSubTheme(sub,index){
+  const s=String(sub||'').replace(/\u200c/g,' ').trim().toLowerCase();
+
+  if(/لبنی|شیر|ماست|پنیر|دوغ/.test(s))return'subtheme-dairy';
+  if(/گوشت|مرغ|پروتئ|ماهی|قصاب/.test(s))return'subtheme-meat';
+  if(/میوه|سبزی|صیفی|سالاد|محصولات تازه/.test(s))return'subtheme-produce';
+  if(/نوشیدنی|آشامیدنی|آب|نوشابه|دلستر|آبمیوه/.test(s))return'subtheme-beverage';
+  if(/خشکبار|تنقلات|شیرینی|کنسرو|ادویه|خواربار|حبوبات|برنج|روغن/.test(s))return'subtheme-grocery';
+  if(/منجمد|فریز|بستنی/.test(s))return'subtheme-frozen';
+  if(/نان|بیکری|قنادی/.test(s))return'subtheme-bakery';
+  if(/بهداشتی|شوینده|سلولزی|خانگی|غیرغذایی/.test(s))return'subtheme-household';
+
+  return'subtheme-default';
+}
+
 function checklistSectionIcon(section){
   const s=String(section||'').replace(/\u200c/g,' ').trim().toLowerCase();
 
@@ -1601,8 +1669,8 @@ function renderChecklist(){
         </div>
 
         <div class="check-subsection">
-          ${subs.map(sub=>`
-            <div class="check-sub-group">
+          ${subs.map((sub,subIndex)=>`
+            <div class="check-sub-group ${checklistSubTheme(sub,subIndex)}">
               <div class="check-sub-title">${esc(sub)}</div>
               ${sm[sub].map(q=>renderChecklistQuestion(q,readOnly)).join('')}
             </div>
