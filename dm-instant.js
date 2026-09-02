@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '23.5.0';
+  const VERSION = '24.0.0';
   const PREFIX = 'dmInstant:v20:';
   const MAX_ENTRIES = 28;
   const MAX_ITEM_CHARS = 780000;
@@ -11,7 +11,6 @@
     'areaHeadBootstrap',
     'areaHeadRouteBootstrap',
     'regionalBootstrap',
-    'regionalOverview',
     'regionalPerformance',
     'executiveOverview',
     'executivePerformance',
@@ -28,7 +27,6 @@
   // These actions describe "today"; never replay yesterday's snapshot as today.
   const DAILY = new Set([
     'areaHeadBootstrap',
-    'regionalOverview',
     'executiveOverview',
     'adminBootstrap',
     'adminPilotBootstrap'
@@ -278,7 +276,6 @@
 
       // max replay age: current operational pages 6h; filtered historical views 2h.
       const maxAge =
-        action==='regionalOverview' ? 15*1000 :
         action==='regionalPerformance' ? 20*1000 :
         ((action==='visitHistory'||action==='visitDetail'||action==='alertsCenter')
           ? 2*60*60*1000
