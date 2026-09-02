@@ -544,6 +544,7 @@ button{cursor:pointer}
 </script>
 
 <script src="dm-loading.js"></script>
+<script src="dm-instant.js"></script>
 <script>
 const state={
   user:null,
@@ -1086,6 +1087,13 @@ function schedulePendingPoll(){
   }
 }
 async function reloadData(){await loadData(false);}
+
+
+DMInstant.on('areaHeadBootstrap',(res)=>{
+  if(!res||!res.success)return;
+  state.data=res;state.route=res.route||{items:[]};state.stores=res.allStores||[];state.settings=res.settings||state.settings;
+  renderAll();schedulePendingPoll();
+});
 
 init().catch(e=>{setLoading(false);toast(e.message||'خطای غیرمنتظره','error');});
 </script>
