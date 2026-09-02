@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '20.0.0';
+  const VERSION = '23.0.0';
   const PREFIX = 'dmInstant:v20:';
   const MAX_ENTRIES = 28;
   const MAX_ITEM_CHARS = 780000;
@@ -281,7 +281,7 @@
       }
 
       // max replay age: current operational pages 6h; filtered historical views 2h.
-      const maxAge = (action==='visitHistory'||action==='visitDetail'||action==='alertsCenter') ? 2*60*60*1000 : 6*60*60*1000;
+      const maxAge = action==='regionalPerformance' ? 20*1000 : ((action==='visitHistory'||action==='visitDetail'||action==='alertsCenter') ? 2*60*60*1000 : 6*60*60*1000);
       const cached = readEntry(action,params,maxAge);
 
       if (!cached) {
