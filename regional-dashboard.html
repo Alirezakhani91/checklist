@@ -466,6 +466,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 </script>
 
 <script src="dm-loading.js"></script>
+<script src="dm-instant.js"></script>
 <script>
 const DAY_NAMES=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنج‌شنبه','جمعه'];
 const state={
@@ -1167,6 +1168,36 @@ async function confirmRejectCorrection(){
 }
 
 window.addEventListener('beforeunload',e=>{if(state.dirty){e.preventDefault();e.returnValue='';}});
+
+DMInstant.on('regionalOverview',(res)=>{
+  if(!res||!res.success)return;
+  state.overview=res;state.overviewLoaded=true;renderOverview();
+  if(res.summary)updateApprovalBadge(res.summary.pendingGpsToday||0);
+  const first=(res.areaHeads||[])[0];
+  if(first?.userId)DMInstant.prefetch('regionalBootstrap',{weekStartIso:state.weekStartIso,areaHeadUserId:first.userId},45000);
+});
+DMInstant.on('regionalBootstrap',(res,params)=>{
+  if(!res||!res.success)return;
+  if(params.weekStartIso!==state.weekStartIso)return;
+  const requested=String(params.areaHeadUserId||'').trim();
+  if(requested&&requested!==String(state.areaHeadId||'').trim())return;
+  state.summary=res.summary||{};state.settings=res.settings||state.settings;state.areaHeads=res.areaHeads||[];state.todayIso=res.todayIso||iso(new Date());
+  state.areaHeadId=res.selectedAreaHead?.userId||'';state.stores=res.selectedAreaHead?.stores||[];state.planningMode=res.selectedAreaHead?.planningMode||'REGIONAL_MANAGER';state.cannotVisitNotices=res.selectedAreaHead?.cannotVisitNotices||[];state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
+  state.days=(res.week?.days||[]).map(d=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||''}));
+  state.selectedDayIso=state.days.some(d=>d.dateIso===state.selectedDayIso)?state.selectedDayIso:(state.days[0]?.dateIso||'');
+  state.dirty=false;state.sourceType='MANUAL';state.routeLoaded=true;renderAll();
+});
+DMInstant.on('regionalPerformance',(res,params)=>{
+  if(!res||!res.success||Number(params.periodDays||7)!==Number(state.performancePeriodDays||7))return;
+  state.performance=res;state.performanceLoaded=true;renderRegionalPerformance();
+});
+DMInstant.on('regionalGpsBadgeCounts',(r)=>{
+  if(!r||!r.success)return;
+  state.approvalSummary=Object.assign(state.approvalSummary,{pending:Number(r.approvalsPending||0)});
+  state.correctionSummary=Object.assign(state.correctionSummary,{pending:Number(r.correctionsPending||0)});
+  updateGpsBadge();
+});
+
 init().catch(e=>{setLoading(false);toast(e.message||'خطای غیرمنتظره','error');});
 </script>
 </body>
