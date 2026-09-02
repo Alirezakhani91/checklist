@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b5001d">
+<!-- Daily Market Area Head Dashboard V22 - Visual Sectioned Checklist -->
 <title>رئیس ناحیه | چک لیست دیلی مارکت</title>
 
 <style>
@@ -272,6 +273,380 @@ button{cursor:pointer}
 
 @media(max-width:820px){
   .checklist-modal{background:#f5f6f9}.checklist-top{height:auto;min-height:68px;padding:12px 14px}.checklist-top h2{font-size:.98rem}.checklist-top p{font-size:.66rem;max-width:250px}.checklist-top-actions .draft-btn{display:none}.checklist-layout{display:block;overflow:auto}.checklist-main{overflow:visible;padding:12px 10px 110px}.checklist-side{border:0;border-bottom:1px solid var(--line);padding:12px 10px;background:#f5f6f9}.checklist-progress-card{border-radius:16px;padding:13px}.checklist-side-meta{display:none}.section-nav{display:flex;overflow:auto;margin-top:10px;gap:6px}.section-nav button{white-space:nowrap;padding:8px 10px;font-size:.66rem}.check-section{border-radius:18px;margin-bottom:11px}.check-section-head{padding:13px 14px}.check-subsection{padding:3px 13px 0}.question-card{padding:13px 0}.question-text{font-size:.78rem}.answer-options{margin:10px 0 0;grid-template-columns:repeat(3,1fr);gap:6px}.answer-options.two{grid-template-columns:repeat(2,1fr)}.answer-btn{padding:10px 4px;font-size:.68rem}.question-no{width:25px;height:25px;border-radius:8px}.checklist-bottom{left:0;padding:10px 10px calc(10px + env(safe-area-inset-bottom));display:block}.checklist-bottom-info{display:none}.checklist-bottom-actions{display:grid;grid-template-columns:.8fr 1.4fr}.checklist-bottom-actions>*{width:100%}.checklist-save-status{text-align:right;margin:0 0 7px}.checklist-close{width:36px;height:36px}.checklist-top-actions{gap:5px}
+}
+
+
+
+/* ===== V22 CHECKLIST SECTION VISUAL SYSTEM =====
+   Visual-only upgrade. No checklist data / question IDs / save logic changes.
+*/
+.check-section,
+.section-nav button{
+  --sec-accent:#64748b;
+  --sec-accent-dark:#475569;
+  --sec-soft:#f8fafc;
+  --sec-soft-2:#f1f5f9;
+  --sec-border:#dfe6ee;
+}
+
+/* semantic section palettes */
+.check-section.theme-dairy,.section-nav button.theme-dairy{
+  --sec-accent:#2385d7;--sec-accent-dark:#1768aa;
+  --sec-soft:#eef8ff;--sec-soft-2:#e2f2ff;--sec-border:#cce7f8;
+}
+.check-section.theme-meat,.section-nav button.theme-meat{
+  --sec-accent:#c34761;--sec-accent-dark:#9d3049;
+  --sec-soft:#fff1f4;--sec-soft-2:#ffe5ea;--sec-border:#f3ccd5;
+}
+.check-section.theme-produce,.section-nav button.theme-produce{
+  --sec-accent:#31845a;--sec-accent-dark:#246746;
+  --sec-soft:#eff9f3;--sec-soft-2:#e0f2e7;--sec-border:#cae8d5;
+}
+.check-section.theme-grocery,.section-nav button.theme-grocery{
+  --sec-accent:#b77414;--sec-accent-dark:#8d590d;
+  --sec-soft:#fff8ea;--sec-soft-2:#fff0ce;--sec-border:#f0ddb4;
+}
+.check-section.theme-beverage,.section-nav button.theme-beverage{
+  --sec-accent:#16869b;--sec-accent-dark:#116878;
+  --sec-soft:#edfafd;--sec-soft-2:#dcf4f8;--sec-border:#c7e9ee;
+}
+.check-section.theme-warehouse,.section-nav button.theme-warehouse{
+  --sec-accent:#667085;--sec-accent-dark:#475467;
+  --sec-soft:#f5f7f9;--sec-soft-2:#edf0f3;--sec-border:#dce1e7;
+}
+.check-section.theme-cash,.section-nav button.theme-cash{
+  --sec-accent:#7658d6;--sec-accent-dark:#5d42b7;
+  --sec-soft:#f5f2ff;--sec-soft-2:#ebe5ff;--sec-border:#ddd4fa;
+}
+.check-section.theme-data,.section-nav button.theme-data{
+  --sec-accent:#315fc5;--sec-accent-dark:#244aa1;
+  --sec-soft:#eff4ff;--sec-soft-2:#e3ebff;--sec-border:#ccd9fb;
+}
+.check-section.theme-general-1,.section-nav button.theme-general-1{
+  --sec-accent:#4d7b7a;--sec-accent-dark:#386060;
+  --sec-soft:#eff8f7;--sec-soft-2:#e2f1ef;--sec-border:#cfe5e2;
+}
+.check-section.theme-general-2,.section-nav button.theme-general-2{
+  --sec-accent:#8a5a44;--sec-accent-dark:#6c4433;
+  --sec-soft:#faf4f0;--sec-soft-2:#f3e8e1;--sec-border:#e9d8cd;
+}
+.check-section.theme-general-3,.section-nav button.theme-general-3{
+  --sec-accent:#6a6fba;--sec-accent-dark:#51569c;
+  --sec-soft:#f3f3fd;--sec-soft-2:#e9e9fa;--sec-border:#d8d9f3;
+}
+.check-section.theme-general-4,.section-nav button.theme-general-4{
+  --sec-accent:#2d7b88;--sec-accent-dark:#215e68;
+  --sec-soft:#eff8fa;--sec-soft-2:#dff0f3;--sec-border:#cbe5e9;
+}
+
+/* Wider breathing room between product / operational groups */
+.check-section{
+  position:relative;
+  margin-bottom:24px;
+  border:1px solid var(--sec-border);
+  border-radius:24px;
+  background:#fff;
+  overflow:hidden;
+  box-shadow:0 12px 34px rgba(20,28,48,.045);
+  scroll-margin-top:18px;
+}
+.check-section::before{
+  content:"";
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  width:5px;
+  background:var(--sec-accent);
+  z-index:2;
+}
+
+/* Section header */
+.check-section-head{
+  padding:17px 22px 15px 20px;
+  border-bottom:1px solid var(--sec-border);
+  background:
+    linear-gradient(135deg,var(--sec-soft) 0%,#fff 72%);
+  display:block;
+}
+.check-section-head-main{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+}
+.check-section-identity{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.check-section-icon{
+  width:43px;
+  height:43px;
+  border-radius:14px;
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  color:var(--sec-accent-dark);
+  background:var(--sec-soft-2);
+  border:1px solid var(--sec-border);
+}
+.check-section-icon svg{
+  width:22px;
+  height:22px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.9;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.check-section-title-wrap{
+  min-width:0;
+}
+.check-section-kicker{
+  color:var(--sec-accent-dark);
+  font-size:.58rem;
+  font-weight:900;
+  letter-spacing:.02em;
+  margin-bottom:3px;
+}
+.check-section-head h3{
+  margin:0;
+  font-size:1.02rem;
+  line-height:1.6;
+  color:#222b39;
+}
+.check-section-status{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--sec-border);
+  border-radius:999px;
+  background:rgba(255,255,255,.78);
+  padding:7px 10px;
+  color:var(--sec-accent-dark);
+  font-size:.65rem;
+  font-weight:850;
+}
+.check-section-status .section-check{
+  display:none;
+  width:19px;
+  height:19px;
+  border-radius:50%;
+  background:var(--sec-accent);
+  color:#fff;
+  place-items:center;
+  font-size:.63rem;
+}
+.check-section.is-complete .check-section-status .section-check{
+  display:grid;
+}
+.check-section-progress{
+  height:4px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(100,116,139,.12);
+  margin-top:13px;
+}
+.check-section-progress span{
+  display:block;
+  height:100%;
+  border-radius:999px;
+  background:var(--sec-accent);
+  transition:width .22s ease;
+}
+
+/* Subsection creates another, softer visual hierarchy */
+.check-subsection{
+  padding:5px 20px 5px;
+}
+.check-sub-group{
+  padding:7px 0 4px;
+}
+.check-sub-group + .check-sub-group{
+  border-top:1px dashed #e6e9ef;
+  margin-top:5px;
+  padding-top:12px;
+}
+.check-sub-title{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin:7px 2px 5px;
+  padding:5px 9px;
+  border-radius:999px;
+  color:var(--sec-accent-dark);
+  background:var(--sec-soft);
+  border:1px solid var(--sec-border);
+  font-size:.65rem;
+  font-weight:900;
+}
+.check-sub-title::before{
+  content:"";
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--sec-accent);
+}
+
+/* Questions inherit their section accent */
+.question-card{
+  padding:16px 2px;
+  border-bottom:1px solid #eef1f4;
+}
+.question-card:last-child{
+  border-bottom:0;
+}
+.question-card.missing{
+  background:#fff8f9;
+  margin:2px -8px;
+  padding:15px 10px;
+  border-radius:14px;
+  border:1px solid #f5d9de;
+}
+.question-no{
+  width:30px;
+  height:30px;
+  border-radius:10px;
+  background:var(--sec-soft);
+  border:1px solid var(--sec-border);
+  color:var(--sec-accent-dark);
+}
+.question-text{
+  color:#273141;
+}
+
+/* Section nav mirrors each section's identity */
+.section-nav{
+  gap:8px;
+}
+.section-nav button{
+  position:relative;
+  overflow:hidden;
+  border-color:var(--sec-border);
+  background:#fff;
+  color:#525c6d;
+  transition:.15s ease;
+}
+.section-nav button::before{
+  content:"";
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  width:3px;
+  background:var(--sec-accent);
+}
+.section-nav button:hover{
+  border-color:var(--sec-accent);
+  background:var(--sec-soft);
+  color:var(--sec-accent-dark);
+}
+.section-nav button.active{
+  color:var(--sec-accent-dark);
+  background:var(--sec-soft);
+  border-color:var(--sec-accent);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--sec-accent) 10%,transparent);
+  font-weight:900;
+}
+.section-nav button.complete:not(.active){
+  border-color:var(--sec-border);
+  background:#fff;
+  color:var(--sec-accent-dark);
+}
+.section-nav-label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.section-nav-count{
+  direction:ltr;
+  flex:0 0 auto;
+  font-size:.59rem;
+  font-weight:900;
+  padding:3px 6px;
+  border-radius:999px;
+  background:var(--sec-soft);
+  color:var(--sec-accent-dark);
+}
+
+/* Notes are intentionally visually different from checklist sections */
+.notes-card{
+  margin-top:6px;
+  border:1px dashed #cfd6df;
+  box-shadow:none;
+  background:#fcfcfd;
+}
+
+@media(max-width:820px){
+  .check-section{
+    margin-bottom:16px;
+    border-radius:19px;
+  }
+  .check-section::before{
+    width:4px;
+  }
+  .check-section-head{
+    padding:13px 15px 12px 13px;
+  }
+  .check-section-head-main{
+    gap:9px;
+  }
+  .check-section-identity{
+    gap:9px;
+  }
+  .check-section-icon{
+    width:36px;
+    height:36px;
+    border-radius:11px;
+  }
+  .check-section-icon svg{
+    width:19px;
+    height:19px;
+  }
+  .check-section-kicker{
+    font-size:.53rem;
+  }
+  .check-section-head h3{
+    font-size:.9rem;
+  }
+  .check-section-status{
+    padding:5px 7px;
+    font-size:.56rem;
+  }
+  .check-section-status .section-check{
+    width:17px;
+    height:17px;
+  }
+  .check-section-progress{
+    margin-top:10px;
+  }
+  .check-subsection{
+    padding:3px 13px 4px;
+  }
+  .check-sub-title{
+    font-size:.59rem;
+    padding:4px 7px;
+  }
+  .question-card{
+    padding:14px 0;
+  }
+  .question-no{
+    width:27px;
+    height:27px;
+  }
+  .section-nav button{
+    padding:8px 10px 8px 12px;
+  }
+  .section-nav button::before{
+    width:3px;
+  }
+  .section-nav-label{
+    gap:6px;
+  }
 }
 
 
@@ -936,29 +1311,150 @@ function closeChecklist(){
   document.body.style.overflow='';
 }
 
+function checklistSectionTheme(section,index){
+  const s=String(section||'').replace(/\u200c/g,' ').trim().toLowerCase();
+
+  if(/لبنی|شیر|ماست|پنیر|دوغ/.test(s))return'theme-dairy';
+  if(/گوشت|مرغ|پروتئ|ماهی|قصاب/.test(s))return'theme-meat';
+  if(/میوه|سبزی|صیفی|محصولات تازه/.test(s))return'theme-produce';
+  if(/نوشیدنی|آشامیدنی|آب|نوشابه/.test(s))return'theme-beverage';
+  if(/انبار|دپو|موجودی|قفسه/.test(s))return'theme-warehouse';
+  if(/صندوق|گاوصندوق|بانک|نقد|مالی/.test(s))return'theme-cash';
+  if(/دیتا|داده|هدف|فروش|شاخص/.test(s))return'theme-data';
+  if(/خشکبار|تنقلات|شیرینی|کنسرو|ادویه|نان|خواربار/.test(s))return'theme-grocery';
+
+  return'theme-general-'+((Number(index||0)%4)+1);
+}
+
+function checklistSectionIcon(section){
+  const s=String(section||'').replace(/\u200c/g,' ').trim().toLowerCase();
+
+  if(/لبنی|شیر|ماست|پنیر|دوغ/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v4l-2 3v9a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-9l-2-3V3"/><path d="M8 13h8"/></svg>`;
+
+  if(/گوشت|مرغ|پروتئ|ماهی|قصاب/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M7.5 14.5c-2.3-2.3-2.2-6 .2-8.2s6.2-2.4 8.5 0 2.3 6.2 0 8.5c-1.7 1.7-4.1 2.1-6.2 1.3L7.5 18.5"/><path d="M7.5 18.5 5 21l-2-2 2.5-2.5"/></svg>`;
+
+  if(/میوه|سبزی|صیفی|محصولات تازه/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M12 21c0-7 3-12 9-15 0 7-3 12-9 15Z"/><path d="M12 21C12 13 8 8 3 5c0 7 3 12 9 16Z"/><path d="M12 21V10"/></svg>`;
+
+  if(/نوشیدنی|آشامیدنی|آب|نوشابه/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M8 3h8l-1 18H9L8 3Z"/><path d="M9 8h6"/><path d="m16 3 3-2"/></svg>`;
+
+  if(/انبار|دپو|موجودی|قفسه/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="m3 7 9-4 9 4-9 4-9-4Z"/><path d="m3 7 9 4 9-4v10l-9 4-9-4V7Z"/><path d="M12 11v10"/></svg>`;
+
+  if(/صندوق|گاوصندوق|بانک|نقد|مالی/.test(s))
+    return`<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18"/><path d="M16 15h2"/></svg>`;
+
+  if(/دیتا|داده|هدف|فروش|شاخص/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>`;
+
+  if(/خشکبار|تنقلات|شیرینی|کنسرو|ادویه|نان|خواربار/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>`;
+
+  return`<svg viewBox="0 0 24 24"><path d="M8 4h8"/><path d="M9 2h6a2 2 0 0 1 2 2v2H7V4a2 2 0 0 1 2-2Z"/><path d="M6 5H4v16h16V5h-2"/><path d="m8 13 2 2 5-5"/></svg>`;
+}
+
 function renderChecklist(){
   const data=state.checklistData;if(!data)return;
   const template=data.template||[];const readOnly=!!data.readOnly;
   const sections=[];const map={};
-  template.forEach(q=>{if(!map[q.section]){map[q.section]=[];sections.push(q.section);}map[q.section].push(q);});
+
+  template.forEach(q=>{
+    const section=String(q.section||'سایر').trim()||'سایر';
+    if(!map[section]){map[section]=[];sections.push(section);}
+    map[section].push(q);
+  });
+
   const main=document.getElementById('checklistMain');
-  main.innerHTML=sections.map(section=>{
-    const qs=map[section];const subs=[];const sm={};
-    qs.forEach(q=>{const sub=q.subsection||'سایر';if(!sm[sub]){sm[sub]=[];subs.push(sub);}sm[sub].push(q);});
-    const answered=qs.filter(q=>state.checklistAnswers[q.questionId]).length;
-    return `<section class="check-section" id="checksec-${safeDomId(section)}"><div class="check-section-head"><h3>${esc(section)}</h3><span>${answered} از ${qs.length} پاسخ داده شده</span></div><div class="check-subsection">${subs.map(sub=>`<div class="check-sub-title">${esc(sub)}</div>${sm[sub].map(q=>renderChecklistQuestion(q,readOnly)).join('')}`).join('')}</div></section>`;
-  }).join('')+`<section class="notes-card"><h4>توضیحات بازدید</h4><p>اگر نکته، مشکل یا موضوعی برای پیگیری وجود دارد اینجا بنویس. این بخش اختیاری است.</p><textarea id="visitNotesInput" ${readOnly?'disabled':''} maxlength="3000" placeholder="توضیحات بازدید...">${esc(state.checklistNotes||'')}</textarea></section>`;
+
+  main.innerHTML=sections.map((section,index)=>{
+    const qs=map[section];
+    const subs=[];const sm={};
+
+    qs.forEach(q=>{
+      const sub=q.subsection||'سایر';
+      if(!sm[sub]){sm[sub]=[];subs.push(sub);}
+      sm[sub].push(q);
+    });
+
+    const answered=qs.filter(q=>String(state.checklistAnswers[q.questionId]||'').trim()).length;
+    const required=qs.filter(q=>q.required);
+    const requiredAnswered=required.filter(q=>String(state.checklistAnswers[q.questionId]||'').trim()).length;
+    const complete=required.length?requiredAnswered===required.length:answered===qs.length;
+    const percent=qs.length?Math.round(answered*100/qs.length):0;
+    const theme=checklistSectionTheme(section,index);
+    const sectionNo=String(index+1).padStart(2,'0');
+
+    return `
+      <section class="check-section ${theme} ${complete?'is-complete':''}" id="checksec-${safeDomId(section)}">
+        <div class="check-section-head">
+          <div class="check-section-head-main">
+            <div class="check-section-identity">
+              <div class="check-section-icon">${checklistSectionIcon(section)}</div>
+              <div class="check-section-title-wrap">
+                <div class="check-section-kicker">بخش ${sectionNo}</div>
+                <h3>${esc(section)}</h3>
+              </div>
+            </div>
+            <div class="check-section-status">
+              <span class="section-check">✓</span>
+              <span>${answered} از ${qs.length}</span>
+            </div>
+          </div>
+          <div class="check-section-progress"><span style="width:${percent}%"></span></div>
+        </div>
+
+        <div class="check-subsection">
+          ${subs.map(sub=>`
+            <div class="check-sub-group">
+              <div class="check-sub-title">${esc(sub)}</div>
+              ${sm[sub].map(q=>renderChecklistQuestion(q,readOnly)).join('')}
+            </div>
+          `).join('')}
+        </div>
+      </section>`;
+  }).join('')+`
+    <section class="notes-card">
+      <h4>توضیحات بازدید</h4>
+      <p>اگر نکته، مشکل یا موضوعی برای پیگیری وجود دارد اینجا بنویس. این بخش اختیاری است.</p>
+      <textarea id="visitNotesInput" ${readOnly?'disabled':''} maxlength="3000" placeholder="توضیحات بازدید...">${esc(state.checklistNotes||'')}</textarea>
+    </section>`;
+
   const notesInput=document.getElementById('visitNotesInput');
-  if(notesInput&&!readOnly)notesInput.addEventListener('input',()=>{state.checklistNotes=notesInput.value;state.checklistDirty=true;saveLocalChecklistDraft();setChecklistSaveStatus('تغییرات هنوز روی سرور ذخیره نشده‌اند.','saving');if(state.checklistSaveTimer)clearTimeout(state.checklistSaveTimer);state.checklistSaveTimer=setTimeout(()=>saveChecklistDraft(false),1200);});
-  document.getElementById('checklistSectionNav').innerHTML=sections.map(section=>{
-    const qs=map[section];const complete=qs.every(q=>!q.required||state.checklistAnswers[q.questionId]);
-    return `<button class="${complete?'complete':''}" onclick="scrollChecklistSection('${safeDomId(section)}',this)">${esc(section)} · ${qs.filter(q=>state.checklistAnswers[q.questionId]).length}/${qs.length}</button>`;
+  if(notesInput&&!readOnly)notesInput.addEventListener('input',()=>{
+    state.checklistNotes=notesInput.value;
+    state.checklistDirty=true;
+    saveLocalChecklistDraft();
+    setChecklistSaveStatus('تغییرات هنوز روی سرور ذخیره نشده‌اند.','saving');
+    if(state.checklistSaveTimer)clearTimeout(state.checklistSaveTimer);
+    state.checklistSaveTimer=setTimeout(()=>saveChecklistDraft(false),1200);
+  });
+
+  document.getElementById('checklistSectionNav').innerHTML=sections.map((section,index)=>{
+    const qs=map[section];
+    const complete=qs.every(q=>!q.required||state.checklistAnswers[q.questionId]);
+    const answered=qs.filter(q=>state.checklistAnswers[q.questionId]).length;
+    const theme=checklistSectionTheme(section,index);
+
+    return `<button class="${theme} ${complete?'complete':''}" onclick="scrollChecklistSection('${safeDomId(section)}',this)">
+      <span class="section-nav-label">
+        <span>${esc(section)}</span>
+        <span class="section-nav-count">${answered}/${qs.length}${complete?' ✓':''}</span>
+      </span>
+    </button>`;
   }).join('');
+
   document.getElementById('finishChecklistBtn').disabled=readOnly;
   document.getElementById('draftBtn').disabled=readOnly;
   document.getElementById('topDraftBtn').disabled=readOnly;
-  if(readOnly)document.getElementById('checklistBottomInfo').textContent='این چک‌لیست قبلاً نهایی شده و فقط قابل مشاهده است.';
-  else document.getElementById('checklistBottomInfo').textContent=`برای پایان بازدید باید به همه ${template.filter(q=>q.required).length} سؤال اجباری پاسخ داده شود. توضیحات انتهایی اختیاری است.`;
+
+  if(readOnly)
+    document.getElementById('checklistBottomInfo').textContent='این چک‌لیست قبلاً نهایی شده و فقط قابل مشاهده است.';
+  else
+    document.getElementById('checklistBottomInfo').textContent=`برای پایان بازدید باید به همه ${template.filter(q=>q.required).length} سؤال اجباری پاسخ داده شود. توضیحات انتهایی اختیاری است.`;
+
   updateChecklistProgress();
 }
 
