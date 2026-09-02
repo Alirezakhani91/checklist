@@ -100,6 +100,7 @@
 </script>
 
 <script src="dm-loading.js"></script>
+<script src="dm-instant.js"></script>
 <script>
 const state={role:'',user:null,data:null,options:{regionalManagers:[],areaHeads:[]},page:1};
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function initials(n){const p=String(n||'م').trim().split(/\s+/);return(p[0]?.[0]||'م')+(p[1]?.[0]||'')}function setLoading(on,t){DMLoading.set(!!on,t||'', 'loading');}function toast(m,t=''){const e=document.createElement('div');e.className='toast '+t;e.textContent=m;document.getElementById('toastwrap').appendChild(e);setTimeout(()=>e.remove(),4000)}
@@ -115,6 +116,16 @@ function renderAlerts(){const a=state.data.alerts||[],e=document.getElementById(
 function renderPagination(){const p=state.data.pagination||{},e=document.getElementById('pagination');e.innerHTML=`<button ${p.page<=1?'disabled':''} onclick="loadAlerts(${p.page-1})">قبلی</button><span>صفحه ${p.page} از ${p.totalPages}</span><button ${p.page>=p.totalPages?'disabled':''} onclick="loadAlerts(${p.page+1})">بعدی</button>`}
 function downloadBase64(r){const bin=atob(r.base64),b=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)b[i]=bin.charCodeAt(i);const blob=new Blob([b],{type:r.mimeType||'application/octet-stream'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=r.fileName||'export.xlsx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 async function exportAlerts(){setLoading(true,'در حال ساخت فایل Excel...');try{const r=await DMAuth.apiPost('exportAlertsXlsx',params(1),90000);if(!r.success)throw new Error(r.message||'ساخت خروجی ناموفق بود.');downloadBase64(r);toast(`${r.rowCount||0} ردیف در Excel آماده شد.`)}catch(e){toast(e.message||'خطا در خروجی Excel','error')}finally{setLoading(false)}}
+
+DMInstant.on('alertsCenter',(r,requestParams)=>{
+  if(!r||!r.success)return;
+  const current=params(state.page||1);
+  const same=JSON.stringify(requestParams||{})===JSON.stringify(current||{});
+  if(!same)return;
+  state.data=r;state.page=r.pagination.page;state.options=r.options||state.options;renderOptions();renderSummary();renderAlerts();renderPagination();
+  document.getElementById('generatedAt').textContent='به‌روزرسانی '+faDateTime(r.generatedAt);
+});
+
 init().catch(e=>{setLoading(false);toast(e.message||'خطای غیرمنتظره','error')});
 </script>
 </body></html>
