@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '23.1.0';
+  const VERSION = '23.3.0';
   const PREFIX = 'dmInstant:v20:';
   const MAX_ENTRIES = 28;
   const MAX_ITEM_CHARS = 780000;
