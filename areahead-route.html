@@ -39,6 +39,7 @@
 </script>
 
 <script src="dm-loading.js"></script>
+<script src="dm-instant.js"></script>
 <style>
 @font-face{font-family:Vazir;src:local("Vazirmatn"),local("Vazir")}
 :root{--red:#c90022;--red2:#9e001b;--ink:#141821;--muted:#747c8b;--bg:#f4f6f9;--card:#fff;--line:#e5e8ee;--green:#17865c;--amber:#c88500;--orange:#d86614;--blue:#315efb;--shadow:0 14px 42px rgba(20,28,48,.07)}
@@ -187,6 +188,16 @@ function refreshClientSla(){
 }
 function autoPlaceMandatory(){const s=clientSla();if(!s.violations.length){toast('همه فروشگاه‌های اجباری در برنامه هستند.','success');return}let added=0;s.violations.forEach(m=>{let candidates=state.days.filter(d=>!isPast(d)&&d.dateIso<=m.effectiveDeadlineIso&&!d.items.some(x=>x.storeCode===m.storeCode));if(!candidates.length)return;candidates.sort((a,b)=>(a.items.length-b.items.length)||a.dateIso.localeCompare(b.dateIso));const d=candidates[0],st=state.storeMap[m.storeCode];if(st){d.items.push(Object.assign({},st,{locked:false,visitId:'',plannedStatus:'PLANNED'}));added++}});if(added){dirty();renderDays();renderRoute();renderPool();refreshClientSla();toast(`${added} فروشگاه اجباری به برنامه اضافه شد.`,'success')}else toast('برای برخی فروشگاه‌های اجباری روز مجاز خالی وجود ندارد؛ مدیر منطقه باید تعیین تکلیف کند.','error')}
 async function saveWeek(){const s=clientSla();if(s.violations.length){toast(`ابتدا ${s.violations.length} فروشگاه اجباری را تا مهلتشان در Route قرار بده.`,'error');return}if(!confirm('برنامه هفتگی ثبت شود؟'))return;setLoading(true,'در حال ثبت برنامه...');try{const plan=state.days.map(d=>({dateIso:d.dateIso,dateFa:'',storeCodes:d.items.map(x=>x.storeCode)}));const r=await DMAuth.apiPost('areaHeadSaveWeekRoutes',{weekStartIso:state.data.week.startIso,planJson:JSON.stringify(plan)},60000);if(!r.success){if(r.code==='SLA_COVERAGE_REQUIRED'){state.data.sla=r.sla;refreshClientSla()}throw new Error(r.message||'ثبت برنامه ناموفق بود.')}toast(r.message||'برنامه ثبت شد.','success');await reload()}catch(e){toast(e.message||'خطا در ثبت برنامه','error')}finally{setLoading(false)}}
+
+DMInstant.on('areaHeadRouteBootstrap',(res,params)=>{
+  if(!res||!res.success)return;
+  if(params.weekStartIso&&state.weekStartIso&&params.weekStartIso!==state.weekStartIso)return;
+  state.data=res;state.settings=res.settings||state.settings;state.stores=res.stores||[];state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
+  state.days=(res.week?.days||[]).map(d=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||''}));
+  state.selectedDayIso=state.days.some(d=>d.dateIso===state.selectedDayIso)?state.selectedDayIso:(state.days[0]?.dateIso||'');
+  state.dirty=false;renderAll();
+});
+
 init();
 </script>
 </body>
