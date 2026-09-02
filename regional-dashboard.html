@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b4001b">
-<!-- Daily Market Regional Dashboard V23 - Checklist Performance Sync -->
+<!-- Daily Market Regional Dashboard V23.1 - Checklist Performance Sync -->
 <title>مدیر منطقه | چک لیست دیلی مارکت</title>
 <style>
 @font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2");font-display:swap;font-weight:400}
@@ -1250,6 +1250,17 @@ DMInstant.on('regionalGpsBadgeCounts',(r)=>{
   state.correctionSummary=Object.assign(state.correctionSummary,{pending:Number(r.correctionsPending||0)});
   updateGpsBadge();
 });
+
+
+/* V23.1: live regional overview refresh */
+setInterval(function(){
+  try{
+    if(document.hidden)return;
+    const pane=document.getElementById('pane-overview');
+    if(!pane||!pane.classList.contains('active'))return;
+    if(typeof loadOverview==='function')loadOverview(true);
+  }catch(_){}
+},30000);
 
 init().catch(e=>{setLoading(false);toast(e.message||'خطای غیرمنتظره','error');});
 </script>
