@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b4001b">
+<!-- Daily Market Regional Dashboard V23 - Checklist Performance Sync -->
 <title>مدیر منطقه | چک لیست دیلی مارکت</title>
 <style>
 @font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2");font-display:swap;font-weight:400}
@@ -80,6 +81,13 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 .performance-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,.65fr);gap:15px;margin-bottom:16px}.performance-panel{background:#fff;border:1px solid var(--line);border-radius:21px;box-shadow:0 10px 32px rgba(20,28,48,.045);overflow:hidden}.performance-panel-head{padding:17px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.performance-panel-head h3{margin:0;font-size:.95rem}.performance-panel-head p{margin:4px 0 0;color:var(--muted);font-size:.69rem}.performance-trend{height:260px;padding:18px;display:flex;align-items:flex-end;gap:8px;overflow:auto}.performance-day{min-width:54px;flex:1;height:100%;display:grid;grid-template-rows:1fr auto auto;gap:5px;align-items:end;text-align:center}.performance-bars{height:100%;display:flex;align-items:flex-end;justify-content:center;gap:4px}.performance-bars span{width:13px;min-height:2px;border-radius:6px 6px 2px 2px}.performance-bars .planned{background:#dfe3eb}.performance-bars .completed{background:#199166}.performance-bars .override{background:#e5a100}.performance-count{font-size:.62rem;color:#5e6574}.performance-label{font-size:.62rem;color:#8a919e}.performance-legend{display:flex;gap:10px;font-size:.62rem;color:#7c8391}.performance-legend i{width:9px;height:9px;display:inline-block;border-radius:3px;margin-left:3px}
 .performance-weak{padding:12px 16px;display:grid;gap:8px;max-height:260px;overflow:auto}.performance-weak-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #eff1f4}.performance-weak-row:last-child{border:0}.performance-weak-row strong{font-size:.75rem;display:block}.performance-weak-row span{font-size:.63rem;color:#8b929e}.performance-weak-count{min-width:31px;height:31px;border-radius:10px;background:#fff0f2;color:#b4001c;display:grid;place-items:center;font-weight:900;font-size:.72rem}
 .performance-table-wrap{overflow:auto}.performance-table{width:100%;border-collapse:collapse;min-width:1050px}.performance-table th{font-size:.65rem;color:#7c8492;background:#fafbfc;padding:10px 11px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}.performance-table td{font-size:.72rem;padding:12px 11px;border-bottom:1px solid #eff1f4;vertical-align:middle}.performance-table tr:last-child td{border-bottom:0}.performance-rank{width:28px;height:28px;border-radius:9px;background:#f0f2f6;display:grid;place-items:center;font-weight:900}.performance-rank.top{background:#fff0f3;color:#b0001a}.performance-name strong{display:block;font-size:.79rem}.performance-name span{display:block;color:#8b929e;font-size:.62rem;margin-top:3px}.performance-score{font-size:.95rem;font-weight:900}.performance-score.good{color:#128356}.performance-score.mid{color:#b27b00}.performance-score.low{color:#b82439}.performance-route-btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 10px;color:#3a4250;font-size:.66rem;font-weight:800}.performance-formula{padding:12px 16px;border-top:1px dashed #dfe2e8;background:#fafbfc;color:#747c89;font-size:.67rem;line-height:1.8}
+
+.performance-sync{display:flex;align-items:center;gap:7px;color:#7e8795;font-size:.64rem;font-weight:700}.performance-sync i{width:8px;height:8px;border-radius:50%;background:#23a36d;box-shadow:0 0 0 4px rgba(35,163,109,.10)}
+.checklist-quality-panel{margin-bottom:16px}.checklist-quality-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:15px}.checklist-quality-card{--cq:#315fc5;position:relative;overflow:hidden;border:1px solid #e5e9f0;border-radius:17px;padding:14px 15px;background:linear-gradient(145deg,color-mix(in srgb,var(--cq) 7%,#fff),#fff);min-height:120px}.checklist-quality-card:before{content:"";position:absolute;top:0;right:0;left:0;height:4px;background:var(--cq)}.checklist-quality-card strong{font-size:.86rem;display:block;margin-bottom:12px}.checklist-quality-score{display:flex;align-items:flex-end;gap:4px}.checklist-quality-score b{font-size:1.65rem;line-height:1;font-weight:950;color:var(--cq)}.checklist-quality-score span{font-size:.68rem;color:#8c94a0}.checklist-quality-meta{font-size:.61rem;color:#8a929f;margin-top:8px}.checklist-quality-bar{height:6px;border-radius:999px;background:#e9edf3;margin-top:10px;overflow:hidden}.checklist-quality-bar span{height:100%;display:block;border-radius:999px;background:var(--cq)}
+.checklist-subsection-wrap{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);gap:15px;margin-bottom:16px}.checklist-subsection-list{padding:10px 16px;max-height:350px;overflow:auto}.checklist-subsection-row{display:grid;grid-template-columns:minmax(130px,1fr) 90px 90px 42px;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid #eef1f4}.checklist-subsection-row:last-child{border:0}.checklist-subsection-name strong{font-size:.76rem;display:block}.checklist-subsection-name span{font-size:.61rem;color:#9299a5}.checklist-mini-bar{height:7px;border-radius:999px;background:#edf0f4;overflow:hidden}.checklist-mini-bar span{display:block;height:100%;border-radius:999px;background:#3a72d8}.checklist-subsection-score{font-weight:900;font-size:.75rem}.checklist-subsection-issues{font-size:.65rem;color:#a0374a}.performance-kpi.quality{background:linear-gradient(145deg,#f2f6ff,#fff);border-color:#dbe5fb}.performance-kpi.quality strong{color:#315fc5}
+@media(max-width:1150px){.checklist-quality-grid{grid-template-columns:repeat(2,1fr)}.checklist-subsection-wrap{grid-template-columns:1fr}}
+@media(max-width:820px){.checklist-quality-grid{grid-template-columns:1fr 1fr;padding:10px;gap:8px}.checklist-quality-card{min-height:105px;padding:12px}.checklist-quality-score b{font-size:1.35rem}.checklist-subsection-row{grid-template-columns:1fr 65px 36px;gap:8px}.checklist-subsection-row .checklist-mini-bar{display:none}.performance-sync{margin-top:7px}}
+
 @media(max-width:1150px){.performance-kpis{grid-template-columns:repeat(2,1fr)}.performance-dark{grid-template-columns:230px 1fr}.performance-grid{grid-template-columns:1fr}}
 @media(max-width:820px){.performance-hero{display:block}.performance-hero h2{font-size:1.25rem}.performance-hero p{font-size:.75rem}.performance-periods{margin-top:12px}.performance-kpis{grid-template-columns:repeat(2,1fr);gap:8px}.performance-kpi{padding:13px;border-radius:15px}.performance-kpi strong{font-size:1.18rem}.performance-dark{grid-template-columns:1fr;padding:17px;border-radius:18px;gap:16px}.performance-minis{grid-template-columns:repeat(2,1fr)}.performance-grid{display:block}.performance-panel{margin-top:11px;border-radius:17px}.performance-panel-head{padding:14px}.performance-trend{height:220px;padding:13px}.performance-table{min-width:0}.performance-table thead{display:none}.performance-table,.performance-table tbody,.performance-table tr,.performance-table td{display:block;width:100%}.performance-table tr{padding:10px 12px;border-bottom:1px solid var(--line)}.performance-table td{border:0;padding:5px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.performance-table td:before{content:attr(data-label);font-size:.62rem;color:#8b929e}.performance-table .performance-name{display:block}.performance-table .performance-name:before,.performance-table .performance-action:before{display:none}.performance-table .performance-action{justify-content:flex-end}.mobile-bottom{grid-template-columns:repeat(7,1fr)}}
 
@@ -206,7 +214,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 
       <div id="performanceView" class="performance-view hidden">
         <div class="performance-hero">
-          <div><h2>تحلیل عملکرد منطقه</h2><p>مقایسه رؤسای ناحیه بر اساس تحقق برنامه، پوشش فروشگاه‌ها، فعالیت میدانی و کیفیت چک‌لیست.</p></div>
+          <div><h2>تحلیل عملکرد منطقه</h2><p>مقایسه رؤسای ناحیه بر اساس تحقق برنامه، پوشش فروشگاه‌ها، فعالیت میدانی و کیفیت چک‌لیست.</p><div class="performance-sync"><i></i><span id="rpSyncText">همگام‌سازی خودکار عملکرد</span></div></div>
           <div class="performance-periods">
             <button class="performance-period active" data-days="7" onclick="changeRegionalPerformancePeriod(7)">۷ روز</button>
             <button class="performance-period" data-days="14" onclick="changeRegionalPerformancePeriod(14)">۱۴ روز</button>
@@ -222,6 +230,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
           <article class="performance-kpi"><strong id="rpOverride">—%</strong><div class="pk-label">نرخ GPS Override</div><div class="pk-sub" id="rpOverrideSub">—</div></article>
           <article class="performance-kpi"><strong id="rpUnplanned">—%</strong><div class="pk-label">بازدید خارج برنامه</div><div class="pk-sub" id="rpUnplannedSub">—</div></article>
           <article class="performance-kpi"><strong id="rpWeak">—%</strong><div class="pk-label">نرخ موارد نیازمند توجه</div><div class="pk-sub" id="rpWeakSub">—</div></article>
+          <article class="performance-kpi quality"><strong id="rpChecklistQuality">—%</strong><div class="pk-label">کیفیت چک‌لیست</div><div class="pk-sub">میانگین امتیاز پاسخ‌ها</div></article>
           <article class="performance-kpi"><strong id="rpDuration">—</strong><div class="pk-label">میانگین مدت بازدید</div><div class="pk-sub">دقیقه</div></article>
         </section>
 
@@ -246,10 +255,26 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
           </section>
         </div>
 
+        <section class="performance-panel checklist-quality-panel">
+          <div class="performance-panel-head"><div><h3>کیفیت چک‌لیست به تفکیک بخش</h3><p>امتیاز پاسخ‌ها و موارد نیازمند توجه در بخش‌های مختلف بازدید</p></div></div>
+          <div class="checklist-quality-grid" id="regionalChecklistSections"></div>
+        </section>
+
+        <div class="checklist-subsection-wrap">
+          <section class="performance-panel">
+            <div class="performance-panel-head"><div><h3>جزئیات بخش فروش</h3><p>لبنیات، گوشت و مرغ و سایر زیر‌بخش‌های فروش به تفکیک کیفیت</p></div></div>
+            <div class="checklist-subsection-list" id="regionalSalesSubsections"></div>
+          </section>
+          <section class="performance-panel">
+            <div class="performance-panel-head"><div><h3>ضعیف‌ترین زیر‌بخش‌ها</h3><p>اولویت‌های پیشنهادی برای پیگیری مدیر منطقه</p></div></div>
+            <div class="checklist-subsection-list" id="regionalWeakSubsections"></div>
+          </section>
+        </div>
+
         <section class="performance-panel">
           <div class="performance-panel-head"><div><h3>رتبه‌بندی رؤسای ناحیه</h3><p>برای مقایسه منصفانه، نرخ‌ها در کنار حجم عملیات نمایش داده شده‌اند.</p></div><div class="search"><input id="regionalPerfSearch" oninput="renderRegionalPerformanceHeads()" placeholder="جستجوی رئیس ناحیه..."></div></div>
-          <div class="performance-table-wrap"><table class="performance-table"><thead><tr><th>رتبه</th><th>رئیس ناحیه</th><th>امتیاز</th><th>برنامه</th><th>تکمیل</th><th>تحقق</th><th>میانگین روزانه</th><th>پوشش</th><th>خارج برنامه</th><th>Override</th><th>نیازمند توجه</th><th>مدت</th><th></th></tr></thead><tbody id="regionalPerformanceBody"></tbody></table></div>
-          <div class="performance-formula">امتیاز عملکرد = ۵۰٪ تحقق برنامه + ۲۰٪ فعالیت میدانی + ۲۰٪ پوشش فروشگاه‌ها + ۱۰٪ کیفیت چک‌لیست. Override و بازدید خارج برنامه برای پایش نمایش داده می‌شوند اما به‌صورت خودکار امتیاز را کم نمی‌کنند.</div>
+          <div class="performance-table-wrap"><table class="performance-table"><thead><tr><th>رتبه</th><th>رئیس ناحیه</th><th>امتیاز</th><th>برنامه</th><th>تکمیل</th><th>تحقق</th><th>میانگین روزانه</th><th>پوشش</th><th>خارج برنامه</th><th>Override</th><th>نیازمند توجه</th><th>کیفیت چک‌لیست</th><th>مدت</th><th></th></tr></thead><tbody id="regionalPerformanceBody"></tbody></table></div>
+          <div class="performance-formula">امتیاز عملکرد = ۵۵٪ تحقق برنامه + ۲۵٪ پوشش فروشگاه‌ها + ۱۰٪ کنترل بازدید خارج برنامه + ۱۰٪ کیفیت واقعی چک‌لیست. کیفیت چک‌لیست از پاسخ‌های ثبت‌شده در تمام بخش‌ها محاسبه می‌شود.</div>
         </section>
       </div>
 
@@ -474,7 +499,7 @@ const state={
   weekStartIso:'',todayIso:'',days:[],selectedDayIso:'',filter:'ALL',dirty:false,sourceType:'MANUAL',dragIndex:null,moveIndex:null,
   activeView:'overview',gpsMode:'approval',approvals:[],approvalFilter:'PENDING',approvalSummary:{pending:0,approved:0,rejected:0},decisionApprovalId:'',
   corrections:[],correctionFilter:'PENDING',correctionSummary:{pending:0,approved:0,rejected:0},correctionDecisionId:'',
-  overview:null,overviewLoaded:false,routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:7
+  overview:null,overviewLoaded:false,routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:7,performanceRefreshTimer:null
 };
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -906,6 +931,7 @@ function renderRegionalPerformance(){
   document.getElementById('rpUnplannedSub').textContent=`${s.unplanned||0} بازدید`;
   document.getElementById('rpWeak').textContent=(s.weakRate||0)+'%';
   document.getElementById('rpWeakSub').textContent=`${s.weakAnswers||0} از ${s.responseCount||0} پاسخ`;
+  document.getElementById('rpChecklistQuality').textContent=(s.checklistQuality||0)+'%';
   document.getElementById('rpDuration').textContent=s.avgDuration??0;
   document.getElementById('rpBigCompletion').textContent=(s.completionRate||0)+'%';
   document.getElementById('rpCompletionBar').style.width=(s.completionRate||0)+'%';
@@ -916,7 +942,26 @@ function renderRegionalPerformance(){
   document.getElementById('rpPeriodCaption').textContent=`${faDateShort(state.performance.startIso)} تا ${faDateShort(state.performance.endIso)} · ${state.performance.periodDays} روز`;
   renderRegionalPerformanceTrend(state.performance.trend||[]);
   renderRegionalPerformanceWeak(state.performance.weakQuestions||[]);
+  renderChecklistSectionPerformance(state.performance.checklistSections||[]);
+  renderSalesSubsectionPerformance(state.performance.checklistSubsections||[]);
   renderRegionalPerformanceHeads();
+  const sync=document.getElementById('rpSyncText');
+  if(sync){const repaired=Number(state.performance?.integrity?.repaired||0);sync.textContent='آخرین همگام‌سازی '+faDateTimeRegional(state.performance.serverTime)+(repaired?` · ${repaired} بازدید بازیابی شد`:' · همگام');}
+}
+
+function checklistPerfColor(score){score=Number(score||0);if(score>=85)return'#218b61';if(score>=70)return'#3f72cf';if(score>=55)return'#d2951e';return'#c44258';}
+function renderChecklistSectionPerformance(rows){
+  const el=document.getElementById('regionalChecklistSections');if(!el)return;
+  if(!rows.length){el.innerHTML='<div class="overview-empty"><strong>هنوز داده چک‌لیست کافی نیست</strong>بعد از تکمیل بازدیدها تحلیل بخش‌ها نمایش داده می‌شود.</div>';return;}
+  el.innerHTML=rows.slice().sort((a,b)=>String(a.section).localeCompare(String(b.section),'fa')).map(x=>{const score=Number(x.qualityScore||0),c=checklistPerfColor(score);return `<article class="checklist-quality-card" style="--cq:${c}"><strong>${esc(x.section||'سایر')}</strong><div class="checklist-quality-score"><b>${score}%</b><span>کیفیت</span></div><div class="checklist-quality-meta">${x.responseCount||0} پاسخ · ${x.issueCount||0} نیازمند توجه</div><div class="checklist-quality-bar"><span style="width:${Math.max(0,Math.min(100,score))}%"></span></div></article>`;}).join('');
+}
+function renderSalesSubsectionPerformance(rows){
+  const all=(rows||[]).slice();
+  const sales=all.filter(x=>/فروش|فروشگاه|چیدمان|کالا/i.test(String(x.section||''))||/لبنی|گوشت|مرغ|میوه|سبزی|نوشیدنی|آشامیدنی|تنقلات|خواربار|منجمد|نان/i.test(String(x.subsection||'')));
+  const source=sales.length?sales:all,salesEl=document.getElementById('regionalSalesSubsections'),weakEl=document.getElementById('regionalWeakSubsections');
+  const rowHtml=x=>{const score=Number(x.qualityScore||0),c=checklistPerfColor(score);return `<div class="checklist-subsection-row"><div class="checklist-subsection-name"><strong>${esc(x.subsection||x.section||'سایر')}</strong><span>${esc(x.section||'چک‌لیست')} · ${x.responseCount||0} پاسخ</span></div><div class="checklist-mini-bar"><span style="width:${score}%;background:${c}"></span></div><div class="checklist-subsection-score" style="color:${c}">${score}%</div><div class="checklist-subsection-issues">${x.issueCount||0}</div></div>`;};
+  if(salesEl)salesEl.innerHTML=source.length?source.slice().sort((a,b)=>String(a.subsection).localeCompare(String(b.subsection),'fa')).map(rowHtml).join(''):'<div class="overview-empty">داده‌ای ثبت نشده است.</div>';
+  if(weakEl)weakEl.innerHTML=all.length?all.slice().sort((a,b)=>Number(a.qualityScore||0)-Number(b.qualityScore||0)||Number(b.issueCount||0)-Number(a.issueCount||0)).slice(0,8).map(rowHtml).join(''):'<div class="overview-empty">داده‌ای ثبت نشده است.</div>';
 }
 
 function renderRegionalPerformanceTrend(rows){
@@ -939,11 +984,19 @@ function renderRegionalPerformanceHeads(){
   const q=(document.getElementById('regionalPerfSearch')?.value||'').trim().toLowerCase();
   const arr=(state.performance?.areaHeads||[]).filter(h=>!q||String(h.fullName).toLowerCase().includes(q)||String(h.userId).toLowerCase().includes(q));
   const body=document.getElementById('regionalPerformanceBody');
-  if(!arr.length){body.innerHTML='<tr><td colspan="13" class="overview-empty">رئیس ناحیه‌ای پیدا نشد.</td></tr>';return;}
-  body.innerHTML=arr.map(h=>`<tr><td data-label="رتبه"><div class="performance-rank ${h.rank<=3?'top':''}">${h.rank}</div></td><td class="performance-name" data-label="رئیس ناحیه"><strong>${esc(h.fullName)}</strong><span>${h.storeCount} فروشگاه</span></td><td data-label="امتیاز"><span class="performance-score ${regionalScoreClass(h.performanceScore)}">${h.performanceScore}</span></td><td data-label="برنامه">${h.planned}</td><td data-label="تکمیل">${h.completedPlanned}</td><td data-label="تحقق">${h.completionRate}%</td><td data-label="میانگین روزانه">${h.avgDailyVisits}</td><td data-label="پوشش">${h.coverageRate}%</td><td data-label="خارج برنامه">${h.unplannedRate}%</td><td data-label="Override">${h.overrideRate}%</td><td data-label="نیازمند توجه">${h.weakRate}%</td><td data-label="مدت">${h.avgDuration} دقیقه</td><td class="performance-action"><button class="performance-route-btn" onclick="openAreaHeadRoute('${esc(h.userId)}')">Route</button></td></tr>`).join('');
+  if(!arr.length){body.innerHTML='<tr><td colspan="14" class="overview-empty">رئیس ناحیه‌ای پیدا نشد.</td></tr>';return;}
+  body.innerHTML=arr.map(h=>`<tr><td data-label="رتبه"><div class="performance-rank ${h.rank<=3?'top':''}">${h.rank}</div></td><td class="performance-name" data-label="رئیس ناحیه"><strong>${esc(h.fullName)}</strong><span>${h.storeCount} فروشگاه</span></td><td data-label="امتیاز"><span class="performance-score ${regionalScoreClass(h.performanceScore)}">${h.performanceScore}</span></td><td data-label="برنامه">${h.planned}</td><td data-label="تکمیل">${h.completedPlanned}</td><td data-label="تحقق">${h.completionRate}%</td><td data-label="میانگین روزانه">${h.avgDailyCompleted??h.avgDailyVisits??0}</td><td data-label="پوشش">${h.coverageRate}%</td><td data-label="خارج برنامه">${h.unplannedRate}%</td><td data-label="Override">${h.overrideRate}%</td><td data-label="نیازمند توجه">${h.weakRate}%</td><td data-label="کیفیت چک‌لیست">${h.checklistQuality||0}%</td><td data-label="مدت">${h.avgDuration} دقیقه</td><td class="performance-action"><button class="performance-route-btn" onclick="openAreaHeadRoute('${esc(h.userId)}')">Route</button></td></tr>`).join('');
 }
 
+function startPerformanceAutoRefresh(){
+  if(state.performanceRefreshTimer)clearInterval(state.performanceRefreshTimer);
+  state.performanceRefreshTimer=setInterval(()=>{if(state.activeView==='performance'&&!document.hidden)loadRegionalPerformance(true);},60000);
+}
+function stopPerformanceAutoRefresh(){if(state.performanceRefreshTimer){clearInterval(state.performanceRefreshTimer);state.performanceRefreshTimer=null;}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopPerformanceAutoRefresh();else if(state.activeView==='performance')startPerformanceAutoRefresh();});
+
 async function switchView(view){
+  if(view==='performance')startPerformanceAutoRefresh();else stopPerformanceAutoRefresh();
   if(view===state.activeView){
     if(view==='overview'&&!state.overviewLoaded)await loadOverview();
     else if(view==='route'&&!state.routeLoaded)await loadBootstrap(state.areaHeadId);
