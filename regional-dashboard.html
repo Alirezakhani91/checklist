@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b4001b">
-<!-- Daily Market Regional Dashboard V25 Regional Checklist Builder - Checklist Performance Sync -->
+<!-- Daily Market Regional Dashboard V25.1 Regional Checklist Builder - Checklist Performance Sync -->
 <title>مدیر منطقه | چک لیست دیلی مارکت</title>
 <style>
 @font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2");font-display:swap;font-weight:400}
@@ -99,6 +99,24 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 .cannot-panel{margin:0 18px 14px;border:1px solid #f0d8bb;background:#fffaf4;border-radius:18px;overflow:hidden}.cannot-panel.hidden-panel{display:none}.cannot-head{padding:13px 15px;border-bottom:1px solid #f4e5d2;display:flex;justify-content:space-between}.cannot-head h4{margin:0;font-size:.8rem}.cannot-head span{font-size:.62rem;color:#9c641f}.cannot-list{padding:9px 13px;display:grid;gap:7px}.cannot-row{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#fff;border:1px solid #f1e6d8;border-radius:13px;padding:10px}.cannot-row strong{font-size:.72rem}.cannot-row p{margin:4px 0 0;color:#7c6d5a;font-size:.61rem;line-height:1.7}.cannot-row button{border:0;background:#f0f2f5;color:#444b58;border-radius:10px;padding:8px 10px;font-family:inherit;font-weight:800;font-size:.62rem}
 .planner.manager-delegated .weekbar,.planner.manager-delegated .day-tabs,.planner.manager-delegated .workspace,.planner.manager-delegated .savebar{opacity:.55}
 @media(max-width:820px){.owner-options{grid-template-columns:1fr}.route-owner,.delegated-info,.cannot-panel{margin-left:10px;margin-right:10px}.cannot-row{display:block}.cannot-row button{width:100%;margin-top:8px}}
+
+
+.rq-performance-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.rq-performance-card{border:1px solid #e5e9f0;border-radius:18px;background:#fff;padding:16px;box-shadow:0 7px 20px rgba(15,23,42,.035)}
+.rq-performance-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.rq-performance-card-head strong{font-size:.8rem;line-height:1.8;color:#222b39}
+.rq-performance-badge{flex:0 0 auto;padding:5px 8px;border-radius:999px;background:#fff0f2;color:#b51f38;border:1px solid #f1c8cf;font-size:.56rem;font-weight:900}
+.rq-performance-meta{margin-top:6px;color:#8790a0;font-size:.62rem}
+.rq-performance-numbers{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.rq-performance-number{padding:7px 10px;border-radius:12px;background:#f7f8fa;border:1px solid #e7eaf0;font-size:.63rem;color:#5c6677}
+.rq-performance-number b{color:#202938;font-size:.75rem;margin-left:4px}
+.rq-performance-quality{margin-top:12px;display:flex;align-items:center;gap:10px}
+.rq-performance-quality .bar{height:7px;flex:1;border-radius:999px;background:#edf0f4;overflow:hidden}
+.rq-performance-quality .bar span{display:block;height:100%;border-radius:999px}
+.rq-performance-quality b{min-width:42px;text-align:left;font-size:.78rem}
+.rq-value-distribution{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.rq-value-chip{padding:5px 8px;border-radius:999px;background:#f7f8fa;border:1px solid #e5e9ef;font-size:.58rem;color:#596477}
+@media(max-width:820px){.rq-performance-list{grid-template-columns:1fr}}
 
 </style>
 
@@ -218,6 +236,17 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
         <section class="performance-panel checklist-quality-panel">
           <div class="performance-panel-head"><div><h3>کیفیت چک‌لیست به تفکیک بخش</h3><p>امتیاز پاسخ‌ها و موارد نیازمند توجه در بخش‌های مختلف بازدید</p></div></div>
           <div class="checklist-quality-grid" id="regionalChecklistSections"></div>
+        </section>
+
+
+        <section class="performance-panel">
+          <div class="performance-panel-head">
+            <div>
+              <h3>عملکرد سؤال‌های اختصاصی منطقه</h3>
+              <p>نتیجه سؤال‌هایی که توسط مدیر منطقه به چک‌لیست اضافه شده‌اند؛ مستقل از سؤال‌های مرکزی.</p>
+            </div>
+          </div>
+          <div class="rq-performance-list" id="regionalQuestionPerformance"></div>
         </section>
 
         <div class="checklist-subsection-wrap">
@@ -871,6 +900,7 @@ function renderRegionalPerformance(){
   renderRegionalPerformanceWeak(state.performance.weakQuestions||[]);
   renderChecklistSectionPerformance(state.performance.checklistSections||[]);
   renderSalesSubsectionPerformance(state.performance.checklistSubsections||[]);
+  renderRegionalQuestionPerformance(state.performance.regionalQuestionStats||[]);
   renderRegionalPerformanceHeads();
   const sync=document.getElementById('rpSyncText');
   if(sync){const repaired=Number(state.performance?.integrity?.repaired||0);sync.textContent='آخرین همگام‌سازی '+faDateTimeRegional(state.performance.serverTime)+(repaired?` · ${repaired} بازدید بازیابی شد`:' · همگام');}
@@ -889,6 +919,42 @@ function renderSalesSubsectionPerformance(rows){
   const rowHtml=x=>{const score=Number(x.qualityScore||0),c=checklistPerfColor(score);return `<div class="checklist-subsection-row"><div class="checklist-subsection-name"><strong>${esc(x.subsection||x.section||'سایر')}</strong><span>${esc(x.section||'چک‌لیست')} · ${x.responseCount||0} پاسخ</span></div><div class="checklist-mini-bar"><span style="width:${score}%;background:${c}"></span></div><div class="checklist-subsection-score" style="color:${c}">${score}%</div><div class="checklist-subsection-issues">${x.issueCount||0}</div></div>`;};
   if(salesEl)salesEl.innerHTML=source.length?source.slice().sort((a,b)=>String(a.subsection).localeCompare(String(b.subsection),'fa')).map(rowHtml).join(''):'<div class="overview-empty">داده‌ای ثبت نشده است.</div>';
   if(weakEl)weakEl.innerHTML=all.length?all.slice().sort((a,b)=>Number(a.qualityScore||0)-Number(b.qualityScore||0)||Number(b.issueCount||0)-Number(a.issueCount||0)).slice(0,8).map(rowHtml).join(''):'<div class="overview-empty">داده‌ای ثبت نشده است.</div>';
+}
+
+
+function renderRegionalQuestionPerformance(rows){
+  const el=document.getElementById('regionalQuestionPerformance');
+  if(!el)return;
+
+  if(!rows||!rows.length){
+    el.innerHTML='<div class="overview-empty"><strong>هنوز نتیجه‌ای برای سؤال‌های منطقه‌ای ثبت نشده</strong>بعد از تکمیل بازدیدهایی که سؤال اختصاصی دارند، نتیجه اینجا نمایش داده می‌شود.</div>';
+    return;
+  }
+
+  el.innerHTML=rows.map(x=>{
+    const evaluative=Number(x.evaluativeCount||0);
+    const score=x.qualityScore===null||x.qualityScore===undefined?null:Number(x.qualityScore||0);
+    const color=score===null?'#7b8493':checklistPerfColor(score);
+    const values=Object.keys(x.valueCounts||{}).sort((a,b)=>Number(x.valueCounts[b]||0)-Number(x.valueCounts[a]||0));
+    const chips=values.map(v=>`<span class="rq-value-chip">${esc(v)} · ${x.valueCounts[v]}</span>`).join('');
+
+    return `<article class="rq-performance-card">
+      <div class="rq-performance-card-head">
+        <div>
+          <strong>${esc(x.questionText||x.questionId)}</strong>
+          <div class="rq-performance-meta">${esc(x.section||'سایر')}${x.subsection?' · '+esc(x.subsection):''}</div>
+        </div>
+        <span class="rq-performance-badge">اختصاصی منطقه</span>
+      </div>
+      <div class="rq-performance-numbers">
+        <span class="rq-performance-number"><b>${x.responseCount||0}</b>پاسخ</span>
+        <span class="rq-performance-number"><b>${x.issueCount||0}</b>نیازمند توجه</span>
+        ${evaluative?`<span class="rq-performance-number"><b>${x.issueRate||0}%</b>نرخ ایراد</span>`:'<span class="rq-performance-number">پاسخ متنی / غیرامتیازی</span>'}
+      </div>
+      ${score===null?'':`<div class="rq-performance-quality"><div class="bar"><span style="width:${Math.max(0,Math.min(100,score))}%;background:${color}"></span></div><b style="color:${color}">${score}%</b></div>`}
+      ${chips?`<div class="rq-value-distribution">${chips}</div>`:''}
+    </article>`;
+  }).join('');
 }
 
 function renderRegionalPerformanceTrend(rows){
