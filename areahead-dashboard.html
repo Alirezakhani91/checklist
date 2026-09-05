@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b5001d">
-<!-- Daily Market Area Head Dashboard V24 Route First No Overview -->
+<!-- Daily Market Area Head Dashboard V25 Regional Checklist -->
 <title>رئیس ناحیه | چک لیست دیلی مارکت</title>
 
 <style>
@@ -955,6 +955,10 @@ button{cursor:pointer}
 }
 </style>
 
+
+<style id="regionalQuestionV25Styles">
+.regional-q-badge{display:inline-flex;align-items:center;gap:5px;margin-right:7px;padding:3px 7px;border-radius:999px;background:#fff0f2;color:#b31431;border:1px solid #f2ccd3;font-size:.54rem;font-weight:900;vertical-align:middle}.regional-text-answer{width:100%;min-height:76px;border:1px solid var(--sec-border,#dfe5ec);border-radius:14px;padding:11px 12px;font-family:inherit;line-height:1.9;resize:vertical;outline:none;background:#fff;color:#263142}.regional-text-answer:focus{border-color:var(--sec-accent,#315fc5);box-shadow:0 0 0 3px color-mix(in srgb,var(--sec-accent,#315fc5) 10%,transparent)}.regional-text-answer:disabled{background:#f7f8fa;color:#707887}
+</style>
 </head>
 
 <body>
@@ -1713,6 +1717,13 @@ function renderChecklist(){
 function safeDomId(s){return String(s||'').replace(/[^a-zA-Z0-9\u0600-\u06ff]+/g,'-');}
 function renderChecklistQuestion(q,readOnly){
   const value=state.checklistAnswers[q.questionId]||'';
+  const regionalBadge=q.source==='REGIONAL'?'<span class="regional-q-badge">اختصاصی منطقه</span>':'';
+  let typeLabel=q.responseType==='TEXT'?'پاسخ متنی':q.responseType==='TARGET_80'?'بالاتر از 80 درصد / زیر 80 درصد':q.responseType==='ACHIEVEMENT'?'محقق شده / محقق نشده':q.responseType==='WASTE_RATE'?'بالای نیم درصد / کمتر از نیم درصد':q.responseType==='YES_NO'?'بله / خیر':'ضعیف / خوب / عالی';
+
+  if(q.responseType==='TEXT'){
+    return `<div class="question-card" id="question-${esc(q.questionId)}"><div class="question-top"><div class="question-no">${q.sortOrder}</div><div><div class="question-text">${esc(q.questionText)} ${regionalBadge}</div><div class="question-sub">${q.required?'پاسخ الزامی':'اختیاری'} · ${esc(typeLabel)}</div></div></div><textarea class="regional-text-answer" maxlength="1000" ${readOnly?'disabled':''} oninput="setChecklistTextAnswer('${esc(q.questionId)}',this.value)" placeholder="پاسخ را بنویس...">${esc(value)}</textarea></div>`;
+  }
+
   const options=q.options||[];const two=options.length===2;
   const buttons=options.map((opt,i)=>{
     let cls='';
@@ -1725,14 +1736,23 @@ function renderChecklistQuestion(q,readOnly){
     }
     return `<button class="answer-btn ${value===opt?'selected '+cls:''}" ${readOnly?'disabled':''} onclick="setChecklistAnswer('${esc(q.questionId)}','${esc(opt)}')">${esc(opt)}</button>`;
   }).join('');
-  const typeLabel=q.responseType==='TARGET_80'?'بالاتر از 80 درصد / زیر 80 درصد':q.responseType==='ACHIEVEMENT'?'محقق شده / محقق نشده':q.responseType==='WASTE_RATE'?'بالای نیم درصد / کمتر از نیم درصد':q.responseType==='YES_NO'?'انجام شده / انجام نشده':'ضعیف / خوب / عالی';
-  return `<div class="question-card" id="question-${esc(q.questionId)}"><div class="question-top"><div class="question-no">${q.sortOrder}</div><div><div class="question-text">${esc(q.questionText)}</div><div class="question-sub">${q.required?'پاسخ الزامی':'اختیاری'} · ${esc(typeLabel)}</div></div></div><div class="answer-options ${two?'two':''}">${buttons}</div></div>`;
+  return `<div class="question-card" id="question-${esc(q.questionId)}"><div class="question-top"><div class="question-no">${q.sortOrder}</div><div><div class="question-text">${esc(q.questionText)} ${regionalBadge}</div><div class="question-sub">${q.required?'پاسخ الزامی':'اختیاری'} · ${esc(typeLabel)}</div></div></div><div class="answer-options ${two?'two':''}">${buttons}</div></div>`;
 }
 
 function setChecklistAnswer(questionId,value){
   if(state.checklistData?.readOnly)return;
   state.checklistAnswers[questionId]=value;state.checklistDirty=true;saveLocalChecklistDraft();
   renderChecklist();setChecklistSaveStatus('تغییرات هنوز روی سرور ذخیره نشده‌اند.','saving');
+  if(state.checklistSaveTimer)clearTimeout(state.checklistSaveTimer);
+  state.checklistSaveTimer=setTimeout(()=>saveChecklistDraft(false),1200);
+}
+
+
+function setChecklistTextAnswer(questionId,value){
+  if(state.checklistData?.readOnly)return;
+  state.checklistAnswers[questionId]=String(value||'').slice(0,1000);
+  state.checklistDirty=true;saveLocalChecklistDraft();updateChecklistProgress();
+  setChecklistSaveStatus('تغییرات هنوز روی سرور ذخیره نشده‌اند.','saving');
   if(state.checklistSaveTimer)clearTimeout(state.checklistSaveTimer);
   state.checklistSaveTimer=setTimeout(()=>saveChecklistDraft(false),1200);
 }
