@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b5001d">
-<!-- Daily Market Area Head Dashboard V25 Regional Checklist -->
+<!-- Daily Market Area Head Dashboard V25.2 GPS Reliability Approval Policy -->
 <title>رئیس ناحیه | چک لیست دیلی مارکت</title>
 
 <style>
@@ -1016,7 +1016,7 @@ button{cursor:pointer}
 
         <aside class="panel side-panel">
           <div class="side-card"><h4>بازدید خارج از برنامه</h4><p>اگر به دلیل عملیاتی لازم است به فروشگاهی خارج از Route امروز مراجعه کنید، بازدید را از اینجا شروع کنید.</p><button class="big-action" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>شروع بازدید خارج برنامه</button></div>
-          <div class="side-card"><h4>قواعد حضور</h4><div class="rule"><span class="rule-dot"></span><span>شعاع تأیید خودکار حضور: <strong id="radiusRule">300 متر</strong></span></div><div class="rule"><span class="rule-dot"></span><span>چند نمونه GPS گرفته می‌شود و بهترین دقت برای بررسی استفاده می‌شود.</span></div><div class="rule"><span class="rule-dot"></span><span>اگر GPS یا مختصات فروشگاه مشکل داشته باشد، درخواست تأیید برای مدیر منطقه ثبت می‌شود.</span></div></div>
+          <div class="side-card"><h4>قواعد حضور</h4><div class="rule"><span class="rule-dot"></span><span>شعاع تأیید خودکار حضور: <strong id="radiusRule">300 متر</strong></span></div><div class="rule"><span class="rule-dot"></span><span>چند نمونه GPS گرفته می‌شود و دقیق‌ترین نمونه برای تصمیم استفاده می‌شود.</span></div><div class="rule"><span class="rule-dot"></span><span>اگر دقت GPS بیشتر از <strong>200 متر</strong> باشد یا موقعیت دریافت نشود، ادامه فقط با تأیید مدیر منطقه ممکن است.</span></div></div>
         </aside>
       </section>
     </div>
@@ -1171,7 +1171,7 @@ const state={
   data:null,
   route:null,
   stores:[],
-  settings:{geoRadiusM:300,softPassRadiusM:800,gpsMaxAccuracyM:300,gpsSampleCount:5,nearestStoreConflictRadiusM:250,nearestStoreConflictAdvantageM:300,locationCorrectionMaxAccuracyM:80,locationCorrectionMinSamples:3},
+  settings:{geoRadiusM:300,softPassRadiusM:800,gpsMaxAccuracyM:200,gpsSampleCount:5,nearestStoreConflictRadiusM:250,nearestStoreConflictAdvantageM:300,locationCorrectionMaxAccuracyM:80,locationCorrectionMinSamples:3},
   gpsTarget:null,
   gpsBest:null,
   gpsSamples:[],
@@ -1327,7 +1327,7 @@ function openGps(storeCode,routeItemId,planned,unplannedReason){
   state.gpsTarget={storeCode,routeItemId:routeItemId||'',planned:!!planned,unplannedReason:unplannedReason||''};
   state.gpsBest=null;state.gpsSamples=[];state.gpsLastError=null;state.gpsDecision=null;
   document.getElementById('gpsStoreTitle').textContent=s.storeName;
-  document.getElementById('gpsStoreSub').textContent='کد '+s.storeCode+' · Auto تا '+(state.settings.geoRadiusM||300)+' متر · تأیید ساده تا '+(state.settings.softPassRadiusM||800)+' متر';
+  document.getElementById('gpsStoreSub').textContent='کد '+s.storeCode+' · Auto تا '+(state.settings.geoRadiusM||300)+' متر · تأیید ساده تا '+(state.settings.softPassRadiusM||800)+' متر · دقت قابل اعتماد ≤ '+Math.min(200,Number(state.settings.gpsMaxAccuracyM||200))+' متر';
   resetGpsUI();document.getElementById('gpsModal').classList.remove('hidden');
 }
 function closeGpsModal(){document.getElementById('gpsModal').classList.add('hidden');}
@@ -1375,8 +1375,20 @@ async function scanAndStart(){
   document.getElementById('gpsVisual').classList.remove('scanning');
 
   if(!state.gpsBest){
-    const msg=gpsErrorText(state.gpsLastError);
-    showGpsFailure(msg,null,false,false,null,true,{reason:'GPS_UNAVAILABLE'});
+    const raw=gpsErrorText(state.gpsLastError);
+    state.gpsDecision={
+      code:'GPS_UNAVAILABLE_MANAGER_APPROVAL',
+      approvalReason:'GPS_UNAVAILABLE'
+    };
+    showGpsFailure(
+      raw+' برای ادامه بازدید، تأیید مدیر منطقه لازم است.',
+      null,
+      true,
+      false,
+      null,
+      false,
+      null
+    );
     return;
   }
 
@@ -1418,28 +1430,96 @@ function gpsErrorText(e){
 }
 
 function showGpsFailure(message,gps,canApprove,canCorrect=false,correctionRule=null,canSoftPass=false,softPass=null){
-  document.getElementById('gpsTitle').textContent=canSoftPass?'نیاز به تأیید ساده حضور':(canApprove?'نیاز به تأیید مدیر منطقه':'تأیید خودکار انجام نشد');
-  const rule=correctionRule||{maxAccuracyM:state.settings.locationCorrectionMaxAccuracyM||80,minSamples:state.settings.locationCorrectionMinSamples||3};
-  if(canSoftPass){
-    document.getElementById('gpsDesc').textContent='اگر واقعاً در محل فروشگاه هستی، حضور خودت را تأیید کن. این مورد در Audit ثبت می‌شود و نیازی به انتظار برای مدیر منطقه ندارد.';
-  }else if(state.gpsDecision&&state.gpsDecision.nearestStore){
-    const n=state.gpsDecision.nearestStore;
-    document.getElementById('gpsDesc').textContent=`GPS فعلی به یک فروشگاه دیگر دیلی‌مارکت (${n.distanceM!=null?mText(n.distanceM):'نزدیک'}) بسیار نزدیک‌تر است؛ برای جلوگیری از ثبت بازدید اشتباه، تأیید مدیر منطقه لازم است.`;
+  const decision=state.gpsDecision||{};
+  const code=String(decision.code||'').toUpperCase();
+  const approvalReason=String(decision.approvalReason||'').toUpperCase();
+  const lowAccuracy=code.includes('LOW_GPS_ACCURACY')||approvalReason.startsWith('LOW_GPS_ACCURACY');
+  const gpsUnavailable=code.includes('GPS_UNAVAILABLE')||approvalReason.startsWith('GPS_UNAVAILABLE');
+  const nearest=!!decision.nearestStore;
+
+  const reliableLimit=Math.min(200,Number(state.settings.gpsMaxAccuracyM||200));
+  const rule=correctionRule||{
+    maxAccuracyM:state.settings.locationCorrectionMaxAccuracyM||80,
+    minSamples:state.settings.locationCorrectionMinSamples||3
+  };
+
+  if(lowAccuracy){
+    document.getElementById('gpsTitle').textContent='دقت موقعیت مکانی کافی نیست';
+    const best=state.gpsBest&&Number.isFinite(Number(state.gpsBest.accuracy))
+      ? Math.round(Number(state.gpsBest.accuracy))
+      : null;
+    document.getElementById('gpsDesc').textContent=best!==null
+      ? `پس از چند بار بررسی، بهترین دقت GPS ${best} متر است؛ حد قابل اعتماد ${reliableLimit} متر است. فاصله نمایش‌داده‌شده مبنای تصمیم نیست و برای ادامه تأیید مدیر منطقه لازم است.`
+      : `دقت GPS قابل اعتماد دریافت نشد. برای ادامه تأیید مدیر منطقه لازم است.`;
+  }else if(gpsUnavailable){
+    document.getElementById('gpsTitle').textContent='موقعیت مکانی دریافت نشد';
+    document.getElementById('gpsDesc').textContent='پس از چند بار تلاش، موقعیت قابل استفاده‌ای از دستگاه دریافت نشد. Self Confirm مجاز نیست و برای ادامه باید درخواست تأیید مدیر منطقه ارسال شود.';
+  }else if(canSoftPass){
+    document.getElementById('gpsTitle').textContent='نیاز به تأیید ساده حضور';
+    document.getElementById('gpsDesc').textContent='GPS قابل اعتماد است و فاصله در محدوده تأیید ساده قرار دارد. اگر واقعاً در محل همین فروشگاه هستی، حضور خودت را تأیید کن. این مورد در Audit ثبت می‌شود.';
+  }else if(nearest){
+    const n=decision.nearestStore;
+    document.getElementById('gpsTitle').textContent='فروشگاه دیگری نزدیک‌تر است';
+    document.getElementById('gpsDesc').textContent=`GPS فعلی به یک فروشگاه دیگر دیلی‌مارکت (${n.distanceM!=null?mText(n.distanceM):'نزدیک'}) بسیار نزدیک‌تر است؛ Self Confirm مجاز نیست و برای ادامه تأیید مدیر منطقه لازم است.`;
   }else if(canCorrect){
-    document.getElementById('gpsDesc').textContent=`فاصله بیشتر از ${state.settings.softPassRadiusM||800} متر است. برای ادامه تأیید مدیر منطقه لازم است؛ اگر مختصات فروشگاه اشتباه است می‌توانی درخواست اصلاح لوکیشن هم ارسال کنی.`;
+    document.getElementById('gpsTitle').textContent='نیاز به تأیید مدیر منطقه';
+    document.getElementById('gpsDesc').textContent=`GPS قابل اعتماد است اما فاصله بیشتر از ${state.settings.softPassRadiusM||800} متر است. برای ادامه تأیید مدیر منطقه لازم است؛ اگر مختصات فروشگاه اشتباه است می‌توانی درخواست اصلاح لوکیشن هم ارسال کنی.`;
+  }else if(canApprove){
+    document.getElementById('gpsTitle').textContent='نیاز به تأیید مدیر منطقه';
+    document.getElementById('gpsDesc').textContent=`GPS قابل اعتماد است اما شرایط ورود خودکار یا تأیید ساده برقرار نیست؛ برای ادامه درخواست تأیید حضور برای مدیر منطقه ارسال کن.`;
   }else{
-    document.getElementById('gpsDesc').textContent=`فاصله بیشتر از ${state.settings.softPassRadiusM||800} متر است؛ برای ادامه درخواست تأیید حضور برای مدیر منطقه ارسال کن.`;
+    document.getElementById('gpsTitle').textContent='تأیید خودکار انجام نشد';
+    document.getElementById('gpsDesc').textContent='امکان شروع خودکار بازدید در حال حاضر وجود ندارد.';
   }
-  const box=document.getElementById('gpsResult');box.className=canSoftPass?'gps-result warn':'gps-result error';box.textContent=message||'موقعیت تأیید نشد.';
-  if(gps){document.getElementById('gpsMetrics').classList.remove('hidden');document.getElementById('metricAccuracy').textContent=mText(gps.accuracyM);document.getElementById('metricDistance').textContent=mText(gps.distanceM);}
-  const correctionBtn=canCorrect?`<button class="btn correct" onclick="requestLocationCorrection()">📍 لوکیشن فروشگاه اشتباه است</button>`:'';
-  const softBtn=canSoftPass?`<button class="btn warn" onclick="confirmSoftPresence()">بله، در فروشگاه هستم</button>`:'';
-  const managerBtn=canApprove?`<button class="btn warn" onclick="requestManagerApproval()">درخواست تأیید مدیر منطقه</button>`:'';
-  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" onclick="closeGpsModal()">انصراف</button>${correctionBtn}${softBtn}${managerBtn}<button class="btn primary" onclick="scanAndStart()">GPS دوباره</button>`;
-  if(!canCorrect&&state.gpsBest&&correctionRule){document.getElementById('gpsDesc').textContent+=` برای اصلاح مختصات، GPS باید حداکثر ${rule.maxAccuracyM} متر و حداقل ${rule.minSamples} نمونه باشد.`;}
+
+  const box=document.getElementById('gpsResult');
+  box.className=canSoftPass?'gps-result warn':'gps-result error';
+  box.textContent=message||'موقعیت تأیید نشد.';
+
+  if(gps){
+    document.getElementById('gpsMetrics').classList.remove('hidden');
+    document.getElementById('metricAccuracy').textContent=mText(gps.accuracyM);
+    document.getElementById('metricDistance').textContent=mText(gps.distanceM);
+  }
+
+  const correctionBtn=canCorrect
+    ? `<button class="btn correct" onclick="requestLocationCorrection()">📍 لوکیشن فروشگاه اشتباه است</button>`
+    : '';
+
+  const softBtn=canSoftPass
+    ? `<button class="btn warn" onclick="confirmSoftPresence()">بله، در فروشگاه هستم</button>`
+    : '';
+
+  const managerBtn=canApprove
+    ? `<button class="btn warn" onclick="requestManagerApproval()">درخواست تأیید مدیر منطقه</button>`
+    : '';
+
+  document.getElementById('gpsFoot').innerHTML=
+    `<button class="btn ghost" onclick="closeGpsModal()">انصراف</button>${correctionBtn}${softBtn}${managerBtn}<button class="btn primary" onclick="scanAndStart()">GPS دوباره</button>`;
+
+  if(!canCorrect&&state.gpsBest&&correctionRule&&!lowAccuracy){
+    document.getElementById('gpsDesc').textContent+=
+      ` برای اصلاح مختصات، GPS باید حداکثر ${rule.maxAccuracyM} متر و حداقل ${rule.minSamples} نمونه باشد.`;
+  }
 }
 
 async function confirmSoftPresence(){
+  const b=state.gpsBest;
+  const reliableLimit=Math.min(200,Number(state.settings.gpsMaxAccuracyM||200));
+  if(!b||!Number.isFinite(Number(b.accuracy))||Number(b.accuracy)>reliableLimit){
+    state.gpsDecision={
+      code:b?'LOW_GPS_ACCURACY_MANAGER_APPROVAL':'GPS_UNAVAILABLE_MANAGER_APPROVAL',
+      approvalReason:b?`LOW_GPS_ACCURACY | ${Math.round(Number(b.accuracy))}m | limit=${reliableLimit}m`:'GPS_UNAVAILABLE'
+    };
+    showGpsFailure(
+      b
+        ? `دقت موقعیت مکانی ${Math.round(Number(b.accuracy))} متر است و برای Self Confirm قابل اعتماد نیست.`
+        : 'موقعیت مکانی قابل استفاده دریافت نشده است.',
+      b?{accuracyM:b.accuracy,distanceM:null}:null,
+      true,false,null,false,null
+    );
+    return;
+  }
   if(!confirm('تأیید می‌کنید که در حال حاضر در محل همین فروشگاه حضور دارید؟'))return;
   document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" disabled>در حال ثبت حضور...</button>`;
   try{
@@ -1459,7 +1539,7 @@ async function confirmSoftPresence(){
     document.getElementById('gpsTitle').textContent='بازدید آغاز شد';
     document.getElementById('gpsDesc').textContent='حضور شما به‌صورت تأیید ساده ثبت شد و می‌توانی چک‌لیست را ادامه بدهی.';
     document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">ادامه به بازدید</button>`;
-  }catch(e){showGpsFailure(e.message||'ثبت حضور ناموفق بود.',null,false,false,null,true,null);}
+  }catch(e){showGpsFailure(e.message||'ثبت حضور ناموفق بود.',null,true,false,null,false,null);}
 }
 
 async function requestManagerApproval(){
