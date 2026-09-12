@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b4001b">
-<!-- Daily Market Regional Dashboard V25.2 GPS Reliability Approval Policy -->
+<!-- Daily Market Regional Dashboard V27 TURBO + V25.2 GPS + V25.1 Analytics -->
 <title>مدیر منطقه | چک لیست دیلی مارکت</title>
 <style>
 @font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2");font-display:swap;font-weight:400}
@@ -554,6 +554,38 @@ function setLoading(on,text){DMLoading.set(!!on,text||'', 'loadingScreen');}
 function markDirty(kind='MANUAL'){state.dirty=true;if(state.sourceType==='SMART'&&kind==='MANUAL')state.sourceType='MIXED';else if(state.sourceType!=='MIXED')state.sourceType=kind;renderSaveState();}
 function renderSaveState(){const el=document.getElementById('saveInfo');el.innerHTML=state.dirty?'<span class="dirty-dot"></span><strong>تغییرات ذخیره نشده</strong> · بعد از ثبت، برنامه برای رئیس ناحیه قابل مشاهده خواهد بود.':'<strong>برنامه ذخیره شده است.</strong> هر تغییر جدید را دوباره ثبت کنید.';}
 
+function applyRegionalBootstrap(res,requestedId=''){
+  if(!res||!res.success)return false;
+  if(requestedId&&String(res.selectedAreaHead?.userId||'').trim()!==String(requestedId).trim())return false;
+  if(res.manager)state.user=res.manager;
+  state.summary=res.summary||{};
+  state.settings=res.settings||state.settings;
+  state.areaHeads=res.areaHeads||[];
+  state.todayIso=res.todayIso||iso(new Date());
+  state.areaHeadId=res.selectedAreaHead?.userId||'';
+  state.stores=res.selectedAreaHead?.stores||[];
+  state.planningMode=res.selectedAreaHead?.planningMode||'REGIONAL_MANAGER';
+  state.cannotVisitNotices=res.selectedAreaHead?.cannotVisitNotices||[];
+  state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
+  state.days=(res.week?.days||[]).map((d,i)=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||''}));
+  state.selectedDayIso=state.days.some(d=>d.dateIso===state.selectedDayIso)?state.selectedDayIso:(state.days[0]?.dateIso||'');
+  state.dirty=false;state.sourceType='MANUAL';state.routeLoaded=true;
+  renderAll();
+  return true;
+}
+
+function hydrateRegionalInstant(){
+  try{
+    const params={weekStartIso:state.weekStartIso,areaHeadUserId:''};
+    const hit=window.DMInstant?.peek?.('regionalBootstrap',params,6*60*60*1000);
+    if(hit?.data?.success&&applyRegionalBootstrap(hit.data,'')){
+      setLoading(false);
+      return true;
+    }
+  }catch(_){}
+  return false;
+}
+
 async function init(){
   const auth=await DMAuth.validateSession('REGIONAL_MANAGER');
   if(!auth.ok){DMAuth.clearAuth();location.replace('index.html');return;}
@@ -564,29 +596,30 @@ async function init(){
   document.getElementById('mobileAvatar').textContent=initials(state.user.fullName);
   document.getElementById('topTitle').textContent='مدیریت Route و مسیر بازدید';
   document.getElementById('regionText').textContent=(state.user.regionalManagerName||state.user.fullName)+' · برنامه‌ریزی و مدیریت مسیر رؤسای ناحیه';
-  await loadBootstrap('');
-  await loadApprovalBadge();
+
+  const instant=hydrateRegionalInstant();
+  await loadBootstrap('',instant,false);
+  // Badge is non-blocking; Route UI is already usable.
+  loadApprovalBadge();
 }
 
-async function loadBootstrap(areaHeadId){
+async function loadBootstrap(areaHeadId,silent=false,forceFresh=false){
   const requestedId=String(areaHeadId||state.areaHeadId||'').trim();
   const seq=++state.bootstrapSeq;
-  setLoading(true,'در حال دریافت اطلاعات منطقه...');
+  let loadingTimer=null;
+  if(!silent)loadingTimer=setTimeout(()=>setLoading(true,'در حال دریافت اطلاعات منطقه...'),180);
   try{
-    const res=await DMAuth.apiPost('regionalBootstrap',{weekStartIso:state.weekStartIso,areaHeadUserId:requestedId},35000);
+    const params={weekStartIso:state.weekStartIso,areaHeadUserId:requestedId};
+    if(forceFresh)params.forceFresh='true';
+    const res=await DMAuth.apiPost('regionalBootstrap',params,35000);
     if(seq!==state.bootstrapSeq)return;
     if(!res.success)throw new Error(res.message||'دریافت اطلاعات ناموفق بود.');
-    if(requestedId&&String(res.selectedAreaHead?.userId||'').trim()!==requestedId){
-      throw new Error('اطلاعات رئیس ناحیه انتخاب‌شده با پاسخ سرور همخوانی ندارد. صفحه را بروزرسانی کنید.');
-    }
-    state.summary=res.summary||{};state.settings=res.settings||state.settings;state.areaHeads=res.areaHeads||[];state.todayIso=res.todayIso||iso(new Date());
-    state.areaHeadId=res.selectedAreaHead?.userId||'';state.stores=res.selectedAreaHead?.stores||[];state.planningMode=res.selectedAreaHead?.planningMode||'REGIONAL_MANAGER';state.cannotVisitNotices=res.selectedAreaHead?.cannotVisitNotices||[];state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
-    state.days=(res.week?.days||[]).map((d,i)=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||''}));
-    state.selectedDayIso=state.days.some(d=>d.dateIso===state.selectedDayIso)?state.selectedDayIso:(state.days[0]?.dateIso||'');
-    state.dirty=false;state.sourceType='MANUAL';state.routeLoaded=true;
-    renderAll();
+    if(!applyRegionalBootstrap(res,requestedId))throw new Error('اطلاعات رئیس ناحیه انتخاب‌شده با پاسخ سرور همخوانی ندارد. صفحه را بروزرسانی کنید.');
   }catch(e){toast(e.message||'خطا در دریافت اطلاعات','error');}
-  finally{if(seq===state.bootstrapSeq)setLoading(false);}
+  finally{
+    if(loadingTimer)clearTimeout(loadingTimer);
+    if(seq===state.bootstrapSeq&&!silent)setLoading(false);
+  }
 }
 
 function renderAll(){renderSummary();renderAreaHeads();renderPlanningMode();renderCannotVisitNotices();renderWeek();renderDays();renderRoute();renderStorePool();renderSaveState();}
@@ -835,7 +868,7 @@ async function saveWeek(){if(!state.areaHeadId)return;if(!managerCanEditRoutes()
 async function changeAreaHead(id){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟')){renderAreaHeads();return;}state.areaHeadId=id;await loadBootstrap(id);}
 async function shiftWeek(n){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟'))return;state.weekStartIso=iso(addDays(parseIso(state.weekStartIso),n));state.selectedDayIso='';await loadBootstrap(state.areaHeadId);}
 async function goCurrentWeek(){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟'))return;state.weekStartIso=iso(saturdayStart(new Date()));state.selectedDayIso='';await loadBootstrap(state.areaHeadId);}
-async function reloadData(){if(state.dirty&&!confirm('تغییرات ذخیره نشده لغو شود؟'))return;await loadBootstrap(state.areaHeadId);}
+async function reloadData(){if(state.dirty&&!confirm('تغییرات ذخیره نشده لغو شود؟'))return;await loadBootstrap(state.areaHeadId,false,true);}
 
 
 async function openAreaHeadRoute(id){
