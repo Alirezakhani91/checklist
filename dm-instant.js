@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  const VERSION = '24.0.0';
-  const PREFIX = 'dmInstant:v20:';
+  const VERSION = '27.0.0';
+  const PREFIX = 'dmInstant:v27:';
   const MAX_ENTRIES = 28;
   const MAX_ITEM_CHARS = 780000;
 
@@ -11,7 +11,11 @@
     'areaHeadBootstrap',
     'areaHeadRouteBootstrap',
     'regionalBootstrap',
+    'regionalOverview',
     'regionalPerformance',
+    'regionalGpsBadgeCounts',
+    'regionalLocationApprovals',
+    'regionalLocationCorrections',
     'executiveOverview',
     'executivePerformance',
     'adminBootstrap',
@@ -27,6 +31,8 @@
   // These actions describe "today"; never replay yesterday's snapshot as today.
   const DAILY = new Set([
     'areaHeadBootstrap',
+    'regionalOverview',
+    'regionalGpsBadgeCounts',
     'executiveOverview',
     'adminBootstrap',
     'adminPilotBootstrap'
@@ -268,18 +274,22 @@
       action=String(action||'');
       params=params||{};
 
-      if (!CACHEABLE.has(action)) {
+      const forceFresh = String(params?.forceFresh || '').toLowerCase()==='true' || params?.forceFresh===true;
+
+      if (!CACHEABLE.has(action) || forceFresh) {
         const result = await original(action,params,timeoutMs);
-        if (result && result.success !== false) clearUserCache();
+        if (!CACHEABLE.has(action) && result && result.success !== false) clearUserCache();
+        // A forced read refreshes the normal (non-forceFresh) snapshot too.
+        if (forceFresh && result && result.success !== false) {
+          const normalParams=Object.assign({},params);delete normalParams.forceFresh;
+          writeEntry(action,normalParams,result);
+          emit(action,normalParams,result,{source:'fresh',background:false,forced:true});
+        }
         return result;
       }
 
       // max replay age: current operational pages 6h; filtered historical views 2h.
-      const maxAge =
-        action==='regionalPerformance' ? 20*1000 :
-        ((action==='visitHistory'||action==='visitDetail'||action==='alertsCenter')
-          ? 2*60*60*1000
-          : 6*60*60*1000);
+      const maxAge = (action==='visitHistory'||action==='visitDetail'||action==='alertsCenter') ? 2*60*60*1000 : 6*60*60*1000;
       const cached = readEntry(action,params,maxAge);
 
       if (!cached) {
