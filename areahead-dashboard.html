@@ -1201,6 +1201,30 @@ function toast(msg,type=''){const w=document.getElementById('toastWrap'),el=docu
 function setLoading(on,text){DMLoading.set(!!on,text||'', 'loading');}
 function storeByCode(code){return state.stores.find(s=>s.storeCode===code)||null;}
 
+function applyAreaHeadBootstrap(res){
+  if(!res||!res.success)return false;
+  state.data=res;
+  state.route=res.route||{items:[]};
+  state.stores=res.allStores||[];
+  state.settings=res.settings||state.settings;
+  if(res.user)state.user=res.user;
+  renderAll();
+  schedulePendingPoll();
+  return true;
+}
+
+function hydrateAreaHeadInstant(){
+  try{
+    const hit=window.DMInstant?.peek?.('areaHeadBootstrap',{},6*60*60*1000);
+    if(hit?.data?.success){
+      applyAreaHeadBootstrap(hit.data);
+      setLoading(false);
+      return true;
+    }
+  }catch(_){}
+  return false;
+}
+
 async function init(){
   const auth=await DMAuth.validateSession('AREA_HEAD');
   if(!auth.ok){DMAuth.clearAuth();location.replace('index.html');return;}
@@ -1210,19 +1234,27 @@ async function init(){
   document.getElementById('mobileAvatar').textContent=initials(state.user.fullName);
   document.getElementById('sideRegion').textContent=state.user.regionalManagerName||'پنل بازدید';
   document.getElementById('topUserText').textContent=(state.user.fullName||'رئیس ناحیه')+' · '+(state.user.regionalManagerName||'');
-  await loadData();
+
+  const instant=hydrateAreaHeadInstant();
+  await loadData(instant,false);
 }
 
-async function loadData(silent=false){
-  if(!silent)setLoading(true,'در حال دریافت برنامه امروز...');
+async function loadData(silent=false,forceFresh=false){
+  let loadingTimer=null;
+  if(!silent){
+    // Avoid flashing a full-screen loader for fast cache hits.
+    loadingTimer=setTimeout(()=>setLoading(true,'در حال دریافت برنامه امروز...'),180);
+  }
   try{
-    const res=await DMAuth.apiPost('areaHeadBootstrap',{},40000);
+    const params=forceFresh?{forceFresh:'true'}:{};
+    const res=await DMAuth.apiPost('areaHeadBootstrap',params,40000);
     if(!res.success)throw new Error(res.message||'دریافت برنامه ناموفق بود.');
-    state.data=res;state.route=res.route||{items:[]};state.stores=res.allStores||[];state.settings=res.settings||state.settings;
-    renderAll();
-    schedulePendingPoll();
+    applyAreaHeadBootstrap(res);
   }catch(e){toast(e.message||'خطا در دریافت اطلاعات','error');}
-  finally{if(!silent)setLoading(false);}
+  finally{
+    if(loadingTimer)clearTimeout(loadingTimer);
+    if(!silent)setLoading(false);
+  }
 }
 
 function renderAll(){
@@ -1344,14 +1376,64 @@ function resetGpsUI(){
   document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" onclick="closeGpsModal()">انصراف</button><button class="btn primary" id="scanBtn" onclick="scanAndStart()">بررسی GPS و شروع بازدید</button>`;
 }
 
-function getOnePosition(){
-  return new Promise((resolve,reject)=>{
-    if(!navigator.geolocation){reject(new Error('مرورگر شما GPS را پشتیبانی نمی‌کند.'));return;}
-    navigator.geolocation.getCurrentPosition(
-      p=>resolve({lat:p.coords.latitude,lng:p.coords.longitude,accuracy:p.coords.accuracy,timestamp:p.timestamp}),
-      err=>reject(err),
-      {enableHighAccuracy:true,timeout:9000,maximumAge:0}
+function collectGpsSamplesFast(targetCount){
+  return new Promise(resolve=>{
+    state.gpsSamples=[];state.gpsBest=null;state.gpsLastError=null;
+    if(!navigator.geolocation){
+      state.gpsLastError=new Error('مرورگر شما GPS را پشتیبانی نمی‌کند.');
+      resolve();return;
+    }
+
+    const started=Date.now();
+    const hardWindowMs=7000;
+    const correctionAccuracy=Math.max(5,Number(state.settings.locationCorrectionMaxAccuracyM||80));
+    let done=false,watchId=null,timer=null,progressTimer=null;
+
+    const updateUi=()=>{
+      const elapsed=Math.min(1,(Date.now()-started)/hardWindowMs);
+      const sampleProgress=Math.min(1,state.gpsSamples.length/Math.max(1,targetCount));
+      const pct=Math.round(Math.max(elapsed*.82,sampleProgress)*100);
+      document.getElementById('gpsProgress').style.width=`${Math.min(96,pct)}%`;
+      document.getElementById('metricSamples').textContent=`${state.gpsSamples.length}/${targetCount}`;
+      document.getElementById('metricAccuracy').textContent=state.gpsBest?mText(state.gpsBest.accuracy):'—';
+      document.getElementById('metricDistance').textContent='در حال بررسی';
+    };
+
+    const finish=()=>{
+      if(done)return;done=true;
+      if(watchId!==null){try{navigator.geolocation.clearWatch(watchId);}catch(_){}}
+      clearTimeout(timer);clearInterval(progressTimer);
+      document.getElementById('gpsProgress').style.width='100%';
+      updateUi();
+      resolve();
+    };
+
+    watchId=navigator.geolocation.watchPosition(
+      pos=>{
+        const p={lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:pos.coords.accuracy,timestamp:pos.timestamp};
+        // Ignore exact duplicate browser callbacks.
+        const prev=state.gpsSamples[state.gpsSamples.length-1];
+        if(!prev||prev.timestamp!==p.timestamp||prev.accuracy!==p.accuracy){
+          state.gpsSamples.push(p);
+          if(!state.gpsBest||Number(p.accuracy)<Number(state.gpsBest.accuracy))state.gpsBest=p;
+        }
+        updateUi();
+
+        // Early stop only after enough evidence. Typical good phones finish in a few seconds.
+        if(state.gpsSamples.length>=3 && state.gpsBest && Number(state.gpsBest.accuracy)<=correctionAccuracy){
+          finish();return;
+        }
+        if(state.gpsSamples.length>=targetCount)finish();
+      },
+      err=>{
+        state.gpsLastError=err;
+        if(err&&err.code===1)finish();
+      },
+      {enableHighAccuracy:true,timeout:hardWindowMs,maximumAge:1200}
     );
+
+    progressTimer=setInterval(updateUi,250);
+    timer=setTimeout(finish,hardWindowMs);
   });
 }
 
@@ -1360,21 +1442,11 @@ async function scanAndStart(){
   state.gpsSamples=[];state.gpsBest=null;state.gpsLastError=null;state.gpsDecision=null;
   document.getElementById('gpsVisual').classList.add('scanning');
   document.getElementById('gpsTitle').textContent='در حال بررسی GPS...';
-  document.getElementById('gpsDesc').textContent=`در حال دریافت ${count} نمونه موقعیت و انتخاب دقیق‌ترین نتیجه.`;
+  document.getElementById('gpsDesc').textContent='چند نمونه موقعیت به‌صورت همزمان پایش می‌شود؛ به محض رسیدن به دقت مناسب ادامه می‌دهیم.';
   document.getElementById('gpsMetrics').classList.remove('hidden');
   document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" disabled>لطفاً صبر کنید...</button>`;
 
-  for(let i=0;i<count;i++){
-    try{
-      const p=await getOnePosition();state.gpsSamples.push(p);
-      if(!state.gpsBest||p.accuracy<state.gpsBest.accuracy)state.gpsBest=p;
-    }catch(e){state.gpsLastError=e;}
-    document.getElementById('gpsProgress').style.width=`${Math.round(((i+1)/count)*100)}%`;
-    document.getElementById('metricSamples').textContent=`${state.gpsSamples.length}/${count}`;
-    document.getElementById('metricAccuracy').textContent=state.gpsBest?mText(state.gpsBest.accuracy):'—';
-    document.getElementById('metricDistance').textContent='در حال بررسی';
-    if(i<count-1)await new Promise(r=>setTimeout(r,800));
-  }
+  await collectGpsSamplesFast(count);
 
   document.getElementById('gpsVisual').classList.remove('scanning');
 
@@ -1971,17 +2043,33 @@ async function cancelVisit(visitId){
 
 function schedulePendingPoll(){
   if(state.pendingPoll)clearTimeout(state.pendingPoll);
-  if(state.data?.openVisit?.visitStatus==='WAITING_LOCATION_APPROVAL'||state.data?.openVisit?.visitStatus==='WAITING_LOCATION_CORRECTION'){
-    state.pendingPoll=setTimeout(async()=>{await loadData(true);},20000);
-  }
+  const status=String(state.data?.openVisit?.visitStatus||'');
+  if(status!=='WAITING_LOCATION_APPROVAL'&&status!=='WAITING_LOCATION_CORRECTION')return;
+
+  state.pendingPoll=setTimeout(async()=>{
+    try{
+      const oldVisitId=String(state.data?.openVisit?.visitId||'');
+      const oldStatus=String(state.data?.openVisit?.visitStatus||'');
+      const r=await DMAuth.apiPost('areaHeadVisitState',{},15000);
+      if(!r?.success){schedulePendingPoll();return;}
+      const next=r.openVisit||null;
+      const newVisitId=String(next?.visitId||'');
+      const newStatus=String(next?.visitStatus||'');
+
+      if(oldVisitId!==newVisitId||oldStatus!==newStatus){
+        // Decision changed: one fresh bootstrap synchronizes Route/Checklist state.
+        await loadData(true,true);
+        return;
+      }
+      schedulePendingPoll();
+    }catch(_){schedulePendingPoll();}
+  },8000);
 }
-async function reloadData(){await loadData(false);}
+async function reloadData(){await loadData(false,true);}
 
 
 DMInstant.on('areaHeadBootstrap',(res)=>{
-  if(!res||!res.success)return;
-  state.data=res;state.route=res.route||{items:[]};state.stores=res.allStores||[];state.settings=res.settings||state.settings;
-  renderAll();schedulePendingPoll();
+  applyAreaHeadBootstrap(res);
 });
 
 init().catch(e=>{setLoading(false);toast(e.message||'خطای غیرمنتظره','error');});
