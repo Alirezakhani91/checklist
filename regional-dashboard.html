@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b4001b">
-<!-- Daily Market Regional Dashboard V27 TURBO + V25.2 GPS + V25.1 Analytics -->
+<!-- Daily Market Regional Dashboard V29 Performance Excel Export + V28 Leave + V27 TURBO -->
 <title>مدیر منطقه | چک لیست دیلی مارکت</title>
 <style>
 @font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2");font-display:swap;font-weight:400}
@@ -213,6 +213,13 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
   #storePerformanceTable td.store-cell{display:block}
   #storePerformanceTable td.store-cell:before{display:none}
 }
+
+.performance-export-card{background:linear-gradient(145deg,#ffffff,#fbfcff);border:1px solid var(--line);border-radius:20px;box-shadow:0 9px 28px rgba(20,28,48,.04);padding:15px 17px;margin-bottom:16px;display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.7fr);gap:18px;align-items:center}
+.performance-export-copy h3{margin:0;font-size:.92rem}.performance-export-copy p{margin:5px 0 0;color:var(--muted);font-size:.66rem;line-height:1.9}.performance-export-controls{display:grid;grid-template-columns:repeat(3,minmax(135px,1fr)) auto;gap:9px;align-items:end}.performance-export-field{display:grid;gap:5px}.performance-export-field label{font-size:.61rem;color:#747c89;font-weight:800}.performance-export-field input,.performance-export-field select{width:100%;border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px 10px;font-family:inherit;font-size:.68rem;color:#323a48;outline:none;min-height:39px}.performance-export-actions{display:flex;gap:7px;align-items:center}.performance-export-note{grid-column:1/-1;font-size:.59rem;color:#8b929f;margin-top:-2px}.performance-export-btn{white-space:nowrap;min-height:39px}.performance-export-btn svg{width:16px;height:16px}.performance-export-reset{white-space:nowrap;min-height:39px}
+@media(max-width:1100px){.performance-export-card{grid-template-columns:1fr}.performance-export-controls{grid-template-columns:1fr 1fr 1fr auto}}
+@media(max-width:820px){.performance-export-card{padding:13px;border-radius:17px}.performance-export-controls{grid-template-columns:1fr 1fr}.performance-export-field.head{grid-column:1/-1}.performance-export-actions{grid-column:1/-1}.performance-export-actions .btn{flex:1}.performance-export-note{grid-column:1/-1}}
+@media(max-width:430px){.performance-export-controls{grid-template-columns:1fr}.performance-export-field.head,.performance-export-actions,.performance-export-note{grid-column:1}.performance-export-actions{display:grid;grid-template-columns:1fr 1.3fr}}
+
 </style>
 
 </head>
@@ -248,6 +255,23 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
             <button class="performance-period" data-days="30" onclick="changeRegionalPerformancePeriod(30)">۳۰ روز</button>
           </div>
         </div>
+
+        <section class="performance-export-card">
+          <div class="performance-export-copy">
+            <h3>خروجی Excel گزارش عملکرد</h3>
+            <p>بازه تاریخ و رئیس ناحیه را انتخاب کن. فایل خروجی شامل خلاصه مدیریتی، عملکرد رؤسای ناحیه، تکرار بازدید فروشگاه‌ها، جزئیات بازدیدها و عملکرد روزانه است.</p>
+          </div>
+          <div class="performance-export-controls">
+            <div class="performance-export-field"><label for="regionalExportFrom">از تاریخ</label><input type="date" id="regionalExportFrom" onchange="markPerformanceExportTouched()"></div>
+            <div class="performance-export-field"><label for="regionalExportTo">تا تاریخ</label><input type="date" id="regionalExportTo" onchange="markPerformanceExportTouched()"></div>
+            <div class="performance-export-field head"><label for="regionalExportHead">رئیس ناحیه</label><select id="regionalExportHead"><option value="">همه رؤسای ناحیه</option></select></div>
+            <div class="performance-export-actions">
+              <button class="btn btn-ghost performance-export-reset" onclick="syncPerformanceExportFilters(true)">همین دوره</button>
+              <button class="btn btn-primary performance-export-btn" id="regionalExportBtn" onclick="exportRegionalPerformanceXlsx()"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>دریافت Excel</button>
+            </div>
+            <div class="performance-export-note">حداکثر بازه خروجی ۳۶۵ روز است. بازه Excel مستقل از فیلتر ۷/۱۴/۳۰ روزه صفحه قابل انتخاب است.</div>
+          </div>
+        </section>
 
         <section class="performance-kpis">
           <article class="performance-kpi"><strong id="rpCompletion">—%</strong><div class="pk-label">تحقق برنامه</div><div class="pk-sub" id="rpCompletionSub">—</div></article>
@@ -613,7 +637,7 @@ const state={
   weekStartIso:'',todayIso:'',days:[],selectedDayIso:'',filter:'ALL',dirty:false,sourceType:'MANUAL',dragIndex:null,moveIndex:null,
   activeView:'route',gpsMode:'approval',approvals:[],approvalFilter:'PENDING',approvalSummary:{pending:0,approved:0,rejected:0},decisionApprovalId:'',
   corrections:[],correctionFilter:'PENDING',correctionSummary:{pending:0,approved:0,rejected:0},correctionDecisionId:'',
-  routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:7,performanceRefreshTimer:null,performanceStorePage:1,performanceStorePageSize:20,
+  routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:7,performanceRefreshTimer:null,performanceStorePage:1,performanceStorePageSize:20,performanceExportTouched:false,
   regionalChecklistLoaded:false,regionalChecklistData:null,rqFilter:'ACTIVE'
 };
 
@@ -1057,11 +1081,54 @@ function approvalStatusText(status){return ({PENDING:'در انتظار تصمی
 function approvalStatusClass(status){const s=String(status||'').toUpperCase();return s==='APPROVED'?'approved':s==='REJECTED'?'rejected':'pending';}
 
 
+
+function markPerformanceExportTouched(){state.performanceExportTouched=true;}
+function syncPerformanceExportFilters(forceDates=false){
+  const data=state.performance;if(!data)return;
+  const from=document.getElementById('regionalExportFrom'),to=document.getElementById('regionalExportTo'),head=document.getElementById('regionalExportHead');
+  if((forceDates||!state.performanceExportTouched)&&from&&to){from.value=data.startIso||'';to.value=data.endIso||'';state.performanceExportTouched=false;}
+  if(head){
+    const selected=head.value;
+    const rows=(data.areaHeads||[]).filter(x=>x.userId);
+    head.innerHTML='<option value="">همه رؤسای ناحیه</option>'+rows.map(x=>`<option value="${esc(x.userId)}">${esc(x.fullName)} · ${x.storeCount||0} فروشگاه</option>`).join('');
+    if(rows.some(x=>String(x.userId)===String(selected)))head.value=selected;
+  }
+}
+function downloadBase64File_(base64,mime,fileName){
+  const binary=atob(base64||''),chunk=1024*1024,parts=[];
+  for(let offset=0;offset<binary.length;offset+=chunk){
+    const slice=binary.slice(offset,offset+chunk),bytes=new Uint8Array(slice.length);
+    for(let i=0;i<slice.length;i++)bytes[i]=slice.charCodeAt(i);
+    parts.push(bytes);
+  }
+  const blob=new Blob(parts,{type:mime||'application/octet-stream'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=fileName||'report.xlsx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+async function exportRegionalPerformanceXlsx(){
+  const from=document.getElementById('regionalExportFrom')?.value||'',to=document.getElementById('regionalExportTo')?.value||'',areaHeadUserId=document.getElementById('regionalExportHead')?.value||'';
+  if(!from||!to){toast('بازه تاریخ خروجی را کامل انتخاب کنید.','error');return;}
+  const d1=new Date(from+'T12:00:00'),d2=new Date(to+'T12:00:00');
+  if(isNaN(d1)||isNaN(d2)){toast('تاریخ انتخاب‌شده معتبر نیست.','error');return;}
+  if(d1>d2){toast('تاریخ شروع نمی‌تواند بعد از تاریخ پایان باشد.','error');return;}
+  const days=Math.floor((d2-d1)/86400000)+1;
+  if(days>365){toast('حداکثر بازه خروجی Excel، ۳۶۵ روز است.','error');return;}
+  const btn=document.getElementById('regionalExportBtn');if(btn)btn.disabled=true;
+  setLoading(true,'در حال ساخت فایل Excel گزارش عملکرد...');
+  try{
+    const r=await DMAuth.apiPost('exportRegionalPerformanceXlsx',{dateFrom:from,dateTo:to,areaHeadUserId:areaHeadUserId},120000);
+    if(!r.success)throw new Error(r.message||'ساخت فایل Excel ناموفق بود.');
+    downloadBase64File_(r.base64,r.mimeType,r.fileName);
+    toast(`فایل Excel آماده شد · ${r.sheetCount||5} شیت · ${r.rowCount||0} ردیف`,'success');
+  }catch(e){toast(e.message||'خطا در دریافت Excel','error');}
+  finally{if(btn)btn.disabled=false;setLoading(false);}
+}
+
 function regionalScoreClass(n){return Number(n)>=75?'good':Number(n)>=45?'mid':'low';}
 
 async function changeRegionalPerformancePeriod(days){
   state.performancePeriodDays=Number(days)||7;
   state.performanceStorePage=1;
+  state.performanceExportTouched=false;
   document.querySelectorAll('.performance-period').forEach(b=>b.classList.toggle('active',Number(b.dataset.days)===state.performancePeriodDays));
   await loadRegionalPerformance(true);
 }
@@ -1109,6 +1176,7 @@ function renderRegionalPerformance(){
   renderRegionalPerformanceHeads();
   renderRegionalStorePerformanceFilters();
   renderRegionalStorePerformance();
+  syncPerformanceExportFilters(false);
   const sync=document.getElementById('rpSyncText');
   if(sync){const repaired=Number(state.performance?.integrity?.repaired||0);sync.textContent='آخرین همگام‌سازی '+faDateTimeRegional(state.performance.serverTime)+(repaired?` · ${repaired} بازدید بازیابی شد`:' · همگام');}
 }
