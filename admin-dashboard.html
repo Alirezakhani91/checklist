@@ -46,17 +46,21 @@ button,input,select{font:inherit}
 .toast-wrap{position:fixed;left:20px;bottom:20px;z-index:120;display:grid;gap:8px}.toast{background:#171c28;color:#fff;border-radius:13px;padding:11px 14px;box-shadow:0 12px 30px rgba(0,0,0,.18);font-size:.75rem}.toast.error{background:#a91029}.toast.success{background:#14764f}
 .loading{position:fixed;inset:0;background:rgba(245,247,250,.86);backdrop-filter:blur(6px);z-index:200;display:grid;place-items:center}.loader{background:#fff;border:1px solid var(--line);padding:22px 28px;border-radius:20px;box-shadow:var(--shadow)}.spin{width:32px;height:32px;border:3px solid #eee;border-top-color:var(--red);border-radius:50%;margin:0 auto 10px;animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}.mobile-head,.mobile-nav{display:none}
 
-/* ===== National performance tab ===== */
+/* ===== National performance tab / Country Command Center ===== */
 .periods{display:flex;gap:6px;background:#eef1f5;padding:4px;border-radius:13px}.period-btn{border:0;background:transparent;border-radius:10px;padding:8px 11px;font-size:.7rem;font-weight:900;color:#687080;cursor:pointer}.period-btn.active{background:#fff;color:#a5001a;box-shadow:0 3px 12px rgba(25,32,48,.08)}
-.performance-stats{grid-template-columns:repeat(6,minmax(0,1fr))}
-.performance-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(330px,.72fr);gap:18px}
-.risk-list{padding:11px;display:grid;gap:8px;max-height:620px;overflow:auto}.risk{border:1px solid var(--line);border-radius:14px;padding:11px}.risk strong{display:block;font-size:.74rem}.risk p{font-size:.62rem;color:#858b98;margin:4px 0 8px}.tags{display:flex;gap:5px;flex-wrap:wrap}.tag{font-size:.58rem;padding:4px 7px;border-radius:999px;background:#f1f3f6;color:#687080;font-weight:800}.tag.red{background:#fff0f2;color:#b4001c}.tag.orange{background:#fff2e8;color:#c85f0e}.tag.yellow{background:#fff7dc;color:#a67600}.tag.blue{background:#edf2ff;color:#3258d6}.tag.green{background:#ebf8f2;color:#147a50}
-.score{font-size:.95rem;font-weight:900}.score.good{color:var(--green)}.score.mid{color:var(--amber)}.score.low{color:var(--danger)}
-.trend-wrap{padding:18px}.trend-bars{height:235px;display:flex;align-items:end;gap:9px;overflow-x:auto;padding-top:18px}.trend-day{min-width:44px;text-align:center}.trend-pair{height:170px;display:flex;align-items:end;justify-content:center;gap:4px}.trend-pair i{width:12px;border-radius:5px 5px 2px 2px;display:block}.trend-pair .plan{background:#dfe3eb}.trend-pair .done{background:#1b9367}.trend-day small{font-size:.56rem;color:#8b919c;display:block;margin-top:6px}
-.live-list{padding:10px 14px 14px;display:grid;gap:7px;max-height:330px;overflow:auto}.live-item{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #eef0f4;padding:9px 0}.live-item:last-child{border-bottom:0}.live-item strong{display:block;font-size:.7rem}.live-item span{display:block;color:#8b919c;font-size:.59rem;margin-top:3px}
-.performance-lower{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
-.drawer-bg{position:fixed;inset:0;background:rgba(9,14,24,.48);backdrop-filter:blur(4px);z-index:140;display:none}.drawer-bg.open{display:block}.drawer{position:absolute;left:0;top:0;bottom:0;width:min(590px,94vw);background:#fff;box-shadow:25px 0 80px rgba(0,0,0,.2);display:flex;flex-direction:column}.drawer-head{padding:20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.drawer-head h3{margin:0;font-size:1rem}.drawer-head p{margin:5px 0 0;color:var(--muted);font-size:.68rem}.drawer-close{border:1px solid var(--line);background:#fff;border-radius:10px;width:36px;height:36px;cursor:pointer}.drawer-body{padding:15px;overflow:auto}.head-card,.store-card{border:1px solid var(--line);border-radius:14px;padding:11px;margin-bottom:8px}.head-card-top,.store-card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.head-card strong,.store-card strong{font-size:.74rem}.head-card p,.store-card p{margin:4px 0 0;color:var(--muted);font-size:.61rem}.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}.mini div{background:#f7f8fa;border-radius:10px;padding:7px;text-align:center}.mini b{display:block;font-size:.7rem}.mini span{font-size:.53rem;color:#8b919c}
-.empty-performance{padding:34px;text-align:center;color:var(--muted);font-size:.76rem}
+.np-command{background:linear-gradient(135deg,#111722,#202a3b);color:#fff;border-radius:25px;padding:22px;display:grid;grid-template-columns:250px 1fr;gap:20px;box-shadow:0 18px 45px rgba(15,21,34,.14);margin-bottom:16px}.np-country{border-left:1px solid rgba(255,255,255,.1);padding-left:20px;display:flex;align-items:center;gap:16px}.np-score-ring{--score:0;width:104px;height:104px;flex:0 0 104px;border-radius:50%;background:conic-gradient(var(--ring,#ff4865) calc(var(--score)*1%),rgba(255,255,255,.09) 0);display:grid;place-items:center;position:relative}.np-score-ring:after{content:"";position:absolute;inset:8px;border-radius:50%;background:#171f2d}.np-score-ring b{position:relative;z-index:1;font-size:1.65rem}.np-country h3{margin:0 0 5px;font-size:1rem}.np-country p{margin:0;color:#aeb7c5;font-size:.66rem;line-height:1.8}.np-country-status{display:inline-flex;margin-top:8px;padding:5px 9px;border-radius:999px;font-size:.62rem;font-weight:900;background:rgba(255,255,255,.1)}
+.np-today{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.np-today-item{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07);border-radius:15px;padding:12px}.np-today-item strong{display:block;font-size:1.2rem}.np-today-item span{font-size:.61rem;color:#abb5c3;display:block;margin-top:4px}.np-today-item.alert strong{color:#ffbe5c}.np-today-item.danger strong{color:#ff7186}
+.np-kpis{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:9px;margin-bottom:16px}.np-kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 5px 20px rgba(18,28,50,.035)}.np-kpi b{display:block;font-size:1.25rem}.np-kpi span{display:block;margin-top:6px;font-size:.63rem;color:var(--muted)}.np-kpi small{display:block;margin-top:3px;color:#a0a6b0;font-size:.56rem}.np-kpi.good b{color:var(--green)}.np-kpi.warn b{color:var(--amber)}.np-kpi.bad b{color:var(--danger)}.np-kpi.blue b{color:var(--blue)}
+.np-two{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.5fr);gap:16px;margin-bottom:16px}.np-action-list{padding:10px 13px 14px;display:grid;gap:7px;max-height:410px;overflow:auto}.np-action{border:1px solid var(--line);border-radius:13px;padding:10px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start;background:#fff}.np-action:hover{background:#fafbfc}.np-action strong{font-size:.69rem;display:block}.np-action p{margin:4px 0 0;font-size:.58rem;color:var(--muted);line-height:1.65}.np-action .act{border:0;background:transparent;color:var(--blue);font-size:.6rem;font-weight:900;padding:4px;cursor:pointer}.np-sev{display:inline-flex;border-radius:999px;padding:4px 7px;font-size:.54rem;font-weight:900;margin-bottom:5px}.np-sev.CRITICAL{background:#fff0f2;color:#af1630}.np-sev.ATTENTION{background:#fff5dd;color:#9b6c00}.np-sev.WATCH{background:#eef3ff;color:#385bd2}
+.np-exec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:13px}.np-exec{border:1px solid var(--line);border-radius:15px;padding:12px;cursor:pointer;transition:.15s;background:#fff}.np-exec:hover{transform:translateY(-1px);box-shadow:0 9px 22px rgba(20,28,45,.07)}.np-exec.selected{border-color:#d90027;box-shadow:0 0 0 2px rgba(201,0,34,.08)}.np-exec-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.np-exec strong{font-size:.73rem}.np-exec-score{font-size:1rem;font-weight:900}.np-exec-meta{font-size:.58rem;color:var(--muted);margin-top:5px}.np-exec-bars{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}.np-mini-metric{background:#f7f8fa;border-radius:9px;padding:7px}.np-mini-metric b{font-size:.68rem;display:block}.np-mini-metric span{font-size:.51rem;color:#8c929e}
+.np-filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.np-filters .search{min-width:250px;flex:1}.np-filter-count{font-size:.63rem;color:var(--muted);margin-right:auto}.np-table-title{display:flex;gap:8px;align-items:center}.np-rank{width:25px;height:25px;border-radius:8px;background:#f0f2f6;display:inline-grid;place-items:center;font-size:.6rem;font-weight:900}.np-status{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;font-size:.58rem;font-weight:900}.np-status:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}.np-status.EXCELLENT{background:#eaf8f1;color:#13764d}.np-status.GOOD{background:#edf2ff;color:#3158cf}.np-status.ATTENTION{background:#fff6df;color:#986900}.np-status.CRITICAL{background:#fff0f2;color:#af1630}.np-today-badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:.56rem;font-weight:900}.np-today-badge.COMPLETED{background:#eaf8f1;color:#15764e}.np-today-badge.ACTIVE{background:#edf2ff;color:#3159d6}.np-today-badge.GPS_PENDING{background:#fff6df;color:#986900}.np-today-badge.PARTIAL{background:#eef3ff;color:#405dc0}.np-today-badge.NOT_STARTED{background:#fff0f2;color:#af1630}.np-today-badge.NO_PLAN{background:#f1f3f6;color:#69717f}.np-score.good{color:var(--green)}.np-score.mid{color:var(--amber)}.np-score.low{color:var(--danger);font-weight:900}
+.np-head-pager{display:flex;gap:6px;align-items:center}.np-head-pager button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:6px 9px;cursor:pointer}.np-head-pager span{font-size:.6rem;color:var(--muted)}
+.np-lower{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-bottom:16px}.np-trend{padding:17px}.np-trend-bars{height:230px;display:flex;align-items:end;gap:8px;overflow-x:auto;padding-top:16px}.np-day{min-width:42px;text-align:center}.np-pair{height:160px;display:flex;align-items:end;justify-content:center;gap:3px}.np-pair i{width:11px;border-radius:5px 5px 2px 2px;display:block}.np-pair .plan{background:#dce1e9}.np-pair .done{background:#198d64}.np-day small{font-size:.53rem;color:#8b919b;display:block;margin-top:6px}.np-legend{display:flex;gap:12px;font-size:.58rem;color:var(--muted);padding:0 17px 13px}.np-legend i{width:9px;height:9px;border-radius:3px;display:inline-block;margin-left:4px}.np-legend .plan{background:#dce1e9}.np-legend .done{background:#198d64}
+.np-sla{padding:15px}.np-sla-row{margin-bottom:12px}.np-sla-row:last-child{margin-bottom:0}.np-sla-top{display:flex;justify-content:space-between;font-size:.63rem;margin-bottom:5px}.np-sla-bar{height:8px;background:#f0f2f5;border-radius:99px;overflow:hidden}.np-sla-bar i{display:block;height:100%;border-radius:99px}.np-sla-row.normal i{background:#188b62}.np-sla-row.warn10 i{background:#d6aa24}.np-sla-row.warn12 i{background:#df741b}.np-sla-row.overdue i{background:#bf1e37}.np-sla-row.nohistory i{background:#4e5e7a}
+.np-quality-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}.np-quality-list{padding:10px 14px 14px;display:grid;gap:8px;max-height:360px;overflow:auto}.np-quality-item{border-bottom:1px solid #eef0f4;padding:7px 0}.np-quality-item:last-child{border:0}.np-quality-item-top{display:flex;justify-content:space-between;gap:10px}.np-quality-item strong{font-size:.66rem}.np-quality-item span{font-size:.56rem;color:var(--muted)}.np-quality-line{height:6px;background:#f0f2f5;border-radius:99px;margin-top:7px;overflow:hidden}.np-quality-line i{display:block;height:100%;background:#c90022;border-radius:99px}.np-live{padding:10px 14px 14px;display:grid;gap:7px;max-height:360px;overflow:auto}.np-live-item{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #eef0f4;padding:8px 0}.np-live-item:last-child{border:0}.np-live-item strong{display:block;font-size:.67rem}.np-live-item span{display:block;font-size:.56rem;color:var(--muted);margin-top:3px}.np-long{color:var(--danger)!important;font-weight:900}
+.np-risk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px}.np-risk{border:1px solid var(--line);border-radius:13px;padding:10px}.np-risk strong{display:block;font-size:.67rem}.np-risk p{margin:4px 0 7px;color:var(--muted);font-size:.56rem}.np-tags{display:flex;gap:4px;flex-wrap:wrap}.np-tag{font-size:.53rem;padding:4px 6px;border-radius:999px;background:#f1f3f6;color:#69717f;font-weight:800}.np-tag.red{background:#fff0f2;color:#b0001c}.np-tag.orange{background:#fff2e8;color:#c25c0d}.np-tag.yellow{background:#fff7dd;color:#9c6c00}.np-tag.blue{background:#edf2ff;color:#3159d6}
+.np-reason{max-width:280px;white-space:normal!important;line-height:1.55;color:var(--muted)}.empty-performance{padding:34px;text-align:center;color:var(--muted);font-size:.76rem}
+.drawer-bg{position:fixed;inset:0;background:rgba(9,14,24,.48);backdrop-filter:blur(4px);z-index:140;display:none}.drawer-bg.open{display:block}.drawer{position:absolute;left:0;top:0;bottom:0;width:min(650px,96vw);background:#fff;box-shadow:25px 0 80px rgba(0,0,0,.2);display:flex;flex-direction:column}.drawer-head{padding:20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.drawer-head h3{margin:0;font-size:1rem}.drawer-head p{margin:5px 0 0;color:var(--muted);font-size:.68rem}.drawer-close{border:1px solid var(--line);background:#fff;border-radius:10px;width:36px;height:36px;cursor:pointer}.drawer-body{padding:15px;overflow:auto}.head-card,.store-card{border:1px solid var(--line);border-radius:14px;padding:11px;margin-bottom:8px}.head-card-top,.store-card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.head-card strong,.store-card strong{font-size:.74rem}.head-card p,.store-card p{margin:4px 0 0;color:var(--muted);font-size:.61rem}.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}.mini div{background:#f7f8fa;border-radius:10px;padding:7px;text-align:center}.mini b{display:block;font-size:.7rem}.mini span{font-size:.53rem;color:#8b919c}
 
 @media(max-width:1200px){
   .app{grid-template-columns:230px minmax(0,1fr)}
@@ -65,6 +69,7 @@ button,input,select{font:inherit}
   .settings-grid{grid-template-columns:repeat(2,1fr)}
   .dark-grid{grid-template-columns:1.2fr repeat(2,1fr)}
   .db-grid{grid-template-columns:repeat(3,1fr)}
+  .np-kpis{grid-template-columns:repeat(4,1fr)}.np-today{grid-template-columns:repeat(3,1fr)}.np-exec-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:1000px){
   .performance-grid,.performance-lower{grid-template-columns:1fr}
@@ -79,6 +84,7 @@ button,input,select{font:inherit}
   .mobile-nav{display:grid;grid-template-columns:repeat(6,1fr);position:fixed;bottom:0;left:0;right:0;height:66px;background:rgba(255,255,255,.97);border-top:1px solid var(--line);z-index:40}.mobile-nav button{border:0;background:transparent;color:#747b89;font-size:.54rem;display:grid;place-items:center;align-content:center;gap:3px}.mobile-nav button.active{color:var(--red);font-weight:900}.mobile-nav svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9}
   .form-row{grid-template-columns:1fr}.toast-wrap{left:10px;right:10px;bottom:78px}.toast{max-width:none}
   .drawer{width:100%}.mini{grid-template-columns:1fr 1fr}
+  .np-command{grid-template-columns:1fr;padding:16px}.np-country{border-left:0;border-bottom:1px solid rgba(255,255,255,.1);padding:0 0 15px}.np-score-ring{width:88px;height:88px;flex-basis:88px}.np-today{grid-template-columns:1fr 1fr}.np-kpis{grid-template-columns:1fr 1fr}.np-two,.np-lower,.np-quality-grid{grid-template-columns:1fr}.np-exec-grid{grid-template-columns:1fr}.np-risk-grid{grid-template-columns:1fr}.np-filters{display:grid;grid-template-columns:1fr 1fr}.np-filters .search{grid-column:1/-1;min-width:0}.np-filter-count{grid-column:1/-1;margin:0}.np-action-list{max-height:300px}
 }
 </style>
 </head>
@@ -154,7 +160,7 @@ button,input,select{font:inherit}
 
     <section class="tabs-pane" id="pane-performance">
       <div class="hero">
-        <div><h2>عملکرد کل کشور</h2><p id="performancePeriodText">پایش Route، بازدید، پوشش فروشگاه و وضعیت مدیران منطقه.</p></div>
+        <div><h2>کنترل عملکرد کل کشور</h2><p id="performancePeriodText">نمای مدیریتی کشور از سطح مدیر اجرایی تا فروشگاه.</p></div>
         <div class="periods">
           <button class="period-btn active" data-days="7" onclick="changePerformancePeriod(7,this)">۷ روز</button>
           <button class="period-btn" data-days="14" onclick="changePerformancePeriod(14,this)">۱۴ روز</button>
@@ -162,60 +168,104 @@ button,input,select{font:inherit}
         </div>
       </div>
 
-      <div id="performanceEmpty" class="card empty-performance">برای دریافت گزارش، در حال اتصال به داده‌های عملیاتی کشور هستیم.</div>
+      <div id="performanceEmpty" class="card empty-performance">در حال آماده‌سازی نمای مدیریتی کشور...</div>
 
       <div id="performanceContent" class="hidden">
-        <div class="stats performance-stats">
-          <div class="stat good"><div class="num" id="pCompletion">—٪</div><div class="lab">تحقق برنامه</div></div>
-          <div class="stat blue"><div class="num" id="pCompleted">—</div><div class="lab">بازدید تکمیل‌شده</div></div>
-          <div class="stat"><div class="num" id="pCoverage">—٪</div><div class="lab">پوشش فروشگاه‌ها</div></div>
-          <div class="stat bad"><div class="num" id="pOverdue">—</div><div class="lab">۱۴ روز+ / بدون سابقه</div></div>
-          <div class="stat warn"><div class="num" id="pPendingGps">—</div><div class="lab">GPS Pending</div></div>
-          <div class="stat"><div class="num" id="pActive">—</div><div class="lab">در حال بازدید</div></div>
-        </div>
-
-        <div class="dark-panel">
-          <div><h3>سلامت اجرای برنامه بازدید</h3><p id="performanceServerTime">—</p></div>
-          <div class="dark-grid">
-            <div class="health-main"><strong id="pBigCompletion">—٪</strong><small id="pBigCompletionSub">تکمیل برنامه Route در دوره</small><div class="progress"><i id="pCompletionBar" style="width:0%"></i></div></div>
-            <div class="dark-mini"><strong id="pStores">—</strong><span>فروشگاه فعال</span></div>
-            <div class="dark-mini"><strong id="pHeads">—</strong><span>رئیس ناحیه</span></div>
-            <div class="dark-mini"><strong id="pManagers">—</strong><span>مدیر منطقه</span></div>
-            <div class="dark-mini"><strong id="pUnplanned">—</strong><span>خارج Route</span></div>
+        <div class="np-command">
+          <div class="np-country">
+            <div class="np-score-ring" id="npScoreRing"><b id="npNationalScore">—</b></div>
+            <div><h3>وضعیت کل شبکه بازدید</h3><p id="npNationalReason">—</p><span class="np-country-status" id="npNationalStatus">—</span></div>
+          </div>
+          <div class="np-today">
+            <div class="np-today-item"><strong id="npTodayPlanned">—</strong><span>برنامه امروز</span></div>
+            <div class="np-today-item"><strong id="npTodayCompleted">—</strong><span>تکمیل امروز</span></div>
+            <div class="np-today-item"><strong id="npTodayActive">—</strong><span>در حال بازدید</span></div>
+            <div class="np-today-item alert"><strong id="npTodayGps">—</strong><span>GPS در انتظار</span></div>
+            <div class="np-today-item danger"><strong id="npTodayNotStarted">—</strong><span>رئیس ناحیه شروع‌نکرده</span></div>
+            <div class="np-today-item alert"><strong id="npTodayNoPlan">—</strong><span>رئیس ناحیه بدون Route</span></div>
           </div>
         </div>
 
-        <div class="performance-grid">
-          <div class="card">
-            <div class="card-head">
-              <div><h3>مقایسه عملکرد مدیران منطقه</h3><p>مناطق دارای ریسک بالاتر در ابتدای جدول قرار می‌گیرند.</p></div>
-              <input class="search" id="performanceManagerSearch" placeholder="جستجوی مدیر منطقه یا مدیر اجرایی..." oninput="renderPerformanceManagers()">
+        <div class="np-kpis">
+          <div class="np-kpi good"><b id="npCompletion">—٪</b><span>تحقق Route</span><small id="npCompletionSub">—</small></div>
+          <div class="np-kpi blue"><b id="npCoverage">—٪</b><span>پوشش فروشگاه</span><small id="npCoverageSub">—</small></div>
+          <div class="np-kpi"><b id="npWithin14">—٪</b><span>داخل SLA چهارده‌روزه</span><small id="npSlaSub">—</small></div>
+          <div class="np-kpi"><b id="npHeadActivity">—٪</b><span>مشارکت رؤسای ناحیه</span><small id="npHeadActivitySub">—</small></div>
+          <div class="np-kpi"><b id="npQuality">—</b><span>کیفیت چک‌لیست</span><small id="npQualitySub">—</small></div>
+          <div class="np-kpi warn"><b id="npUnplanned">—٪</b><span>خارج از Route</span><small id="npUnplannedSub">—</small></div>
+          <div class="np-kpi warn"><b id="npOverride">—٪</b><span>Manager Override</span><small id="npOverrideSub">—</small></div>
+          <div class="np-kpi"><b id="npDuration">—</b><span>میانگین مدت بازدید</span><small>دقیقه</small></div>
+        </div>
+
+        <div class="np-two">
+          <div class="card" style="margin:0">
+            <div class="card-head"><div><h3>صف اقدام مدیریتی</h3><p>مواردی که از دید کنترل کشور باید زودتر بررسی شوند.</p></div><span class="badge red" id="npActionCount">—</span></div>
+            <div class="np-action-list" id="npActionList"></div>
+          </div>
+          <div class="card" style="margin:0">
+            <div class="card-head"><div><h3>لایه مدیران اجرایی</h3><p>وضعیت تجمیعی مناطق زیرمجموعه هر مدیر اجرایی.</p></div></div>
+            <div class="np-exec-grid" id="npExecutiveGrid"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div><h3>کنترل مناطق کشور</h3><p>تحقق برنامه، پوشش، SLA، کیفیت و وضعیت رؤسای ناحیه در هر منطقه.</p></div>
+            <div class="np-filters">
+              <input class="search" id="performanceSearch" placeholder="جستجوی مدیر منطقه، رئیس ناحیه یا مدیر اجرایی..." oninput="performanceFilterChanged()">
+              <select class="filter" id="performanceExecutiveFilter" onchange="performanceFilterChanged()"><option value="ALL">همه مدیران اجرایی</option></select>
+              <select class="filter" id="performanceRegionFilter" onchange="performanceFilterChanged()"><option value="ALL">همه مناطق</option></select>
+              <select class="filter" id="performanceStatusFilter" onchange="performanceFilterChanged()"><option value="ALL">همه وضعیت‌ها</option><option value="CRITICAL">بحرانی</option><option value="ATTENTION">نیازمند توجه</option><option value="GOOD">پایدار</option><option value="EXCELLENT">عالی</option></select>
+              <button class="btn ghost" onclick="clearPerformanceFilters()">پاک‌کردن فیلتر</button>
+              <span class="np-filter-count" id="npFilterCount">—</span>
             </div>
-            <div class="table-wrap">
-              <table class="table" style="min-width:1120px">
-                <thead><tr>
-                  <th>مدیر منطقه</th><th>مدیر اجرایی</th><th>امتیاز</th><th>برنامه</th><th>تکمیل</th>
-                  <th>تحقق</th><th>پوشش</th><th>۱۴+</th><th>بدون سابقه</th><th>GPS</th><th>خارج Route</th><th></th>
-                </tr></thead>
-                <tbody id="performanceManagerBody"></tbody>
-              </table>
-            </div>
           </div>
+          <div class="table-wrap"><table class="table" style="min-width:1450px"><thead><tr>
+            <th>#</th><th>منطقه</th><th>مدیر اجرایی</th><th>وضعیت</th><th>امتیاز</th><th>فروشگاه</th><th>رئیس ناحیه</th><th>برنامه / تکمیل</th><th>تحقق</th><th>پوشش</th><th>SLA 14</th><th>فعالیت رؤسا</th><th>کیفیت</th><th>بحرانی</th><th>امروز</th><th></th>
+          </tr></thead><tbody id="performanceRegionBody"></tbody></table></div>
+        </div>
 
-          <div class="card">
-            <div class="card-head"><div><h3>نیازمند توجه فوری</h3><p>فروشگاه‌های عبورکرده از آستانه‌های ۱۰/۱۲/۱۴ روز و بدون سابقه.</p></div></div>
-            <div class="risk-list" id="performanceWatchList"></div>
+        <div class="card" id="npHeadsCard">
+          <div class="card-head">
+            <div><h3>کنترل رؤسای ناحیه</h3><p id="npHeadsSub">تمام رؤسای ناحیه کشور با وضعیت عملیاتی دوره و امروز.</p></div>
+            <div class="np-head-pager"><button onclick="performanceHeadPage(-1)">قبلی</button><span id="npHeadPageLabel">—</span><button onclick="performanceHeadPage(1)">بعدی</button></div>
+          </div>
+          <div class="table-wrap"><table class="table" style="min-width:1500px"><thead><tr>
+            <th>رئیس ناحیه</th><th>منطقه</th><th>وضعیت</th><th>امتیاز</th><th>فروشگاه</th><th>برنامه / تکمیل</th><th>تحقق</th><th>پوشش</th><th>۱۴+ / بدون سابقه</th><th>خارج Route</th><th>کیفیت</th><th>GPS</th><th>امروز</th><th>آخرین فعالیت</th><th></th>
+          </tr></thead><tbody id="performanceHeadBody"></tbody></table></div>
+        </div>
+
+        <div class="np-lower">
+          <div class="card" style="margin:0">
+            <div class="card-head"><div><h3>روند اجرای برنامه</h3><p>برنامه روزانه در مقابل بازدیدهای تکمیل‌شده.</p></div></div>
+            <div class="np-trend"><div class="np-trend-bars" id="performanceTrend"></div></div>
+            <div class="np-legend"><span><i class="plan"></i>برنامه</span><span><i class="done"></i>تکمیل</span></div>
+          </div>
+          <div class="card" style="margin:0">
+            <div class="card-head"><div><h3>توزیع SLA فروشگاه‌ها</h3><p>تصویر واقعی فاصله از آخرین بازدید در کل شبکه.</p></div></div>
+            <div class="np-sla" id="npSlaDistribution"></div>
           </div>
         </div>
 
-        <div class="performance-lower">
-          <div class="card">
-            <div class="card-head"><div><h3>روند دوره</h3><p>برنامه در مقابل بازدید تکمیل‌شده.</p></div></div>
-            <div class="trend-wrap"><div class="trend-bars" id="performanceTrend"></div></div>
+        <div class="np-quality-grid">
+          <div class="card" style="margin:0">
+            <div class="card-head"><div><h3>نقاط ضعف چک‌لیست</h3><p>سؤال‌هایی که بیشترین پاسخ نیازمند توجه را داشته‌اند.</p></div></div>
+            <div class="np-quality-list" id="npQuestionQuality"></div>
           </div>
-          <div class="card">
-            <div class="card-head"><div><h3>فعالیت زنده شبکه</h3><p>بازدیدهای فعال، GPS Pending و آخرین تکمیل‌های امروز.</p></div></div>
-            <div class="live-list" id="performanceLive"></div>
+          <div class="card" style="margin:0">
+            <div class="card-head"><div><h3>کیفیت بخش‌های چک‌لیست</h3><p>ضعیف‌ترین بخش‌ها بر اساس امتیاز پاسخ‌ها.</p></div></div>
+            <div class="np-quality-list" id="npSectionQuality"></div>
+          </div>
+        </div>
+
+        <div class="np-quality-grid">
+          <div class="card" style="margin:0">
+            <div class="card-head"><div><h3>فعالیت زنده شبکه</h3><p>بازدیدهای فعال، GPS Pending و آخرین تکمیل‌های امروز.</p></div><span class="badge blue" id="npLiveCount">—</span></div>
+            <div class="np-live" id="performanceLive"></div>
+          </div>
+          <div class="card" style="margin:0">
+            <div class="card-head"><div><h3>ریسک فروشگاه‌ها</h3><p>فروشگاه‌های سررسیدشده، بدون سابقه یا دارای ایراد مختصات.</p></div><span class="badge amber" id="npRiskCount">—</span></div>
+            <div class="np-risk-grid" id="performanceWatchList"></div>
           </div>
         </div>
       </div>
@@ -495,15 +545,19 @@ async function maintenance(command){
   finally{loading(false);}
 }
 
-/* ===== National performance ===== */
+/* ===== National performance / Country Command Center ===== */
+const NP_HEAD_PAGE_SIZE=25;
+state.performanceHeadPage=1;
+state.performanceFilters={executive:'ALL',region:'ALL',status:'ALL',search:''};
+
 async function loadPerformance(manual=false){
-  loading(true,manual?'در حال بروزرسانی عملکرد کل کشور...':'در حال دریافت عملکرد کل کشور...');
+  loading(true,manual?'در حال بروزرسانی کنترل کشور...':'در حال دریافت عملکرد کل کشور...');
   try{
     const r=await DMAuth.apiPost('adminNationalPerformance',{periodDays:state.performancePeriodDays},90000);
     if(!r.success)throw new Error(r.message||'خطا در دریافت گزارش کشور');
-    state.performance=r;state.performanceLoaded=true;
+    state.performance=r;state.performanceLoaded=true;state.performanceHeadPage=1;
     renderPerformance();
-    if(manual)toast('عملکرد کل کشور بروزرسانی شد.','success');
+    if(manual)toast('نمای مدیریتی کشور بروزرسانی شد.','success');
   }catch(e){
     el('performanceEmpty').classList.remove('hidden');
     el('performanceEmpty').textContent='دریافت گزارش کشور ناموفق بود: '+(e.message||'خطای سرور');
@@ -518,126 +572,185 @@ function changePerformancePeriod(days,btn){
   loadPerformance(false);
 }
 
+function npStatusBadge(status,label){return `<span class="np-status ${esc(status)}">${esc(label||npStatusFa(status))}</span>`;}
+function npStatusFa(s){return {EXCELLENT:'عالی',GOOD:'پایدار',ATTENTION:'نیازمند توجه',CRITICAL:'بحرانی'}[s]||'نامشخص';}
+function npScoreClass(s){return Number(s)>=80?'good':Number(s)>=60?'mid':'low';}
+function npTodayFa(s){return {COMPLETED:'تکمیل',ACTIVE:'در حال بازدید',GPS_PENDING:'GPS Pending',PARTIAL:'بخشی انجام‌شده',NOT_STARTED:'شروع نشده',NO_PLAN:'بدون Route'}[s]||s||'—';}
+function npTodayBadge(s){return `<span class="np-today-badge ${esc(s||'NO_PLAN')}">${esc(npTodayFa(s))}</span>`;}
+function npQualityText(v){return v===null||v===undefined?'بدون داده':fa(v);}
+function npArg(v){return encodeURIComponent(String(v??'')).replace(/'/g,'%27');}
+function npPriorityTag(level){
+  if(level==='NO_HISTORY')return'<span class="np-tag blue">بدون سابقه</span>';
+  if(level==='OVERDUE')return'<span class="np-tag red">۱۴+ روز</span>';
+  if(level==='WARN12')return'<span class="np-tag orange">۱۲–۱۳ روز</span>';
+  if(level==='WARN10')return'<span class="np-tag yellow">۱۰–۱۱ روز</span>';
+  return'<span class="np-tag">عادی</span>';
+}
+
 function renderPerformance(){
   const d=state.performance;if(!d)return;
   const s=d.summary||{};
-  el('performanceEmpty').classList.add('hidden');
-  el('performanceContent').classList.remove('hidden');
-  el('performancePeriodText').textContent=`دوره ${fa(d.periodDays)} روزه · ${fmtShortDate(d.startIso)} تا ${fmtShortDate(d.endIso)}`;
-  el('performanceServerTime').textContent='آخرین بروزرسانی: '+fmtDate(d.serverTime);
+  el('performanceEmpty').classList.add('hidden');el('performanceContent').classList.remove('hidden');
+  el('performancePeriodText').textContent=`دوره ${fa(d.periodDays)} روزه · ${fmtShortDate(d.startIso)} تا ${fmtShortDate(d.endIso)} · بروزرسانی ${fmtDate(d.serverTime)}`;
 
-  el('pCompletion').textContent=pct(s.completionRate);
-  el('pCompleted').textContent=fa(s.completedTotal);
-  el('pCoverage').textContent=pct(s.coverageRate);
-  el('pOverdue').textContent=fa((s.overdue||0)+(s.noHistory||0));
-  el('pPendingGps').textContent=fa(s.pendingGps);
-  el('pActive').textContent=fa(s.inProgress);
+  el('npNationalScore').textContent=fa(s.nationalScore);
+  el('npScoreRing').style.setProperty('--score',Math.max(0,Math.min(100,Number(s.nationalScore||0))));
+  el('npScoreRing').style.setProperty('--ring',({EXCELLENT:'#35c98a',GOOD:'#6f8fff',ATTENTION:'#f0ac31',CRITICAL:'#ff4865'}[s.nationalStatus]||'#ff4865'));
+  el('npNationalStatus').textContent=s.nationalStatusLabel||npStatusFa(s.nationalStatus);
+  el('npNationalReason').textContent=(s.nationalReasons||[]).join(' · ')||'شاخص‌های اصلی شبکه در محدوده پایدار قرار دارند.';
 
-  el('pBigCompletion').textContent=pct(s.completionRate);
-  el('pBigCompletionSub').textContent=`${fa(s.completedPlanned)} تکمیل از ${fa(s.planned)} برنامه`;
-  el('pCompletionBar').style.width=Math.max(0,Math.min(100,Number(s.completionRate||0)))+'%';
-  el('pStores').textContent=fa(s.stores);
-  el('pHeads').textContent=fa(s.areaHeads);
-  el('pManagers').textContent=fa(s.regionalManagers);
-  el('pUnplanned').textContent=fa(s.unplanned);
+  el('npTodayPlanned').textContent=fa(s.todayPlanned);el('npTodayCompleted').textContent=fa(s.todayCompletedTotal);
+  el('npTodayActive').textContent=fa(s.inProgress);el('npTodayGps').textContent=fa(s.pendingGps);
+  el('npTodayNotStarted').textContent=fa(s.todayHeadsNotStarted);el('npTodayNoPlan').textContent=fa(s.todayHeadsNoPlan);
 
-  renderPerformanceManagers();
-  renderPerformanceWatch();
-  renderPerformanceTrend();
-  renderPerformanceLive();
+  el('npCompletion').textContent=pct(s.completionRate);el('npCompletionSub').textContent=`${fa(s.completedPlanned)} از ${fa(s.planned)} برنامه`;
+  el('npCoverage').textContent=pct(s.coverageRate);el('npCoverageSub').textContent=`${fa(s.visitedStores)} از ${fa(s.stores)} فروشگاه`;
+  el('npWithin14').textContent=pct(s.within14Rate);el('npSlaSub').textContent=`${fa(s.overdue)} سررسید · ${fa(s.noHistory)} بدون سابقه`;
+  el('npHeadActivity').textContent=pct(s.headActivityRate);el('npHeadActivitySub').textContent=`${fa(s.activeHeads)} از ${fa(s.areaHeads)} رئیس ناحیه`;
+  el('npQuality').textContent=npQualityText(s.qualityScore);el('npQualitySub').textContent=s.responseCount?`${pct(s.issueRate)} پاسخ نیازمند توجه`:'داده کافی ثبت نشده';
+  el('npUnplanned').textContent=pct(s.unplannedRate);el('npUnplannedSub').textContent=`${fa(s.unplanned)} بازدید`;
+  el('npOverride').textContent=pct(s.overrideRate);el('npOverrideSub').textContent=`${fa(s.overrides)} مورد`;
+  el('npDuration').textContent=fa(s.avgDuration);
+
+  populatePerformanceFilters();
+  renderPerformanceExecutives();renderPerformanceActions();renderPerformanceRegions();renderPerformanceHeads();
+  renderPerformanceTrend();renderPerformanceSla();renderPerformanceQuality();renderPerformanceLive();renderPerformanceWatch();
 }
 
-function performanceScoreClass(s){return s>=80?'good':s>=60?'mid':'low';}
-function statusTag(level){
-  if(level==='NO_HISTORY')return'<span class="tag blue">بدون سابقه</span>';
-  if(level==='OVERDUE')return'<span class="tag red">۱۴+</span>';
-  if(level==='WARN12')return'<span class="tag orange">۱۲ روز</span>';
-  if(level==='WARN10')return'<span class="tag yellow">۱۰ روز</span>';
-  return'<span class="tag green">عادی</span>';
-}
-function renderPerformanceManagers(){
+function populatePerformanceFilters(){
   const d=state.performance;if(!d)return;
-  const q=(el('performanceManagerSearch')?.value||'').trim().toLowerCase();
-  const arr=(d.managers||[]).filter(m=>!q||`${m.fullName} ${m.executiveName}`.toLowerCase().includes(q));
-  el('performanceManagerBody').innerHTML=arr.map(m=>`<tr>
-    <td><strong>${esc(m.fullName)}</strong><br><span style="color:var(--muted)">${fa(m.areaHeads)} رئیس ناحیه · ${fa(m.storeCount)} فروشگاه</span></td>
-    <td>${esc(m.executiveName||'—')}</td>
-    <td><span class="score ${performanceScoreClass(m.score)}">${fa(m.score)}</span></td>
-    <td>${fa(m.planned)}</td><td>${fa(m.completedPlanned)}</td>
-    <td><span class="badge ${m.completionRate>=80?'green':m.completionRate>=60?'amber':'red'}">${pct(m.completionRate)}</span></td>
-    <td>${pct(m.coverageRate)}</td><td>${fa(m.overdue)}</td><td>${fa(m.noHistory)}</td><td>${fa(m.pendingGps)}</td><td>${fa(m.unplanned)}</td>
-    <td><button class="btn ghost" onclick="openPerformanceRegion(${jsq(m.regionalUserId)})">جزئیات</button></td>
-  </tr>`).join('')||'<tr><td colspan="12">نتیجه‌ای پیدا نشد.</td></tr>';
+  const ex=el('performanceExecutiveFilter'),rg=el('performanceRegionFilter');
+  const exVal=state.performanceFilters.executive,rgVal=state.performanceFilters.region;
+  ex.innerHTML='<option value="ALL">همه مدیران اجرایی</option>'+ (d.executives||[]).map(x=>`<option value="${esc(x.executiveKey)}">${esc(x.fullName)}</option>`).join('');
+  rg.innerHTML='<option value="ALL">همه مناطق</option>'+ (d.managers||[]).map(x=>`<option value="${esc(x.regionalUserId)}">${esc(x.fullName)}</option>`).join('');
+  ex.value=[...ex.options].some(o=>o.value===exVal)?exVal:'ALL';rg.value=[...rg.options].some(o=>o.value===rgVal)?rgVal:'ALL';
+  state.performanceFilters.executive=ex.value;state.performanceFilters.region=rg.value;
+  el('performanceStatusFilter').value=state.performanceFilters.status||'ALL';el('performanceSearch').value=state.performanceFilters.search||'';
 }
-function renderPerformanceWatch(){
-  const arr=(state.performance?.watchlist||[]).slice(0,80);
-  el('performanceWatchList').innerHTML=arr.map(x=>`<article class="risk">
-    <strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong>
-    <p>${esc(x.regionalManagerName)} · ${esc(x.areaHeadName)}</p>
-    <div class="tags">${statusTag(x.priorityLevel)}<span class="tag">${fa(x.visits7)} بازدید / ۷ روز</span>${String(x.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="tag red">GPS فروشگاه</span>':''}</div>
-  </article>`).join('')||'<div style="padding:15px;color:var(--muted)">فروشگاهی در وضعیت هشدار نیست.</div>';
+
+function performanceFilterChanged(){
+  let executive=el('performanceExecutiveFilter').value||'ALL',region=el('performanceRegionFilter').value||'ALL';
+  if(executive!=='ALL'&&region!=='ALL'){
+    const m=(state.performance?.managers||[]).find(x=>String(x.regionalUserId)===String(region));
+    if(!m||String(m.executiveKey)!==String(executive)){region='ALL';el('performanceRegionFilter').value='ALL';}
+  }
+  state.performanceFilters={executive,region,status:el('performanceStatusFilter').value||'ALL',search:(el('performanceSearch').value||'').trim().toLowerCase()};
+  state.performanceHeadPage=1;renderPerformanceExecutives();renderPerformanceRegions();renderPerformanceHeads();
 }
+function clearPerformanceFilters(){
+  state.performanceFilters={executive:'ALL',region:'ALL',status:'ALL',search:''};state.performanceHeadPage=1;populatePerformanceFilters();renderPerformanceExecutives();renderPerformanceRegions();renderPerformanceHeads();
+}
+function setPerformanceExecutive(key){
+  state.performanceFilters.executive=String(key||'ALL');state.performanceFilters.region='ALL';state.performanceHeadPage=1;populatePerformanceFilters();renderPerformanceExecutives();renderPerformanceRegions();renderPerformanceHeads();
+  el('performanceRegionBody')?.closest('.card')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function setPerformanceRegion(id){
+  state.performanceFilters.region=String(id||'ALL');state.performanceHeadPage=1;populatePerformanceFilters();renderPerformanceRegions();renderPerformanceHeads();
+  el('npHeadsCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function npRegionFiltered(m){
+  const f=state.performanceFilters||{};
+  if(f.executive!=='ALL'&&String(m.executiveKey)!==String(f.executive))return false;
+  if(f.region!=='ALL'&&String(m.regionalUserId)!==String(f.region))return false;
+  if(f.status!=='ALL'&&String(m.status)!==String(f.status))return false;
+  const q=f.search||'';if(q&&!`${m.fullName} ${m.executiveName}`.toLowerCase().includes(q))return false;
+  return true;
+}
+function npHeadFiltered(h){
+  const f=state.performanceFilters||{};
+  if(f.executive!=='ALL'&&String(h.executiveKey)!==String(f.executive))return false;
+  if(f.region!=='ALL'&&String(h.regionalUserId)!==String(f.region))return false;
+  if(f.status!=='ALL'&&String(h.status)!==String(f.status))return false;
+  const q=f.search||'';if(q&&!`${h.fullName} ${h.regionalManagerName} ${h.executiveName}`.toLowerCase().includes(q))return false;
+  return true;
+}
+
+function renderPerformanceExecutives(){
+  const d=state.performance;if(!d)return;const selected=state.performanceFilters.executive;
+  el('npExecutiveGrid').innerHTML=(d.executives||[]).map(x=>`<article class="np-exec ${selected===x.executiveKey?'selected':''}" onclick="setPerformanceExecutive(decodeURIComponent('${npArg(x.executiveKey)}'))">
+    <div class="np-exec-top"><div><strong>${esc(x.fullName)}</strong><div class="np-exec-meta">${fa(x.regions)} منطقه · ${fa(x.areaHeads)} رئیس ناحیه · ${fa(x.storeCount)} فروشگاه</div></div><span class="np-exec-score ${npScoreClass(x.score)}">${fa(x.score)}</span></div>
+    <div style="margin-top:8px">${npStatusBadge(x.status,x.statusLabel)}</div>
+    <div class="np-exec-bars"><div class="np-mini-metric"><b>${pct(x.completionRate)}</b><span>تحقق Route</span></div><div class="np-mini-metric"><b>${pct(x.coverageRate)}</b><span>پوشش</span></div><div class="np-mini-metric"><b>${fa(x.criticalStores)}</b><span>فروشگاه بحرانی</span></div><div class="np-mini-metric"><b>${pct(x.headActivityRate)}</b><span>فعالیت رؤسا</span></div></div>
+  </article>`).join('')||'<div style="padding:15px;color:var(--muted)">مدیر اجرایی ثبت نشده است.</div>';
+}
+
+function renderPerformanceActions(){
+  const arr=state.performance?.actionQueue||[];el('npActionCount').textContent=fa(arr.length);
+  el('npActionList').innerHTML=arr.slice(0,25).map(x=>{
+    let fn='';if(x.entityType==='REGION')fn=`openPerformanceRegion(decodeURIComponent('${npArg(x.entityId)}'))`;else if(x.entityType==='AREA_HEAD')fn=`openPerformanceHead(decodeURIComponent('${npArg(x.entityId)}'))`;
+    return `<article class="np-action"><div><span class="np-sev ${esc(x.severity)}">${esc(npStatusFa(x.severity)==='نامشخص'?(x.severity==='WATCH'?'پایش':x.severity):npStatusFa(x.severity))}</span><strong>${esc(x.title)}</strong><p>${esc(x.subtitle||'')}<br>${esc(x.reason||'')}</p></div>${fn?`<button class="act" onclick="${fn}">بررسی</button>`:''}</article>`;
+  }).join('')||'<div style="padding:15px;color:var(--muted)">مورد فوری برای اقدام ثبت نشده است.</div>';
+}
+
+function renderPerformanceRegions(){
+  const d=state.performance;if(!d)return;const arr=(d.managers||[]).filter(npRegionFiltered);
+  el('npFilterCount').textContent=`${fa(arr.length)} منطقه · ${fa((d.areaHeads||[]).filter(npHeadFiltered).length)} رئیس ناحیه`;
+  el('performanceRegionBody').innerHTML=arr.map((m,i)=>`<tr>
+    <td><span class="np-rank">${fa(i+1)}</span></td><td><strong>${esc(m.fullName)}</strong><br><span style="color:var(--muted)">${(m.reasons||[]).slice(0,2).map(esc).join(' · ')||'وضعیت پایدار'}</span></td>
+    <td>${esc(m.executiveName||'—')}</td><td>${npStatusBadge(m.status,m.statusLabel)}</td><td><span class="np-score ${npScoreClass(m.score)}">${fa(m.score)}</span></td>
+    <td>${fa(m.storeCount)}</td><td>${fa(m.areaHeads)}</td><td>${fa(m.planned)} / ${fa(m.completedPlanned)}</td><td>${pct(m.completionRate)}</td><td>${pct(m.coverageRate)}</td>
+    <td>${pct(m.within14Rate)}</td><td>${pct(m.headActivityRate)}</td><td>${npQualityText(m.qualityScore)}</td><td>${fa(m.criticalStores)}</td><td>${npTodayBadge(m.todayState)}</td>
+    <td><div class="actions"><button class="btn ghost" onclick="openPerformanceRegion(decodeURIComponent('${npArg(m.regionalUserId)}'))">جزئیات</button><button class="btn soft" onclick="setPerformanceRegion(decodeURIComponent('${npArg(m.regionalUserId)}'))">رؤسای ناحیه</button></div></td>
+  </tr>`).join('')||'<tr><td colspan="16">منطقه‌ای مطابق فیلتر پیدا نشد.</td></tr>';
+}
+
+function renderPerformanceHeads(){
+  const d=state.performance;if(!d)return;const arr=(d.areaHeads||[]).filter(npHeadFiltered);const pages=Math.max(1,Math.ceil(arr.length/NP_HEAD_PAGE_SIZE));
+  state.performanceHeadPage=Math.max(1,Math.min(pages,state.performanceHeadPage||1));const start=(state.performanceHeadPage-1)*NP_HEAD_PAGE_SIZE,rows=arr.slice(start,start+NP_HEAD_PAGE_SIZE);
+  el('npHeadPageLabel').textContent=`صفحه ${fa(state.performanceHeadPage)} از ${fa(pages)} · ${fa(arr.length)} نفر`;
+  el('npHeadsSub').textContent=state.performanceFilters.region==='ALL'?'تمام رؤسای ناحیه کشور با وضعیت عملیاتی دوره و امروز.':`رؤسای ناحیه منطقه انتخاب‌شده · ${fa(arr.length)} نفر`;
+  el('performanceHeadBody').innerHTML=rows.map(h=>`<tr>
+    <td><strong>${esc(h.fullName)}</strong><br><span style="color:var(--muted)">${esc(h.executiveName||'')}</span></td><td>${esc(h.regionalManagerName||'—')}</td><td>${npStatusBadge(h.status,h.statusLabel)}</td><td><span class="np-score ${npScoreClass(h.score)}">${fa(h.score)}</span></td>
+    <td>${fa(h.storeCount)}</td><td>${fa(h.planned)} / ${fa(h.completedPlanned)}</td><td>${pct(h.completionRate)}</td><td>${pct(h.coverageRate)}</td><td>${fa(h.criticalStores)}</td><td>${pct(h.unplannedRate)}</td><td>${npQualityText(h.qualityScore)}</td><td>${fa(h.pendingGps)}</td><td>${npTodayBadge(h.todayState)}</td><td>${fmtDate(h.lastActivity)}</td>
+    <td><button class="btn ghost" onclick="openPerformanceHead(decodeURIComponent('${npArg(h.userId)}'))">فروشگاه‌ها</button></td>
+  </tr>`).join('')||'<tr><td colspan="15">رئیس ناحیه‌ای مطابق فیلتر پیدا نشد.</td></tr>';
+}
+function performanceHeadPage(delta){state.performanceHeadPage=(state.performanceHeadPage||1)+Number(delta||0);renderPerformanceHeads();el('npHeadsCard')?.scrollIntoView({behavior:'smooth',block:'start'});}
+
 function renderPerformanceTrend(){
-  const arr=state.performance?.trend||[];
-  const max=Math.max(1,...arr.map(x=>Math.max(Number(x.planned||0),Number(x.completedTotal||0))));
-  el('performanceTrend').innerHTML=arr.map(x=>{
-    const hp=Math.max(3,Math.round(Number(x.planned||0)/max*160));
-    const hd=Math.max(3,Math.round(Number(x.completedTotal||0)/max*160));
-    return `<div class="trend-day" title="برنامه ${fa(x.planned)} | تکمیل ${fa(x.completedTotal)}"><div class="trend-pair"><i class="plan" style="height:${hp}px"></i><i class="done" style="height:${hd}px"></i></div><small>${fmtShortDate(x.dateIso)}</small></div>`;
-  }).join('');
+  const arr=state.performance?.trend||[];const max=Math.max(1,...arr.map(x=>Math.max(Number(x.planned||0),Number(x.completedTotal||0))));
+  el('performanceTrend').innerHTML=arr.map(x=>{const hp=Math.max(3,Math.round(Number(x.planned||0)/max*155)),hd=Math.max(3,Math.round(Number(x.completedTotal||0)/max*155));return `<div class="np-day" title="برنامه ${fa(x.planned)} | تکمیل ${fa(x.completedTotal)}"><div class="np-pair"><i class="plan" style="height:${hp}px"></i><i class="done" style="height:${hd}px"></i></div><small>${fmtShortDate(x.dateIso)}</small></div>`;}).join('');
 }
-function performanceLiveBadge(x){
-  if(x.type==='GPS_PENDING')return'<span class="badge amber">GPS Pending</span>';
-  if(x.type==='ACTIVE')return'<span class="badge blue">در حال بازدید</span>';
-  return'<span class="badge green">تکمیل</span>';
+function renderPerformanceSla(){
+  const s=state.performance?.summary||{},total=Math.max(1,Number(s.stores||0));
+  const rows=[['normal','عادی (کمتر از ۱۰ روز)',s.normal],['warn10','هشدار زرد ۱۰–۱۱ روز',s.warn10],['warn12','هشدار نارنجی ۱۲–۱۳ روز',s.warn12],['overdue','سررسید ۱۴ روز و بیشتر',s.overdue],['nohistory','بدون سابقه بازدید',s.noHistory]];
+  el('npSlaDistribution').innerHTML=rows.map(x=>`<div class="np-sla-row ${x[0]}"><div class="np-sla-top"><span>${x[1]}</span><b>${fa(x[2])} · ${pct(Number(x[2]||0)/total*100)}</b></div><div class="np-sla-bar"><i style="width:${Math.max(1,Number(x[2]||0)/total*100)}%"></i></div></div>`).join('');
+}
+function renderPerformanceQuality(){
+  const qs=(state.performance?.questionStats||[]).slice(0,12),ss=(state.performance?.sectionStats||[]).slice(0,10);
+  const maxIssues=Math.max(1,...qs.map(x=>Number(x.issueCount||0)));
+  el('npQuestionQuality').innerHTML=qs.map(x=>`<div class="np-quality-item"><div class="np-quality-item-top"><div><strong>${esc(x.questionText)}</strong><br><span>${esc(x.section||'')} · ${esc(x.sourceLabel||'')}</span></div><div><strong>${fa(x.issueCount)}</strong><br><span>${pct(x.issueRate)}</span></div></div><div class="np-quality-line"><i style="width:${Math.max(2,Number(x.issueCount||0)/maxIssues*100)}%"></i></div></div>`).join('')||'<div style="padding:12px;color:var(--muted)">داده تحلیلی سؤال‌ها هنوز کافی نیست.</div>';
+  el('npSectionQuality').innerHTML=ss.map(x=>`<div class="np-quality-item"><div class="np-quality-item-top"><div><strong>${esc(x.section)}</strong><br><span>${fa(x.responseCount)} پاسخ · ${fa(x.issueCount)} نیازمند توجه</span></div><div><strong>${fa(x.qualityScore)}</strong><br><span>امتیاز کیفیت</span></div></div><div class="np-quality-line"><i style="width:${Math.max(2,100-Number(x.qualityScore||0))}%"></i></div></div>`).join('')||'<div style="padding:12px;color:var(--muted)">داده بخشی چک‌لیست هنوز کافی نیست.</div>';
 }
 function renderPerformanceLive(){
-  const arr=state.performance?.live||[];
-  el('performanceLive').innerHTML=arr.map(x=>`<div class="live-item"><div><strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong><span>${esc(x.areaHeadName)} · ${esc(x.regionalManagerName)} · ${fmtDate(x.at)}</span></div><div>${performanceLiveBadge(x)}</div></div>`).join('')||'<div style="padding:15px;color:var(--muted)">فعالیت جاری ثبت نشده است.</div>';
+  const arr=state.performance?.live||[];el('npLiveCount').textContent=fa(arr.length);
+  el('performanceLive').innerHTML=arr.slice(0,40).map(x=>`<div class="np-live-item"><div><strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong><span>${esc(x.areaHeadName)} · ${esc(x.regionalManagerName)} · ${fmtDate(x.at)}</span>${x.longVisit?`<span class="np-long">بازدید طولانی: ${fa(x.elapsedMinutes)} دقیقه</span>`:''}</div><div>${x.type==='GPS_PENDING'?'<span class="badge amber">GPS Pending</span>':x.type==='ACTIVE'?'<span class="badge blue">فعال</span>':'<span class="badge green">تکمیل</span>'}</div></div>`).join('')||'<div style="padding:12px;color:var(--muted)">فعالیت زنده‌ای ثبت نشده است.</div>';
 }
+function renderPerformanceWatch(){
+  const arr=(state.performance?.watchlist||[]).slice(0,18);el('npRiskCount').textContent=fa(state.performance?.watchlist?.length||0);
+  el('performanceWatchList').innerHTML=arr.map(x=>`<article class="np-risk"><strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong><p>${esc(x.regionalManagerName)} · ${esc(x.areaHeadName)}</p><div class="np-tags">${npPriorityTag(x.priorityLevel)}<span class="np-tag">${fa(x.visits7)} بازدید / ۷ روز</span>${String(x.locationStatus||'OK')!=='OK'?'<span class="np-tag red">GPS فروشگاه</span>':''}</div></article>`).join('')||'<div style="padding:12px;color:var(--muted)">فروشگاه پرریسکی ثبت نشده است.</div>';
+}
+
 function openPerformanceRegion(id){
-  const m=(state.performance?.managers||[]).find(x=>String(x.regionalUserId)===String(id));if(!m)return;
-  state.performanceManager=m;
-  el('drawerTitle').textContent='منطقه · '+m.fullName;
-  el('drawerSub').textContent=`${m.executiveName||'—'} · ${fa(m.storeCount)} فروشگاه · امتیاز ${fa(m.score)}`;
-  el('drawerBody').innerHTML=`
-    <div class="head-card"><div class="mini">
-      <div><b>${pct(m.completionRate)}</b><span>تحقق برنامه</span></div>
-      <div><b>${pct(m.coverageRate)}</b><span>پوشش فروشگاه</span></div>
-      <div><b>${fa(m.overdue+m.noHistory)}</b><span>بحرانی</span></div>
-      <div><b>${fa(m.pendingGps)}</b><span>GPS Pending</span></div>
-    </div></div>
-    ${(m.heads||[]).map(h=>`<article class="head-card">
-      <div class="head-card-top"><div><strong>${esc(h.fullName)}</strong><p>${fa(h.storeCount)} فروشگاه · آخرین فعالیت ${fmtDate(h.lastActivity)}</p></div><button class="btn ghost" onclick="openPerformanceHead(${jsq(h.userId)})">فروشگاه‌ها</button></div>
-      <div class="mini">
-        <div><b>${pct(h.completionRate)}</b><span>تحقق</span></div>
-        <div><b>${pct(h.coverageRate)}</b><span>پوشش</span></div>
-        <div><b>${fa(h.overdue+h.noHistory)}</b><span>۱۴+ / بدون سابقه</span></div>
-        <div><b>${fa(h.activeNow+h.pendingGps)}</b><span>فعال / GPS</span></div>
-      </div>
-    </article>`).join('')||'<div style="color:var(--muted)">رئیس ناحیه‌ای یافت نشد.</div>'}`;
+  const m=(state.performance?.managers||[]).find(x=>String(x.regionalUserId)===String(id));if(!m)return;state.performanceManager=m;
+  const heads=(state.performance?.areaHeads||[]).filter(h=>String(h.regionalUserId)===String(id));
+  el('drawerTitle').textContent='منطقه · '+m.fullName;el('drawerSub').textContent=`${m.executiveName||'—'} · امتیاز ${fa(m.score)} · ${m.statusLabel}`;
+  el('drawerBody').innerHTML=`<div class="head-card"><div class="mini"><div><b>${pct(m.completionRate)}</b><span>تحقق Route</span></div><div><b>${pct(m.coverageRate)}</b><span>پوشش</span></div><div><b>${pct(m.within14Rate)}</b><span>SLA 14</span></div><div><b>${pct(m.headActivityRate)}</b><span>فعالیت رؤسا</span></div><div><b>${fa(m.criticalStores)}</b><span>فروشگاه بحرانی</span></div><div><b>${fa(m.todayHeadsNotStarted)}</b><span>شروع‌نکرده امروز</span></div><div><b>${fa(m.pendingGps)}</b><span>GPS Pending</span></div><div><b>${npQualityText(m.qualityScore)}</b><span>کیفیت</span></div></div><p style="font-size:.65rem;color:var(--muted);line-height:1.8">${esc((m.reasons||[]).join(' · ')||'وضعیت منطقه پایدار است.')}</p></div>
+    ${heads.map(h=>`<article class="head-card"><div class="head-card-top"><div><strong>${esc(h.fullName)}</strong><p>${fa(h.storeCount)} فروشگاه · ${npTodayFa(h.todayState)} · آخرین فعالیت ${fmtDate(h.lastActivity)}</p></div><button class="btn ghost" onclick="openPerformanceHead(decodeURIComponent('${npArg(h.userId)}'))">فروشگاه‌ها</button></div><div class="mini"><div><b>${fa(h.score)}</b><span>امتیاز</span></div><div><b>${pct(h.completionRate)}</b><span>تحقق</span></div><div><b>${pct(h.coverageRate)}</b><span>پوشش</span></div><div><b>${fa(h.criticalStores)}</b><span>بحرانی</span></div></div></article>`).join('')||'<div style="color:var(--muted)">رئیس ناحیه‌ای یافت نشد.</div>'}`;
   el('performanceDrawer').classList.add('open');
 }
 async function openPerformanceHead(id){
+  const h=(state.performance?.areaHeads||[]).find(x=>String(x.userId)===String(id));if(h)state.performanceManager=(state.performance?.managers||[]).find(x=>String(x.regionalUserId)===String(h.regionalUserId))||state.performanceManager;
   loading(true,'در حال دریافت فروشگاه‌های رئیس ناحیه...');
   try{
-    const r=await DMAuth.apiPost('adminNationalAreaHeadDetail',{areaHeadUserId:id},60000);
-    if(!r.success)throw new Error(r.message||'خطا');
-    el('drawerTitle').textContent='رئیس ناحیه · '+r.areaHeadName;
-    el('drawerSub').textContent=`${r.regionalManagerName} · ${fa(r.stores.length)} فروشگاه`;
-    el('drawerBody').innerHTML=`
-      <button class="btn ghost" style="margin-bottom:10px" onclick="openPerformanceRegion(${jsq(state.performanceManager?.regionalUserId||'')})">بازگشت به منطقه</button>
-      ${(r.stores||[]).map(x=>`<article class="store-card">
-        <div class="store-card-top"><div><strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong><p>${esc(x.priorityLabel||'')} · ${fa(x.visits7)} بازدید در ۷ روز</p></div><div>${statusTag(x.priorityLevel)}</div></div>
-        <div class="tags" style="margin-top:8px">
-          ${x.plannedToday?`<span class="tag blue">Route #${fa(x.sequenceNo)}</span>`:''}
-          ${x.visitStatus==='IN_PROGRESS'?'<span class="tag green">در حال بازدید</span>':''}
-          ${(x.visitStatus==='WAITING_LOCATION_APPROVAL'||x.visitStatus==='WAITING_LOCATION_CORRECTION')?'<span class="tag yellow">انتظار GPS</span>':''}
-          ${String(x.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="tag red">GPS فروشگاه نیازمند بررسی</span>':''}
-        </div>
-      </article>`).join('')}`;
-  }catch(e){toast(e.message||'خطا در دریافت اطلاعات','error');}
-  finally{loading(false);}
+    const r=await DMAuth.apiPost('adminNationalAreaHeadDetail',{areaHeadUserId:id,periodDays:state.performancePeriodDays},60000);if(!r.success)throw new Error(r.message||'خطا');
+    el('drawerTitle').textContent='رئیس ناحیه · '+r.areaHeadName;el('drawerSub').textContent=`${r.regionalManagerName} · ${fa(r.stores.length)} فروشگاه${h?' · امتیاز '+fa(h.score):''}`;
+    el('drawerBody').innerHTML=`${h?`<div class="head-card"><div class="mini"><div><b>${pct(h.completionRate)}</b><span>تحقق</span></div><div><b>${pct(h.coverageRate)}</b><span>پوشش</span></div><div><b>${pct(h.within14Rate)}</b><span>SLA 14</span></div><div><b>${npQualityText(h.qualityScore)}</b><span>کیفیت</span></div><div><b>${fa(h.planned)}</b><span>برنامه</span></div><div><b>${fa(h.completedTotal)}</b><span>تکمیل</span></div><div><b>${fa(h.unplanned)}</b><span>خارج Route</span></div><div><b>${fa(h.pendingGps)}</b><span>GPS</span></div></div></div>`:''}
+      <button class="btn ghost" style="margin-bottom:10px" onclick="openPerformanceRegion(decodeURIComponent('${npArg(r.regionalUserId)}'))">بازگشت به منطقه</button>
+      ${(r.stores||[]).map(x=>`<article class="store-card"><div class="store-card-top"><div><strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong><p>${esc(x.priorityLabel||'')} · ${fa(x.visits7)} بازدید در ۷ روز · آخرین بازدید ${fmtDate(x.lastVisit)}</p></div><div>${npPriorityTag(x.priorityLevel)}</div></div><div class="np-tags" style="margin-top:8px">${x.plannedToday?`<span class="np-tag blue">Route #${fa(x.sequenceNo)}</span>`:'<span class="np-tag">بدون Route امروز</span>'}${x.visitStatus==='IN_PROGRESS'?'<span class="np-tag blue">در حال بازدید</span>':''}${(x.visitStatus==='WAITING_LOCATION_APPROVAL'||x.visitStatus==='WAITING_LOCATION_CORRECTION')?'<span class="np-tag yellow">GPS Pending</span>':''}${String(x.locationStatus||'OK')!=='OK'?'<span class="np-tag red">مختصات نیازمند بررسی</span>':''}${Number(x.lastPeriodVisitIssues||0)>0?`<span class="np-tag red">${fa(x.lastPeriodVisitIssues)} مورد چک‌لیست</span>`:''}</div></article>`).join('')}`;
+    el('performanceDrawer').classList.add('open');
+  }catch(e){toast(e.message||'خطا در دریافت اطلاعات','error');}finally{loading(false);}
 }
 function closePerformanceDrawer(){el('performanceDrawer').classList.remove('open');}
 
