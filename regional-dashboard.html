@@ -166,6 +166,55 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 @media(max-width:1000px){.rq-grid{grid-template-columns:1fr}.rq-editor{position:static}.rq-stats{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.rq-hero{display:block}.rq-hero-actions{margin-top:12px}.rq-stats{grid-template-columns:1fr 1fr}.rq-form-row{grid-template-columns:1fr}.rq-search{min-width:0;width:100%}.rq-panel-head{align-items:flex-start;display:block}.rq-tools{margin-top:10px}.rq-list{max-height:none}.mobile-bottom{display:flex!important;overflow-x:auto;overflow-y:hidden}.mobile-nav{flex:1 0 72px;min-width:72px}}
 </style>
+
+<style id="v28-route-leave-performance-styles">
+/* ========================= V28 LEAVE + STORE VISIT PERFORMANCE ========================= */
+.day-tab.leave:not(.active){background:#f7f2ff;border-color:#dbcdf3;color:#68469b}
+.day-tab.leave .day-count{background:#eee5fb;color:#68469b}
+.day-tab.active.leave{background:#5d3c8e;border-color:#5d3c8e}
+.leave-control{margin:0 18px 14px;border:1px solid #dfd7ee;background:linear-gradient(135deg,#fbf9ff,#fff);border-radius:18px;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.leave-control-main{min-width:0}.leave-control-main strong{display:block;font-size:.8rem;color:#3b3347}.leave-control-main span{display:block;font-size:.64rem;color:#7f768d;margin-top:4px;line-height:1.8}
+.leave-toggle{border:1px solid #d9d0e8;background:#fff;color:#65458d;border-radius:12px;padding:9px 12px;font-weight:900;font-size:.68rem;white-space:nowrap}
+.leave-toggle.active{background:#6a4695;color:#fff;border-color:#6a4695}
+.leave-control.past{opacity:.62}.leave-control.past .leave-toggle{pointer-events:none}
+.leave-note{display:inline-flex;align-items:center;gap:6px;color:#65458d;background:#f4effb;border:1px solid #e2d7f2;border-radius:999px;padding:5px 8px;font-size:.64rem;font-weight:800}
+.leave-route-empty{min-height:180px;border:1px dashed #d9cfeb;border-radius:18px;background:#fbf9ff;display:grid;place-items:center;text-align:center;padding:28px;color:#735d8e}
+.leave-route-empty strong{display:block;color:#4f3a6a;margin-bottom:6px}
+.store-performance-tools{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.store-performance-tools .search{margin:0}
+.store-performance-tools input,.store-performance-tools select{border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px 11px;font-family:inherit;font-size:.68rem;color:#424a59;outline:none}
+.store-performance-tools input{min-width:210px}.store-performance-tools select{min-width:150px}
+.store-performance-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;border-top:1px solid var(--line);background:#fafbfc}
+.store-performance-footer span{font-size:.66rem;color:#737b89}
+.store-performance-pagination{display:flex;gap:6px}.store-performance-pagination button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 10px;font-family:inherit;font-size:.65rem;font-weight:800;color:#4b5360}
+.store-performance-pagination button:disabled{opacity:.4;cursor:not-allowed}
+.visit-count-pill{display:inline-grid;place-items:center;min-width:34px;height:29px;padding:0 8px;border-radius:10px;background:#eef4ff;color:#315ec8;font-weight:900}
+.visit-count-pill.zero{background:#fff0f2;color:#b52139}
+.sla-state{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:.61rem;font-weight:850}
+.sla-state.normal{background:#ebf8f2;color:#14784e}.sla-state.warn10{background:#fff7df;color:#987000}.sla-state.warn12{background:#fff2e7;color:#bc5d11}.sla-state.overdue{background:#fff0f2;color:#b1001c}.sla-state.no_history{background:#edf2ff;color:#3158d8}
+@media(max-width:820px){
+  #routeView .planner{overflow:visible!important}
+  #routeView .workspace{overflow:visible!important}
+  #routeView .pool-panel{overflow:visible!important}
+  #routeView .store-list{max-height:none!important;overflow:visible!important;padding-bottom:14px}
+  #routeView .savebar{position:relative!important;bottom:auto!important;z-index:1!important;box-shadow:none!important}
+  .leave-control{margin:0 10px 12px;padding:12px;align-items:flex-start}
+  .leave-control-main span{font-size:.61rem}.leave-toggle{padding:8px 10px}
+  .store-performance-tools{width:100%;display:grid;grid-template-columns:1fr 1fr}
+  .store-performance-tools input{grid-column:1/-1;min-width:0;width:100%}
+  .store-performance-tools select{min-width:0;width:100%}
+  .store-performance-footer{align-items:flex-start;flex-direction:column}
+  #storePerformanceTable{min-width:0}
+  #storePerformanceTable thead{display:none}
+  #storePerformanceTable,#storePerformanceTable tbody,#storePerformanceTable tr,#storePerformanceTable td{display:block;width:100%}
+  #storePerformanceTable tr{padding:10px 12px;border-bottom:1px solid var(--line)}
+  #storePerformanceTable td{border:0;padding:5px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}
+  #storePerformanceTable td:before{content:attr(data-label);font-size:.62rem;color:#8b929e}
+  #storePerformanceTable td.store-cell{display:block}
+  #storePerformanceTable td.store-cell:before{display:none}
+}
+</style>
+
 </head>
 <body>
 <div class="loading-screen" id="loadingScreen"><div class="loader-card"><div class="spinner"></div><strong>در حال دریافت اطلاعات منطقه...</strong></div></div>
@@ -262,8 +311,34 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 
         <section class="performance-panel">
           <div class="performance-panel-head"><div><h3>رتبه‌بندی رؤسای ناحیه</h3><p>برای مقایسه منصفانه، نرخ‌ها در کنار حجم عملیات نمایش داده شده‌اند.</p></div><div class="search"><input id="regionalPerfSearch" oninput="renderRegionalPerformanceHeads()" placeholder="جستجوی رئیس ناحیه..."></div></div>
-          <div class="performance-table-wrap"><table class="performance-table"><thead><tr><th>رتبه</th><th>رئیس ناحیه</th><th>امتیاز</th><th>برنامه</th><th>تکمیل</th><th>تحقق</th><th>میانگین روزانه</th><th>پوشش</th><th>خارج برنامه</th><th>Override</th><th>نیازمند توجه</th><th>کیفیت چک‌لیست</th><th>مدت</th><th></th></tr></thead><tbody id="regionalPerformanceBody"></tbody></table></div>
-          <div class="performance-formula">امتیاز عملکرد = ۵۵٪ تحقق برنامه + ۲۵٪ پوشش فروشگاه‌ها + ۱۰٪ کنترل بازدید خارج برنامه + ۱۰٪ کیفیت واقعی چک‌لیست. کیفیت چک‌لیست از پاسخ‌های ثبت‌شده در تمام بخش‌ها محاسبه می‌شود.</div>
+          <div class="performance-table-wrap"><table class="performance-table"><thead><tr><th>رتبه</th><th>رئیس ناحیه</th><th>امتیاز</th><th>برنامه</th><th>تکمیل</th><th>تحقق</th><th>میانگین روزانه</th><th>پوشش</th><th>مرخصی</th><th>خارج برنامه</th><th>Override</th><th>نیازمند توجه</th><th>کیفیت چک‌لیست</th><th>مدت</th><th></th></tr></thead><tbody id="regionalPerformanceBody"></tbody></table></div>
+          <div class="performance-formula">امتیاز عملکرد = ۵۵٪ تحقق برنامه + ۲۵٪ پوشش فروشگاه‌ها + ۱۰٪ کنترل بازدید خارج برنامه + ۱۰٪ کیفیت واقعی چک‌لیست. روزهای مرخصی ثبت‌شده از روز کاری رئیس ناحیه خارج می‌شوند.</div>
+        </section>
+
+        <section class="performance-panel" style="margin-top:16px">
+          <div class="performance-panel-head">
+            <div><h3>پوشش و تکرار بازدید فروشگاه‌ها</h3><p>تعداد دفعات بازدید هر فروشگاه در دوره انتخابی؛ فروشگاه‌های بدون بازدید نیز نمایش داده می‌شوند.</p></div>
+            <div class="store-performance-tools">
+              <input id="regionalStorePerfSearch" placeholder="جستجوی کد یا نام فروشگاه..." oninput="resetStorePerformancePage()">
+              <select id="regionalStorePerfHead" onchange="resetStorePerformancePage()"><option value="">همه رؤسای ناحیه</option></select>
+              <select id="regionalStorePerfSort" onchange="resetStorePerformancePage()">
+                <option value="VISITS_ASC">کمترین بازدید</option>
+                <option value="VISITS_DESC">بیشترین بازدید</option>
+                <option value="SLA">بحرانی‌ترین SLA</option>
+                <option value="NAME">نام فروشگاه</option>
+              </select>
+            </div>
+          </div>
+          <div class="performance-table-wrap">
+            <table class="performance-table" id="storePerformanceTable">
+              <thead><tr><th>فروشگاه</th><th>رئیس ناحیه</th><th>کل بازدید</th><th>برنامه‌ای</th><th>خارج Route</th><th>Override</th><th>آخرین بازدید</th><th>فاصله از آخرین بازدید</th><th>وضعیت SLA</th></tr></thead>
+              <tbody id="regionalStorePerformanceBody"></tbody>
+            </table>
+          </div>
+          <div class="store-performance-footer">
+            <span id="regionalStorePerformanceInfo">—</span>
+            <div class="store-performance-pagination"><button id="storePerfPrev" onclick="changeStorePerformancePage(-1)">قبلی</button><button id="storePerfNext" onclick="changeStorePerformancePage(1)">بعدی</button></div>
+          </div>
         </section>
       </div>
 
@@ -352,6 +427,11 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
         </div>
 
         <div class="day-tabs" id="dayTabs"></div>
+
+        <div class="leave-control" id="leaveControl">
+          <div class="leave-control-main"><strong id="leaveTitle">مرخصی رئیس ناحیه</strong><span id="leaveSub">برای روز انتخاب‌شده می‌توانی مرخصی را ثبت یا لغو کنی. روز مرخصی در Route و انتظار عملکرد روزانه محاسبه نمی‌شود.</span></div>
+          <button class="leave-toggle" id="leaveToggleBtn" onclick="toggleSelectedDayLeave()">ثبت مرخصی این روز</button>
+        </div>
 
         <div class="workspace">
           <div class="route-panel">
@@ -533,7 +613,7 @@ const state={
   weekStartIso:'',todayIso:'',days:[],selectedDayIso:'',filter:'ALL',dirty:false,sourceType:'MANUAL',dragIndex:null,moveIndex:null,
   activeView:'route',gpsMode:'approval',approvals:[],approvalFilter:'PENDING',approvalSummary:{pending:0,approved:0,rejected:0},decisionApprovalId:'',
   corrections:[],correctionFilter:'PENDING',correctionSummary:{pending:0,approved:0,rejected:0},correctionDecisionId:'',
-  routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:7,performanceRefreshTimer:null,
+  routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:7,performanceRefreshTimer:null,performanceStorePage:1,performanceStorePageSize:20,
   regionalChecklistLoaded:false,regionalChecklistData:null,rqFilter:'ACTIVE'
 };
 
@@ -567,7 +647,7 @@ function applyRegionalBootstrap(res,requestedId=''){
   state.planningMode=res.selectedAreaHead?.planningMode||'REGIONAL_MANAGER';
   state.cannotVisitNotices=res.selectedAreaHead?.cannotVisitNotices||[];
   state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
-  state.days=(res.week?.days||[]).map((d,i)=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||''}));
+  state.days=(res.week?.days||[]).map((d,i)=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||'',isLeave:!!d.isLeave,leave:d.leave||null}));
   state.selectedDayIso=state.days.some(d=>d.dateIso===state.selectedDayIso)?state.selectedDayIso:(state.days[0]?.dateIso||'');
   state.dirty=false;state.sourceType='MANUAL';state.routeLoaded=true;
   renderAll();
@@ -622,7 +702,7 @@ async function loadBootstrap(areaHeadId,silent=false,forceFresh=false){
   }
 }
 
-function renderAll(){renderSummary();renderAreaHeads();renderPlanningMode();renderCannotVisitNotices();renderWeek();renderDays();renderRoute();renderStorePool();renderSaveState();}
+function renderAll(){renderSummary();renderAreaHeads();renderPlanningMode();renderCannotVisitNotices();renderWeek();renderDays();renderLeaveControl();renderRoute();renderStorePool();renderSaveState();}
 function renderSummary(){
   document.getElementById('statHeads').textContent=state.summary.areaHeads??0;
   document.getElementById('statStores').textContent=state.summary.stores??0;
@@ -633,7 +713,7 @@ function renderSummary(){
 }
 function renderAreaHeads(){
   const sel=document.getElementById('areaHeadSelect');
-  sel.innerHTML=state.areaHeads.map(a=>`<option value="${esc(a.userId)}" ${String(a.userId||'').trim()===String(state.areaHeadId||'').trim()?'selected':''}>${esc(a.fullName)} · ${a.storeCount} فروشگاه · ${a.planningMode==='AREA_HEAD'?'مسیر: رئیس ناحیه':'مسیر: مدیر منطقه'}${a.cannotVisitOpen?` · ⚠ ${a.cannotVisitOpen} اعلام`:''}</option>`).join('');
+  sel.innerHTML=state.areaHeads.map(a=>`<option value="${esc(a.userId)}" ${String(a.userId||'').trim()===String(state.areaHeadId||'').trim()?'selected':''}>${esc(a.fullName)} · ${a.storeCount} فروشگاه · ${a.planningMode==='AREA_HEAD'?'مسیر: رئیس ناحیه':'مسیر: مدیر منطقه'}${Number(a.leaveDaysThisWeek||0)?` · ${a.leaveDaysThisWeek} روز مرخصی`:''}${a.cannotVisitOpen?` · ⚠ ${a.cannotVisitOpen} اعلام`:''}</option>`).join('');
 }
 function managerCanEditRoutes(){return state.planningMode!=='AREA_HEAD';}
 function renderPlanningMode(){
@@ -711,18 +791,56 @@ function dayCountClass(n){if(n>=state.settings.dailyMin&&n<=state.settings.daily
 function renderDays(){
   const tabs=document.getElementById('dayTabs');
   tabs.innerHTML=state.days.map((d,i)=>{
-    const past=isPastDay(d),started=hasLockedItems(d);
-    return `<button class="day-tab ${d.dateIso===state.selectedDayIso?'active':''} ${dayCountClass(d.items.length)} ${past?'locked':''}" onclick="selectDay('${d.dateIso}')"><div class="day-name">${DAY_NAMES[i]||''}</div><div class="day-date">${faDateShort(d.dateIso)}</div><span class="day-count">${d.items.length} بازدید${started&&!past?' · درحال اجرا':''}</span></button>`;
+    const past=isPastDay(d),started=hasLockedItems(d),leave=!!d.isLeave;
+    return `<button class="day-tab ${d.dateIso===state.selectedDayIso?'active':''} ${leave?'leave':dayCountClass(d.items.length)} ${past?'locked':''}" onclick="selectDay('${d.dateIso}')"><div class="day-name">${DAY_NAMES[i]||''}</div><div class="day-date">${faDateShort(d.dateIso)}</div><span class="day-count">${leave?'مرخصی':`${d.items.length} بازدید${started&&!past?' · درحال اجرا':''}`}</span></button>`;
   }).join('');
 }
 function selectedDay(){return state.days.find(d=>d.dateIso===state.selectedDayIso)||null;}
+function selectedDayIsLeave(){return !!selectedDay()?.isLeave;}
+
+function renderLeaveControl(){
+  const d=selectedDay(),box=document.getElementById('leaveControl'),btn=document.getElementById('leaveToggleBtn'),title=document.getElementById('leaveTitle'),sub=document.getElementById('leaveSub');
+  if(!d||!box||!btn)return;
+  const past=isPastDay(d),leave=!!d.isLeave,idx=state.days.indexOf(d);
+  box.classList.toggle('past',past);
+  title.textContent=`مرخصی ${DAY_NAMES[idx]||''} · ${faDateShort(d.dateIso)}`;
+  if(leave){
+    sub.textContent='این روز به‌عنوان مرخصی ثبت شده است؛ Route و انتظار عملکرد روزانه برای رئیس ناحیه ندارد.';
+    btn.textContent=past?'مرخصی ثبت‌شده':'لغو مرخصی';
+    btn.classList.add('active');
+  }else{
+    sub.textContent=past?'روز گذشته قابل تغییر نیست.':'با ثبت مرخصی، Route شروع‌نشده این روز پاک می‌شود و این روز از انتظار عملکرد روزانه خارج خواهد شد.';
+    btn.textContent='ثبت مرخصی این روز';
+    btn.classList.remove('active');
+  }
+  btn.disabled=past;
+}
+
+async function toggleSelectedDayLeave(){
+  const d=selectedDay();if(!d||!state.areaHeadId)return;
+  if(isPastDay(d)){toast('مرخصی روز گذشته قابل تغییر نیست.','error');return;}
+  const next=!d.isLeave;
+  const msg=next
+    ?`برای ${faDateShort(d.dateIso)} مرخصی ثبت شود؟ اگر Route شروع‌نشده‌ای وجود داشته باشد پاک می‌شود.`
+    :`مرخصی ${faDateShort(d.dateIso)} لغو شود؟`;
+  if(!confirm(msg))return;
+  setLoading(true,next?'در حال ثبت مرخصی...':'در حال لغو مرخصی...');
+  try{
+    const r=await DMAuth.apiPost('setAreaHeadLeave',{areaHeadUserId:state.areaHeadId,dateIso:d.dateIso,active:String(next)},35000);
+    if(!r.success)throw new Error(r.message||'ثبت وضعیت مرخصی ناموفق بود.');
+    toast(r.message||'وضعیت مرخصی ثبت شد.','success');
+    state.dirty=false;
+    await loadBootstrap(state.areaHeadId,true,true);
+  }catch(e){toast(e.message||'خطا در ثبت مرخصی','error');}
+  finally{setLoading(false);}
+}
 function itemIsLocked(item){return !!(item&&(item.locked||String(item.visitId||'').trim()));}
 function hasLockedItems(d){return !!(d&&d.items&&d.items.some(itemIsLocked));}
 function isPastDay(d){return !!(d&&state.todayIso&&String(d.dateIso)<String(state.todayIso));}
 // Legacy name kept for compatibility. A whole day is read-only only when it is in the past.
 // Today remains editable even after some visits have started.
 function isDayLocked(d){return isPastDay(d);}
-function selectDay(dateIso){state.selectedDayIso=dateIso;renderDays();renderRoute();renderStorePool();}
+function selectDay(dateIso){state.selectedDayIso=dateIso;renderDays();renderLeaveControl();renderRoute();renderStorePool();}
 function statusTag(item){
   const level=item.priorityLevel||'NORMAL';
   if(level==='NO_HISTORY')return'<span class="tag blue">بدون سابقه</span>';
@@ -741,6 +859,13 @@ function renderRoute(){
   else document.getElementById('routeSubtitle').textContent=`${d.items.length} فروشگاه در برنامه این روز`;
 
   const status=document.getElementById('routeStatus'),txt=document.getElementById('routeStatusText');
+  if(d.isLeave){
+    status.className='route-status';
+    txt.innerHTML='<span class="leave-note">مرخصی ثبت‌شده · بدون Route و بدون انتظار عملکرد روزانه</span>';
+    document.getElementById('routeSubtitle').textContent='این روز برای رئیس ناحیه مرخصی ثبت شده است.';
+    document.getElementById('routeList').innerHTML='<div class="leave-route-empty"><div><strong>روز مرخصی</strong><span>برای این روز Route تعریف نمی‌شود. برای برنامه‌ریزی مجدد ابتدا مرخصی را لغو کن.</span></div></div>';
+    return;
+  }
   status.className='route-status '+dayCountClass(d.items.length);
 
   if(past) txt.innerHTML='<span class="lock-note">🔒 برنامه روز گذشته قابل تغییر نیست</span>';
@@ -763,11 +888,17 @@ function renderRoute(){
   }).join('');
 }
 function renderStorePool(){
-  const d=selectedDay();if(!d)return;const q=toEn(document.getElementById('storeSearch').value).toLowerCase();const today=new Set(d.items.map(x=>x.storeCode));
+  const d=selectedDay();if(!d)return;
+  const list=document.getElementById('storeList');
+  if(d.isLeave){
+    document.getElementById('poolSub').textContent='این روز مرخصی است و انتخاب فروشگاه غیرفعال شده است.';
+    list.innerHTML='<div class="leave-route-empty" style="min-height:150px"><div><strong>روز مرخصی</strong><span>برای افزودن فروشگاه ابتدا مرخصی این روز را لغو کن.</span></div></div>';
+    return;
+  }
+  const q=toEn(document.getElementById('storeSearch').value).toLowerCase();const today=new Set(d.items.map(x=>x.storeCode));
   let arr=state.stores.filter(s=>{const hay=(s.storeCode+' '+s.storeName).toLowerCase();if(q&&!hay.includes(q))return false;if(state.filter==='LOCATION')return String(s.locationStatus||'OK').toUpperCase()!=='OK';if(state.filter!=='ALL')return s.priorityLevel===state.filter;return true;});
   arr.sort((a,b)=>priorityRank(b.priorityLevel)-priorityRank(a.priorityLevel)||Number(b.daysSinceLastVisit||0)-Number(a.daysSinceLastVisit||0)||String(a.storeName).localeCompare(String(b.storeName),'fa'));
-  document.getElementById('poolSub').textContent=isPastDay(d)?'برنامه روز گذشته فقط قابل مشاهده است.':`${state.stores.length} فروشگاه · برنامه امروز حتی بعد از شروع بازدید قابل اصلاح است.`;
-  const list=document.getElementById('storeList');
+  document.getElementById('poolSub').textContent=isPastDay(d)?'برنامه روز گذشته فقط قابل مشاهده است.':`${state.stores.length} فروشگاه · همه فروشگاه‌ها قابل اسکرول و انتخاب هستند.`;
   list.innerHTML=arr.length?arr.map(s=>`<div class="store-card"><div><h5>${esc(s.storeName)}</h5><p>کد ${esc(s.storeCode)} · ${esc(s.priorityLabel||'')}</p><div class="route-meta">${statusTag(s)}${String(s.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="tag red">GPS مشکوک</span>':''}<span class="tag gray">۷ روز: ${s.visits7||0} بازدید</span></div></div>${today.has(s.storeCode)?'<span class="already">در Route این روز</span>':isPastDay(d)?'<span class="already">روز گذشته</span>':`<button class="add" onclick="addStore('${esc(s.storeCode)}')">+</button>`}</div>`).join(''):'<div class="empty-route" style="min-height:150px"><div><strong>فروشگاهی پیدا نشد</strong><span>فیلتر یا عبارت جستجو را تغییر بده.</span></div></div>';
 }
 function setFilter(f){state.filter=f;document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));renderStorePool();}
@@ -775,6 +906,7 @@ function addStore(code){
   if(!managerCanEditRoutes()){toast('مسیر‌بندی این رئیس ناحیه به خودش واگذار شده است.','error');return;}
   const d=selectedDay(),s=state.storeMap[code];
   if(!d||!s||d.items.some(x=>x.storeCode===code))return;
+  if(d.isLeave){toast('این روز مرخصی است؛ ابتدا مرخصی را لغو کن.','error');return;}
   if(isPastDay(d)){toast('برنامه روز گذشته قابل تغییر نیست.','error');return;}
   const prev=d.items[d.items.length-1];
   d.items.push(Object.assign({},s,{locked:false,visitId:'',plannedStatus:'PLANNED',distanceFromPreviousM:prev?Math.round(distanceM(prev,s)):0,plannedReason:'برنامه مدیر منطقه'}));
@@ -785,6 +917,7 @@ function removeItem(i){
   if(!managerCanEditRoutes()){toast('مسیر‌بندی این رئیس ناحیه به خودش واگذار شده است.','error');return;}
   const d=selectedDay(),item=d?.items?.[i];
   if(!d||!item)return;
+  if(d.isLeave){toast('این روز مرخصی است.','error');return;}
   if(isPastDay(d)){toast('برنامه روز گذشته قابل تغییر نیست.','error');return;}
   if(itemIsLocked(item)){toast('این فروشگاه بازدیدش شروع شده و قابل حذف نیست؛ سایر فروشگاه‌های امروز قابل تغییرند.','error');return;}
   d.items.splice(i,1);recalcDistances(d);markDirty('MANUAL');renderDays();renderRoute();renderStorePool();
@@ -792,7 +925,7 @@ function removeItem(i){
 function moveItem(i,delta){
   if(!managerCanEditRoutes())return;
   const d=selectedDay(),j=i+delta;
-  if(!d||isPastDay(d)||j<0||j>=d.items.length)return;
+  if(!d||d.isLeave||isPastDay(d)||j<0||j>=d.items.length)return;
   if(itemIsLocked(d.items[i])||itemIsLocked(d.items[j])){toast('بازدید شروع‌شده در جای خود قفل است.','error');return;}
   [d.items[i],d.items[j]]=[d.items[j],d.items[i]];
   recalcDistances(d);markDirty('MANUAL');renderRoute();
@@ -800,28 +933,28 @@ function moveItem(i,delta){
 function dragStart(e,i){
   if(!managerCanEditRoutes()){e.preventDefault();return;}
   const d=selectedDay();
-  if(!d||isPastDay(d)||itemIsLocked(d.items[i])){e.preventDefault();return;}
+  if(!d||d.isLeave||isPastDay(d)||itemIsLocked(d.items[i])){e.preventDefault();return;}
   state.dragIndex=i;e.currentTarget.classList.add('dragging');setTimeout(()=>e.currentTarget.classList.remove('dragging'),300);
 }
 function dropItem(e,target){
   e.preventDefault();
   const d=selectedDay(),from=state.dragIndex;
-  if(!d||isPastDay(d)||from==null||from===target)return;
+  if(!d||d.isLeave||isPastDay(d)||from==null||from===target)return;
   if(itemIsLocked(d.items[from])||itemIsLocked(d.items[target])){toast('نمی‌توان یک فروشگاه را از روی بازدید شروع‌شده عبور داد.','error');return;}
   const item=d.items[from];d.items.splice(from,1);d.items.splice(target,0,item);state.dragIndex=null;
   recalcDistances(d);markDirty('MANUAL');renderRoute();
 }
 function openMoveModal(i){
   if(!managerCanEditRoutes()){toast('مسیر‌بندی به رئیس ناحیه واگذار شده است.','error');return;}
-  const source=selectedDay();if(!source||isPastDay(source))return;
+  const source=selectedDay();if(!source||source.isLeave||isPastDay(source))return;
   const item=source.items[i];if(!item)return;
   if(itemIsLocked(item)){toast('فروشگاهی که بازدیدش شروع شده قابل انتقال نیست.','error');return;}
   state.moveIndex=i;
   document.getElementById('moveStoreLabel').textContent=`${item.storeName} · کد ${item.storeCode}`;
   document.getElementById('moveDays').innerHTML=state.days.map((d,idx)=>{
-    const current=d.dateIso===source.dateIso,past=isPastDay(d),duplicate=d.items.some(x=>x.storeCode===item.storeCode);
-    const disabled=current||past||duplicate;
-    const note=current?'روز فعلی':past?'روز گذشته':duplicate?'این فروشگاه در این روز وجود دارد':`${d.items.length} بازدید`;
+    const current=d.dateIso===source.dateIso,past=isPastDay(d),leave=!!d.isLeave,duplicate=d.items.some(x=>x.storeCode===item.storeCode);
+    const disabled=current||past||leave||duplicate;
+    const note=current?'روز فعلی':past?'روز گذشته':leave?'مرخصی':duplicate?'این فروشگاه در این روز وجود دارد':`${d.items.length} بازدید`;
     return `<button class="move-day ${disabled?'disabled':''}" ${disabled?'disabled':''} onclick="confirmMove('${d.dateIso}')"><strong>${DAY_NAMES[idx]} · ${faDateShort(d.dateIso)}</strong><span>${note}</span></button>`;
   }).join('');
   document.getElementById('moveModal').classList.remove('hidden');
@@ -829,7 +962,7 @@ function openMoveModal(i){
 function closeMoveModal(){state.moveIndex=null;document.getElementById('moveModal').classList.add('hidden');}
 function confirmMove(targetIso){
   const source=selectedDay(),target=state.days.find(d=>d.dateIso===targetIso),i=state.moveIndex;
-  if(!source||!target||i==null||isPastDay(source)||isPastDay(target))return;
+  if(!source||!target||i==null||source.isLeave||target.isLeave||isPastDay(source)||isPastDay(target))return;
   const item=source.items[i];
   if(!item||itemIsLocked(item)||target.items.some(x=>x.storeCode===item.storeCode))return;
   source.items.splice(i,1);
@@ -841,6 +974,7 @@ function recalcDistances(d){d.items.forEach((x,i)=>x.distanceFromPreviousM=i?Mat
 function clearSelectedDay(){
   if(!managerCanEditRoutes()){toast('مسیر‌بندی به رئیس ناحیه واگذار شده است.','error');return;}
   const d=selectedDay();if(!d)return;
+  if(d.isLeave){toast('این روز مرخصی است.','error');return;}
   if(isPastDay(d)){toast('برنامه روز گذشته قابل تغییر نیست.','error');return;}
   const locked=d.items.filter(itemIsLocked),editable=d.items.filter(x=>!itemIsLocked(x));
   if(!editable.length){toast('همه فروشگاه‌های این Route شروع شده‌اند و چیزی برای حذف باقی نمانده است.','error');return;}
@@ -851,6 +985,7 @@ function clearSelectedDay(){
 function optimizeSelectedDay(){
   if(!managerCanEditRoutes()){toast('مسیر‌بندی به رئیس ناحیه واگذار شده است.','error');return;}
   const d=selectedDay();if(!d||d.items.length<3)return;
+  if(d.isLeave){toast('این روز مرخصی است.','error');return;}
   if(isPastDay(d)){toast('برنامه روز گذشته قابل بازچینی نیست.','error');return;}
   if(hasLockedItems(d)){toast('برای حفظ ترتیب بازدیدهای شروع‌شده، بهینه‌سازی خودکار این روز غیرفعال است؛ فروشگاه‌های شروع‌نشده را دستی جابه‌جا کن.','error');return;}
   const valid=d.items.filter(x=>String(x.locationStatus||'OK').toUpperCase()==='OK');
@@ -863,8 +998,44 @@ function optimizeSelectedDay(){
   toast(flagged.length?'مسیر با مختصات معتبر بازچینی شد؛ فروشگاه‌های GPS مشکوک در انتها نگه داشته شدند.':'ترتیب این روز بر اساس نزدیکی جغرافیایی بازچینی شد.','success');
 }
 
-async function suggestRoutes(){if(!managerCanEditRoutes()){toast('مسیر‌بندی این رئیس ناحیه به خودش واگذار شده است.','error');return;}if(!state.areaHeadId)return;setLoading(true,'در حال ساخت Route پیشنهادی...');try{const res=await DMAuth.apiPost('suggestWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,targetDaily:state.settings.dailyTarget||4},35000);if(!res.success)throw new Error(res.message||'ساخت Route ناموفق بود.');const byDate={};state.days.forEach(d=>byDate[d.dateIso]=d);res.days.forEach(sd=>{const d=byDate[sd.dateIso];if(!d)return;if(isPastDay(d)||hasLockedItems(d))return;d.items=(sd.items||[]).map(x=>Object.assign({},state.storeMap[x.storeCode]||{},x,{locked:false,visitId:''}));recalcDistances(d);});state.sourceType='SMART';state.dirty=true;renderDays();renderRoute();renderStorePool();renderSaveState();toast('Route پیشنهادی هفته ساخته شد؛ می‌توانی قبل از ثبت هر بخش را تغییر بدهی.','success');}catch(e){toast(e.message||'خطا در ساخت Route','error');}finally{setLoading(false);}}
-async function saveWeek(){if(!state.areaHeadId)return;if(!managerCanEditRoutes()){toast('برای ویرایش Route ابتدا مسیر‌بندی را به مدیر منطقه برگردانید.','error');return;}const plan=state.days.map((d,i)=>({dateIso:d.dateIso,dateFa:faDateLong(d.dateIso),storeCodes:d.items.map(x=>x.storeCode)}));const low=plan.filter(x=>x.storeCodes.length<state.settings.dailyMin).length,high=plan.filter(x=>x.storeCodes.length>state.settings.dailyMax).length;if((low||high)&&!confirm(`در ${low+high} روز تعداد بازدید خارج از استاندارد ۳ تا ۵ است. با همین برنامه ثبت شود؟`))return;setLoading(true,'در حال ثبت برنامه هفتگی...');try{const res=await DMAuth.apiPost('saveWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,sourceType:state.sourceType,planJson:JSON.stringify(plan)},45000);if(!res.success)throw new Error(res.message||'ثبت برنامه ناموفق بود.');state.dirty=false;renderSaveState();toast(res.message||'برنامه ثبت شد؛ بازدیدهای شروع‌شده بدون تغییر حفظ شدند.','success');await loadBootstrap(state.areaHeadId);}catch(e){toast(e.message||'خطا در ثبت برنامه','error');}finally{setLoading(false);}}
+async function suggestRoutes(){
+  if(!managerCanEditRoutes()){toast('مسیر‌بندی این رئیس ناحیه به خودش واگذار شده است.','error');return;}
+  if(!state.areaHeadId)return;
+  setLoading(true,'در حال ساخت Route پیشنهادی...');
+  try{
+    const res=await DMAuth.apiPost('suggestWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,targetDaily:state.settings.dailyTarget||4},35000);
+    if(!res.success)throw new Error(res.message||'ساخت Route ناموفق بود.');
+    const byDate={};state.days.forEach(d=>byDate[d.dateIso]=d);
+    res.days.forEach(sd=>{
+      const d=byDate[sd.dateIso];if(!d)return;
+      if(d.isLeave){d.items=[];return;}
+      if(isPastDay(d)||hasLockedItems(d))return;
+      d.items=(sd.items||[]).map(x=>Object.assign({},state.storeMap[x.storeCode]||{},x,{locked:false,visitId:''}));
+      recalcDistances(d);
+    });
+    state.sourceType='SMART';state.dirty=true;
+    renderDays();renderLeaveControl();renderRoute();renderStorePool();renderSaveState();
+    toast('Route پیشنهادی هفته ساخته شد؛ روزهای مرخصی به‌صورت خودکار خالی ماندند.','success');
+  }catch(e){toast(e.message||'خطا در ساخت Route','error');}
+  finally{setLoading(false);}
+}
+async function saveWeek(){
+  if(!state.areaHeadId)return;
+  if(!managerCanEditRoutes()){toast('برای ویرایش Route ابتدا مسیر‌بندی را به مدیر منطقه برگردانید.','error');return;}
+  const plan=state.days.map(d=>({dateIso:d.dateIso,dateFa:faDateLong(d.dateIso),storeCodes:d.isLeave?[]:d.items.map(x=>x.storeCode)}));
+  const workingPlans=plan.filter((x,i)=>!state.days[i].isLeave);
+  const low=workingPlans.filter(x=>x.storeCodes.length<state.settings.dailyMin).length,high=workingPlans.filter(x=>x.storeCodes.length>state.settings.dailyMax).length;
+  if((low||high)&&!confirm(`در ${low+high} روز کاری تعداد بازدید خارج از استاندارد ۳ تا ۵ است. با همین برنامه ثبت شود؟`))return;
+  setLoading(true,'در حال ثبت برنامه هفتگی...');
+  try{
+    const res=await DMAuth.apiPost('saveWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,sourceType:state.sourceType,planJson:JSON.stringify(plan)},45000);
+    if(!res.success)throw new Error(res.message||'ثبت برنامه ناموفق بود.');
+    state.dirty=false;renderSaveState();
+    toast(res.message||'برنامه ثبت شد؛ روزهای مرخصی از Route خارج ماندند.','success');
+    await loadBootstrap(state.areaHeadId);
+  }catch(e){toast(e.message||'خطا در ثبت برنامه','error');}
+  finally{setLoading(false);}
+}
 async function changeAreaHead(id){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟')){renderAreaHeads();return;}state.areaHeadId=id;await loadBootstrap(id);}
 async function shiftWeek(n){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟'))return;state.weekStartIso=iso(addDays(parseIso(state.weekStartIso),n));state.selectedDayIso='';await loadBootstrap(state.areaHeadId);}
 async function goCurrentWeek(){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟'))return;state.weekStartIso=iso(saturdayStart(new Date()));state.selectedDayIso='';await loadBootstrap(state.areaHeadId);}
@@ -890,6 +1061,7 @@ function regionalScoreClass(n){return Number(n)>=75?'good':Number(n)>=45?'mid':'
 
 async function changeRegionalPerformancePeriod(days){
   state.performancePeriodDays=Number(days)||7;
+  state.performanceStorePage=1;
   document.querySelectorAll('.performance-period').forEach(b=>b.classList.toggle('active',Number(b.dataset.days)===state.performancePeriodDays));
   await loadRegionalPerformance(true);
 }
@@ -913,7 +1085,7 @@ function renderRegionalPerformance(){
   document.getElementById('rpCoverage').textContent=(s.coverageRate||0)+'%';
   document.getElementById('rpCoverageSub').textContent=`${s.visitedStores||0} از ${s.stores||0} فروشگاه`;
   document.getElementById('rpHeads').textContent=(s.headActivityRate||0)+'%';
-  document.getElementById('rpHeadsSub').textContent=`${s.activeHeads||0} از ${s.areaHeads||0} رئیس ناحیه`;
+  document.getElementById('rpHeadsSub').textContent=`${s.activeHeads||0} از ${s.eligibleHeads??s.areaHeads??0} رئیس ناحیه واجد روز کاری${Number(s.leaveDays||0)?` · ${s.leaveDays} روز مرخصی`:''}`;
   document.getElementById('rpOverride').textContent=(s.overrideRate||0)+'%';
   document.getElementById('rpOverrideSub').textContent=`${s.overrides||0} Override`;
   document.getElementById('rpUnplanned').textContent=(s.unplannedRate||0)+'%';
@@ -935,6 +1107,8 @@ function renderRegionalPerformance(){
   renderSalesSubsectionPerformance(state.performance.checklistSubsections||[]);
   renderRegionalQuestionPerformance(state.performance.regionalQuestionStats||[]);
   renderRegionalPerformanceHeads();
+  renderRegionalStorePerformanceFilters();
+  renderRegionalStorePerformance();
   const sync=document.getElementById('rpSyncText');
   if(sync){const repaired=Number(state.performance?.integrity?.repaired||0);sync.textContent='آخرین همگام‌سازی '+faDateTimeRegional(state.performance.serverTime)+(repaired?` · ${repaired} بازدید بازیابی شد`:' · همگام');}
 }
@@ -1010,8 +1184,62 @@ function renderRegionalPerformanceHeads(){
   const q=(document.getElementById('regionalPerfSearch')?.value||'').trim().toLowerCase();
   const arr=(state.performance?.areaHeads||[]).filter(h=>!q||String(h.fullName).toLowerCase().includes(q)||String(h.userId).toLowerCase().includes(q));
   const body=document.getElementById('regionalPerformanceBody');
-  if(!arr.length){body.innerHTML='<tr><td colspan="14" class="overview-empty">رئیس ناحیه‌ای پیدا نشد.</td></tr>';return;}
-  body.innerHTML=arr.map(h=>`<tr><td data-label="رتبه"><div class="performance-rank ${h.rank<=3?'top':''}">${h.rank}</div></td><td class="performance-name" data-label="رئیس ناحیه"><strong>${esc(h.fullName)}</strong><span>${h.storeCount} فروشگاه</span></td><td data-label="امتیاز"><span class="performance-score ${regionalScoreClass(h.performanceScore)}">${h.performanceScore}</span></td><td data-label="برنامه">${h.planned}</td><td data-label="تکمیل">${h.completedPlanned}</td><td data-label="تحقق">${h.completionRate}%</td><td data-label="میانگین روزانه">${h.avgDailyCompleted??h.avgDailyVisits??0}</td><td data-label="پوشش">${h.coverageRate}%</td><td data-label="خارج برنامه">${h.unplannedRate}%</td><td data-label="Override">${h.overrideRate}%</td><td data-label="نیازمند توجه">${h.weakRate}%</td><td data-label="کیفیت چک‌لیست">${h.checklistQuality||0}%</td><td data-label="مدت">${h.avgDuration} دقیقه</td><td class="performance-action"><button class="performance-route-btn" onclick="openAreaHeadRoute('${esc(h.userId)}')">Route</button></td></tr>`).join('');
+  if(!arr.length){body.innerHTML='<tr><td colspan="15" class="overview-empty">رئیس ناحیه‌ای پیدا نشد.</td></tr>';return;}
+  body.innerHTML=arr.map(h=>`<tr><td data-label="رتبه"><div class="performance-rank ${h.rank<=3?'top':''}">${h.rank}</div></td><td class="performance-name" data-label="رئیس ناحیه"><strong>${esc(h.fullName)}</strong><span>${h.storeCount} فروشگاه</span></td><td data-label="امتیاز"><span class="performance-score ${regionalScoreClass(h.performanceScore)}">${h.performanceScore}</span></td><td data-label="برنامه">${h.planned}</td><td data-label="تکمیل">${h.completedPlanned}</td><td data-label="تحقق">${h.completionRate}%</td><td data-label="میانگین روزانه">${h.avgDailyCompleted??h.avgDailyVisits??0}</td><td data-label="پوشش">${h.coverageRate}%</td><td data-label="مرخصی">${h.leaveDays||0} روز</td><td data-label="خارج برنامه">${h.unplannedRate}%</td><td data-label="Override">${h.overrideRate}%</td><td data-label="نیازمند توجه">${h.weakRate}%</td><td data-label="کیفیت چک‌لیست">${h.checklistQuality||0}%</td><td data-label="مدت">${h.avgDuration} دقیقه</td><td class="performance-action"><button class="performance-route-btn" onclick="openAreaHeadRoute('${esc(h.userId)}')">Route</button></td></tr>`).join('');
+}
+
+function renderRegionalStorePerformanceFilters(){
+  const select=document.getElementById('regionalStorePerfHead');if(!select)return;
+  const current=select.value;
+  const heads=(state.performance?.areaHeads||[]).slice().sort((a,b)=>String(a.fullName||'').localeCompare(String(b.fullName||''),'fa'));
+  select.innerHTML='<option value="">همه رؤسای ناحیه</option>'+heads.map(h=>`<option value="${esc(h.userId)}">${esc(h.fullName)}</option>`).join('');
+  if(heads.some(h=>String(h.userId)===String(current)))select.value=current;
+}
+function resetStorePerformancePage(){state.performanceStorePage=1;renderRegionalStorePerformance();}
+function changeStorePerformancePage(delta){
+  state.performanceStorePage=Math.max(1,Number(state.performanceStorePage||1)+Number(delta||0));
+  renderRegionalStorePerformance();
+}
+function regionalStorePriorityRank(level){return({NO_HISTORY:5,OVERDUE:4,WARN12:3,WARN10:2,NORMAL:1})[String(level||'NORMAL').toUpperCase()]||0;}
+function regionalStoreSlaHtml(x){
+  const level=String(x.priorityLevel||'NORMAL').toUpperCase();
+  const cls=level==='NO_HISTORY'?'no_history':level==='OVERDUE'?'overdue':level==='WARN12'?'warn12':level==='WARN10'?'warn10':'normal';
+  const label=x.priorityLabel||(level==='NO_HISTORY'?'بدون سابقه':level==='OVERDUE'?'۱۴+ روز':level==='WARN12'?'۱۲ روز':level==='WARN10'?'۱۰ روز':'عادی');
+  return `<span class="sla-state ${cls}">${esc(label)}</span>`;
+}
+function renderRegionalStorePerformance(){
+  const body=document.getElementById('regionalStorePerformanceBody');if(!body)return;
+  const q=toEn(document.getElementById('regionalStorePerfSearch')?.value||'').trim().toLowerCase();
+  const headId=String(document.getElementById('regionalStorePerfHead')?.value||'');
+  const sort=String(document.getElementById('regionalStorePerfSort')?.value||'VISITS_ASC');
+  let rows=(state.performance?.storePerformance||[]).filter(x=>{
+    if(headId&&String(x.areaHeadUserId)!==headId)return false;
+    if(q&&!`${x.storeCode} ${x.storeName} ${x.areaHeadName}`.toLowerCase().includes(q))return false;
+    return true;
+  });
+  rows.sort((a,b)=>{
+    if(sort==='VISITS_DESC')return Number(b.visitCount||0)-Number(a.visitCount||0)||String(a.storeName||'').localeCompare(String(b.storeName||''),'fa');
+    if(sort==='SLA')return regionalStorePriorityRank(b.priorityLevel)-regionalStorePriorityRank(a.priorityLevel)||Number(b.daysSinceLastVisit||0)-Number(a.daysSinceLastVisit||0);
+    if(sort==='NAME')return String(a.storeName||'').localeCompare(String(b.storeName||''),'fa');
+    return Number(a.visitCount||0)-Number(b.visitCount||0)||regionalStorePriorityRank(b.priorityLevel)-regionalStorePriorityRank(a.priorityLevel)||String(a.storeName||'').localeCompare(String(b.storeName||''),'fa');
+  });
+  const size=Number(state.performanceStorePageSize||20),pages=Math.max(1,Math.ceil(rows.length/size));
+  state.performanceStorePage=Math.min(Math.max(1,state.performanceStorePage||1),pages);
+  const start=(state.performanceStorePage-1)*size,show=rows.slice(start,start+size);
+  body.innerHTML=show.length?show.map(x=>`<tr>
+    <td class="store-cell" data-label="فروشگاه"><div class="performance-name"><strong>${esc(x.storeName||x.storeCode)}</strong><span>کد ${esc(x.storeCode)}</span></div></td>
+    <td data-label="رئیس ناحیه">${esc(x.areaHeadName||'—')}</td>
+    <td data-label="کل بازدید"><span class="visit-count-pill ${Number(x.visitCount||0)===0?'zero':''}">${x.visitCount||0}</span></td>
+    <td data-label="برنامه‌ای">${x.plannedVisits||0}</td>
+    <td data-label="خارج Route">${x.unplannedVisits||0}</td>
+    <td data-label="Override">${x.overrideVisits||0}</td>
+    <td data-label="آخرین بازدید">${x.lastVisit?faDateTimeRegional(x.lastVisit):'—'}</td>
+    <td data-label="فاصله از آخرین بازدید">${Number(x.daysSinceLastVisit)>=999?'—':`${x.daysSinceLastVisit} روز`}</td>
+    <td data-label="وضعیت SLA">${regionalStoreSlaHtml(x)}</td>
+  </tr>`).join(''):'<tr><td colspan="9" class="overview-empty">فروشگاهی با این فیلتر پیدا نشد.</td></tr>';
+  document.getElementById('regionalStorePerformanceInfo').textContent=rows.length?`نمایش ${start+1} تا ${Math.min(start+size,rows.length)} از ${rows.length} فروشگاه · صفحه ${state.performanceStorePage} از ${pages}`:'۰ فروشگاه';
+  document.getElementById('storePerfPrev').disabled=state.performanceStorePage<=1;
+  document.getElementById('storePerfNext').disabled=state.performanceStorePage>=pages;
 }
 
 function startPerformanceAutoRefresh(){
@@ -1416,7 +1644,7 @@ DMInstant.on('regionalBootstrap',(res,params)=>{
   if(requested&&requested!==String(state.areaHeadId||'').trim())return;
   state.summary=res.summary||{};state.settings=res.settings||state.settings;state.areaHeads=res.areaHeads||[];state.todayIso=res.todayIso||iso(new Date());
   state.areaHeadId=res.selectedAreaHead?.userId||'';state.stores=res.selectedAreaHead?.stores||[];state.planningMode=res.selectedAreaHead?.planningMode||'REGIONAL_MANAGER';state.cannotVisitNotices=res.selectedAreaHead?.cannotVisitNotices||[];state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
-  state.days=(res.week?.days||[]).map(d=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||''}));
+  state.days=(res.week?.days||[]).map(d=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||'',isLeave:!!d.isLeave,leave:d.leave||null}));
   state.selectedDayIso=state.days.some(d=>d.dateIso===state.selectedDayIso)?state.selectedDayIso:(state.days[0]?.dateIso||'');
   state.dirty=false;state.sourceType='MANUAL';state.routeLoaded=true;renderAll();
 });
