@@ -352,7 +352,7 @@ button,input,select{font:inherit}
               <button class="btn soft" onclick="openStoreImportModal()">Import Excel</button>
             </div>
             <div class="store-list-meta"><span id="storeMasterCount">—</span><span>نمایش ۲۵ ردیف در هر صفحه</span></div>
-            <div class="table-wrap"><table class="table store-table"><thead><tr><th>کد فروشگاه</th><th>نام فروشگاه</th><th>مدیر اجرایی</th><th>مدیر منطقه</th><th>رئیس ناحیه</th><th>تاریخ افتتاح</th><th>مختصات</th><th>GPS</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="storeMasterBody"></tbody></table></div>
+            <div class="table-wrap"><table class="table store-table"><thead><tr><th>کد فروشگاه</th><th>نام فروشگاه</th><th>مدیر اجرایی</th><th>مدیر منطقه</th><th>رئیس ناحیه</th><th>تاریخ افتتاح</th><th>مختصات</th><th>نزدیک‌ترین فروشگاه</th><th>GPS</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="storeMasterBody"></tbody></table></div>
             <div class="store-pagination"><button id="storePrevBtn" onclick="changeStorePage(-1)">قبلی</button><span id="storePageLabel">—</span><button id="storeNextBtn" onclick="changeStorePage(1)">بعدی</button></div>
           </section>
 
@@ -408,7 +408,8 @@ button,input,select{font:inherit}
     <div class="modal-head"><div><strong>ویرایش مختصات فروشگاه</strong><div id="gpsModalName" style="color:var(--muted);font-size:.7rem;margin-top:4px">—</div></div><button class="btn ghost" onclick="closeGpsModal()">×</button></div>
     <div class="modal-body">
       <div class="form-row"><label>Latitude<input id="editLat" inputmode="decimal"></label><label>Longitude<input id="editLng" inputmode="decimal"></label></div>
-      <div class="form-row"><label>وضعیت<select id="editStatus"><option value="OK">OK</option><option value="REVIEW_NEARBY">REVIEW_NEARBY</option><option value="REVIEW_CRITICAL">REVIEW_CRITICAL</option></select></label><div></div></div>
+      <div class="form-row"><label>وضعیت مکانی (خودکار)<input id="editStatusText" disabled value="—"></label><div></div></div>
+      <div style="font-size:.66rem;color:var(--muted);line-height:1.8;margin-top:8px">وضعیت مکانی و نزدیک‌ترین فروشگاه بعد از ذخیره مختصات، به‌صورت خودکار برای کل شبکه فروشگاه‌ها محاسبه می‌شود.</div>
     </div>
     <div class="modal-foot"><button class="btn ghost" onclick="closeGpsModal()">انصراف</button><button class="btn red" onclick="saveGpsStore()">ذخیره</button></div>
   </div>
@@ -428,9 +429,9 @@ button,input,select{font:inherit}
         <div class="store-form-field"><label>تاریخ افتتاح</label><input id="smOpeningDate" placeholder="YYYY-MM-DD یا تاریخ موجود Master"></div>
         <div class="store-form-field"><label>Latitude</label><input id="smLat" inputmode="decimal" placeholder="35.7219"></div>
         <div class="store-form-field"><label>Longitude</label><input id="smLng" inputmode="decimal" placeholder="51.3347"></div>
-        <div class="store-form-field"><label>وضعیت GPS</label><select id="smLocationStatus"><option value="OK">OK</option><option value="REVIEW_NEARBY">REVIEW_NEARBY</option><option value="REVIEW_CRITICAL">REVIEW_CRITICAL</option></select></div>
         <div class="store-form-field"><label>وضعیت فروشگاه</label><select id="smActive"><option value="true">فعال</option><option value="false">غیرفعال</option></select></div>
-        <div class="store-help full">در صورت تغییر مدیر منطقه، رئیس ناحیه یا غیرفعال‌کردن فروشگاه، برنامه‌های آینده‌ای که بازدیدشان شروع نشده به‌صورت ایمن پاکسازی می‌شوند؛ بازدیدهای شروع‌شده دست‌نخورده می‌مانند.</div>
+        <div class="store-form-field"><label>تحلیل مکانی سیستم</label><div class="store-help" id="smNearestInfo" style="padding:10px 11px;background:#f7f8fb;border:1px solid var(--line);border-radius:12px;min-height:42px">پس از ثبت مختصات، نزدیک‌ترین فروشگاه و وضعیت GPS خودکار محاسبه می‌شود.</div></div>
+        <div class="store-help full">فیلدهای <b>nearest_store_code</b>، <b>nearest_store_distance_m</b>، <b>location_status</b> و <b>location_note</b> سیستمی هستند و پس از ثبت/تغییر مختصات، فعال‌سازی یا غیرفعال‌سازی فروشگاه به‌صورت خودکار برای کل شبکه بروزرسانی می‌شوند. در صورت تغییر مدیر منطقه، رئیس ناحیه یا غیرفعال‌کردن فروشگاه، برنامه‌های آینده‌ای که بازدیدشان شروع نشده به‌صورت ایمن پاکسازی می‌شوند؛ بازدیدهای شروع‌شده دست‌نخورده می‌مانند.</div>
       </div>
     </div>
     <div class="modal-foot"><button class="btn ghost" onclick="closeStoreModal()">انصراف</button><button class="btn red" id="smSaveBtn" onclick="saveStoreManual()">ذخیره فروشگاه</button></div>
@@ -644,14 +645,14 @@ function renderGps(){
 }
 function openGps(code){
   const s=(state.data.gpsStores||[]).find(x=>x.storeCode===code);if(!s)return;
-  state.editStore=s;el('gpsModalName').textContent=s.storeCode+' · '+s.storeName;el('editLat').value=s.lat;el('editLng').value=s.lng;el('editStatus').value=s.locationStatus||'REVIEW_CRITICAL';el('gpsModal').classList.remove('hidden');
+  state.editStore=s;el('gpsModalName').textContent=s.storeCode+' · '+s.storeName;el('editLat').value=s.lat;el('editLng').value=s.lng;el('editStatusText').value=gpsStatusFa(s.locationStatus||'REVIEW_CRITICAL');el('gpsModal').classList.remove('hidden');
 }
 function closeGpsModal(){el('gpsModal').classList.add('hidden');state.editStore=null;}
 async function saveGpsStore(){
   const s=state.editStore;if(!s)return;
   loading(true,'در حال ذخیره مختصات...');
   try{
-    const r=await DMAuth.apiPost('adminUpdateStoreLocation',{storeCode:s.storeCode,lat:el('editLat').value,lng:el('editLng').value,locationStatus:el('editStatus').value},30000);
+    const r=await DMAuth.apiPost('adminUpdateStoreLocation',{storeCode:s.storeCode,lat:el('editLat').value,lng:el('editLng').value},90000);
     if(!r.success)throw new Error(r.message);
     toast(r.message,'success');closeGpsModal();await loadAll();
   }catch(e){toast(e.message,'error');}
@@ -660,7 +661,7 @@ async function saveGpsStore(){
 
 
 /* ===== Store Master Center ===== */
-const STORE_FIELD_LABELS={storeName:'نام فروشگاه',executiveUserId:'مدیر اجرایی',executiveName:'نام مدیر اجرایی',regionalUserId:'مدیر منطقه',regionalManagerName:'نام مدیر منطقه',areaHeadUserId:'رئیس ناحیه',areaHeadName:'نام رئیس ناحیه',openingDate:'تاریخ افتتاح',lat:'Latitude',lng:'Longitude',locationStatus:'وضعیت GPS',active:'فعال/غیرفعال'};
+const STORE_FIELD_LABELS={storeName:'نام فروشگاه',executiveUserId:'مدیر اجرایی',executiveName:'نام مدیر اجرایی',regionalUserId:'مدیر منطقه',regionalManagerName:'نام مدیر منطقه',areaHeadUserId:'رئیس ناحیه',areaHeadName:'نام رئیس ناحیه',openingDate:'تاریخ افتتاح',lat:'Latitude',lng:'Longitude',nearestStoreCode:'نزدیک‌ترین فروشگاه',nearestStoreDistanceM:'فاصله نزدیک‌ترین فروشگاه',locationStatus:'وضعیت GPS',locationNote:'یادداشت مکانی',active:'فعال/غیرفعال'};
 
 async function loadStoreMaster(force=false){
   if(state.storeMasterLoaded&&!force){renderStoreMaster();return;}
@@ -730,8 +731,9 @@ function renderStoreMasterTable(){
   el('storeMasterBody').innerHTML=rows.map(s=>{
     const gpsClass=String(s.locationStatus||'').toUpperCase()==='OK'&&storeValidGps(s)?'ok':String(s.locationStatus||'').toUpperCase()==='REVIEW_NEARBY'?'review':'critical';
     const gpsText=gpsClass==='ok'?'OK':gpsClass==='review'?'REVIEW_NEARBY':'نیازمند بررسی';
-    return `<tr><td class="store-code">${esc(s.storeCode)}</td><td class="store-name" title="${esc(s.storeName)}">${esc(s.storeName)}</td><td>${esc(s.executiveName||'—')}</td><td>${esc(s.regionalManagerName||'—')}</td><td>${esc(s.areaHeadName||'—')}</td><td>${esc(s.openingDate||'—')}</td><td dir="ltr">${s.lat!==''&&s.lng!==''?`${esc(s.lat)}, ${esc(s.lng)}`:'—'}</td><td><span class="store-gps ${gpsClass}">${esc(gpsText)}</span></td><td>${s.active?'<span class="badge green">فعال</span>':'<span class="badge red">غیرفعال</span>'}</td><td><button class="btn ghost" onclick="openStoreModal(decodeURIComponent('${encodeURIComponent(String(s.storeCode))}'))">ویرایش</button></td></tr>`;
-  }).join('')||'<tr><td colspan="10"><div class="store-empty">فروشگاهی مطابق فیلتر پیدا نشد.</div></td></tr>';
+    const nearest=s.nearestStoreCode?`${esc(s.nearestStoreCode)}${s.nearestStoreDistanceM!==''?` · ${esc(s.nearestStoreDistanceM)}m`:''}`:'—';
+    return `<tr><td class="store-code">${esc(s.storeCode)}</td><td class="store-name" title="${esc(s.storeName)}">${esc(s.storeName)}</td><td>${esc(s.executiveName||'—')}</td><td>${esc(s.regionalManagerName||'—')}</td><td>${esc(s.areaHeadName||'—')}</td><td>${esc(s.openingDate||'—')}</td><td dir="ltr">${s.lat!==''&&s.lng!==''?`${esc(s.lat)}, ${esc(s.lng)}`:'—'}</td><td dir="ltr" title="${esc(s.locationNote||'')}">${nearest}</td><td><span class="store-gps ${gpsClass}">${esc(gpsText)}</span></td><td>${s.active?'<span class="badge green">فعال</span>':'<span class="badge red">غیرفعال</span>'}</td><td><button class="btn ghost" onclick="openStoreModal(decodeURIComponent('${encodeURIComponent(String(s.storeCode))}'))">ویرایش</button></td></tr>`;
+  }).join('')||'<tr><td colspan="11"><div class="store-empty">فروشگاهی مطابق فیلتر پیدا نشد.</div></td></tr>';
   el('storePageLabel').textContent=`صفحه ${fa(state.storePage)} از ${fa(pages)}`;el('storePrevBtn').disabled=state.storePage<=1;el('storeNextBtn').disabled=state.storePage>=pages;
 }
 function changeStorePage(delta){state.storePage+=Number(delta||0);renderStoreMasterTable();el('pane-stores').scrollIntoView({behavior:'smooth',block:'start'});}
@@ -744,7 +746,8 @@ function openStoreModal(code=''){
   if(!state.storeMasterLoaded){toast('ابتدا اطلاعات فروشگاه‌ها را بارگذاری کنید.','error');return;}
   const s=code?(state.storeMaster.stores||[]).find(x=>String(x.storeCode)===String(code)):null;state.storeEditingCode=s?String(s.storeCode):'';
   el('storeModalTitle').textContent=s?'ویرایش فروشگاه':'افزودن فروشگاه جدید';el('storeModalSub').textContent=s?`${s.storeCode} · ${s.storeName}`:'اطلاعات فروشگاه جدید را وارد کنید.';
-  el('smStoreCode').value=s?.storeCode||'';el('smStoreCode').disabled=!!s;el('smStoreName').value=s?.storeName||'';el('smOpeningDate').value=s?.openingDate||'';el('smLat').value=s?.lat??'';el('smLng').value=s?.lng??'';el('smLocationStatus').value=s?.locationStatus||'REVIEW_CRITICAL';el('smActive').value=s?.active===false?'false':'true';
+  el('smStoreCode').value=s?.storeCode||'';el('smStoreCode').disabled=!!s;el('smStoreName').value=s?.storeName||'';el('smOpeningDate').value=s?.openingDate||'';el('smLat').value=s?.lat??'';el('smLng').value=s?.lng??'';el('smActive').value=s?.active===false?'false':'true';
+  el('smNearestInfo').textContent=s?(s.nearestStoreCode?`نزدیک‌ترین: ${s.nearestStoreCode} · ${s.nearestStoreDistanceM!==''?s.nearestStoreDistanceM+' متر':'فاصله نامشخص'} · ${gpsStatusFa(s.locationStatus)}${s.locationNote?' · '+s.locationNote:''}`:`${gpsStatusFa(s.locationStatus)}${s.locationNote?' · '+s.locationNote:''}`):'پس از ثبت مختصات، نزدیک‌ترین فروشگاه و وضعیت GPS خودکار محاسبه می‌شود.';
   populateStoreModalExecutives(s?.executiveUserId||'');storeModalExecutiveChanged(s?.regionalUserId||'',s?.areaHeadUserId||'');
   el('storeModal').classList.remove('hidden');
 }
@@ -761,7 +764,7 @@ function storeModalRegionalChanged(selectedHead=''){
   sel.innerHTML='<option value="">انتخاب رئیس ناحیه</option>'+rows.map(u=>`<option value="${esc(u.userId)}" ${String(u.userId)===String(wanted)?'selected':''}>${esc(storeOptionText(u))}</option>`).join('');
 }
 async function saveStoreManual(){
-  const payload={storeCode:el('smStoreCode').value.trim(),storeName:el('smStoreName').value.trim(),executiveRef:el('smExecutive').value,regionalRef:el('smRegional').value,areaHeadRef:el('smAreaHead').value,openingDate:el('smOpeningDate').value.trim(),lat:el('smLat').value.trim(),lng:el('smLng').value.trim(),locationStatus:el('smLocationStatus').value,active:el('smActive').value==='true'};
+  const payload={storeCode:el('smStoreCode').value.trim(),storeName:el('smStoreName').value.trim(),executiveRef:el('smExecutive').value,regionalRef:el('smRegional').value,areaHeadRef:el('smAreaHead').value,openingDate:el('smOpeningDate').value.trim(),lat:el('smLat').value.trim(),lng:el('smLng').value.trim(),active:el('smActive').value==='true'};
   if(!payload.storeCode||!payload.storeName||!payload.executiveRef||!payload.regionalRef||!payload.areaHeadRef){toast('کد، نام و ساختار سازمانی فروشگاه الزامی است.','error');return;}
   if((payload.lat&&!payload.lng)||(!payload.lat&&payload.lng)){toast('Latitude و Longitude باید هر دو با هم وارد شوند.','error');return;}
   el('smSaveBtn').disabled=true;loading(true,state.storeEditingCode?'در حال ثبت تغییرات فروشگاه...':'در حال افزودن فروشگاه...');
@@ -818,11 +821,11 @@ async function applyStoreImport(){
 }
 function ensureXlsx(){if(typeof XLSX==='undefined'){toast('کتابخانه Excel بارگذاری نشده است.','error');return false;}return true;}
 function downloadStoreTemplate(){
-  if(!ensureXlsx())return;const headers=['store_code','store_name','executive','regional_manager','area_head','opening_date','latitude','longitude','location_status','active'];const ws=XLSX.utils.aoa_to_sheet([headers]);ws['!cols']=[{wch:16},{wch:28},{wch:28},{wch:28},{wch:28},{wch:16},{wch:16},{wch:16},{wch:20},{wch:12}];
-  const guide=[['ستون','توضیح','نمونه/مقادیر مجاز'],['store_code','کد یکتای فروشگاه - اجباری','F1009'],['store_name','نام فروشگاه - برای فروشگاه جدید اجباری','نوباران'],['executive','User ID یا نام دقیق مدیر اجرایی','EX001 یا نام مدیر'],['regional_manager','User ID یا نام دقیق مدیر منطقه','RM001 یا نام مدیر'],['area_head','User ID یا نام دقیق رئیس ناحیه','AH001 یا نام رئیس'],['opening_date','تاریخ افتتاح','2026-09-13'],['latitude','عرض جغرافیایی','35.7219'],['longitude','طول جغرافیایی','51.3347'],['location_status','وضعیت GPS','OK / REVIEW_NEARBY / REVIEW_CRITICAL'],['active','وضعیت فعال بودن','TRUE / FALSE یا فعال / غیرفعال']];const gs=XLSX.utils.aoa_to_sheet(guide);gs['!cols']=[{wch:24},{wch:50},{wch:38}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Store_Import');XLSX.utils.book_append_sheet(wb,gs,'Guide');XLSX.writeFile(wb,'DailyMarket_Store_Import_Template.xlsx');
+  if(!ensureXlsx())return;const headers=['store_code','store_name','executive','regional_manager','area_head','opening_date','latitude','longitude','active'];const ws=XLSX.utils.aoa_to_sheet([headers]);ws['!cols']=[{wch:16},{wch:28},{wch:28},{wch:28},{wch:28},{wch:16},{wch:16},{wch:16},{wch:12}];
+  const guide=[['ستون','توضیح','نمونه/مقادیر مجاز'],['store_code','کد یکتای فروشگاه - اجباری','F1009'],['store_name','نام فروشگاه - برای فروشگاه جدید اجباری','نوباران'],['executive','User ID یا نام دقیق مدیر اجرایی','EX001 یا نام مدیر'],['regional_manager','User ID یا نام دقیق مدیر منطقه','RM001 یا نام مدیر'],['area_head','User ID یا نام دقیق رئیس ناحیه','AH001 یا نام رئیس'],['opening_date','تاریخ افتتاح','2026-09-13'],['latitude','عرض جغرافیایی','35.7219'],['longitude','طول جغرافیایی','51.3347'],['active','وضعیت فعال بودن','TRUE / FALSE یا فعال / غیرفعال'],['SYSTEM MANAGED','nearest_store_code / nearest_store_distance_m / location_status / location_note','این ستون‌ها را وارد نکنید؛ سامانه خودکار محاسبه می‌کند.']];const gs=XLSX.utils.aoa_to_sheet(guide);gs['!cols']=[{wch:28},{wch:64},{wch:54}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Store_Import');XLSX.utils.book_append_sheet(wb,gs,'Guide');XLSX.writeFile(wb,'DailyMarket_Store_Import_Template.xlsx');
 }
 function exportStoreMasterExcel(){
-  if(!ensureXlsx())return;if(!state.storeMasterLoaded){toast('ابتدا Master فروشگاه‌ها را باز کنید.','error');return;}const rows=(state.storeMaster.stores||[]).map(s=>({'کد فروشگاه':s.storeCode,'نام فروشگاه':s.storeName,'مدیر اجرایی':s.executiveName,'Executive User ID':s.executiveUserId,'مدیر منطقه':s.regionalManagerName,'Regional User ID':s.regionalUserId,'رئیس ناحیه':s.areaHeadName,'Area Head User ID':s.areaHeadUserId,'تاریخ افتتاح':s.openingDate,'Latitude':s.lat,'Longitude':s.lng,'Location Status':s.locationStatus,'فعال':s.active?'فعال':'غیرفعال'}));const ws=XLSX.utils.json_to_sheet(rows);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Stores');XLSX.writeFile(wb,'DailyMarket_Store_Master.xlsx');
+  if(!ensureXlsx())return;if(!state.storeMasterLoaded){toast('ابتدا Master فروشگاه‌ها را باز کنید.','error');return;}const rows=(state.storeMaster.stores||[]).map(s=>({'کد فروشگاه':s.storeCode,'نام فروشگاه':s.storeName,'مدیر اجرایی':s.executiveName,'Executive User ID':s.executiveUserId,'مدیر منطقه':s.regionalManagerName,'Regional User ID':s.regionalUserId,'رئیس ناحیه':s.areaHeadName,'Area Head User ID':s.areaHeadUserId,'تاریخ افتتاح':s.openingDate,'Latitude':s.lat,'Longitude':s.lng,'Nearest Store Code':s.nearestStoreCode||'','Nearest Store Distance (m)':s.nearestStoreDistanceM??'','Location Status':s.locationStatus,'Location Note':s.locationNote||'','فعال':s.active?'فعال':'غیرفعال'}));const ws=XLSX.utils.json_to_sheet(rows);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Stores');XLSX.writeFile(wb,'DailyMarket_Store_Master.xlsx');
 }
 
 function renderErrors(){
