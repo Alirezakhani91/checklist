@@ -101,21 +101,20 @@ button,input{font-family:inherit}.hidden{display:none!important}
 </style>
 
 
-<style id="v28-areahead-leave-styles">
-.day.leave{background:#f7f2ff;border-color:#d8c9ef;color:#64458d}
-.day.leave.active{border-color:#6b4697;box-shadow:0 0 0 2px rgba(107,70,151,.08)}
-.leave-box{margin:0 0 14px;background:linear-gradient(135deg,#faf7ff,#fff);border:1px solid #ddd3ec;border-radius:18px;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;gap:14px}
-.leave-box strong{display:block;font-size:.78rem;color:#43364f}.leave-box span{display:block;color:#80738e;font-size:.62rem;line-height:1.8;margin-top:4px}
-.leave-btn{border:1px solid #d9cde8;background:#fff;color:#684590;border-radius:11px;padding:9px 12px;font-weight:900;font-size:.67rem;white-space:nowrap}
-.leave-btn.active{background:#6a4695;color:#fff;border-color:#6a4695}.leave-btn:disabled{opacity:.5}
-.leave-empty{padding:30px 15px;text-align:center;color:#725c8e;background:#fbf9ff;border:1px dashed #d9cfeb;border-radius:14px}
-.leave-empty strong{display:block;color:#4d3966;margin-bottom:5px}
+<style id="v32-areahead-day-status-styles">
+.day.leave{background:#f7f2ff;border-color:#d8c9ef;color:#64458d}.day.leave.active{border-color:#6b4697;box-shadow:0 0 0 2px rgba(107,70,151,.08)}
+.day.inventory{background:#fff8ea;border-color:#eedcaf;color:#8d6100}.day.inventory.active{border-color:#a66e00;box-shadow:0 0 0 2px rgba(166,110,0,.08)}
+.day.opening{background:#eef7ff;border-color:#cfe2f7;color:#245f9d}.day.opening.active{border-color:#2869a8;box-shadow:0 0 0 2px rgba(40,105,168,.08)}
+.day-status-box{margin:0 0 14px;background:linear-gradient(135deg,#fafcff,#fff);border:1px solid #dde3eb;border-radius:18px;padding:13px 15px;display:grid;grid-template-columns:minmax(210px,.8fr) minmax(0,1.3fr);gap:12px;align-items:center}
+.day-status-box strong{display:block;font-size:.78rem;color:#3d4654}.day-status-box span{display:block;color:#7d8795;font-size:.62rem;line-height:1.8;margin-top:4px}
+.day-status-fields{display:grid;grid-template-columns:145px minmax(150px,1fr) minmax(150px,1fr) auto;gap:7px;align-items:center}.day-status-fields select,.day-status-fields input{width:100%;min-width:0;border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px 10px;font-family:inherit;font-size:.66rem;outline:none;color:#3f4755}.day-status-btn{border:0;background:#171d29;color:#fff;border-radius:11px;padding:10px 12px;font-weight:900;font-size:.66rem;white-space:nowrap}.day-status-btn:disabled{opacity:.45}.day-status-box.past{opacity:.6}.day-status-box.past .day-status-fields{pointer-events:none}
+.day-status-empty{padding:30px 15px;text-align:center;color:#677384;background:#fbfcfe;border:1px dashed #d9dee6;border-radius:14px}.day-status-empty strong{display:block;color:#3f4856;margin-bottom:5px}
 @media(max-width:900px){
   .route,.pool{max-height:none!important;overflow:visible!important}
   .workspace,.panel{overflow:visible!important}
   .save{position:relative!important;right:auto!important;left:auto!important;bottom:auto!important;margin:12px 10px 18px;border:1px solid var(--line);border-radius:16px}
   .content{padding-bottom:12px!important}
-  .leave-box{align-items:flex-start;padding:12px}
+  .day-status-box{grid-template-columns:1fr;padding:12px}.day-status-fields{grid-template-columns:1fr 1fr}.day-status-fields input{grid-column:1/-1}.day-status-btn{grid-column:1/-1}
 }
 </style>
 
@@ -148,9 +147,15 @@ button,input{font-family:inherit}.hidden{display:none!important}
     <div class="mandatory-list" id="mandatoryList"></div>
   </section>
   <div class="tabs" id="dayTabs"></div>
-  <div class="leave-box" id="leaveBox">
-    <div><strong id="leaveBoxTitle">مرخصی روز انتخاب‌شده</strong><span id="leaveBoxSub">در صورت مرخصی، این روز از برنامه Route و انتظار عملکرد روزانه خارج می‌شود.</span></div>
-    <button class="leave-btn" id="leaveBtn" onclick="toggleLeave()">ثبت مرخصی</button>
+  <div class="day-status-box" id="dayStatusBox">
+    <div><strong id="dayStatusTitle">وضعیت عملیاتی روز انتخاب‌شده</strong><span id="dayStatusSub">در صورت مرخصی، انبارگردانی یا افتتاحیه، این روز از Route و انتظار عملکرد روزانه خارج می‌شود.</span></div>
+    <div class="day-status-fields">
+      <select id="dayStatusType" onchange="renderDayStatusFields()"><option value="WORKING">روز کاری</option><option value="LEAVE">مرخصی</option><option value="INVENTORY">انبارگردانی</option><option value="OPENING">افتتاحیه</option></select>
+      <select id="dayStatusStore" class="hidden"><option value="">انتخاب فروشگاه انبارگردانی</option></select>
+      <input id="dayStatusOpeningName" class="hidden" maxlength="120" placeholder="نام فروشگاه افتتاحیه">
+      <input id="dayStatusNote" maxlength="300" placeholder="توضیح اختیاری">
+      <button class="day-status-btn" id="dayStatusBtn" onclick="saveDayStatus()">ثبت وضعیت</button>
+    </div>
   </div>
   <section class="workspace">
     <div class="panel">
@@ -192,72 +197,53 @@ async function reload(){
     }
     state.data=r;state.todayIso=r.todayIso;state.settings=r.settings||state.settings;state.stores=r.stores||[];
     state.storeMap={};state.stores.forEach(x=>state.storeMap[x.storeCode]=x);
-    state.days=(r.week?.days||[]).map(d=>({dateIso:d.dateIso,items:(d.items||[]).map(x=>Object.assign({},state.storeMap[x.storeCode]||{},x)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||'',isLeave:!!d.isLeave,leave:d.leave||null}));
+    state.days=(r.week?.days||[]).map(d=>({dateIso:d.dateIso,items:(d.items||[]).map(x=>Object.assign({},state.storeMap[x.storeCode]||{},x)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||'',isUnavailable:!!(d.isUnavailable||d.isLeave),isLeave:!!d.isLeave,dayStatus:d.dayStatus||d.leave||null,leave:d.leave||d.dayStatus||null}));
     const keep=state.days.some(d=>d.dateIso===state.selectedIso);
     state.selectedIso=keep?state.selectedIso:(state.days.find(d=>!isPast(d))?.dateIso||state.days[0]?.dateIso||'');
     state.sla=r.sla||{mandatory:[],violations:[]};state.dirty=false;render();
   }catch(e){toast(e.message||'خطا در دریافت اطلاعات','error')}
   finally{setLoading(false)}
 }
-function render(){document.getElementById('weekLabel').textContent=(state.data?.week?.startIso?faDate(state.data.week.startIso):'')+' تا '+(state.days.length?faDate(state.days[state.days.length-1].dateIso):'');document.getElementById('kStores').textContent=state.stores.length;renderDays();renderLeaveBox();renderRoute();renderPool();refreshClientSla()}
-function renderDays(){document.getElementById('dayTabs').innerHTML=state.days.map((d,i)=>`<button class="day ${d.dateIso===state.selectedIso?'active':''} ${isPast(d)?'past':''} ${d.isLeave?'leave':''}" onclick="selectDay('${d.dateIso}')"><strong>${DAY_NAMES[i]} · ${faDate(d.dateIso)}</strong><span>${d.isLeave?'مرخصی':`${d.items.length} بازدید${d.items.some(locked)?' · دارای مورد قفل':''}`}</span></button>`).join('')}
-function selectDay(s){state.selectedIso=s;renderDays();renderLeaveBox();renderRoute();renderPool()}
+function dayStatusType(d){return String(d?.dayStatus?.eventType||d?.leave?.eventType||(d?.isLeave?'LEAVE':'')).toUpperCase();}
+function dayStatusLabel(d){const t=dayStatusType(d);return ({LEAVE:'مرخصی',INVENTORY:'انبارگردانی',OPENING:'افتتاحیه'})[t]||'روز کاری';}
+function dayStatusClass(d){const t=dayStatusType(d);return t==='INVENTORY'?'inventory':t==='OPENING'?'opening':t==='LEAVE'?'leave':'';}
+function dayIsUnavailable(d){return !!(d&&(d.isUnavailable||d.isLeave||d.dayStatus||d.leave));}
+function render(){document.getElementById('weekLabel').textContent=(state.data?.week?.startIso?faDate(state.data.week.startIso):'')+' تا '+(state.days.length?faDate(state.days[state.days.length-1].dateIso):'');document.getElementById('kStores').textContent=state.stores.length;renderDays();renderDayStatusBox();renderRoute();renderPool();refreshClientSla()}
+function renderDays(){document.getElementById('dayTabs').innerHTML=state.days.map((d,i)=>`<button class="day ${d.dateIso===state.selectedIso?'active':''} ${isPast(d)?'past':''} ${dayIsUnavailable(d)?dayStatusClass(d):''}" onclick="selectDay('${d.dateIso}')"><strong>${DAY_NAMES[i]} · ${faDate(d.dateIso)}</strong><span>${dayIsUnavailable(d)?dayStatusLabel(d):`${d.items.length} بازدید${d.items.some(locked)?' · دارای مورد قفل':''}`}</span></button>`).join('')}
+function selectDay(s){state.selectedIso=s;renderDays();renderDayStatusBox();renderRoute();renderPool()}
 function selected(){return state.days.find(d=>d.dateIso===state.selectedIso)}
-function renderLeaveBox(){
-  const d=selected(),box=document.getElementById('leaveBox'),btn=document.getElementById('leaveBtn'),title=document.getElementById('leaveBoxTitle'),sub=document.getElementById('leaveBoxSub');
-  if(!d||!box||!btn)return;
-  const idx=state.days.indexOf(d),past=isPast(d);
-  title.textContent=`مرخصی ${DAY_NAMES[idx]||''} · ${faDate(d.dateIso)}`;
-  if(d.isLeave){
-    sub.textContent='این روز مرخصی ثبت شده و در Route و انتظار عملکرد روزانه محاسبه نمی‌شود.';
-    btn.textContent=past?'مرخصی ثبت‌شده':'لغو مرخصی';btn.classList.add('active');
-  }else{
-    sub.textContent=past?'روز گذشته قابل تغییر نیست.':'با ثبت مرخصی، Route شروع‌نشده این روز پاک می‌شود و روز کاری محسوب نخواهد شد.';
-    btn.textContent='ثبت مرخصی';btn.classList.remove('active');
-  }
-  btn.disabled=past;
-}
-async function toggleLeave(){
-  const d=selected();if(!d)return;
-  if(isPast(d)){toast('مرخصی روز گذشته قابل تغییر نیست.','error');return;}
-  const next=!d.isLeave;
-  if(!confirm(next?`برای ${faDate(d.dateIso)} مرخصی ثبت شود؟ Route شروع‌نشده این روز پاک می‌شود.`:`مرخصی ${faDate(d.dateIso)} لغو شود؟`))return;
-  setLoading(true,next?'در حال ثبت مرخصی...':'در حال لغو مرخصی...');
-  try{
-    const r=await DMAuth.apiPost('setAreaHeadLeave',{dateIso:d.dateIso,active:String(next)},35000);
-    if(!r.success)throw new Error(r.message||'ثبت وضعیت مرخصی ناموفق بود.');
-    toast(r.message||'وضعیت مرخصی ثبت شد.','success');state.dirty=false;await reload();
-  }catch(e){toast(e.message||'خطا در ثبت مرخصی','error')}
-  finally{setLoading(false)}
-}
+function populateDayStatusStore(d){const sel=document.getElementById('dayStatusStore');if(!sel)return;const current=String(d?.dayStatus?.relatedStoreCode||d?.leave?.relatedStoreCode||'');sel.innerHTML='<option value="">انتخاب فروشگاه انبارگردانی</option>'+state.stores.slice().sort((a,b)=>String(a.storeName||'').localeCompare(String(b.storeName||''),'fa')).map(x=>`<option value="${esc(x.storeCode)}">${esc(x.storeCode)} · ${esc(x.storeName)}</option>`).join('');if(current)sel.value=current;}
+function renderDayStatusFields(){const d=selected(),type=document.getElementById('dayStatusType')?.value||'WORKING',store=document.getElementById('dayStatusStore'),openingName=document.getElementById('dayStatusOpeningName'),btn=document.getElementById('dayStatusBtn');if(store)store.classList.toggle('hidden',type!=='INVENTORY');if(openingName)openingName.classList.toggle('hidden',type!=='OPENING');if(btn)btn.textContent=type==='WORKING'&&dayIsUnavailable(d)?'لغو وضعیت و تبدیل به روز کاری':'ثبت وضعیت';}
+function renderDayStatusBox(){const d=selected(),box=document.getElementById('dayStatusBox'),type=document.getElementById('dayStatusType'),title=document.getElementById('dayStatusTitle'),sub=document.getElementById('dayStatusSub'),note=document.getElementById('dayStatusNote'),openingName=document.getElementById('dayStatusOpeningName'),btn=document.getElementById('dayStatusBtn');if(!d||!box||!type||!btn)return;const idx=state.days.indexOf(d),past=isPast(d),status=d.dayStatus||d.leave||null,current=dayStatusType(d)||'WORKING';box.classList.toggle('past',past);type.value=current;populateDayStatusStore(d);if(note)note.value=status?.note||'';if(openingName)openingName.value=current==='OPENING'?(status?.relatedStoreName||''):'';title.textContent=`وضعیت ${DAY_NAMES[idx]||''} · ${faDate(d.dateIso)}`;if(dayIsUnavailable(d)){const storeText=current==='OPENING'&&status?.relatedStoreName?` · ${status.relatedStoreName}`:(status?.relatedStoreCode?` · ${status.relatedStoreCode}${status.relatedStoreName?' - '+status.relatedStoreName:''}`:'');sub.textContent=`${dayStatusLabel(d)} ثبت شده${storeText}. این روز Route و انتظار عملکرد روزانه ندارد.`;}else{sub.textContent=past?'روز گذشته قابل تغییر نیست.':'برای مرخصی، انبارگردانی یا افتتاحیه وضعیت روز را ثبت کن؛ Route شروع‌نشده آن روز پاک می‌شود.';}type.disabled=past;btn.disabled=past;renderDayStatusFields();}
+async function saveDayStatus(){const d=selected();if(!d)return;if(isPast(d)){toast('وضعیت روز گذشته قابل تغییر نیست.','error');return;}const type=document.getElementById('dayStatusType').value,active=type!=='WORKING',storeCode=(document.getElementById('dayStatusStore')?.value||'').trim(),openingName=(document.getElementById('dayStatusOpeningName')?.value||'').trim(),note=(document.getElementById('dayStatusNote')?.value||'').trim();if(active&&type==='INVENTORY'&&!storeCode){toast('برای انبارگردانی، فروشگاه مربوط را انتخاب کن.','error');return;}if(active&&type==='OPENING'&&!openingName){toast('برای افتتاحیه، فقط نام فروشگاه را وارد کن.','error');return;}const label=({LEAVE:'مرخصی',INVENTORY:'انبارگردانی',OPENING:'افتتاحیه'})[type]||'روز کاری';if(!confirm(active?`برای ${faDate(d.dateIso)} وضعیت «${label}» ثبت شود؟ Route شروع‌نشده این روز پاک می‌شود.`:`وضعیت غیرعملیاتی ${faDate(d.dateIso)} لغو و روز به حالت کاری برگردد؟`))return;setLoading(true,active?'در حال ثبت وضعیت روز...':'در حال بازگرداندن روز کاری...');try{const r=await DMAuth.apiPost('setAreaHeadDayStatus',{dateIso:d.dateIso,active:String(active),eventType:active?type:(dayStatusType(d)||'LEAVE'),relatedStoreCode:active&&type==='INVENTORY'?storeCode:'',relatedStoreName:active&&type==='OPENING'?openingName:'',note},35000);if(!r.success)throw new Error(r.message||'ثبت وضعیت روز ناموفق بود.');toast(r.message||'وضعیت روز ثبت شد.','success');state.dirty=false;await reload();}catch(e){toast(e.message||'خطا در ثبت وضعیت روز','error')}finally{setLoading(false)}}
 function renderRoute(){
   const d=selected();if(!d)return;
   document.getElementById('routeTitle').textContent=`Route ${DAY_NAMES[state.days.indexOf(d)]} · ${faDate(d.dateIso)}`;
   const el=document.getElementById('routeList');
-  if(d.isLeave){document.getElementById('routeSub').textContent='این روز مرخصی ثبت شده و Route ندارد.';el.innerHTML='<div class="leave-empty"><strong>روز مرخصی</strong><span>برای برنامه‌ریزی این روز ابتدا مرخصی را لغو کن.</span></div>';return;}
+  if(dayIsUnavailable(d)){const label=dayStatusLabel(d);document.getElementById('routeSub').textContent=`این روز «${label}» ثبت شده و Route ندارد.`;el.innerHTML=`<div class="day-status-empty"><strong>${esc(label)}</strong><span>برای برنامه‌ریزی این روز، وضعیت را به «روز کاری» برگردان.</span></div>`;return;}
   document.getElementById('routeSub').textContent=isPast(d)?'این روز گذشته و فقط قابل مشاهده است.':'فروشگاه‌های شروع‌شده قفل می‌مانند؛ بقیه قابل تغییرند.';
   if(!d.items.length){el.innerHTML='<div class="empty">برای این روز هنوز فروشگاهی انتخاب نشده است.</div>';return}
   el.innerHTML=d.items.map((x,i)=>{const p=priority(x),lk=isPast(d)||locked(x);return `<div class="item ${lk?'locked':''}"><div class="seq">${i+1}</div><div class="info"><strong>${esc(x.storeName)}</strong><span>کد ${esc(x.storeCode)}</span><div class="tags"><span class="tag ${p[0]}">${esc(p[1])}</span>${lk?'<span class="tag">قفل بازدید</span>':''}</div></div><div class="tools"><button onclick="move(${i},-1)" ${lk||i===0||locked(d.items[i-1])?'disabled':''}>↑</button><button onclick="move(${i},1)" ${lk||i===d.items.length-1||locked(d.items[i+1])?'disabled':''}>↓</button><button class="remove" onclick="removeItem(${i})" ${lk?'disabled':''}>×</button></div></div>`}).join('');
 }
 function renderPool(){
   const d=selected();if(!d)return;const el=document.getElementById('pool');
-  if(d.isLeave){el.innerHTML='<div class="leave-empty"><strong>روز مرخصی</strong><span>انتخاب فروشگاه برای این روز غیرفعال است.</span></div>';return;}
+  if(dayIsUnavailable(d)){el.innerHTML=`<div class="day-status-empty"><strong>${esc(dayStatusLabel(d))}</strong><span>انتخاب فروشگاه برای این روز غیرفعال است.</span></div>`;return;}
   const q=document.getElementById('search').value.trim().toLowerCase(),inDay=new Set(d.items.map(x=>x.storeCode));
   let a=state.stores.filter(x=>!q||(x.storeCode+' '+x.storeName).toLowerCase().includes(q));a.sort((x,y)=>Number(y.daysSinceLastVisit||0)-Number(x.daysSinceLastVisit||0));
   el.innerHTML=a.map(x=>{const p=priority(x);return `<div class="pool-card"><div><strong>${esc(x.storeName)}</strong><span>کد ${esc(x.storeCode)} · ${esc(p[1])} از آخرین بازدید</span></div>${inDay.has(x.storeCode)?'<span class="already">در همین روز</span>':isPast(d)?'<span class="already">روز گذشته</span>':`<button class="add" onclick="addStore('${esc(x.storeCode)}')">+</button>`}</div>`}).join('');
 }
-function addStore(c){const d=selected(),s=state.storeMap[c];if(!d||!s||d.isLeave||isPast(d)||d.items.some(x=>x.storeCode===c))return;d.items.push(Object.assign({},s,{locked:false,visitId:'',plannedStatus:'PLANNED'}));dirty();renderRoute();renderPool();renderDays();refreshClientSla()}
-function removeItem(i){const d=selected(),x=d?.items[i];if(!d||!x||d.isLeave||isPast(d)||locked(x))return;d.items.splice(i,1);dirty();renderRoute();renderPool();renderDays();refreshClientSla()}
-function move(i,z){const d=selected(),j=i+z;if(!d||d.isLeave||isPast(d)||j<0||j>=d.items.length||locked(d.items[i])||locked(d.items[j]))return;[d.items[i],d.items[j]]=[d.items[j],d.items[i]];dirty();renderRoute()}
+function addStore(c){const d=selected(),s=state.storeMap[c];if(!d||!s||dayIsUnavailable(d)||isPast(d)||d.items.some(x=>x.storeCode===c))return;d.items.push(Object.assign({},s,{locked:false,visitId:'',plannedStatus:'PLANNED'}));dirty();renderRoute();renderPool();renderDays();refreshClientSla()}
+function removeItem(i){const d=selected(),x=d?.items[i];if(!d||!x||dayIsUnavailable(d)||isPast(d)||locked(x))return;d.items.splice(i,1);dirty();renderRoute();renderPool();renderDays();refreshClientSla()}
+function move(i,z){const d=selected(),j=i+z;if(!d||dayIsUnavailable(d)||isPast(d)||j<0||j>=d.items.length||locked(d.items[i])||locked(d.items[j]))return;[d.items[i],d.items[j]]=[d.items[j],d.items[i]];dirty();renderRoute()}
 function dirty(){state.dirty=true;document.getElementById('saveInfo').textContent='تغییرات ذخیره نشده‌اند.'}
-function currentPlan(){return state.days.map(d=>({dateIso:d.dateIso,storeCodes:d.isLeave?[]:d.items.map(x=>x.storeCode)}))}
-function clientSla(){const open=state.data?.cannotVisitNotices||[];const blocked={};open.forEach(x=>{(blocked[x.storeCode]??={})[x.routeDateIso]=true});const mandatory=(state.data?.sla?.mandatory||[]).map(m=>{const dates=[];state.days.forEach(d=>{if(d.isLeave)return;if(d.dateIso<state.todayIso||d.dateIso>m.effectiveDeadlineIso)return;if((blocked[m.storeCode]||{})[d.dateIso])return;if(d.items.some(x=>x.storeCode===m.storeCode))dates.push(d.dateIso)});return Object.assign({},m,{scheduledIso:dates[0]||''})});return{mandatory,violations:mandatory.filter(x=>!x.scheduledIso)}}
+function currentPlan(){return state.days.map(d=>({dateIso:d.dateIso,storeCodes:dayIsUnavailable(d)?[]:d.items.map(x=>x.storeCode)}))}
+function clientSla(){const open=state.data?.cannotVisitNotices||[];const blocked={};open.forEach(x=>{(blocked[x.storeCode]??={})[x.routeDateIso]=true});const mandatory=(state.data?.sla?.mandatory||[]).map(m=>{const dates=[];state.days.forEach(d=>{if(dayIsUnavailable(d))return;if(d.dateIso<state.todayIso||d.dateIso>m.effectiveDeadlineIso)return;if((blocked[m.storeCode]||{})[d.dateIso])return;if(d.items.some(x=>x.storeCode===m.storeCode))dates.push(d.dateIso)});return Object.assign({},m,{scheduledIso:dates[0]||''})});return{mandatory,violations:mandatory.filter(x=>!x.scheduledIso)}}
 function refreshClientSla(){
   const s=clientSla();state.sla=s;
   const capacityWarnings=state.data?.sla?.capacityWarnings||[];
   document.getElementById('kMandatory').textContent=s.mandatory.length;
   document.getElementById('kViolations').textContent=s.violations.length;
-  document.getElementById('kPlanned').textContent=state.days.reduce((a,d)=>a+(d.isLeave?0:d.items.length),0);
+  document.getElementById('kPlanned').textContent=state.days.reduce((a,d)=>a+(dayIsUnavailable(d)?0:d.items.length),0);
   let content=s.mandatory.length?s.mandatory.map(x=>`<div class="mandatory ${x.scheduledIso?'':'bad'}"><div><strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong><span>${x.noHistory?'بدون سابقه در سامانه؛ مهلت از زمان واگذاری Self-Routing محاسبه شده':x.daysSinceLastVisit+' روز از آخرین بازدید'}</span></div><div class="due">${x.scheduledIso?'برنامه: '+faDate(x.scheduledIso):'حداکثر تا '+faDate(x.effectiveDeadlineIso)}</div></div>`).join(''):'<div class="empty">در این هفته فروشگاه اجباری جدیدی وجود ندارد.</div>';
   if(capacityWarnings.length){
     const w=capacityWarnings[0];
@@ -266,15 +252,15 @@ function refreshClientSla(){
   document.getElementById('mandatoryList').innerHTML=content;
   document.getElementById('saveInfo').textContent=s.violations.length?`${s.violations.length} فروشگاه اجباری هنوز تعیین تکلیف نشده است.`:(capacityWarnings.length?'پوشش ثبت‌شده است؛ اما هشدار ظرفیت مدیریتی وجود دارد.':(state.dirty?'تغییرات ذخیره نشده‌اند.':'برنامه از نظر پوشش ۱۴ روزه قابل ثبت است.'));
 }
-function autoPlaceMandatory(){const s=clientSla();if(!s.violations.length){toast('همه فروشگاه‌های اجباری در برنامه هستند.','success');return}let added=0;s.violations.forEach(m=>{let candidates=state.days.filter(d=>!d.isLeave&&!isPast(d)&&d.dateIso<=m.effectiveDeadlineIso&&!d.items.some(x=>x.storeCode===m.storeCode));if(!candidates.length)return;candidates.sort((a,b)=>(a.items.length-b.items.length)||a.dateIso.localeCompare(b.dateIso));const d=candidates[0],st=state.storeMap[m.storeCode];if(st){d.items.push(Object.assign({},st,{locked:false,visitId:'',plannedStatus:'PLANNED'}));added++}});if(added){dirty();renderDays();renderLeaveBox();renderRoute();renderPool();refreshClientSla();toast(`${added} فروشگاه اجباری به برنامه اضافه شد.`,'success')}else toast('برای برخی فروشگاه‌های اجباری روز کاری مجاز خالی وجود ندارد؛ مدیر منطقه باید تعیین تکلیف کند.','error')}
+function autoPlaceMandatory(){const s=clientSla();if(!s.violations.length){toast('همه فروشگاه‌های اجباری در برنامه هستند.','success');return}let added=0;s.violations.forEach(m=>{let candidates=state.days.filter(d=>!dayIsUnavailable(d)&&!isPast(d)&&d.dateIso<=m.effectiveDeadlineIso&&!d.items.some(x=>x.storeCode===m.storeCode));if(!candidates.length)return;candidates.sort((a,b)=>(a.items.length-b.items.length)||a.dateIso.localeCompare(b.dateIso));const d=candidates[0],st=state.storeMap[m.storeCode];if(st){d.items.push(Object.assign({},st,{locked:false,visitId:'',plannedStatus:'PLANNED'}));added++}});if(added){dirty();renderDays();renderDayStatusBox();renderRoute();renderPool();refreshClientSla();toast(`${added} فروشگاه اجباری به برنامه اضافه شد.`,'success')}else toast('برای برخی فروشگاه‌های اجباری روز کاری مجاز خالی وجود ندارد؛ مدیر منطقه باید تعیین تکلیف کند.','error')}
 async function saveWeek(){
   const s=clientSla();if(s.violations.length){toast(`ابتدا ${s.violations.length} فروشگاه اجباری را تا مهلتشان در روزهای کاری Route قرار بده.`,'error');return}
   if(!confirm('برنامه هفتگی ثبت شود؟'))return;setLoading(true,'در حال ثبت برنامه...');
   try{
-    const plan=state.days.map(d=>({dateIso:d.dateIso,dateFa:'',storeCodes:d.isLeave?[]:d.items.map(x=>x.storeCode)}));
+    const plan=state.days.map(d=>({dateIso:d.dateIso,dateFa:'',storeCodes:dayIsUnavailable(d)?[]:d.items.map(x=>x.storeCode)}));
     const r=await DMAuth.apiPost('areaHeadSaveWeekRoutes',{weekStartIso:state.data.week.startIso,planJson:JSON.stringify(plan)},60000);
     if(!r.success){if(r.code==='SLA_COVERAGE_REQUIRED'){state.data.sla=r.sla;refreshClientSla()}throw new Error(r.message||'ثبت برنامه ناموفق بود.')}
-    toast(r.message||'برنامه ثبت شد؛ روزهای مرخصی بدون Route باقی ماندند.','success');await reload();
+    toast(r.message||'برنامه ثبت شد؛ روزهای غیرعملیاتی بدون Route باقی ماندند.','success');await reload();
   }catch(e){toast(e.message||'خطا در ثبت برنامه','error')}finally{setLoading(false)}
 }
 
@@ -282,7 +268,7 @@ DMInstant.on('areaHeadRouteBootstrap',(res,params)=>{
   if(!res||!res.success)return;
   state.data=res;state.todayIso=res.todayIso||state.todayIso;state.settings=res.settings||state.settings;state.stores=res.stores||[];
   state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
-  state.days=(res.week?.days||[]).map(d=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||'',isLeave:!!d.isLeave,leave:d.leave||null}));
+  state.days=(res.week?.days||[]).map(d=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||'',isUnavailable:!!(d.isUnavailable||d.isLeave),isLeave:!!d.isLeave,dayStatus:d.dayStatus||d.leave||null,leave:d.leave||d.dayStatus||null}));
   state.selectedIso=state.days.some(d=>d.dateIso===state.selectedIso)?state.selectedIso:(state.days.find(d=>!isPast(d))?.dateIso||state.days[0]?.dateIso||'');
   state.sla=res.sla||state.sla;state.dirty=false;render();
 });
