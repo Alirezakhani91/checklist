@@ -1376,69 +1376,91 @@ function resetGpsUI(){
   document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" onclick="closeGpsModal()">انصراف</button><button class="btn primary" id="scanBtn" onclick="scanAndStart()">بررسی GPS و شروع بازدید</button>`;
 }
 
-function collectGpsSamplesFast(targetCount){
-  return new Promise(resolve=>{
-    state.gpsSamples=[];state.gpsBest=null;state.gpsLastError=null;
-    if(!navigator.geolocation){
-      state.gpsLastError=new Error('مرورگر شما GPS را پشتیبانی نمی‌کند.');
-      resolve();return;
+async function collectGpsSamplesFast(targetCount){
+  state.gpsSamples=[];state.gpsBest=null;state.gpsLastError=null;
+  if(!navigator.geolocation){
+    state.gpsLastError=new Error('مرورگر شما GPS را پشتیبانی نمی‌کند.');
+    return;
+  }
+
+  const started=Date.now();
+  const minSamples=Math.max(3,Number(state.settings.locationCorrectionMinSamples||3));
+  const requestedSamples=Math.max(minSamples,Number(targetCount||5));
+  const maxAttempts=Math.max(8,requestedSamples+3);
+  const hardWindowMs=22000;
+  const perAttemptTimeoutMs=6500;
+  const correctionAccuracy=Math.max(5,Number(state.settings.locationCorrectionMaxAccuracyM||80));
+  let attempts=0;
+
+  const updateUi=()=>{
+    const elapsed=Math.min(1,(Date.now()-started)/hardWindowMs);
+    const sampleProgress=Math.min(1,state.gpsSamples.length/requestedSamples);
+    const attemptProgress=Math.min(1,attempts/maxAttempts);
+    const pct=Math.round(Math.max(sampleProgress,attemptProgress*.72,elapsed*.62)*100);
+    document.getElementById('gpsProgress').style.width=`${Math.min(96,pct)}%`;
+    document.getElementById('metricSamples').textContent=`${state.gpsSamples.length}/${requestedSamples}`;
+    document.getElementById('metricAccuracy').textContent=state.gpsBest?mText(state.gpsBest.accuracy):'—';
+    document.getElementById('metricDistance').textContent='در حال بررسی';
+  };
+
+  const getFreshPosition=()=>new Promise(resolve=>{
+    navigator.geolocation.getCurrentPosition(
+      pos=>resolve({ok:true,pos}),
+      err=>resolve({ok:false,err}),
+      {enableHighAccuracy:true,timeout:perAttemptTimeoutMs,maximumAge:0}
+    );
+  });
+
+  while(attempts<maxAttempts && Date.now()-started<hardWindowMs){
+    attempts++;
+    updateUi();
+    const result=await getFreshPosition();
+
+    if(result.ok){
+      const pos=result.pos;
+      const p={
+        lat:pos.coords.latitude,
+        lng:pos.coords.longitude,
+        accuracy:pos.coords.accuracy,
+        timestamp:pos.timestamp,
+        attempt:attempts
+      };
+      state.gpsSamples.push(p);
+      if(!state.gpsBest||Number(p.accuracy)<Number(state.gpsBest.accuracy))state.gpsBest=p;
+      state.gpsLastError=null;
+      updateUi();
+
+      if(state.gpsSamples.length>=requestedSamples)break;
+      if(state.gpsSamples.length>=minSamples && state.gpsBest && Number(state.gpsBest.accuracy)<=correctionAccuracy)break;
+    }else{
+      state.gpsLastError=result.err;
+      if(result.err&&result.err.code===1)break;
     }
 
-    const started=Date.now();
-    const hardWindowMs=7000;
-    const correctionAccuracy=Math.max(5,Number(state.settings.locationCorrectionMaxAccuracyM||80));
-    let done=false,watchId=null,timer=null,progressTimer=null;
+    if(attempts<maxAttempts && Date.now()-started<hardWindowMs){
+      await new Promise(r=>setTimeout(r,450));
+    }
+  }
 
-    const updateUi=()=>{
-      const elapsed=Math.min(1,(Date.now()-started)/hardWindowMs);
-      const sampleProgress=Math.min(1,state.gpsSamples.length/Math.max(1,targetCount));
-      const pct=Math.round(Math.max(elapsed*.82,sampleProgress)*100);
-      document.getElementById('gpsProgress').style.width=`${Math.min(96,pct)}%`;
-      document.getElementById('metricSamples').textContent=`${state.gpsSamples.length}/${targetCount}`;
-      document.getElementById('metricAccuracy').textContent=state.gpsBest?mText(state.gpsBest.accuracy):'—';
-      document.getElementById('metricDistance').textContent='در حال بررسی';
-    };
+  document.getElementById('gpsProgress').style.width='100%';
+  updateUi();
+}
 
-    const finish=()=>{
-      if(done)return;done=true;
-      if(watchId!==null){try{navigator.geolocation.clearWatch(watchId);}catch(_){}}
-      clearTimeout(timer);clearInterval(progressTimer);
-      document.getElementById('gpsProgress').style.width='100%';
-      updateUi();
-      resolve();
-    };
-
-    watchId=navigator.geolocation.watchPosition(
-      pos=>{
-        const p={lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:pos.coords.accuracy,timestamp:pos.timestamp};
-        // Ignore exact duplicate browser callbacks.
-        const prev=state.gpsSamples[state.gpsSamples.length-1];
-        if(!prev||prev.timestamp!==p.timestamp||prev.accuracy!==p.accuracy){
-          state.gpsSamples.push(p);
-          if(!state.gpsBest||Number(p.accuracy)<Number(state.gpsBest.accuracy))state.gpsBest=p;
-        }
-        updateUi();
-
-        // Early stop only after enough evidence. Typical good phones finish in a few seconds.
-        if(state.gpsSamples.length>=3 && state.gpsBest && Number(state.gpsBest.accuracy)<=correctionAccuracy){
-          finish();return;
-        }
-        if(state.gpsSamples.length>=targetCount)finish();
-      },
-      err=>{
-        state.gpsLastError=err;
-        if(err&&err.code===1)finish();
-      },
-      {enableHighAccuracy:true,timeout:hardWindowMs,maximumAge:1200}
-    );
-
-    progressTimer=setInterval(updateUi,250);
-    timer=setTimeout(finish,hardWindowMs);
-  });
+function showInsufficientGpsSamples(minSamples){
+  const received=state.gpsSamples.length;
+  document.getElementById('gpsTitle').textContent='نمونه GPS کافی نیست';
+  document.getElementById('gpsDesc').textContent=
+    `برای تصمیم‌گیری مطمئن، حداقل ${minSamples} نمونه GPS لازم است؛ این دفعه فقط ${received} نمونه دریافت شد. چند ثانیه در فضای باز یا نزدیک پنجره بمان و دوباره تلاش کن.`;
+  const box=document.getElementById('gpsResult');
+  box.className='gps-result error';
+  box.textContent=`فرآیند با ${received} نمونه ادامه پیدا نکرد تا فاصله یا لوکیشن اشتباه تأیید نشود.`;
+  document.getElementById('gpsFoot').innerHTML=
+    `<button class="btn ghost" onclick="closeGpsModal()">انصراف</button><button class="btn primary" onclick="scanAndStart()">GPS دوباره</button>`;
 }
 
 async function scanAndStart(){
   const count=Math.max(3,Number(state.settings.gpsSampleCount||5));
+  const minSamples=Math.max(3,Number(state.settings.locationCorrectionMinSamples||3));
   state.gpsSamples=[];state.gpsBest=null;state.gpsLastError=null;state.gpsDecision=null;
   document.getElementById('gpsVisual').classList.add('scanning');
   document.getElementById('gpsTitle').textContent='در حال بررسی GPS...';
@@ -1449,6 +1471,11 @@ async function scanAndStart(){
   await collectGpsSamplesFast(count);
 
   document.getElementById('gpsVisual').classList.remove('scanning');
+
+  if(state.gpsSamples.length<minSamples){
+    showInsufficientGpsSamples(minSamples);
+    return;
+  }
 
   if(!state.gpsBest){
     const raw=gpsErrorText(state.gpsLastError);
