@@ -700,6 +700,7 @@ const state={
 };
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function safeDomId(s){return String(s??'').replace(/[^a-zA-Z0-9\u0600-\u06ff_-]+/g,'-');}
 function toEn(v){return String(v??'').replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));}
 function parseIso(s){const [y,m,d]=String(s).split('-').map(Number);return new Date(y,m-1,d,12,0,0);}
 function iso(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`;}
