@@ -23,7 +23,7 @@ button,input,select{font:inherit}
 .brand{padding:2px 8px 24px;border-bottom:1px solid rgba(255,255,255,.15)}
 .brand strong{font-size:1.55rem}.brand small{display:block;margin-top:4px;opacity:.8}
 .me{display:flex;gap:11px;align-items:center;padding:20px 8px}.avatar{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.15);display:grid;place-items:center;font-weight:900}.me strong{display:block}.me small{opacity:.76}
-.nav{display:grid;gap:8px}.nav button{border:0;background:transparent;color:rgba(255,255,255,.78);padding:13px 14px;border-radius:14px;text-align:right;display:flex;align-items:center;gap:10px;cursor:pointer}.nav button.active{background:#fff;color:#a6001a;font-weight:900;box-shadow:0 8px 20px rgba(80,0,10,.18)}.nav svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9}
+.nav{display:grid;gap:8px;overflow:auto;min-height:0;padding-left:2px}.nav button{border:0;background:transparent;color:rgba(255,255,255,.78);padding:13px 14px;border-radius:14px;text-align:right;display:flex;align-items:center;gap:10px;cursor:pointer}.nav button.active{background:#fff;color:#a6001a;font-weight:900;box-shadow:0 8px 20px rgba(80,0,10,.18)}.nav svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9}
 .logout{margin-top:auto;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:#fff;padding:13px;border-radius:14px;cursor:pointer}
 .main{min-width:0}.topbar{height:84px;background:rgba(255,255,255,.95);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:15;display:flex;align-items:center;justify-content:space-between;padding:0 34px;backdrop-filter:blur(15px)}.topbar h1{font-size:1.08rem;margin:0}.topbar p{font-size:.76rem;color:var(--muted);margin:5px 0 0}.refresh{width:42px;height:42px;border:1px solid var(--line);background:#fff;border-radius:13px;display:grid;place-items:center;cursor:pointer}.refresh svg{width:19px;height:19px;fill:none;stroke:#5d6574;stroke-width:1.8}
 .content{width:min(1530px,calc(100% - 50px));margin:28px auto 70px}
@@ -110,6 +110,26 @@ button,input,select{font:inherit}
   .store-section-title{display:block}.store-section-title .actions{margin-top:10px;display:grid;grid-template-columns:1fr 1fr}.store-section-title .actions .btn{width:100%}
   .mobile-nav{display:flex;overflow-x:auto;overflow-y:hidden}.mobile-nav button{flex:1 0 72px;min-width:72px}
 }
+
+
+/* ===== Area Head Management Center ===== */
+.ah-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px;margin-bottom:16px}
+.ah-kpi{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px 16px;box-shadow:0 6px 22px rgba(20,28,48,.035)}
+.ah-kpi b{display:block;font-size:1.42rem}.ah-kpi span{display:block;font-size:.69rem;color:var(--muted);margin-top:6px}.ah-kpi.good b{color:var(--green)}.ah-kpi.bad b{color:var(--danger)}.ah-kpi.warn b{color:var(--amber)}.ah-kpi.blue b{color:var(--blue)}
+.ah-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(320px,.55fr);gap:16px}
+.ah-toolbar{display:grid;grid-template-columns:minmax(220px,1.4fr) repeat(3,minmax(160px,.7fr)) auto;gap:8px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);background:#fbfcfd}
+.ah-toolbar .search,.ah-toolbar .filter{min-width:0;width:100%}
+.ah-meta{padding:10px 16px;background:#fff;border-bottom:1px solid #eef0f4;color:var(--muted);font-size:.67rem;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.ah-table{min-width:1220px}.ah-table td{vertical-align:middle}.ah-person strong{display:block;font-size:.78rem}.ah-person span{display:block;color:var(--muted);font-size:.61rem;margin-top:3px;direction:ltr;text-align:right}.ah-store-count b{font-size:.78rem}.ah-store-count small{display:block;color:var(--muted);font-size:.58rem;margin-top:2px}
+.ah-pagination{display:flex;justify-content:center;align-items:center;gap:8px;padding:14px;border-top:1px solid var(--line)}.ah-pagination button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 11px;font-size:.65rem;font-weight:800}.ah-pagination button:disabled{opacity:.4}.ah-pagination span{font-size:.66rem;color:var(--muted);min-width:90px;text-align:center}
+.ah-history{display:grid;gap:7px;padding:12px 15px;max-height:520px;overflow:auto}.ah-history-row{border-bottom:1px solid #eef0f4;padding:9px 0}.ah-history-row:last-child{border:0}.ah-history-row strong{font-size:.69rem;display:block}.ah-history-row span{display:block;color:var(--muted);font-size:.58rem;line-height:1.7;margin-top:3px}.ah-history-badge{display:inline-flex!important;padding:3px 6px;border-radius:999px;background:#f1f3f6!important;color:#626977!important;font-size:.53rem!important;margin-right:4px!important}.ah-history-badge.CREATE{background:#eaf8f1!important;color:#15764e!important}.ah-history-badge.UPDATE{background:#edf2ff!important;color:#3159d6!important}.ah-history-badge.ARCHIVE{background:#fff0f2!important;color:#ad1630!important}
+.ah-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.ah-form-grid .full{grid-column:1/-1}.ah-form-field label{display:block;font-size:.68rem;font-weight:900;margin-bottom:6px}.ah-form-field input,.ah-form-field select{width:100%;border:1px solid var(--line);border-radius:11px;padding:10px 11px;outline:none;background:#fff}.ah-form-field input:focus,.ah-form-field select:focus{border-color:#c9ced8;box-shadow:0 0 0 3px rgba(49,94,251,.06)}.ah-help{font-size:.6rem;color:#8a919e;line-height:1.8;margin-top:4px}.ah-modal-card{width:min(760px,100%)}
+.ah-exec-preview{padding:10px 11px;border:1px solid var(--line);background:#f7f8fb;border-radius:11px;min-height:42px;font-size:.7rem;color:#505867;display:flex;align-items:center}
+.credential-box{background:linear-gradient(135deg,#161c28,#242d3d);color:#fff;border-radius:18px;padding:18px}.credential-box h4{margin:0 0 5px;font-size:.9rem}.credential-box p{margin:0 0 14px;color:#b9c1cf;font-size:.64rem;line-height:1.8}.credential-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.credential-item{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px}.credential-item span{display:block;font-size:.56rem;color:#aeb8c7;margin-bottom:4px}.credential-item b{font-family:monospace;font-size:.88rem;direction:ltr;display:block;text-align:left}.credential-warning{margin-top:12px;padding:9px 10px;border-radius:11px;background:#fff5d8;color:#765800;font-size:.62rem;line-height:1.8}
+.ah-deps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}.ah-dep{border:1px solid var(--line);background:#fafbfc;border-radius:12px;padding:10px}.ah-dep b{display:block;font-size:1rem}.ah-dep span{display:block;font-size:.56rem;color:var(--muted);margin-top:3px}.ah-blocked{border:1px solid #efc7ce;background:#fff3f5;color:#9d1830;border-radius:13px;padding:11px 12px;font-size:.65rem;line-height:1.9;margin-bottom:12px}.ah-safe{border:1px solid #cce7db;background:#effaf5;color:#176e4c;border-radius:13px;padding:11px 12px;font-size:.65rem;line-height:1.9;margin-bottom:12px}
+@media(max-width:1250px){.ah-kpis{grid-template-columns:repeat(3,1fr)}.ah-layout{grid-template-columns:1fr}.ah-toolbar{grid-template-columns:1fr 1fr 1fr}.ah-toolbar .search{grid-column:1/-1}}
+@media(max-width:820px){.ah-kpis{grid-template-columns:1fr 1fr;gap:8px}.ah-kpi{padding:12px}.ah-kpi b{font-size:1.2rem}.ah-toolbar{grid-template-columns:1fr 1fr;padding:10px}.ah-toolbar .search{grid-column:1/-1}.ah-toolbar .btn{width:100%}.ah-form-grid{grid-template-columns:1fr}.ah-form-grid .full{grid-column:auto}.ah-modal-card{width:100%;max-height:100vh;border-radius:20px 20px 0 0}.credential-grid{grid-template-columns:1fr}.ah-deps{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
@@ -130,6 +150,9 @@ button,input,select{font:inherit}
     </button>
     <button data-tab="users" onclick="showTab('users',this)">
       <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11a3 3 0 0 0 0-6M19 20a5 5 0 0 0-3-4.6"/></svg>کاربران و Session
+    </button>
+    <button data-tab="areaheads" onclick="showTab('areaheads',this)">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 8h5M19.5 5.5v5"/></svg>مدیریت رؤسای ناحیه
     </button>
     <button data-tab="stores" onclick="showTab('stores',this)">
       <svg viewBox="0 0 24 24"><path d="M3 9l2-5h14l2 5M5 13v7h14v-7M8 20v-5h4v5"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg>مدیریت فروشگاه‌ها
@@ -315,6 +338,45 @@ button,input,select{font:inherit}
     </section>
 
 
+    <section class="tabs-pane" id="pane-areaheads">
+      <div class="hero">
+        <div><h2>مدیریت رؤسای ناحیه</h2><p>تعریف رئیس ناحیه جدید، تخصیص به مدیر منطقه، ویرایش حساب و مدیریت ایمن تغییرات ساختاری.</p></div>
+        <div class="actions"><button class="btn red" onclick="openAreaHeadModal()">+ افزودن رئیس ناحیه</button></div>
+      </div>
+      <div id="areaHeadsEmpty" class="card store-empty">برای نمایش رؤسای ناحیه در حال دریافت اطلاعات هستیم.</div>
+      <div id="areaHeadsContent" class="hidden">
+        <div class="ah-kpis">
+          <div class="ah-kpi blue"><b id="ahTotal">—</b><span>کل رؤسای ناحیه</span></div>
+          <div class="ah-kpi good"><b id="ahActive">—</b><span>فعال</span></div>
+          <div class="ah-kpi bad"><b id="ahInactive">—</b><span>غیرفعال</span></div>
+          <div class="ah-kpi"><b id="ahStores">—</b><span>فروشگاه فعال تحت پوشش</span></div>
+          <div class="ah-kpi warn"><b id="ahConflicts">—</b><span>مغایرت ساختار</span></div>
+        </div>
+        <div class="ah-layout">
+          <section class="card" style="margin:0">
+            <div class="card-head store-section-title">
+              <div><h3>رؤسای ناحیه کشور</h3><p>کد کاربری، مدیر منطقه بالادست و تعداد فروشگاه‌های هر رئیس ناحیه از همین بخش مدیریت می‌شود.</p></div>
+              <div class="actions"><button class="btn ghost" onclick="clearAreaHeadFilters()">پاک‌کردن فیلتر</button><button class="btn red" onclick="openAreaHeadModal()">+ رئیس ناحیه جدید</button></div>
+            </div>
+            <div class="ah-toolbar">
+              <input class="search" id="areaHeadSearch" placeholder="جستجوی نام، User ID، کد کاربری یا مدیر منطقه..." oninput="areaHeadFiltersChanged()">
+              <select class="filter" id="areaHeadExecutiveFilter" onchange="areaHeadExecutiveChanged()"><option value="ALL">همه مدیران اجرایی</option></select>
+              <select class="filter" id="areaHeadRegionalFilter" onchange="areaHeadFiltersChanged()"><option value="ALL">همه مدیران منطقه</option></select>
+              <select class="filter" id="areaHeadStatusFilter" onchange="areaHeadFiltersChanged()"><option value="ALL">فعال و غیرفعال</option><option value="ACTIVE">فقط فعال</option><option value="INACTIVE">فقط غیرفعال</option><option value="CONFLICT">مغایرت ساختار</option></select>
+              <button class="btn soft" onclick="loadAreaHeads(true)">بروزرسانی</button>
+            </div>
+            <div class="ah-meta"><span id="areaHeadsCount">—</span><span>نمایش ۲۵ ردیف در هر صفحه</span></div>
+            <div class="table-wrap"><table class="table ah-table"><thead><tr><th>رئیس ناحیه</th><th>مدیر اجرایی</th><th>مدیر منطقه</th><th>تلفن</th><th>فروشگاه</th><th>وضعیت</th><th>ساختار</th><th>عملیات</th></tr></thead><tbody id="areaHeadsBody"></tbody></table></div>
+            <div class="ah-pagination"><button id="areaHeadPrevBtn" onclick="changeAreaHeadPage(-1)">قبلی</button><span id="areaHeadPageLabel">—</span><button id="areaHeadNextBtn" onclick="changeAreaHeadPage(1)">بعدی</button></div>
+          </section>
+          <section class="card" style="margin:0">
+            <div class="card-head"><div><h3>تاریخچه تغییرات</h3><p>ایجاد، ویرایش و غیرفعال‌سازی رؤسای ناحیه در Audit ثبت می‌شود.</p></div></div>
+            <div class="ah-history" id="areaHeadHistory"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
     <section class="tabs-pane" id="pane-stores">
       <div class="hero">
         <div><h2>مدیریت Master فروشگاه‌ها</h2><p>افزودن و ویرایش فروشگاه، تخصیص ساختار سازمانی و Import گروهی Excel با Preview قبل از اعمال.</p></div>
@@ -397,6 +459,7 @@ button,input,select{font:inherit}
   <button class="active" data-mob="overview" onclick="showTab('overview',this,true)"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4zM14 20h6V11h-6z"/></svg>سیستم</button>
   <button data-mob="performance" onclick="showTab('performance',this,true)"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>کشور</button>
   <button data-mob="users" onclick="showTab('users',this,true)"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/></svg>کاربران</button>
+  <button data-mob="areaheads" onclick="showTab('areaheads',this,true)"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 8h5M19.5 5.5v5"/></svg>رؤسا</button>
   <button data-mob="stores" onclick="showTab('stores',this,true)"><svg viewBox="0 0 24 24"><path d="M3 9l2-5h14l2 5M5 13v7h14v-7M8 20v-5h4v5"/></svg>فروشگاه</button>
   <button data-mob="settings" onclick="showTab('settings',this,true)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M4 12h3M17 12h3"/></svg>تنظیمات</button>
   <button data-mob="gps" onclick="showTab('gps',this,true)"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z"/></svg>GPS</button>
@@ -415,6 +478,38 @@ button,input,select{font:inherit}
   </div>
 </div>
 
+
+<div class="modal store-bottom-sheet hidden" id="areaHeadModal" onclick="if(event.target===this)closeAreaHeadModal()">
+  <div class="modal-card ah-modal-card">
+    <div class="modal-head"><div><strong id="areaHeadModalTitle">افزودن رئیس ناحیه جدید</strong><div id="areaHeadModalSub" style="color:var(--muted);font-size:.67rem;margin-top:4px">حساب رئیس ناحیه و ساختار بالادست را تعریف کنید.</div></div><button class="btn ghost" onclick="closeAreaHeadModal()">×</button></div>
+    <div class="modal-body"><input id="ahUserId" type="hidden"><div class="ah-form-grid">
+      <div class="ah-form-field"><label>نام و نام خانوادگی *</label><input id="ahFullName" autocomplete="off" placeholder="نام رئیس ناحیه"></div>
+      <div class="ah-form-field"><label>مدیر منطقه بالادست *</label><select id="ahRegional" onchange="areaHeadModalRegionalChanged()"></select></div>
+      <div class="ah-form-field"><label>مدیر اجرایی</label><div class="ah-exec-preview" id="ahExecutivePreview">با انتخاب مدیر منطقه تعیین می‌شود.</div></div>
+      <div class="ah-form-field"><label>شماره تماس</label><input id="ahPhone" inputmode="tel" autocomplete="off" placeholder="اختیاری"></div>
+      <div class="ah-form-field"><label>کد کاربری</label><input id="ahUsername" inputmode="numeric" autocomplete="off" placeholder="خالی = تولید خودکار"><div class="ah-help">برای رئیس ناحیه جدید، اگر خالی بماند سامانه یک کد کاربری یکتا می‌سازد.</div></div>
+      <div class="ah-form-field"><label id="ahPasswordLabel">رمز عبور اولیه</label><input id="ahPassword" autocomplete="new-password" placeholder="خالی = تولید خودکار"><div class="ah-help" id="ahPasswordHelp">اگر خالی بماند سامانه رمز اولیه تولید می‌کند.</div></div>
+      <div class="ah-help full" id="ahEditWarning">User ID رئیس ناحیه به‌صورت خودکار ساخته می‌شود. بعد از ثبت، کد کاربری و رمز اولیه برای تحویل به کاربر نمایش داده می‌شود.</div>
+    </div></div>
+    <div class="modal-foot"><button class="btn ghost" onclick="closeAreaHeadModal()">انصراف</button><button class="btn red" id="ahSaveBtn" onclick="saveAreaHead()">ثبت رئیس ناحیه</button></div>
+  </div>
+</div>
+
+<div class="modal hidden" id="areaHeadCredentialsModal" onclick="if(event.target===this)closeAreaHeadCredentials()">
+  <div class="modal-card" style="width:min(610px,100%)">
+    <div class="modal-head"><div><strong>اطلاعات ورود رئیس ناحیه</strong><div style="color:var(--muted);font-size:.67rem;margin-top:4px">اطلاعات زیر را امن در اختیار رئیس ناحیه قرار دهید.</div></div><button class="btn ghost" onclick="closeAreaHeadCredentials()">×</button></div>
+    <div class="modal-body"><div class="credential-box"><h4 id="ahCredentialName">حساب ایجاد شد</h4><p>این اطلاعات برای ورود به سامانه استفاده می‌شود.</p><div class="credential-grid"><div class="credential-item"><span>User ID</span><b id="ahCredUserId">—</b></div><div class="credential-item"><span>Username</span><b id="ahCredUsername">—</b></div><div class="credential-item"><span>Password</span><b id="ahCredPassword">—</b></div></div></div><div class="credential-warning">رمز عبور را فقط از مسیر امن برای کاربر ارسال کنید. برای امنیت، این پنجره را محل نگهداری دائمی رمز در نظر نگیرید.</div></div>
+    <div class="modal-foot"><button class="btn ghost" onclick="copyAreaHeadCredentials()">کپی اطلاعات ورود</button><button class="btn red" onclick="closeAreaHeadCredentials()">متوجه شدم</button></div>
+  </div>
+</div>
+
+<div class="modal store-bottom-sheet hidden" id="areaHeadArchiveModal" onclick="if(event.target===this)closeAreaHeadArchiveModal()">
+  <div class="modal-card ah-modal-card">
+    <div class="modal-head"><div><strong>غیرفعال‌سازی رئیس ناحیه</strong><div id="ahArchiveSub" style="color:var(--muted);font-size:.67rem;margin-top:4px">وابستگی‌ها قبل از اعمال بررسی می‌شوند.</div></div><button class="btn ghost" onclick="closeAreaHeadArchiveModal()">×</button></div>
+    <div class="modal-body" id="ahArchiveBody"></div>
+    <div class="modal-foot"><button class="btn ghost" onclick="closeAreaHeadArchiveModal()">انصراف</button><button class="btn danger" id="ahArchiveConfirmBtn" onclick="confirmArchiveAreaHead()">غیرفعال‌سازی</button></div>
+  </div>
+</div>
 
 <div class="modal store-bottom-sheet hidden" id="storeModal" onclick="if(event.target===this)closeStoreModal()">
   <div class="modal-card store-modal-card">
@@ -478,7 +573,9 @@ const state={
   performance:null,performanceLoaded:false,performancePeriodDays:7,
   performanceManager:null,
   storeMaster:null,storeMasterLoaded:false,storePage:1,storePageSize:25,storeEditingCode:'',
-  storeImportRows:[],storeImportPreview:null,storeImportFileName:''
+  storeImportRows:[],storeImportPreview:null,storeImportFileName:'',
+  areaHeads:null,areaHeadsLoaded:false,areaHeadPage:1,areaHeadPageSize:25,areaHeadEditingId:'',
+  areaHeadArchivePreview:null,areaHeadCredential:null
 };
 
 const el=id=>document.getElementById(id);
@@ -512,6 +609,7 @@ async function loadAll(){
 
 async function refreshCurrent(){
   if(state.currentTab==='performance') await loadPerformance(true);
+  else if(state.currentTab==='areaheads') await loadAreaHeads(true);
   else if(state.currentTab==='stores') await loadStoreMaster(true);
   else await loadAll();
 }
@@ -529,6 +627,7 @@ function showTab(tab,btn,mobile=false){
     overview:['سلامت و کنترل سامانه','پایش Backend، کاربران، دیتابیس و تنظیمات عملیاتی'],
     performance:['عملکرد کل کشور','تحلیل Route، بازدید، پوشش فروشگاه‌ها و عملکرد مناطق'],
     users:['کاربران و Sessionها','کنترل دسترسی و نشست‌های فعال'],
+    areaheads:['مدیریت رؤسای ناحیه','تعریف حساب، تخصیص مدیر منطقه و مدیریت ساختار رؤسای ناحیه'],
     stores:['مدیریت فروشگاه‌ها','Master فروشگاه‌ها، تخصیص سازمانی و Import گروهی Excel'],
     settings:['تنظیمات سامانه','مدیریت پارامترهای عملیاتی بدون تغییر کد'],
     gps:['کنترل مختصات فروشگاه‌ها','بازبینی و اصلاح GPS فروشگاه‌ها'],
@@ -540,6 +639,7 @@ function showTab(tab,btn,mobile=false){
   window.scrollTo({top:0,behavior:'smooth'});
 
   if(tab==='performance'&&!state.performanceLoaded) loadPerformance(false);
+  if(tab==='areaheads'&&!state.areaHeadsLoaded) loadAreaHeads(false);
   if(tab==='stores'&&!state.storeMasterLoaded) loadStoreMaster(false);
 }
 
@@ -661,6 +761,42 @@ async function saveGpsStore(){
 
 
 /* ===== Store Master Center ===== */
+
+/* ===== Area Head Management Center ===== */
+async function loadAreaHeads(force=false){
+  if(state.areaHeadsLoaded&&!force){renderAreaHeads();return;}
+  loading(true,'در حال دریافت رؤسای ناحیه...');
+  try{const r=await DMAuth.apiPost('adminAreaHeadsBootstrap',{},60000);if(!r.success)throw new Error(r.message||'دریافت رؤسای ناحیه ناموفق بود.');state.areaHeads=r;state.areaHeadsLoaded=true;state.areaHeadPage=1;populateAreaHeadFilters();renderAreaHeads();}
+  catch(e){el('areaHeadsEmpty').classList.remove('hidden');el('areaHeadsContent').classList.add('hidden');el('areaHeadsEmpty').textContent='خطا در دریافت رؤسای ناحیه: '+(e.message||'خطای سرور');toast(e.message||'خطا در دریافت رؤسای ناحیه','error');}
+  finally{loading(false);}
+}
+function areaHeadManagers(){return state.areaHeads?.regionalManagers||[];}
+function areaHeadRows(){return state.areaHeads?.areaHeads||[];}
+function areaHeadSort(a,b){return String(a.fullName||'').localeCompare(String(b.fullName||''),'fa');}
+function areaHeadUniqueExecutives(){const m={};areaHeadManagers().forEach(x=>{const id=String(x.executiveUserId||'').trim();if(id&&!m[id])m[id]={userId:id,fullName:x.executiveName||id};});return Object.values(m).sort(areaHeadSort);}
+function populateAreaHeadFilters(){const ex=el('areaHeadExecutiveFilter');const oldEx=ex.value||'ALL';ex.innerHTML='<option value="ALL">همه مدیران اجرایی</option>'+areaHeadUniqueExecutives().map(x=>`<option value="${esc(x.userId)}">${esc(x.fullName)}</option>`).join('');ex.value=[...ex.options].some(o=>o.value===oldEx)?oldEx:'ALL';updateAreaHeadRegionalFilter();}
+function updateAreaHeadRegionalFilter(){const ex=el('areaHeadExecutiveFilter').value,rg=el('areaHeadRegionalFilter'),old=rg.value||'ALL';const rows=areaHeadManagers().filter(x=>ex==='ALL'||String(x.executiveUserId)===String(ex)).slice().sort(areaHeadSort);rg.innerHTML='<option value="ALL">همه مدیران منطقه</option>'+rows.map(x=>`<option value="${esc(x.userId)}">${esc(x.fullName)}${x.executiveName?' · '+esc(x.executiveName):''}</option>`).join('');rg.value=[...rg.options].some(o=>o.value===old)?old:'ALL';}
+function areaHeadExecutiveChanged(){updateAreaHeadRegionalFilter();areaHeadFiltersChanged();}
+function areaHeadFiltersChanged(){state.areaHeadPage=1;renderAreaHeads();}
+function clearAreaHeadFilters(){el('areaHeadSearch').value='';el('areaHeadExecutiveFilter').value='ALL';updateAreaHeadRegionalFilter();el('areaHeadRegionalFilter').value='ALL';el('areaHeadStatusFilter').value='ALL';areaHeadFiltersChanged();}
+function filteredAreaHeads(){const q=String(el('areaHeadSearch')?.value||'').trim().toLowerCase(),ex=el('areaHeadExecutiveFilter')?.value||'ALL',rg=el('areaHeadRegionalFilter')?.value||'ALL',st=el('areaHeadStatusFilter')?.value||'ALL';return areaHeadRows().filter(h=>{if(q&&!`${h.fullName} ${h.userId} ${h.username} ${h.phone} ${h.regionalManagerName} ${h.executiveName}`.toLowerCase().includes(q))return false;if(ex!=='ALL'&&String(h.executiveUserId)!==String(ex))return false;if(rg!=='ALL'&&String(h.regionalUserId)!==String(rg))return false;if(st==='ACTIVE'&&!h.active)return false;if(st==='INACTIVE'&&h.active)return false;if(st==='CONFLICT'&&!h.hierarchyConflict)return false;return true;});}
+function renderAreaHeads(){const data=state.areaHeads;if(!data)return;el('areaHeadsEmpty').classList.add('hidden');el('areaHeadsContent').classList.remove('hidden');const all=areaHeadRows(),active=all.filter(x=>x.active),inactive=all.filter(x=>!x.active),conflicts=all.filter(x=>x.hierarchyConflict),stores=active.reduce((n,x)=>n+Number(x.storesActive||0),0);el('ahTotal').textContent=fa(all.length);el('ahActive').textContent=fa(active.length);el('ahInactive').textContent=fa(inactive.length);el('ahStores').textContent=fa(stores);el('ahConflicts').textContent=fa(conflicts.length);const arr=filteredAreaHeads(),pages=Math.max(1,Math.ceil(arr.length/state.areaHeadPageSize));state.areaHeadPage=Math.min(state.areaHeadPage,pages);const from=(state.areaHeadPage-1)*state.areaHeadPageSize,rows=arr.slice(from,from+state.areaHeadPageSize);el('areaHeadsCount').textContent=`${fa(arr.length)} رئیس ناحیه از ${fa(all.length)}`;el('areaHeadPageLabel').textContent=`صفحه ${fa(state.areaHeadPage)} از ${fa(pages)}`;el('areaHeadPrevBtn').disabled=state.areaHeadPage<=1;el('areaHeadNextBtn').disabled=state.areaHeadPage>=pages;el('areaHeadsBody').innerHTML=rows.map(h=>`<tr><td class="ah-person"><strong>${esc(h.fullName)}</strong><span>${esc(h.userId)} · ${esc(h.username||'—')}</span></td><td>${esc(h.executiveName||'—')}</td><td><strong>${esc(h.regionalManagerName||'—')}</strong><br><span style="color:var(--muted);font-size:.6rem">${esc(h.regionalUserId||'')}</span></td><td dir="ltr">${esc(h.phone||'—')}</td><td class="ah-store-count"><b>${fa(h.storesActive||0)}</b><small>${fa(h.storesTotal||0)} کل</small></td><td>${h.active?'<span class="badge green">فعال</span>':'<span class="badge red">غیرفعال</span>'}</td><td>${h.hierarchyConflict?'<span class="badge amber">نیازمند بررسی</span>':'<span class="badge green">سالم</span>'}</td><td><div class="actions"><button class="btn ghost" onclick="openAreaHeadModal(decodeURIComponent('${encodeURIComponent(String(h.userId))}'))">ویرایش</button>${h.active?`<button class="btn danger" onclick="archiveAreaHeadPreview(decodeURIComponent('${encodeURIComponent(String(h.userId))}'))">غیرفعال‌سازی</button>`:`<button class="btn green" onclick="reactivateAreaHead(decodeURIComponent('${encodeURIComponent(String(h.userId))}'))">فعال‌سازی حساب</button>`}</div></td></tr>`).join('')||'<tr><td colspan="8"><div class="store-empty">رئیس ناحیه‌ای مطابق فیلتر پیدا نشد.</div></td></tr>';renderAreaHeadHistory();}
+function changeAreaHeadPage(delta){const pages=Math.max(1,Math.ceil(filteredAreaHeads().length/state.areaHeadPageSize));state.areaHeadPage=Math.max(1,Math.min(pages,state.areaHeadPage+delta));renderAreaHeads();}
+function areaHeadActionFa(a){return({CREATE:'ایجاد',UPDATE:'ویرایش',ARCHIVE:'غیرفعال‌سازی'})[a]||a;}
+function renderAreaHeadHistory(){const rows=state.areaHeads?.history||[];el('areaHeadHistory').innerHTML=rows.length?rows.map(x=>`<div class="ah-history-row"><strong>${esc(x.fullName||x.userId)} <span class="ah-history-badge ${esc(x.action)}">${esc(areaHeadActionFa(x.action))}</span></strong><span>${esc(x.executiveName||'—')} ← ${esc(x.regionalManagerName||'—')}</span><span>${fa(x.storesAffected||0)} فروشگاه تحت تأثیر · ${fmtDate(x.changedAt)} · توسط ${esc(x.changedBy||'—')}</span></div>`).join(''):'<div class="store-empty">تغییر ثبت‌شده‌ای وجود ندارد.</div>';}
+function openAreaHeadModal(userId=''){if(!state.areaHeadsLoaded){toast('ابتدا اطلاعات رؤسای ناحیه را بارگذاری کنید.','error');return;}const h=userId?areaHeadRows().find(x=>String(x.userId)===String(userId)):null;state.areaHeadEditingId=h?.userId||'';el('ahUserId').value=h?.userId||'';el('ahFullName').value=h?.fullName||'';el('ahPhone').value=h?.phone||'';el('ahUsername').value=h?.username||'';el('ahPassword').value='';el('areaHeadModalTitle').textContent=h?'ویرایش رئیس ناحیه':'افزودن رئیس ناحیه جدید';el('areaHeadModalSub').textContent=h?`${h.userId} · ${h.regionalManagerName||'بدون مدیر منطقه'}`:'حساب رئیس ناحیه و ساختار بالادست را تعریف کنید.';el('ahPasswordLabel').textContent=h?'رمز عبور جدید':'رمز عبور اولیه';el('ahPasswordHelp').textContent=h?'فقط اگر می‌خواهید رمز عبور Reset شود این فیلد را پر کنید.':'اگر خالی بماند سامانه رمز اولیه تولید می‌کند.';el('ahEditWarning').textContent=h?'تغییر مدیر منطقه، ساختار فروشگاه‌های زیرمجموعه و Routeهای آینده را طبق Guardهای Backend همگام می‌کند. Visit باز یا GPS Pending می‌تواند انتقال بین مناطق را مسدود کند.':'User ID، کد کاربری و رمز اولیه می‌توانند به‌صورت خودکار ساخته شوند. اطلاعات ورود پس از ثبت نمایش داده می‌شود.';el('ahSaveBtn').textContent=h?'ذخیره تغییرات':'ثبت رئیس ناحیه';const sel=el('ahRegional');sel.innerHTML='<option value="">انتخاب مدیر منطقه</option>'+areaHeadManagers().slice().sort(areaHeadSort).map(m=>`<option value="${esc(m.userId)}" ${h&&String(h.regionalUserId)===String(m.userId)?'selected':''}>${esc(m.fullName)} · ${esc(m.executiveName||'بدون مدیر اجرایی')}</option>`).join('');areaHeadModalRegionalChanged();el('areaHeadModal').classList.remove('hidden');}
+function closeAreaHeadModal(){el('areaHeadModal').classList.add('hidden');state.areaHeadEditingId='';}
+function areaHeadModalRegionalChanged(){const id=el('ahRegional').value,m=areaHeadManagers().find(x=>String(x.userId)===String(id));el('ahExecutivePreview').textContent=m?(m.executiveName||'مدیر اجرایی مشخص نشده است.'):'با انتخاب مدیر منطقه تعیین می‌شود.';}
+async function saveAreaHead(){const payload={userId:el('ahUserId').value.trim(),fullName:el('ahFullName').value.trim(),regionalUserId:el('ahRegional').value,phone:el('ahPhone').value.trim(),username:el('ahUsername').value.trim(),password:el('ahPassword').value.trim()};if(!payload.fullName||!payload.regionalUserId){toast('نام رئیس ناحیه و مدیر منطقه بالادست الزامی است.','error');return;}const editing=!!payload.userId;if(!confirm(editing?'تغییرات این رئیس ناحیه ذخیره شود؟':'رئیس ناحیه جدید ایجاد شود؟'))return;loading(true,editing?'در حال ذخیره اطلاعات رئیس ناحیه...':'در حال ایجاد حساب رئیس ناحیه...');try{const r=await DMAuth.apiPost('adminAreaHeadUpsert',payload,60000);if(!r.success)throw new Error(r.message||'ثبت رئیس ناحیه ناموفق بود.');const displayName=payload.fullName;closeAreaHeadModal();toast(r.message||'اطلاعات رئیس ناحیه ذخیره شد.','success');state.areaHeadsLoaded=false;state.storeMasterLoaded=false;await loadAreaHeads(true);await loadAll();if(r.credentials)showAreaHeadCredentials(displayName,r.credentials);}catch(e){toast(e.message||'خطا در ثبت رئیس ناحیه','error');}finally{loading(false);}}
+function showAreaHeadCredentials(name,c){state.areaHeadCredential={name:name,userId:c.userId||'',username:c.username||'',password:c.password||''};el('ahCredentialName').textContent=name||'حساب ایجاد شد';el('ahCredUserId').textContent=c.userId||'—';el('ahCredUsername').textContent=c.username||'—';el('ahCredPassword').textContent=c.password||'—';el('areaHeadCredentialsModal').classList.remove('hidden');}
+function closeAreaHeadCredentials(){el('areaHeadCredentialsModal').classList.add('hidden');state.areaHeadCredential=null;}
+async function copyAreaHeadCredentials(){const c=state.areaHeadCredential;if(!c)return;const text=`رئیس ناحیه: ${c.name}\nUser ID: ${c.userId}\nUsername: ${c.username}\nPassword: ${c.password}`;try{await navigator.clipboard.writeText(text);toast('اطلاعات ورود کپی شد.','success');}catch(_){toast('کپی خودکار در این مرورگر در دسترس نیست.','error');}}
+async function archiveAreaHeadPreview(userId){loading(true,'در حال بررسی وابستگی‌های رئیس ناحیه...');try{const r=await DMAuth.apiPost('adminAreaHeadDeletePreview',{userId},45000);if(!r.success)throw new Error(r.message||'بررسی وابستگی‌ها ناموفق بود.');state.areaHeadArchivePreview=r;renderAreaHeadArchivePreview();el('areaHeadArchiveModal').classList.remove('hidden');}catch(e){toast(e.message||'خطا در بررسی رئیس ناحیه','error');}finally{loading(false);}}
+function renderAreaHeadArchivePreview(){const r=state.areaHeadArchivePreview;if(!r)return;const d=r.dependencies||{},h=r.areaHead||{},blocked=!!d.blocked;el('ahArchiveSub').textContent=`${h.fullName||h.userId} · ${h.regionalManagerName||'—'}`;const reps=(r.replacements||[]).slice().sort((a,b)=>{const sameA=String(a.regionalUserId)===String(h.regionalUserId)?0:1,sameB=String(b.regionalUserId)===String(h.regionalUserId)?0:1;return sameA-sameB||areaHeadSort(a,b);});const replacement=d.storesTotal>0?`<div class="ah-form-field"><label>رئیس ناحیه جایگزین *</label><select id="ahReplacement"><option value="">انتخاب رئیس ناحیه جایگزین</option>${reps.map(x=>`<option value="${esc(x.userId)}">${esc(x.fullName)} · ${esc(x.regionalManagerName||'—')}${String(x.regionalUserId)===String(h.regionalUserId)?' · همان منطقه':''}</option>`).join('')}</select><div class="ah-help">تمام فروشگاه‌های این رئیس ناحیه به فرد جایگزین منتقل می‌شوند. انتخاب رئیس همان منطقه ایمن‌تر است؛ انتخاب منطقه دیگر ساختار فروشگاه‌ها را نیز منتقل می‌کند.</div></div>`:'';el('ahArchiveBody').innerHTML=`<div class="ah-deps"><div class="ah-dep"><b>${fa(d.storesTotal||0)}</b><span>کل فروشگاه</span></div><div class="ah-dep"><b>${fa(d.futureRoutes||0)}</b><span>Route آینده</span></div><div class="ah-dep"><b>${fa(d.openVisits||0)}</b><span>Visit باز</span></div><div class="ah-dep"><b>${fa(d.pendingGps||0)}</b><span>GPS Pending</span></div></div>${blocked?`<div class="ah-blocked">غیرفعال‌سازی فعلاً مجاز نیست. ابتدا Visitهای باز و درخواست‌های GPS در انتظار این رئیس ناحیه را تعیین تکلیف کنید.</div>`:`<div class="ah-safe">وابستگی مسدودکننده‌ای وجود ندارد. غیرفعال‌سازی با Audit کامل انجام می‌شود.</div>`}${replacement}`;el('ahArchiveConfirmBtn').disabled=blocked;}
+function closeAreaHeadArchiveModal(){el('areaHeadArchiveModal').classList.add('hidden');state.areaHeadArchivePreview=null;}
+async function confirmArchiveAreaHead(){const r=state.areaHeadArchivePreview;if(!r)return;const d=r.dependencies||{},h=r.areaHead||{};if(d.blocked){toast('ابتدا وابستگی‌های مسدودکننده را تعیین تکلیف کنید.','error');return;}const replacementId=d.storesTotal>0?(el('ahReplacement')?.value||''):'';if(d.storesTotal>0&&!replacementId){toast('برای رئیس ناحیه دارای فروشگاه، رئیس ناحیه جایگزین الزامی است.','error');return;}if(!confirm(`رئیس ناحیه «${h.fullName||h.userId}» غیرفعال شود؟${d.storesTotal>0?' فروشگاه‌ها به رئیس ناحیه جایگزین منتقل می‌شوند.':''}`))return;loading(true,'در حال غیرفعال‌سازی رئیس ناحیه...');try{const x=await DMAuth.apiPost('adminAreaHeadArchive',{userId:h.userId,replacementUserId:replacementId},90000);if(!x.success)throw new Error(x.message||'غیرفعال‌سازی ناموفق بود.');closeAreaHeadArchiveModal();toast(x.message||'رئیس ناحیه غیرفعال شد.','success');state.areaHeadsLoaded=false;state.storeMasterLoaded=false;await loadAreaHeads(true);await loadAll();}catch(e){toast(e.message||'خطا در غیرفعال‌سازی','error');}finally{loading(false);}}
+async function reactivateAreaHead(userId){const h=areaHeadRows().find(x=>String(x.userId)===String(userId));if(!h)return;if(!confirm(`حساب «${h.fullName}» دوباره فعال شود؟`))return;loading(true,'در حال فعال‌سازی حساب رئیس ناحیه...');try{const r=await DMAuth.apiPost('adminUserCommand',{userId,command:'SET_ACTIVE',active:'true'},30000);if(!r.success)throw new Error(r.message||'فعال‌سازی ناموفق بود.');toast(r.message||'حساب فعال شد.','success');state.areaHeadsLoaded=false;await loadAreaHeads(true);await loadAll();}catch(e){toast(e.message||'خطا در فعال‌سازی','error');}finally{loading(false);}}
+
 const STORE_FIELD_LABELS={storeName:'نام فروشگاه',executiveUserId:'مدیر اجرایی',executiveName:'نام مدیر اجرایی',regionalUserId:'مدیر منطقه',regionalManagerName:'نام مدیر منطقه',areaHeadUserId:'رئیس ناحیه',areaHeadName:'نام رئیس ناحیه',openingDate:'تاریخ افتتاح',lat:'Latitude',lng:'Longitude',nearestStoreCode:'نزدیک‌ترین فروشگاه',nearestStoreDistanceM:'فاصله نزدیک‌ترین فروشگاه',locationStatus:'وضعیت GPS',locationNote:'یادداشت مکانی',active:'فعال/غیرفعال'};
 
 async function loadStoreMaster(force=false){
