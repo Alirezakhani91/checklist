@@ -118,6 +118,10 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 .rq-value-chip{padding:5px 8px;border-radius:999px;background:#f7f8fa;border:1px solid #e5e9ef;font-size:.58rem;color:#596477}
 @media(max-width:820px){.rq-performance-list{grid-template-columns:1fr}}
 
+
+/* Jalali date picker: native Gregorian picker intentionally disabled */
+.jalali-field{position:relative;min-width:0}.jalali-field input[type=text]{cursor:pointer;text-align:center;direction:ltr;padding-left:36px!important;font-weight:800}.jalali-trigger{position:absolute;left:6px;top:5px;width:29px;height:29px;border:0;border-radius:8px;background:#f1f3f7;cursor:pointer;color:#3e4654;font-size:18px}.jalali-popup{display:none;position:absolute;z-index:150;top:calc(100% + 7px);right:0;width:305px;max-width:calc(100vw - 28px);padding:13px;background:white;border:1px solid #dfe3ea;border-radius:16px;box-shadow:0 18px 50px rgba(20,28,48,.18);direction:rtl}.jalali-popup.open{display:block}.jalali-head{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:11px}.jalali-head strong{font-size:.8rem}.jalali-head button{background:#f4f5f8;border:0;border-radius:8px;padding:7px 11px;cursor:pointer}.jalali-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;text-align:center}.jalali-weekday{font-size:.63rem;color:#777;padding:5px 0}.jalali-cell{border:0;background:transparent;min-height:34px;border-radius:9px;cursor:pointer;font:inherit;font-size:.72rem}.jalali-cell:hover{background:#f2e9ed}.jalali-cell.selected{background:#ad0025;color:white;font-weight:900}.jalali-cell.today{outline:1px solid #ad0025}.jalali-cell.blank{visibility:hidden}.jalali-footer{display:flex;justify-content:space-between;margin-top:10px}.jalali-footer button{background:#f5f6f9;border:0;border-radius:8px;padding:7px 12px;font:inherit;font-size:.68rem;cursor:pointer}
+@media(max-width:430px){.jalali-popup{right:0;left:auto}}
 </style>
 
 <style id="dm-firstpaint-style">
@@ -305,8 +309,8 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
             <p>بازه تاریخ و رئیس ناحیه را انتخاب کن. فایل خروجی شامل خلاصه مدیریتی، عملکرد رؤسای ناحیه، تکرار بازدید فروشگاه‌ها، جزئیات بازدیدها و عملکرد روزانه است.</p>
           </div>
           <div class="performance-export-controls">
-            <div class="performance-export-field"><label for="regionalExportFrom">از تاریخ</label><input type="date" id="regionalExportFrom" onchange="markPerformanceExportTouched()"></div>
-            <div class="performance-export-field"><label for="regionalExportTo">تا تاریخ</label><input type="date" id="regionalExportTo" onchange="markPerformanceExportTouched()"></div>
+            <div class="performance-export-field"><label for="regionalExportFrom">از تاریخ</label><div class="jalali-field"><input type="text" id="regionalExportFromDisplay" readonly placeholder="انتخاب تاریخ شمسی" onclick="toggleJalaliPicker('regionalExportFrom')" aria-label="انتخاب تاریخ شمسی"><input type="hidden" id="regionalExportFrom"><button type="button" class="jalali-trigger" onclick="toggleJalaliPicker('regionalExportFrom')" aria-label="باز کردن تقویم">▦</button><div class="jalali-popup" id="regionalExportFromCalendar"></div></div></div>
+            <div class="performance-export-field"><label for="regionalExportTo">تا تاریخ</label><div class="jalali-field"><input type="text" id="regionalExportToDisplay" readonly placeholder="انتخاب تاریخ شمسی" onclick="toggleJalaliPicker('regionalExportTo')" aria-label="انتخاب تاریخ شمسی"><input type="hidden" id="regionalExportTo"><button type="button" class="jalali-trigger" onclick="toggleJalaliPicker('regionalExportTo')" aria-label="باز کردن تقویم">▦</button><div class="jalali-popup" id="regionalExportToCalendar"></div></div></div>
             <div class="performance-export-field head"><label for="regionalExportHead">رئیس ناحیه</label><select id="regionalExportHead"><option value="">همه رؤسای ناحیه</option></select></div>
             <div class="performance-export-actions">
               <button class="btn btn-ghost performance-export-reset" onclick="syncPerformanceExportFilters(true)">همین دوره</button>
@@ -1216,11 +1220,31 @@ function approvalStatusClass(status){const s=String(status||'').toUpperCase();re
 
 
 
+
+/* Fully Persian/Jalali calendar; backend values remain Gregorian ISO (YYYY-MM-DD). */
+const jalaliFmt=new Intl.DateTimeFormat('en-US-u-ca-persian',{year:'numeric',month:'numeric',day:'numeric',timeZone:'UTC'});
+const jalaliMonths=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+const jalaliDigits=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[Number(d)]);
+const jalaliParts=d=>{const o={};jalaliFmt.formatToParts(d).forEach(x=>{if(['year','month','day'].includes(x.type))o[x.type]=Number(x.value)});return o};
+const jalaliIsoDate=iso=>new Date(iso+'T12:00:00Z');
+const jalaliIso=d=>d.toISOString().slice(0,10);
+const jalaliAdd=(d,n)=>new Date(d.getTime()+n*86400000);
+function jalaliDisplay(iso){if(!/^\d{4}-\d{2}-\d{2}$/.test(iso||''))return '';const x=jalaliParts(jalaliIsoDate(iso));return jalaliDigits(`${x.year}/${String(x.month).padStart(2,'0')}/${String(x.day).padStart(2,'0')}`)}
+function refreshJalaliDisplays(){['regionalExportFrom','regionalExportTo'].forEach(id=>{const el=document.getElementById(id),display=document.getElementById(id+'Display');if(el&&display)display.value=jalaliDisplay(el.value)})}
+const jalaliPickerState={};
+function jalaliMonthStart(d){let x=d;for(let i=0;i<32&&jalaliParts(x).day!==1;i++)x=jalaliAdd(x,-1);return x}
+function jalaliMonthMove(d,offset){const start=jalaliMonthStart(d),part=jalaliParts(start);let x=jalaliAdd(start,offset>0?28:-1);for(let i=0;i<40;i++){const q=jalaliParts(x);if(q.day===1&&(q.month!==part.month||q.year!==part.year))return x;x=jalaliAdd(x,offset>0?1:-1)}return start}
+function toggleJalaliPicker(id){const pop=document.getElementById(id+'Calendar');if(!pop)return;const wasOpen=pop.classList.contains('open');document.querySelectorAll('.jalali-popup').forEach(x=>x.classList.remove('open'));if(wasOpen)return;const v=document.getElementById(id).value;jalaliPickerState[id]=jalaliMonthStart(v?jalaliIsoDate(v):new Date());renderJalaliPicker(id);pop.classList.add('open')}
+function moveJalaliPicker(id,step){jalaliPickerState[id]=jalaliMonthMove(jalaliPickerState[id],step);renderJalaliPicker(id)}
+function chooseJalaliDate(id,iso){document.getElementById(id).value=iso;refreshJalaliDisplays();markPerformanceExportTouched();document.getElementById(id+'Calendar').classList.remove('open')}
+function renderJalaliPicker(id){const pop=document.getElementById(id+'Calendar'),start=jalaliMonthStart(jalaliPickerState[id]),p=jalaliParts(start),selected=document.getElementById(id).value,today=jalaliIso(new Date()),weekdays=['ش','ی','د','س','چ','پ','ج'];let html=`<div class="jalali-head"><button type="button" onclick="moveJalaliPicker('${id}',-1)" aria-label="ماه قبل">❯</button><strong>${jalaliMonths[p.month-1]} ${jalaliDigits(p.year)}</strong><button type="button" onclick="moveJalaliPicker('${id}',1)" aria-label="ماه بعد">❮</button></div><div class="jalali-grid">`+weekdays.map(x=>`<span class="jalali-weekday">${x}</span>`).join('');const offset=(start.getUTCDay()+1)%7;for(let i=0;i<offset;i++)html+='<span class="jalali-cell blank"></span>';for(let day=0;day<32;day++){const date=jalaliAdd(start,day),j=jalaliParts(date);if(j.month!==p.month||j.year!==p.year)break;const iso=jalaliIso(date);html+=`<button type="button" class="jalali-cell ${selected===iso?'selected':''} ${today===iso?'today':''}" onclick="chooseJalaliDate('${id}','${iso}')">${jalaliDigits(j.day)}</button>`}html+=`</div><div class="jalali-footer"><button type="button" onclick="chooseJalaliDate('${id}','${today}')">امروز</button><button type="button" onclick="document.getElementById('${id}Calendar').classList.remove('open')">بستن</button></div>`;pop.innerHTML=html}
+document.addEventListener('click',e=>{if(!e.target.closest('.jalali-field'))document.querySelectorAll('.jalali-popup.open').forEach(x=>x.classList.remove('open'))});
+
 function markPerformanceExportTouched(){state.performanceExportTouched=true;}
 function syncPerformanceExportFilters(forceDates=false){
   const data=state.performance;if(!data)return;
   const from=document.getElementById('regionalExportFrom'),to=document.getElementById('regionalExportTo'),head=document.getElementById('regionalExportHead');
-  if((forceDates||!state.performanceExportTouched)&&from&&to){from.value=data.startIso||'';to.value=data.endIso||'';state.performanceExportTouched=false;}
+  if((forceDates||!state.performanceExportTouched)&&from&&to){from.value=data.startIso||'';to.value=data.endIso||'';refreshJalaliDisplays();state.performanceExportTouched=false;}
   if(head){
     const selected=head.value;
     const rows=(data.areaHeads||[]).filter(x=>x.userId);
