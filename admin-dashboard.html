@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b4001b">
 <title>کنترل سنتر سامانه | دیلی مارکت</title>
+<!-- V36.2 Store Master layout: full-width table, Master audit panel removed -->
 <style>
 @font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2");font-display:swap;font-weight:400}
 @font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2") format("woff2");font-display:swap;font-weight:700}
@@ -95,10 +96,10 @@ button,input,select{font:inherit}
 .store-toolbar{display:grid;grid-template-columns:minmax(220px,1.4fr) repeat(5,minmax(145px,.7fr)) auto;gap:8px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);background:#fbfcfd}
 .store-toolbar .search{min-width:0;width:100%}.store-toolbar .filter{width:100%;min-width:0}
 .store-list-meta{padding:10px 16px;background:#fff;border-bottom:1px solid #eef0f4;color:var(--muted);font-size:.67rem;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
-.store-table{min-width:1420px}.store-table td{vertical-align:middle}.store-code{font-weight:900;direction:ltr;text-align:right}.store-name{font-weight:800;max-width:260px;overflow:hidden;text-overflow:ellipsis}.store-gps{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;font-size:.59rem;font-weight:900}.store-gps.ok{background:#eaf8f1;color:#15764e}.store-gps.review{background:#fff6df;color:#946700}.store-gps.critical{background:#fff0f2;color:#ad1630}
+.store-table{min-width:1180px}.store-table td{vertical-align:middle}.store-table th:last-child,.store-table td:last-child{position:sticky;left:0;z-index:3;background:#fff;box-shadow:8px 0 16px rgba(20,28,48,.06)}.store-table th:last-child{z-index:4;background:#fafbfc}.store-table td:last-child .btn{white-space:nowrap}.store-code{font-weight:900;direction:ltr;text-align:right}.store-name{font-weight:800;max-width:260px;overflow:hidden;text-overflow:ellipsis}.store-gps{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;font-size:.59rem;font-weight:900}.store-gps.ok{background:#eaf8f1;color:#15764e}.store-gps.review{background:#fff6df;color:#946700}.store-gps.critical{background:#fff0f2;color:#ad1630}
 .store-pagination{display:flex;justify-content:center;align-items:center;gap:8px;padding:14px;border-top:1px solid var(--line)}.store-pagination button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 11px;font-size:.65rem;font-weight:800}.store-pagination button:disabled{opacity:.4}.store-pagination span{font-size:.66rem;color:var(--muted);min-width:90px;text-align:center}
 .store-change-list{display:grid;gap:7px;padding:12px 15px;max-height:310px;overflow:auto}.store-change{border-bottom:1px solid #eef0f4;padding:8px 0}.store-change:last-child{border:0}.store-change strong{font-size:.69rem}.store-change span{display:block;color:var(--muted);font-size:.59rem;margin-top:3px}.store-change .change-badge{display:inline-flex;padding:3px 6px;border-radius:999px;background:#f1f3f6;color:#626977;font-size:.54rem;margin-right:4px}
-.store-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(320px,.55fr);gap:16px}
+.store-layout{display:block;width:100%}
 .store-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.store-form-grid .full{grid-column:1/-1}.store-form-field label{display:block;font-size:.68rem;font-weight:900;margin-bottom:6px}.store-form-field input,.store-form-field select{width:100%;border:1px solid var(--line);border-radius:11px;padding:10px 11px;outline:none;background:#fff}.store-form-field input:focus,.store-form-field select:focus{border-color:#c9ced8;box-shadow:0 0 0 3px rgba(49,94,251,.06)}.store-help{font-size:.6rem;color:#8a919e;line-height:1.8;margin-top:4px}.store-modal-card{width:min(760px,100%)}
 .import-modal-card{width:min(1050px,100%);max-height:92vh;display:flex;flex-direction:column}.import-modal-card .modal-body{overflow:auto}.import-drop{border:1.5px dashed #cfd5df;border-radius:17px;background:#fafbfc;padding:24px;text-align:center;cursor:pointer;transition:.15s}.import-drop:hover{border-color:#b8bfcb;background:#f7f8fb}.import-drop strong{display:block;font-size:.85rem}.import-drop span{display:block;color:var(--muted);font-size:.65rem;margin-top:6px}.import-file-meta{margin-top:10px;font-size:.66rem;color:#596171}.import-options{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin:14px 0}.import-danger{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:#fff7e8;border:1px solid #f2deb5;color:#775715;font-size:.64rem;line-height:1.8}.import-summary{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:12px 0}.import-sum{border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#fff}.import-sum b{display:block;font-size:1rem}.import-sum span{font-size:.56rem;color:var(--muted)}.import-preview{border:1px solid var(--line);border-radius:15px;overflow:auto;max-height:360px}.import-preview table{width:100%;border-collapse:collapse;min-width:980px}.import-preview th,.import-preview td{padding:8px 9px;border-bottom:1px solid #eef0f4;font-size:.62rem;text-align:right;vertical-align:top}.import-preview th{position:sticky;top:0;background:#fafbfc;color:#737b89}.import-errors{color:#ad1630;white-space:normal;max-width:330px}.import-changes{white-space:normal;max-width:260px;color:#596171}.import-note{margin-top:10px;color:var(--muted);font-size:.62rem;line-height:1.9}.import-status{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:.55rem;font-weight:900}.import-status.NEW{background:#eaf8f1;color:#15764e}.import-status.UPDATE{background:#edf2ff;color:#3159d6}.import-status.NO_CHANGE{background:#f1f3f6;color:#616978}.import-status.ERROR{background:#fff0f2;color:#ad1630}.import-status.DEACTIVATE{background:#fff6df;color:#946700}
 .store-empty{padding:28px;text-align:center;color:var(--muted);font-size:.72rem}.store-section-title{display:flex;justify-content:space-between;align-items:center;gap:12px}.store-section-title .actions{justify-content:flex-end}
@@ -418,10 +419,6 @@ button,input,select{font:inherit}
             <div class="store-pagination"><button id="storePrevBtn" onclick="changeStorePage(-1)">قبلی</button><span id="storePageLabel">—</span><button id="storeNextBtn" onclick="changeStorePage(1)">بعدی</button></div>
           </section>
 
-          <section class="card" style="margin:0">
-            <div class="card-head"><div><h3>آخرین تغییرات Master</h3><p>Audit ثبت تغییرات دستی و Import گروهی.</p></div></div>
-            <div class="store-change-list" id="storeChangeList"></div>
-          </section>
         </div>
       </div>
     </section>
@@ -859,7 +856,7 @@ function renderStoreMaster(){
   const rows=state.storeMaster?.stores||[];el('storeMasterEmpty').classList.add('hidden');el('storeMasterContent').classList.remove('hidden');
   const active=rows.filter(x=>x.active).length,gps=rows.filter(storeGpsIssue).length;
   el('smTotal').textContent=fa(rows.length);el('smActiveCount').textContent=fa(active);el('smInactive').textContent=fa(rows.length-active);el('smGpsIssues').textContent=fa(gps);el('smRecentChanges').textContent=fa((state.storeMaster?.recentChanges||[]).length);
-  renderStoreMasterTable();renderStoreChangeLog();
+  renderStoreMasterTable();
 }
 function renderStoreMasterTable(){
   if(!state.storeMaster)return;const arr=filteredStores(),pages=Math.max(1,Math.ceil(arr.length/state.storePageSize));state.storePage=Math.min(Math.max(1,state.storePage),pages);const start=(state.storePage-1)*state.storePageSize,rows=arr.slice(start,start+state.storePageSize);
