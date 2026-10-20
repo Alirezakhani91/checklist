@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b4001b">
-<!-- Daily Market Regional Dashboard V32.1 Opening Name-Only + V32 Day Status + V29 Performance Excel Export + V27 TURBO -->
+<!-- Daily Market Regional Dashboard V38 Stale Location-Correction Resolution + V32.1 Opening Name-Only + V32 Day Status + V29 Performance Excel Export + V27 TURBO -->
 <title>مدیر منطقه | چک لیست دیلی مارکت</title>
 <style>
 @font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2");font-display:swap;font-weight:400}
@@ -49,7 +49,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 
 /* ========================= GPS APPROVAL VIEW ========================= */
 .nav-count{margin-right:auto;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:rgba(255,255,255,.16);display:inline-grid;place-items:center;font-size:.68rem;font-weight:900}.nav-btn.active .nav-count{background:#fff0f2;color:#ad001b}.nav-count.zero{opacity:.55}.view-hidden{display:none!important}
-.gps-mode-tabs{display:flex;gap:8px;flex-wrap:wrap}.gps-mode-btn{border:1px solid var(--line);background:#fff;color:#555d6c;border-radius:13px;padding:9px 13px;font-weight:800;font-size:.74rem;display:inline-flex;align-items:center;gap:7px}.gps-mode-btn.active{background:#171c27;color:#fff;border-color:#171c27}.gps-mode-count{min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#fff0f2;color:#b0001c;display:inline-grid;place-items:center;font-size:.65rem}.gps-mode-btn.active .gps-mode-count{background:rgba(255,255,255,.15);color:#fff}.coord-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.coord-box{border:1px solid var(--line);background:#fafbfc;border-radius:12px;padding:9px 10px}.coord-box strong{display:block;font-size:.65rem;color:#858c99;margin-bottom:5px}.coord-box span{display:block;font-size:.7rem;font-weight:800;direction:ltr;text-align:left}.correction-note{margin-top:9px;padding:9px 10px;border-radius:11px;background:#eef4ff;color:#3158b7;font-size:.68rem;line-height:1.8}.correction-pane{display:grid;gap:12px}
+.gps-mode-tabs{display:flex;gap:8px;flex-wrap:wrap}.gps-mode-btn{border:1px solid var(--line);background:#fff;color:#555d6c;border-radius:13px;padding:9px 13px;font-weight:800;font-size:.74rem;display:inline-flex;align-items:center;gap:7px}.gps-mode-btn.active{background:#171c27;color:#fff;border-color:#171c27}.gps-mode-count{min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#fff0f2;color:#b0001c;display:inline-grid;place-items:center;font-size:.65rem}.gps-mode-btn.active .gps-mode-count{background:rgba(255,255,255,.15);color:#fff}.coord-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.coord-box{border:1px solid var(--line);background:#fafbfc;border-radius:12px;padding:9px 10px}.coord-box strong{display:block;font-size:.65rem;color:#858c99;margin-bottom:5px}.coord-box span{display:block;font-size:.7rem;font-weight:800;direction:ltr;text-align:left}.correction-note{margin-top:9px;padding:9px 10px;border-radius:11px;background:#eef4ff;color:#3158b7;font-size:.68rem;line-height:1.8}.correction-note.stale{background:#fff7e6;color:#8a5c00;border:1px solid #f0ddae}.correction-note.changed{background:#fff0f2;color:#a7001a;border:1px solid #efcbd2}.approval-chip.stale{background:#fff2d8;color:#8d6200;border:1px solid #efdcae}.correction-pane{display:grid;gap:12px}
 .gps-view{display:grid;gap:18px}.gps-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:18px}.gps-hero h2{margin:0;font-size:1.7rem}.gps-hero p{margin:7px 0 0;color:var(--muted);font-size:.88rem}.gps-live{display:inline-flex;align-items:center;gap:7px;border:1px solid #caeadc;background:#f4fcf8;color:#13774d;padding:8px 12px;border-radius:999px;font-size:.75rem;font-weight:800}.gps-live-dot{width:8px;height:8px;border-radius:50%;background:#19a365;box-shadow:0 0 0 5px rgba(25,163,101,.09)}
 .approval-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.approval-stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px 18px;box-shadow:0 8px 28px rgba(20,28,48,.04)}.approval-stat strong{display:block;font-size:1.45rem}.approval-stat span{display:block;color:var(--muted);font-size:.75rem;margin-top:5px}.approval-stat.pending strong{color:#b77700}.approval-stat.approved strong{color:#138a57}.approval-stat.rejected strong{color:#b22238}
 .approval-panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}.approval-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 22px;border-bottom:1px solid var(--line)}.approval-head h3{margin:0;font-size:1.05rem}.approval-head p{margin:5px 0 0;color:var(--muted);font-size:.75rem}.approval-filters{display:flex;gap:7px;flex-wrap:wrap}.approval-filter{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;color:#656c7a;font-size:.72rem;font-weight:700}.approval-filter.active{background:#161b26;color:#fff;border-color:#161b26}
@@ -1874,16 +1874,24 @@ function renderCorrections(){
   const list=document.getElementById('correctionList');
   if(!state.corrections.length){list.innerHTML=`<div class="approval-empty"><div><strong>درخواستی وجود ندارد</strong><span>وقتی رئیس ناحیه گزینه «لوکیشن فروشگاه اشتباه است» را بزند، درخواست اینجا نمایش داده می‌شود.</span></div></div>`;return;}
   list.innerHTML=state.corrections.map(c=>{
-    const st=String(c.status||'').toUpperCase(),pending=st==='PENDING';
+    const st=String(c.status||'').toUpperCase(),pending=st==='PENDING',stale=pending&&!!c.isStalePending;
     const diff=c.distanceDifferenceM!==''?distanceText(Number(c.distanceDifferenceM)):'—';
     const acc=c.gpsAccuracyM!==''?`${Math.round(Number(c.gpsAccuracyM))} متر`:'—';
+    const currentLat=c.currentStoreLat!==''&&c.currentStoreLat!==undefined?c.currentStoreLat:c.oldLat;
+    const currentLng=c.currentStoreLng!==''&&c.currentStoreLng!==undefined?c.currentStoreLng:c.oldLng;
+    const visitState=String(c.visitStatus||'').toUpperCase();
+    const staleNote=stale
+      ? `<div class="correction-note stale"><strong>درخواست قدیمی:</strong> بازدید مرتبط دیگر در وضعیت انتظار اصلاح لوکیشن نیست${visitState?` (وضعیت فعلی Visit: ${esc(visitState)})`:''}. می‌توانید درخواست را تأیید یا رد کنید؛ در صورت تأیید فقط Master لوکیشن اصلاح می‌شود و بازدید قدیمی دوباره فعال نخواهد شد.</div>`
+      : (pending?'<div class="correction-note">با تأیید، مختصات فروشگاه در STORES به نقطه پیشنهادی تغییر می‌کند، نسخه قبلی در LOCATION_CORRECTIONS باقی می‌ماند و بازدید رئیس ناحیه فعال می‌شود.</div>':'');
+    const changedNote=pending&&c.masterChangedSinceRequest
+      ? `<div class="correction-note changed"><strong>توجه:</strong> مختصات فعلی Master از زمان ثبت این درخواست تغییر کرده است. قبل از تأیید، مختصات فعلی و GPS پیشنهادی را با دقت مقایسه کنید.</div>`:'';
     return `<article class="approval-card">
       <div class="approval-main">
-        <div class="approval-topline"><span class="approval-name">${esc(c.areaHeadName||c.areaHeadUserId)}</span><span class="approval-chip ${approvalStatusClass(st)}">${esc(correctionStatusText(st))}</span></div>
+        <div class="approval-topline"><span class="approval-name">${esc(c.areaHeadName||c.areaHeadUserId)}</span><span class="approval-chip ${approvalStatusClass(st)}">${esc(correctionStatusText(st))}</span>${stale?'<span class="approval-chip stale">درخواست قدیمی</span>':''}</div>
         <div class="approval-store">فروشگاه ${esc(c.storeCode)} · ${esc(c.storeName||'')}</div>
         <div class="approval-meta"><span class="approval-chip distance">اختلاف: ${esc(diff)}</span><span class="approval-chip accuracy">دقت GPS: ${esc(acc)}</span><span class="approval-chip time">${c.gpsSampleCount||0} نمونه</span><span class="approval-chip time">${esc(formatApprovalDate(c.requestedAt))}</span></div>
-        <div class="coord-grid"><div class="coord-box"><strong>مختصات فعلی سیستم</strong><span>${esc(c.oldLat)}, ${esc(c.oldLng)}</span></div><div class="coord-box"><strong>GPS پیشنهادی رئیس ناحیه</strong><span>${esc(c.newLat)}, ${esc(c.newLng)}</span></div></div>
-        ${pending?'<div class="correction-note">با تأیید، مختصات فروشگاه در STORES به نقطه پیشنهادی تغییر می‌کند، نسخه قبلی در LOCATION_CORRECTIONS باقی می‌ماند و بازدید رئیس ناحیه فعال می‌شود.</div>':''}
+        <div class="coord-grid"><div class="coord-box"><strong>مختصات فعلی Master</strong><span>${esc(currentLat)}, ${esc(currentLng)}</span></div><div class="coord-box"><strong>GPS پیشنهادی رئیس ناحیه</strong><span>${esc(c.newLat)}, ${esc(c.newLng)}</span></div></div>
+        ${staleNote}${changedNote}
         ${c.decisionNote?`<div class="approval-reason">یادداشت تصمیم: ${esc(c.decisionNote)}</div>`:''}
         <div class="approval-id">${esc(c.correctionId)} · Visit ${esc(c.visitId)}</div>
       </div>
@@ -1892,7 +1900,13 @@ function renderCorrections(){
   }).join('');
 }
 async function approveCorrection(correctionId,storeName){
-  if(!confirm(`لوکیشن ${storeName} اصلاح شود؟\nمختصات جدید فوراً در STORES ثبت می‌شود و چک‌لیست رئیس ناحیه باز خواهد شد.`))return;
+  const c=(state.corrections||[]).find(x=>String(x.correctionId)===String(correctionId))||{};
+  const stale=!!c.isStalePending,changed=!!c.masterChangedSinceRequest;
+  let msg=`لوکیشن ${storeName} اصلاح شود؟\nمختصات جدید فوراً در STORES ثبت می‌شود.`;
+  if(stale)msg+='\n\nاین درخواست مربوط به یک بازدید قدیمی است؛ بازدید قبلی دوباره فعال نخواهد شد.';
+  else msg+='\nچک‌لیست رئیس ناحیه برای همین بازدید باز خواهد شد.';
+  if(changed)msg+='\n\n⚠ مختصات Master از زمان ثبت درخواست تغییر کرده است. با تأیید، مختصات فعلی با GPS پیشنهادی این درخواست جایگزین می‌شود.';
+  if(!confirm(msg))return;
   setLoading(true,'در حال اصلاح مختصات فروشگاه...');
   try{
     const res=await DMAuth.apiPost('decideLocationCorrection',{correctionId:correctionId,decision:'APPROVED',note:''},35000);
