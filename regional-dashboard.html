@@ -179,6 +179,8 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 .day-tab.inventory .day-count{background:#fff0cd;color:#8f6200}.day-tab.active.inventory{background:#a66e00;border-color:#a66e00}
 .day-tab.opening:not(.active){background:#eef7ff;border-color:#cfe2f7;color:#245f9d}
 .day-tab.opening .day-count{background:#deedfb;color:#245f9d}.day-tab.active.opening{background:#2869a8;border-color:#2869a8}
+.day-tab.other:not(.active){background:#f2f4f7;border-color:#d7dce4;color:#505967}
+.day-tab.other .day-count{background:#e8ebf0;color:#505967}.day-tab.active.other{background:#505967;border-color:#505967}
 .day-status-control{margin:0 18px 14px;border:1px solid #dde2ea;background:linear-gradient(135deg,#fbfcff,#fff);border-radius:18px;padding:14px 15px;display:grid;grid-template-columns:minmax(220px,.9fr) minmax(0,1.5fr);gap:14px;align-items:center}
 .day-status-main{min-width:0}.day-status-main strong{display:block;font-size:.82rem;color:#303846}.day-status-main span{display:block;font-size:.64rem;color:#7b8391;margin-top:4px;line-height:1.8}
 .day-status-fields{display:grid;grid-template-columns:150px minmax(150px,1fr) minmax(160px,1fr) auto;gap:8px;align-items:center}
@@ -187,7 +189,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 .day-status-save{border:0;border-radius:11px;padding:10px 13px;background:#171d29;color:#fff;font-family:inherit;font-size:.68rem;font-weight:900;white-space:nowrap}.day-status-save:disabled{opacity:.45;cursor:not-allowed}
 .day-status-control.past{opacity:.62}.day-status-control.past .day-status-fields{pointer-events:none}
 .day-status-note{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 8px;font-size:.64rem;font-weight:800}
-.day-status-note.leave{color:#65458d;background:#f4effb;border:1px solid #e2d7f2}.day-status-note.inventory{color:#8c6100;background:#fff6df;border:1px solid #efddb0}.day-status-note.opening{color:#245f9d;background:#eef7ff;border:1px solid #cfe2f7}
+.day-status-note.leave{color:#65458d;background:#f4effb;border:1px solid #e2d7f2}.day-status-note.inventory{color:#8c6100;background:#fff6df;border:1px solid #efddb0}.day-status-note.opening{color:#245f9d;background:#eef7ff;border:1px solid #cfe2f7}.day-status-note.other{color:#505967;background:#f2f4f7;border:1px solid #d7dce4}
 .day-status-empty{min-height:180px;border:1px dashed #d8dde6;border-radius:18px;background:#fbfcfe;display:grid;place-items:center;text-align:center;padding:28px;color:#697484}.day-status-empty strong{display:block;color:#3f4856;margin-bottom:6px}
 .store-performance-tools{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.store-performance-tools{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 .store-performance-tools .search{margin:0}
@@ -507,10 +509,10 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
         <div class="day-tabs" id="dayTabs"></div>
 
         <div class="day-status-control" id="dayStatusControl">
-          <div class="day-status-main"><strong id="dayStatusTitle">وضعیت عملیاتی روز رئیس ناحیه</strong><span id="dayStatusSub">روز کاری، مرخصی، انبارگردانی یا افتتاحیه را مشخص کن. روزهای غیرعملیاتی Route و انتظار عملکرد روزانه ندارند.</span></div>
+          <div class="day-status-main"><strong id="dayStatusTitle">وضعیت عملیاتی روز رئیس ناحیه</strong><span id="dayStatusSub">روز کاری، مرخصی، انبارگردانی، افتتاحیه یا سایر را مشخص کن. روزهای غیرعملیاتی Route و انتظار عملکرد روزانه ندارند.</span></div>
           <div class="day-status-fields">
             <select id="dayStatusType" onchange="renderDayStatusFields()">
-              <option value="WORKING">روز کاری</option><option value="LEAVE">مرخصی</option><option value="INVENTORY">انبارگردانی</option><option value="OPENING">افتتاحیه</option>
+              <option value="WORKING">روز کاری</option><option value="LEAVE">مرخصی</option><option value="INVENTORY">انبارگردانی</option><option value="OPENING">افتتاحیه</option><option value="OTHER">سایر</option>
             </select>
             <select id="dayStatusStore" class="hidden"><option value="">انتخاب فروشگاه انبارگردانی</option></select>
             <input id="dayStatusOpeningName" class="hidden" maxlength="120" placeholder="نام فروشگاه افتتاحیه">
@@ -905,8 +907,8 @@ function renderWeek(){
 }
 function dayCountClass(n){const max=Number(state.settings.smartMaxStops||6);if(n===0)return'low';if(n<=max)return'ok';return'high';}
 function dayStatusType(d){return String(d?.dayStatus?.eventType||d?.leave?.eventType||(d?.isLeave?'LEAVE':'')).toUpperCase();}
-function dayStatusLabel(d){const t=dayStatusType(d);return ({LEAVE:'مرخصی',INVENTORY:'انبارگردانی',OPENING:'افتتاحیه'})[t]||'روز کاری';}
-function dayStatusClass(d){const t=dayStatusType(d);return t==='INVENTORY'?'inventory':t==='OPENING'?'opening':t==='LEAVE'?'leave':'';}
+function dayStatusLabel(d){const t=dayStatusType(d);return ({LEAVE:'مرخصی',INVENTORY:'انبارگردانی',OPENING:'افتتاحیه',OTHER:'سایر'})[t]||'روز کاری';}
+function dayStatusClass(d){const t=dayStatusType(d);return t==='INVENTORY'?'inventory':t==='OPENING'?'opening':t==='OTHER'?'other':t==='LEAVE'?'leave':'';}
 function dayIsUnavailable(d){return !!(d&&(d.isUnavailable||d.isLeave||d.dayStatus||d.leave));}
 function smartTimeText(min){min=Number(min||0);if(!min)return'—';const h=Math.floor(min/60),m=Math.round(min%60);return h?`${h}س ${m?m+'د':''}`:`${m}د`;}
 function renderDays(){
@@ -943,9 +945,14 @@ function populateDayStatusStoreSelect(d){
   if(current)sel.value=current;
 }
 function renderDayStatusFields(){
-  const d=selectedDay(),type=document.getElementById('dayStatusType')?.value||'WORKING',store=document.getElementById('dayStatusStore'),openingName=document.getElementById('dayStatusOpeningName');
+  const d=selectedDay(),type=document.getElementById('dayStatusType')?.value||'WORKING',store=document.getElementById('dayStatusStore'),openingName=document.getElementById('dayStatusOpeningName'),note=document.getElementById('dayStatusNoteInput');
   if(store)store.classList.toggle('hidden',type!=='INVENTORY');
   if(openingName)openingName.classList.toggle('hidden',type!=='OPENING');
+  if(note){
+    note.required=type==='OTHER';
+    note.placeholder=type==='OTHER'?'توضیحات الزامی برای «سایر»':'توضیح اختیاری';
+    note.setAttribute('aria-required',type==='OTHER'?'true':'false');
+  }
   const btn=document.getElementById('dayStatusSaveBtn');if(btn)btn.textContent=type==='WORKING'&&dayIsUnavailable(d)?'لغو وضعیت و تبدیل به روز کاری':'ثبت وضعیت';
 }
 function renderDayStatusControl(){
@@ -956,8 +963,9 @@ function renderDayStatusControl(){
   title.textContent=`وضعیت ${DAY_NAMES[idx]||''} · ${faDateShort(d.dateIso)}`;
   if(dayIsUnavailable(d)){
     const storeText=current==='OPENING'&&status?.relatedStoreName?` · ${status.relatedStoreName}`:(status?.relatedStoreCode?` · ${status.relatedStoreCode}${status.relatedStoreName?' - '+status.relatedStoreName:''}`:'');
-    sub.textContent=`${dayStatusLabel(d)} ثبت شده${storeText}. این روز Route و انتظار عملکرد روزانه ندارد.`;
-  }else sub.textContent=past?'روز گذشته قابل تغییر نیست.':'اگر رئیس ناحیه مرخصی، انبارگردانی یا افتتاحیه دارد، همان وضعیت را ثبت کن؛ Route شروع‌نشده روز پاک می‌شود.';
+    const noteText=current==='OTHER'&&status?.note?` · ${status.note}`:'';
+    sub.textContent=`${dayStatusLabel(d)} ثبت شده${storeText}${noteText}. این روز Route و انتظار عملکرد روزانه ندارد.`;
+  }else sub.textContent=past?'روز گذشته قابل تغییر نیست.':'اگر رئیس ناحیه مرخصی، انبارگردانی، افتتاحیه یا وضعیت دیگری دارد، همان وضعیت را ثبت کن؛ Route شروع‌نشده روز پاک می‌شود.';
   typeSel.disabled=past;btn.disabled=past;renderDayStatusFields();
 }
 async function saveSelectedDayStatus(){
@@ -970,7 +978,8 @@ async function saveSelectedDayStatus(){
   const note=(document.getElementById('dayStatusNoteInput')?.value||'').trim();
   if(active&&type==='INVENTORY'&&!storeCode){toast('برای انبارگردانی، فروشگاه مربوط را انتخاب کن.','error');return;}
   if(active&&type==='OPENING'&&!openingName){toast('برای افتتاحیه، فقط نام فروشگاه را وارد کن.','error');return;}
-  const label=({LEAVE:'مرخصی',INVENTORY:'انبارگردانی',OPENING:'افتتاحیه'})[type]||'روز کاری';
+  if(active&&type==='OTHER'&&!note){toast('برای گزینه «سایر»، توضیحات الزامی است.','error');document.getElementById('dayStatusNoteInput')?.focus();return;}
+  const label=({LEAVE:'مرخصی',INVENTORY:'انبارگردانی',OPENING:'افتتاحیه',OTHER:'سایر'})[type]||'روز کاری';
   const msg=active?`برای ${faDateShort(d.dateIso)} وضعیت «${label}» ثبت شود؟ Route شروع‌نشده این روز پاک می‌شود.`:`وضعیت غیرعملیاتی ${faDateShort(d.dateIso)} لغو و روز به حالت کاری برگردد؟`;
   if(!confirm(msg))return;
   setLoading(true,active?'در حال ثبت وضعیت روز...':'در حال بازگرداندن روز کاری...');
