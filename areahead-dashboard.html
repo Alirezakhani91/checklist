@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b5001d">
-<!-- Daily Market Area Head Dashboard V26 Checklist Operational Update + V25.2 GPS -->
+<!-- Daily Market Area Head Dashboard V39 Day Status Display + V26 Checklist Operational Update + V25.2 GPS -->
 <title>رئیس ناحیه | چک لیست دیلی مارکت</title>
 
 <style>
@@ -911,7 +911,52 @@ button{cursor:pointer}
 .route-delegated-banner{display:none;margin-bottom:12px;padding:12px 14px;border-radius:16px;background:#eef5ff;border:1px solid #dbe8ff;color:#2f5389;font-size:.72rem;line-height:1.8}
 .route-delegated-banner.show{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .route-delegated-banner button{border:0;background:#315efb;color:#fff;border-radius:11px;padding:9px 12px;font-family:inherit;font-weight:900}
-@media(max-width:820px){.action-stack{display:grid;grid-template-columns:1fr 1fr;width:100%}.action-stack .action-btn{width:100%}.cannot-modal .reason-grid{grid-template-columns:1fr}.route-delegated-banner.show{display:block}.route-delegated-banner button{width:100%;margin-top:8px}}
+
+/* ===== V39 AREA HEAD DAY STATUS DISPLAY ===== */
+.day-status-banner{
+  display:none;
+  margin:0 0 18px;
+  border:1px solid #e5d8ae;
+  background:linear-gradient(135deg,#fffaf0 0%,#fff 68%);
+  border-radius:22px;
+  padding:17px 18px;
+  box-shadow:0 10px 30px rgba(106,78,12,.06)
+}
+.day-status-banner.show{display:block}
+.day-status-row{display:flex;align-items:flex-start;gap:13px}
+.day-status-icon{
+  width:46px;height:46px;border-radius:15px;flex:0 0 auto;
+  display:grid;place-items:center;font-size:1.25rem;
+  background:#fff3cf;color:#8a6200;border:1px solid #f0dda7
+}
+.day-status-main{min-width:0;flex:1}
+.day-status-kicker{font-size:.64rem;color:#8a6c27;font-weight:900;margin-bottom:3px}
+.day-status-title{font-size:1rem;font-weight:900;color:#352b12}
+.day-status-desc{margin-top:5px;font-size:.72rem;line-height:1.9;color:#76684a}
+.day-status-note{
+  margin-top:10px;padding:10px 12px;border-radius:13px;
+  background:#fff;border:1px solid #eee2c5;color:#4e4532;
+  font-size:.72rem;line-height:1.9
+}
+.day-status-note strong{color:#312a1c}
+.day-status-banner.type-leave{border-color:#dfd5f3;background:linear-gradient(135deg,#f8f4ff,#fff)}
+.day-status-banner.type-leave .day-status-icon{background:#f1eaff;border-color:#ddd0f4;color:#7151b6}
+.day-status-banner.type-inventory{border-color:#efd7a8;background:linear-gradient(135deg,#fff8e8,#fff)}
+.day-status-banner.type-opening{border-color:#cdddf9;background:linear-gradient(135deg,#f1f6ff,#fff)}
+.day-status-banner.type-opening .day-status-icon{background:#e8f0ff;border-color:#cfddf8;color:#315fc5}
+.day-status-banner.type-other{border-color:#d7dce5;background:linear-gradient(135deg,#f7f8fb,#fff)}
+.day-status-banner.type-other .day-status-icon{background:#eef0f4;border-color:#dce1e8;color:#4e5969}
+@media(max-width:820px){
+  .action-stack{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  .action-stack .action-btn{width:100%}
+  .cannot-modal .reason-grid{grid-template-columns:1fr}
+  .route-delegated-banner.show{display:block}
+  .route-delegated-banner button{width:100%;margin-top:8px}
+  .day-status-banner{padding:14px;border-radius:18px;margin-bottom:12px}
+  .day-status-row{gap:10px}
+  .day-status-icon{width:41px;height:41px;border-radius:13px}
+  .day-status-title{font-size:.9rem}
+}
 
 
 .maintenance-sync-result{
@@ -1039,6 +1084,18 @@ button{cursor:pointer}
       </section>
 
       <div class="route-delegated-banner" id="routeDelegatedBanner"><span><strong>مسیر‌بندی این ناحیه به شما واگذار شده است.</strong><br>برنامه هفتگی را خودتان می‌چینید؛ سیستم اجازه نمی‌دهد فروشگاه‌های سررسید ۱۴ روزه از برنامه جا بمانند.</span><button onclick="location.href='areahead-route.html'">برنامه‌ریزی مسیر من</button></div>
+
+      <section class="day-status-banner" id="todayDayStatusBanner">
+        <div class="day-status-row">
+          <div class="day-status-icon" id="todayDayStatusIcon">●</div>
+          <div class="day-status-main">
+            <div class="day-status-kicker">وضعیت عملیاتی امروز</div>
+            <div class="day-status-title" id="todayDayStatusTitle">—</div>
+            <div class="day-status-desc" id="todayDayStatusDesc">—</div>
+            <div class="day-status-note hidden" id="todayDayStatusNote"></div>
+          </div>
+        </div>
+      </section>
 
       <section class="grid">
         <div class="panel">
@@ -1285,14 +1342,67 @@ async function loadData(silent=false,forceFresh=false){
   }
 }
 
+function dayStatusDisplay(status){
+  if(!status)return null;
+  const type=String(status.eventType||'LEAVE').trim().toUpperCase();
+  const map={
+    LEAVE:{label:'مرخصی',icon:'🏖️',cls:'type-leave'},
+    INVENTORY:{label:'انبارگردانی',icon:'📦',cls:'type-inventory'},
+    OPENING:{label:'افتتاحیه',icon:'🏪',cls:'type-opening'},
+    OTHER:{label:'سایر',icon:'●',cls:'type-other'}
+  };
+  const meta=map[type]||{label:status.eventLabel||'وضعیت غیرعملیاتی',icon:'●',cls:'type-other'};
+  const storeName=String(status.relatedStoreName||'').trim();
+  const storeCode=String(status.relatedStoreCode||'').trim();
+  const note=String(status.note||'').trim();
+  let desc='برای امروز وضعیت «'+meta.label+'» ثبت شده است و Route عملیاتی این روز فعال نیست.';
+  if(type==='INVENTORY'&&(storeName||storeCode)){
+    desc='انبارگردانی امروز'+(storeName?' برای '+storeName:'')+(storeCode?' · کد '+storeCode:'')+' ثبت شده است.';
+  }else if(type==='OPENING'&&storeName){
+    desc='افتتاحیه امروز برای «'+storeName+'» ثبت شده است.';
+  }else if(type==='OTHER'){
+    desc='برای امروز وضعیت «سایر» ثبت شده است.';
+  }
+  return {type,label:meta.label,icon:meta.icon,cls:meta.cls,desc,note};
+}
+
+function renderTodayDayStatus(){
+  const banner=document.getElementById('todayDayStatusBanner');
+  const status=state.data?.dayStatus||state.data?.leave||state.route?.dayStatus||state.route?.leave||null;
+  const view=dayStatusDisplay(status);
+  if(!view){
+    banner.className='day-status-banner';
+    document.getElementById('todayDayStatusNote').classList.add('hidden');
+    return null;
+  }
+
+  banner.className='day-status-banner show '+view.cls;
+  document.getElementById('todayDayStatusIcon').textContent=view.icon;
+  document.getElementById('todayDayStatusTitle').textContent=view.label;
+  document.getElementById('todayDayStatusDesc').textContent=view.desc;
+
+  const noteEl=document.getElementById('todayDayStatusNote');
+  if(view.note){
+    noteEl.innerHTML='<strong>توضیحات:</strong> '+esc(view.note);
+    noteEl.classList.remove('hidden');
+  }else{
+    noteEl.textContent='';
+    noteEl.classList.add('hidden');
+  }
+  return view;
+}
+
 function renderAll(){
   document.getElementById('todayLabel').textContent=faDate(state.data.serverDateIso);
   document.getElementById('radiusRule').textContent=(state.settings.geoRadiusM||300)+' متر';
-  document.getElementById('routeBadge').textContent=(state.route.items?.length||0)+' بازدید';
+  const dayStatusView=renderTodayDayStatus();
+  document.getElementById('routeBadge').textContent=dayStatusView?dayStatusView.label:(state.route.items?.length||0)+' بازدید';
   const routeSource=String(state.route.sourceType||'').toUpperCase();
-  document.getElementById('routeMeta').textContent=state.route.routeId
-    ? (routeSource==='AREA_HEAD'?'مسیر ثبت‌شده توسط شما':'ترتیب تعیین‌شده توسط مدیر منطقه')
-    :'برای امروز Route ثبت نشده است.';
+  document.getElementById('routeMeta').textContent=dayStatusView
+    ? 'امروز وضعیت «'+dayStatusView.label+'» ثبت شده است.'
+    : state.route.routeId
+      ? (routeSource==='AREA_HEAD'?'مسیر ثبت‌شده توسط شما':'ترتیب تعیین‌شده توسط مدیر منطقه')
+      :'برای امروز Route ثبت نشده است.';
   const canSelf=!!state.data.canSelfRoute;
   document.getElementById('selfRouteNav').classList.toggle('hidden',!canSelf);
   document.getElementById('selfRouteMobileNav').classList.toggle('hidden',!canSelf);
@@ -1338,7 +1448,16 @@ function statusAction(item){
 
 function renderRoute(){
   const list=document.getElementById('routeList'),items=state.route.items||[];
-  if(!items.length){list.innerHTML=`<div class="empty"><strong>برای امروز Route ثبت نشده است</strong><span>در صورت نیاز می‌توانی بازدید خارج از برنامه ثبت کنی.</span></div>`;return;}
+  const dayStatusView=dayStatusDisplay(state.data?.dayStatus||state.data?.leave||state.route?.dayStatus||state.route?.leave||null);
+  if(!items.length){
+    if(dayStatusView){
+      const note=dayStatusView.note?`<br><span style="display:inline-block;margin-top:6px"><strong>توضیحات:</strong> ${esc(dayStatusView.note)}</span>`:'';
+      list.innerHTML=`<div class="empty"><strong>امروز: ${esc(dayStatusView.label)}</strong><span>${esc(dayStatusView.desc)}${note}</span></div>`;
+    }else{
+      list.innerHTML=`<div class="empty"><strong>برای امروز Route ثبت نشده است</strong><span>در صورت نیاز می‌توانی بازدید خارج از برنامه ثبت کنی.</span></div>`;
+    }
+    return;
+  }
   list.innerHTML=items.map((x,i)=>{
     const cls=x.uiStatus==='COMPLETED'?'completed':x.uiStatus==='IN_PROGRESS'?'inprogress':(x.uiStatus==='WAITING_APPROVAL'||x.uiStatus==='WAITING_CORRECTION')?'pending':'';
     const gps=String(x.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="tag red">GPS نیازمند بررسی</span>':'';
