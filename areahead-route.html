@@ -198,7 +198,7 @@ function parseIso(s){return new Date(s+'T12:00:00')}function iso(d){const y=d.ge
 function faDate(s){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{month:'short',day:'numeric'}).format(parseIso(s))}catch(_){return s}}
 function priority(s){const d=Number(s.daysSinceLastVisit);if(d>=999)return['blue','بدون سابقه'];if(d>=14)return['red',d+' روز'];if(d>=12)return['orange','۱۲+ روز'];if(d>=10)return['yellow','۱۰+ روز'];return['',d+' روز']}
 function isPast(d){return d.dateIso<state.todayIso}function locked(x){return !!(x.locked||String(x.visitId||''))}
-async function init(){const a=await DMAuth.validateSession('AREA_HEAD');if(!a.ok){location.replace('index.html');return}state.user=a.user;state.currentWeekStartIso='';state.weekStartIso='';document.getElementById('sideName').textContent=a.user.fullName||'رئیس ناحیه';document.getElementById('sideRegion').textContent=a.user.regionalManagerName||'';await reload()}
+async function init(){const a=await DMAuth.validateSession('AREA_HEAD');if(!a.ok){location.replace('index.html');return}state.user=a.user;state.currentWeekStartIso='';const requestedWeek=new URLSearchParams(location.search).get('weekStartIso')||'';state.weekStartIso=requestedWeek;document.getElementById('sideName').textContent=a.user.fullName||'رئیس ناحیه';document.getElementById('sideRegion').textContent=a.user.regionalManagerName||'';await reload()}
 async function reload(){
   setLoading(true,'در حال دریافت برنامه و SLA...');
   try{
