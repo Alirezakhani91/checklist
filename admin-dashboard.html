@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
+<!-- V41 NATIONAL SCORING UI: SOS / AES / RMS / ECS -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b4001b">
@@ -211,7 +212,7 @@ button,input,select{font:inherit}
 
     <section class="tabs-pane" id="pane-performance">
       <div class="hero">
-        <div><h2>کنترل عملکرد کل کشور</h2><p id="performancePeriodText">نمای مدیریتی کشور از سطح مدیر اجرایی تا فروشگاه.</p></div>
+        <div><h2>کنترل عملکرد کل کشور · V41</h2><p id="performancePeriodText">نمای مدیریتی کشور از سطح مدیر اجرایی تا فروشگاه.</p></div>
         <div class="periods">
           <button class="period-btn active" data-days="7" onclick="changePerformancePeriod(7,this)">۷ روز</button>
           <button class="period-btn" data-days="14" onclick="changePerformancePeriod(14,this)">۱۴ روز</button>
@@ -225,7 +226,7 @@ button,input,select{font:inherit}
         <div class="np-command">
           <div class="np-country">
             <div class="np-score-ring" id="npScoreRing"><b id="npNationalScore">—</b></div>
-            <div><h3>وضعیت کل شبکه بازدید</h3><p id="npNationalReason">—</p><span class="np-country-status" id="npNationalStatus">—</span></div>
+            <div><h3>امتیاز کنترل اجرای شبکه</h3><p id="npNationalReason">—</p><span class="np-country-status" id="npNationalStatus">—</span></div>
           </div>
           <div class="np-today">
             <div class="np-today-item"><strong id="npTodayPlanned">—</strong><span>برنامه امروز</span></div>
@@ -239,10 +240,10 @@ button,input,select{font:inherit}
 
         <div class="np-kpis">
           <div class="np-kpi good"><b id="npCompletion">—٪</b><span>تحقق Route</span><small id="npCompletionSub">—</small></div>
-          <div class="np-kpi blue"><b id="npCoverage">—٪</b><span>پوشش فروشگاه</span><small id="npCoverageSub">—</small></div>
-          <div class="np-kpi"><b id="npWithin14">—٪</b><span>داخل SLA چهارده‌روزه</span><small id="npSlaSub">—</small></div>
+          <div class="np-kpi blue"><b id="npCoverage">—٪</b><span>پوشش ۱۰روزه فروشگاه‌ها</span><small id="npCoverageSub">—</small></div>
+          <div class="np-kpi"><b id="npWithin14">—٪</b><span>کنترل SLA چهارده‌روزه</span><small id="npSlaSub">—</small></div>
           <div class="np-kpi"><b id="npHeadActivity">—٪</b><span>مشارکت رؤسای ناحیه</span><small id="npHeadActivitySub">—</small></div>
-          <div class="np-kpi"><b id="npQuality">—</b><span>کیفیت چک‌لیست</span><small id="npQualitySub">—</small></div>
+          <div class="np-kpi"><b id="npQuality">—</b><span>SOS فروشگاه‌ها</span><small id="npQualitySub">Outcome مستقل از امتیاز مدیریت</small></div>
           <div class="np-kpi warn"><b id="npUnplanned">—٪</b><span>خارج از Route</span><small id="npUnplannedSub">—</small></div>
           <div class="np-kpi warn"><b id="npOverride">—٪</b><span>Manager Override</span><small id="npOverrideSub">—</small></div>
           <div class="np-kpi"><b id="npDuration">—</b><span>میانگین مدت بازدید</span><small>دقیقه</small></div>
@@ -261,7 +262,7 @@ button,input,select{font:inherit}
 
         <div class="card">
           <div class="card-head">
-            <div><h3>کنترل مناطق کشور</h3><p>تحقق برنامه، پوشش، SLA، کیفیت و وضعیت رؤسای ناحیه در هر منطقه.</p></div>
+            <div><h3>کنترل مناطق کشور</h3><p>RMS هر منطقه بر اساس تحقق برنامه، پوشش ۱۰روزه، SLA و ثبات رؤسای ناحیه. SOS فقط Outcome مستقل است.</p></div>
             <div class="np-filters">
               <input class="search" id="performanceSearch" placeholder="جستجوی مدیر منطقه، رئیس ناحیه یا مدیر اجرایی..." oninput="performanceFilterChanged()">
               <select class="filter" id="performanceExecutiveFilter" onchange="performanceFilterChanged()"><option value="ALL">همه مدیران اجرایی</option></select>
@@ -272,17 +273,17 @@ button,input,select{font:inherit}
             </div>
           </div>
           <div class="table-wrap"><table class="table" style="min-width:1450px"><thead><tr>
-            <th>#</th><th>منطقه</th><th>مدیر اجرایی</th><th>وضعیت</th><th>امتیاز</th><th>فروشگاه</th><th>رئیس ناحیه</th><th>برنامه / تکمیل</th><th>تحقق</th><th>پوشش</th><th>SLA 14</th><th>فعالیت رؤسا</th><th>کیفیت</th><th>بحرانی</th><th>امروز</th><th></th>
+            <th>#</th><th>منطقه</th><th>مدیر اجرایی</th><th>وضعیت</th><th>RMS</th><th>فروشگاه</th><th>رئیس ناحیه</th><th>برنامه / تکمیل</th><th>تحقق</th><th>پوشش ۱۰روزه</th><th>SLA 14</th><th>ثبات رؤسا</th><th>SOS</th><th>۱۴+ روز</th><th>امروز</th><th></th>
           </tr></thead><tbody id="performanceRegionBody"></tbody></table></div>
         </div>
 
         <div class="card" id="npHeadsCard">
           <div class="card-head">
-            <div><h3>کنترل رؤسای ناحیه</h3><p id="npHeadsSub">تمام رؤسای ناحیه کشور با وضعیت عملیاتی دوره و امروز.</p></div>
+            <div><h3>کنترل رؤسای ناحیه</h3><p id="npHeadsSub">تمام رؤسای ناحیه کشور با AES مستقل از امتیاز فروشگاه و کیفیت چک‌لیست.</p></div>
             <div class="np-head-pager"><button onclick="performanceHeadPage(-1)">قبلی</button><span id="npHeadPageLabel">—</span><button onclick="performanceHeadPage(1)">بعدی</button></div>
           </div>
           <div class="table-wrap"><table class="table" style="min-width:1500px"><thead><tr>
-            <th>رئیس ناحیه</th><th>منطقه</th><th>وضعیت</th><th>امتیاز</th><th>فروشگاه</th><th>برنامه / تکمیل</th><th>تحقق</th><th>پوشش</th><th>۱۴+ / بدون سابقه</th><th>خارج Route</th><th>کیفیت</th><th>GPS</th><th>امروز</th><th>آخرین فعالیت</th><th></th>
+            <th>رئیس ناحیه</th><th>منطقه</th><th>وضعیت</th><th>AES</th><th>فروشگاه</th><th>برنامه / تکمیل</th><th>تحقق</th><th>پوشش ۱۰روزه</th><th>۱۴+ / بدون سابقه</th><th>انضباط اجرا</th><th>SOS</th><th>GPS</th><th>امروز</th><th>آخرین فعالیت</th><th></th>
           </tr></thead><tbody id="performanceHeadBody"></tbody></table></div>
         </div>
 
@@ -300,11 +301,11 @@ button,input,select{font:inherit}
 
         <div class="np-quality-grid">
           <div class="card" style="margin:0">
-            <div class="card-head"><div><h3>نقاط ضعف چک‌لیست</h3><p>سؤال‌هایی که بیشترین پاسخ نیازمند توجه را داشته‌اند.</p></div></div>
+            <div class="card-head"><div><h3>نقاط ضعف چک‌لیست · تحلیل تشخیصی</h3><p>این تحلیل برای کشف مسئله است و وارد AES / RMS / ECS نمی‌شود.</p></div></div>
             <div class="np-quality-list" id="npQuestionQuality"></div>
           </div>
           <div class="card" style="margin:0">
-            <div class="card-head"><div><h3>کیفیت بخش‌های چک‌لیست</h3><p>ضعیف‌ترین بخش‌ها بر اساس امتیاز پاسخ‌ها.</p></div></div>
+            <div class="card-head"><div><h3>کیفیت بخش‌های چک‌لیست · خارج از امتیاز مدیریت</h3><p>نمای تشخیصی کیفیت پاسخ‌ها؛ بدون وزن در امتیاز مدیریتی.</p></div></div>
             <div class="np-quality-list" id="npSectionQuality"></div>
           </div>
         </div>
@@ -1036,10 +1037,10 @@ function renderPerformance(){
   el('npTodayNotStarted').textContent=fa(s.todayHeadsNotStarted);el('npTodayNoPlan').textContent=fa(s.todayHeadsNoPlan);
 
   el('npCompletion').textContent=pct(s.completionRate);el('npCompletionSub').textContent=`${fa(s.completedPlanned)} از ${fa(s.planned)} برنامه`;
-  el('npCoverage').textContent=pct(s.coverageRate);el('npCoverageSub').textContent=`${fa(s.visitedStores)} از ${fa(s.stores)} فروشگاه`;
-  el('npWithin14').textContent=pct(s.within14Rate);el('npSlaSub').textContent=`${fa(s.overdue)} سررسید · ${fa(s.noHistory)} بدون سابقه`;
+  el('npCoverage').textContent=pct(s.coverage10);el('npCoverageSub').textContent=`${fa(Math.round(Number(s.coverage10||0)*Number(s.stores||0)/100))} از ${fa(s.stores)} فروشگاه در پوشش ۱۰روزه`;
+  el('npWithin14').textContent=pct(s.slaHealthRate??s.within14Rate);el('npSlaSub').textContent=`${fa(s.overdue14Count??s.overdue)} فروشگاه ۱۴+ روز / بدون سابقه`;
   el('npHeadActivity').textContent=pct(s.headActivityRate);el('npHeadActivitySub').textContent=`${fa(s.activeHeads)} از ${fa(s.areaHeads)} رئیس ناحیه`;
-  el('npQuality').textContent=npQualityText(s.qualityScore);el('npQualitySub').textContent=s.responseCount?`${pct(s.issueRate)} پاسخ نیازمند توجه`:'داده کافی ثبت نشده';
+  el('npQuality').textContent=(s.portfolioHealthScore===null||s.portfolioHealthScore===undefined)?'بدون داده':fa(s.portfolioHealthScore);el('npQualitySub').textContent=`SOS · ${fa(s.sosScoredStores||0)} فروشگاه دارای امتیاز · خارج از NCS`;
   el('npUnplanned').textContent=pct(s.unplannedRate);el('npUnplannedSub').textContent=`${fa(s.unplanned)} بازدید`;
   el('npOverride').textContent=pct(s.overrideRate);el('npOverrideSub').textContent=`${fa(s.overrides)} مورد`;
   el('npDuration').textContent=fa(s.avgDuration);
@@ -1101,9 +1102,9 @@ function npHeadFiltered(h){
 function renderPerformanceExecutives(){
   const d=state.performance;if(!d)return;const selected=state.performanceFilters.executive;
   el('npExecutiveGrid').innerHTML=(d.executives||[]).map(x=>`<article class="np-exec ${selected===x.executiveKey?'selected':''}" onclick="setPerformanceExecutive(decodeURIComponent('${npArg(x.executiveKey)}'))">
-    <div class="np-exec-top"><div><strong>${esc(x.fullName)}</strong><div class="np-exec-meta">${fa(x.regions)} منطقه · ${fa(x.areaHeads)} رئیس ناحیه · ${fa(x.storeCount)} فروشگاه</div></div><span class="np-exec-score ${npScoreClass(x.score)}">${fa(x.score)}</span></div>
+    <div class="np-exec-top"><div><strong>${esc(x.fullName)}</strong><div class="np-exec-meta">${fa(x.regions)} منطقه · ${fa(x.areaHeads)} رئیس ناحیه · ${fa(x.storeCount)} فروشگاه</div></div><span class="np-exec-score ${npScoreClass(x.score)}">${fa(x.score)} <small style="font-size:.5em">ECS</small></span></div>
     <div style="margin-top:8px">${npStatusBadge(x.status,x.statusLabel)}</div>
-    <div class="np-exec-bars"><div class="np-mini-metric"><b>${pct(x.completionRate)}</b><span>تحقق Route</span></div><div class="np-mini-metric"><b>${pct(x.coverageRate)}</b><span>پوشش</span></div><div class="np-mini-metric"><b>${fa(x.criticalStores)}</b><span>فروشگاه بحرانی</span></div><div class="np-mini-metric"><b>${pct(x.headActivityRate)}</b><span>فعالیت رؤسا</span></div></div>
+    <div class="np-exec-bars"><div class="np-mini-metric"><b>${pct(x.completionRate)}</b><span>تحقق Route</span></div><div class="np-mini-metric"><b>${pct(x.coverage10)}</b><span>پوشش ۱۰روزه</span></div><div class="np-mini-metric"><b>${fa(x.overdue14Count||0)}</b><span>۱۴+ روز</span></div><div class="np-mini-metric"><b>${pct(x.regionConsistency)}</b><span>ثبات مناطق</span></div></div>
   </article>`).join('')||'<div style="padding:15px;color:var(--muted)">مدیر اجرایی ثبت نشده است.</div>';
 }
 
@@ -1121,8 +1122,8 @@ function renderPerformanceRegions(){
   el('performanceRegionBody').innerHTML=arr.map((m,i)=>`<tr>
     <td><span class="np-rank">${fa(i+1)}</span></td><td><strong>${esc(m.fullName)}</strong><br><span style="color:var(--muted)">${(m.reasons||[]).slice(0,2).map(esc).join(' · ')||'وضعیت پایدار'}</span></td>
     <td>${esc(m.executiveName||'—')}</td><td>${npStatusBadge(m.status,m.statusLabel)}</td><td><span class="np-score ${npScoreClass(m.score)}">${fa(m.score)}</span></td>
-    <td>${fa(m.storeCount)}</td><td>${fa(m.areaHeads)}</td><td>${fa(m.planned)} / ${fa(m.completedPlanned)}</td><td>${pct(m.completionRate)}</td><td>${pct(m.coverageRate)}</td>
-    <td>${pct(m.within14Rate)}</td><td>${pct(m.headActivityRate)}</td><td>${npQualityText(m.qualityScore)}</td><td>${fa(m.criticalStores)}</td><td>${npTodayBadge(m.todayState)}</td>
+    <td>${fa(m.storeCount)}</td><td>${fa(m.areaHeads)}</td><td>${fa(m.planned)} / ${fa(m.completedPlanned)}</td><td>${pct(m.completionRate)}</td><td>${pct(m.coverage10)}</td>
+    <td>${pct(m.slaHealthRate??m.within14Rate)}</td><td>${pct(m.headConsistency)}</td><td>${m.portfolioHealthScore===null||m.portfolioHealthScore===undefined?'—':fa(m.portfolioHealthScore)}</td><td>${fa(m.overdue14Count||0)}</td><td>${npTodayBadge(m.todayState)}</td>
     <td><div class="actions"><button class="btn ghost" onclick="openPerformanceRegion(decodeURIComponent('${npArg(m.regionalUserId)}'))">جزئیات</button><button class="btn soft" onclick="setPerformanceRegion(decodeURIComponent('${npArg(m.regionalUserId)}'))">رؤسای ناحیه</button></div></td>
   </tr>`).join('')||'<tr><td colspan="16">منطقه‌ای مطابق فیلتر پیدا نشد.</td></tr>';
 }
@@ -1131,10 +1132,10 @@ function renderPerformanceHeads(){
   const d=state.performance;if(!d)return;const arr=(d.areaHeads||[]).filter(npHeadFiltered);const pages=Math.max(1,Math.ceil(arr.length/NP_HEAD_PAGE_SIZE));
   state.performanceHeadPage=Math.max(1,Math.min(pages,state.performanceHeadPage||1));const start=(state.performanceHeadPage-1)*NP_HEAD_PAGE_SIZE,rows=arr.slice(start,start+NP_HEAD_PAGE_SIZE);
   el('npHeadPageLabel').textContent=`صفحه ${fa(state.performanceHeadPage)} از ${fa(pages)} · ${fa(arr.length)} نفر`;
-  el('npHeadsSub').textContent=state.performanceFilters.region==='ALL'?'تمام رؤسای ناحیه کشور با وضعیت عملیاتی دوره و امروز.':`رؤسای ناحیه منطقه انتخاب‌شده · ${fa(arr.length)} نفر`;
+  el('npHeadsSub').textContent=state.performanceFilters.region==='ALL'?'تمام رؤسای ناحیه کشور با AES مستقل از امتیاز فروشگاه و کیفیت چک‌لیست.':`رؤسای ناحیه منطقه انتخاب‌شده · ${fa(arr.length)} نفر · رتبه‌بندی بر اساس AES`;
   el('performanceHeadBody').innerHTML=rows.map(h=>`<tr>
     <td><strong>${esc(h.fullName)}</strong><br><span style="color:var(--muted)">${esc(h.executiveName||'')}</span></td><td>${esc(h.regionalManagerName||'—')}</td><td>${npStatusBadge(h.status,h.statusLabel)}</td><td><span class="np-score ${npScoreClass(h.score)}">${fa(h.score)}</span></td>
-    <td>${fa(h.storeCount)}</td><td>${fa(h.planned)} / ${fa(h.completedPlanned)}</td><td>${pct(h.completionRate)}</td><td>${pct(h.coverageRate)}</td><td>${fa(h.criticalStores)}</td><td>${pct(h.unplannedRate)}</td><td>${npQualityText(h.qualityScore)}</td><td>${fa(h.pendingGps)}</td><td>${npTodayBadge(h.todayState)}</td><td>${fmtDate(h.lastActivity)}</td>
+    <td>${fa(h.storeCount)}</td><td>${fa(h.planned)} / ${fa(h.completedPlanned)}</td><td>${pct(h.completionRate)}</td><td>${pct(h.coverage10)}</td><td>${fa(h.overdue14Count||0)} / ${fa(h.noHistoryCount||0)}</td><td>${pct(h.executionIntegrity)}</td><td>${h.portfolioHealthScore===null||h.portfolioHealthScore===undefined?'—':fa(h.portfolioHealthScore)}</td><td>${fa(h.pendingGps)}</td><td>${npTodayBadge(h.todayState)}</td><td>${fmtDate(h.lastActivity)}</td>
     <td><button class="btn ghost" onclick="openPerformanceHead(decodeURIComponent('${npArg(h.userId)}'))">فروشگاه‌ها</button></td>
   </tr>`).join('')||'<tr><td colspan="15">رئیس ناحیه‌ای مطابق فیلتر پیدا نشد.</td></tr>';
 }
@@ -1167,9 +1168,9 @@ function renderPerformanceWatch(){
 function openPerformanceRegion(id){
   const m=(state.performance?.managers||[]).find(x=>String(x.regionalUserId)===String(id));if(!m)return;state.performanceManager=m;
   const heads=(state.performance?.areaHeads||[]).filter(h=>String(h.regionalUserId)===String(id));
-  el('drawerTitle').textContent='منطقه · '+m.fullName;el('drawerSub').textContent=`${m.executiveName||'—'} · امتیاز ${fa(m.score)} · ${m.statusLabel}`;
-  el('drawerBody').innerHTML=`<div class="head-card"><div class="mini"><div><b>${pct(m.completionRate)}</b><span>تحقق Route</span></div><div><b>${pct(m.coverageRate)}</b><span>پوشش</span></div><div><b>${pct(m.within14Rate)}</b><span>SLA 14</span></div><div><b>${pct(m.headActivityRate)}</b><span>فعالیت رؤسا</span></div><div><b>${fa(m.criticalStores)}</b><span>فروشگاه بحرانی</span></div><div><b>${fa(m.todayHeadsNotStarted)}</b><span>شروع‌نکرده امروز</span></div><div><b>${fa(m.pendingGps)}</b><span>GPS Pending</span></div><div><b>${npQualityText(m.qualityScore)}</b><span>کیفیت</span></div></div><p style="font-size:.65rem;color:var(--muted);line-height:1.8">${esc((m.reasons||[]).join(' · ')||'وضعیت منطقه پایدار است.')}</p></div>
-    ${heads.map(h=>`<article class="head-card"><div class="head-card-top"><div><strong>${esc(h.fullName)}</strong><p>${fa(h.storeCount)} فروشگاه · ${npTodayFa(h.todayState)} · آخرین فعالیت ${fmtDate(h.lastActivity)}</p></div><button class="btn ghost" onclick="openPerformanceHead(decodeURIComponent('${npArg(h.userId)}'))">فروشگاه‌ها</button></div><div class="mini"><div><b>${fa(h.score)}</b><span>امتیاز</span></div><div><b>${pct(h.completionRate)}</b><span>تحقق</span></div><div><b>${pct(h.coverageRate)}</b><span>پوشش</span></div><div><b>${fa(h.criticalStores)}</b><span>بحرانی</span></div></div></article>`).join('')||'<div style="color:var(--muted)">رئیس ناحیه‌ای یافت نشد.</div>'}`;
+  el('drawerTitle').textContent='منطقه · '+m.fullName;el('drawerSub').textContent=`${m.executiveName||'—'} · RMS ${fa(m.score)} · ${m.statusLabel}`;
+  el('drawerBody').innerHTML=`<div class="head-card"><div class="mini"><div><b>${pct(m.completionRate)}</b><span>تحقق Route</span></div><div><b>${pct(m.coverage10)}</b><span>پوشش ۱۰روزه</span></div><div><b>${pct(m.slaHealthRate??m.within14Rate)}</b><span>SLA 14</span></div><div><b>${pct(m.headConsistency)}</b><span>ثبات رؤسا</span></div><div><b>${fa(m.overdue14Count||0)}</b><span>۱۴+ روز</span></div><div><b>${fa(m.criticalHeads||0)}</b><span>رئیس بحرانی</span></div><div><b>${m.portfolioHealthScore===null||m.portfolioHealthScore===undefined?'—':fa(m.portfolioHealthScore)}</b><span>SOS منطقه</span></div><div><b>${fa(m.pendingGps)}</b><span>GPS Pending</span></div></div><p style="font-size:.65rem;color:var(--muted);line-height:1.8">${esc((m.reasons||[]).join(' · ')||'وضعیت منطقه پایدار است.')}</p></div>
+    ${heads.map(h=>`<article class="head-card"><div class="head-card-top"><div><strong>${esc(h.fullName)}</strong><p>${fa(h.storeCount)} فروشگاه · ${npTodayFa(h.todayState)} · آخرین فعالیت ${fmtDate(h.lastActivity)}</p></div><button class="btn ghost" onclick="openPerformanceHead(decodeURIComponent('${npArg(h.userId)}'))">فروشگاه‌ها</button></div><div class="mini"><div><b>${fa(h.score)}</b><span>AES</span></div><div><b>${pct(h.completionRate)}</b><span>تحقق</span></div><div><b>${pct(h.coverage10)}</b><span>پوشش ۱۰روزه</span></div><div><b>${fa(h.overdue14Count||0)}</b><span>۱۴+ روز</span></div></div></article>`).join('')||'<div style="color:var(--muted)">رئیس ناحیه‌ای یافت نشد.</div>'}`;
   el('performanceDrawer').classList.add('open');
 }
 async function openPerformanceHead(id){
@@ -1177,10 +1178,10 @@ async function openPerformanceHead(id){
   loading(true,'در حال دریافت فروشگاه‌های رئیس ناحیه...');
   try{
     const r=await DMAuth.apiPost('adminNationalAreaHeadDetail',{areaHeadUserId:id,periodDays:state.performancePeriodDays},60000);if(!r.success)throw new Error(r.message||'خطا');
-    el('drawerTitle').textContent='رئیس ناحیه · '+r.areaHeadName;el('drawerSub').textContent=`${r.regionalManagerName} · ${fa(r.stores.length)} فروشگاه${h?' · امتیاز '+fa(h.score):''}`;
-    el('drawerBody').innerHTML=`${h?`<div class="head-card"><div class="mini"><div><b>${pct(h.completionRate)}</b><span>تحقق</span></div><div><b>${pct(h.coverageRate)}</b><span>پوشش</span></div><div><b>${pct(h.within14Rate)}</b><span>SLA 14</span></div><div><b>${npQualityText(h.qualityScore)}</b><span>کیفیت</span></div><div><b>${fa(h.planned)}</b><span>برنامه</span></div><div><b>${fa(h.completedTotal)}</b><span>تکمیل</span></div><div><b>${fa(h.unplanned)}</b><span>خارج Route</span></div><div><b>${fa(h.pendingGps)}</b><span>GPS</span></div></div></div>`:''}
+    el('drawerTitle').textContent='رئیس ناحیه · '+r.areaHeadName;el('drawerSub').textContent=`${r.regionalManagerName} · ${fa(r.stores.length)} فروشگاه${h?' · AES '+fa(h.score):''}`;
+    el('drawerBody').innerHTML=`${h?`<div class="head-card"><div class="mini"><div><b>${pct(h.completionRate)}</b><span>تحقق</span></div><div><b>${pct(h.coverage10)}</b><span>پوشش ۱۰روزه</span></div><div><b>${pct(h.slaHealthRate??h.within14Rate)}</b><span>SLA 14</span></div><div><b>${pct(h.executionIntegrity)}</b><span>انضباط اجرا</span></div><div><b>${fa(h.planned)}</b><span>برنامه</span></div><div><b>${fa(h.completedTotal)}</b><span>تکمیل</span></div><div><b>${fa(h.overdue14Count||0)}</b><span>۱۴+ روز</span></div><div><b>${h.portfolioHealthScore===null||h.portfolioHealthScore===undefined?'—':fa(h.portfolioHealthScore)}</b><span>SOS فروشگاه‌ها</span></div></div></div>`:''}
       <button class="btn ghost" style="margin-bottom:10px" onclick="openPerformanceRegion(decodeURIComponent('${npArg(r.regionalUserId)}'))">بازگشت به منطقه</button>
-      ${(r.stores||[]).map(x=>`<article class="store-card"><div class="store-card-top"><div><strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong><p>${esc(x.priorityLabel||'')} · ${fa(x.visits7)} بازدید در ۷ روز · آخرین بازدید ${fmtDate(x.lastVisit)}</p></div><div>${npPriorityTag(x.priorityLevel)}</div></div><div class="np-tags" style="margin-top:8px">${x.plannedToday?`<span class="np-tag blue">Route #${fa(x.sequenceNo)}</span>`:'<span class="np-tag">بدون Route امروز</span>'}${x.visitStatus==='IN_PROGRESS'?'<span class="np-tag blue">در حال بازدید</span>':''}${(x.visitStatus==='WAITING_LOCATION_APPROVAL'||x.visitStatus==='WAITING_LOCATION_CORRECTION')?'<span class="np-tag yellow">GPS Pending</span>':''}${String(x.locationStatus||'OK')!=='OK'?'<span class="np-tag red">مختصات نیازمند بررسی</span>':''}${Number(x.lastPeriodVisitIssues||0)>0?`<span class="np-tag red">${fa(x.lastPeriodVisitIssues)} مورد چک‌لیست</span>`:''}</div></article>`).join('')}`;
+      ${(r.stores||[]).map(x=>`<article class="store-card"><div class="store-card-top"><div><strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong><p>${esc(x.priorityLabel||'')} · ${fa(x.visits7)} بازدید در ۷ روز · آخرین بازدید ${fmtDate(x.lastVisit)}</p></div><div>${npPriorityTag(x.priorityLevel)}</div></div><div class="np-tags" style="margin-top:8px">${x.plannedToday?`<span class="np-tag blue">Route #${fa(x.sequenceNo)}</span>`:'<span class="np-tag">بدون Route امروز</span>'}${x.operationalScore===null||x.operationalScore===undefined?'<span class="np-tag">SOS بدون داده</span>':`<span class="np-tag blue">SOS ${fa(x.operationalScore)}</span>`}${x.operationalCritical?'<span class="np-tag red">Operational Critical</span>':''}${x.visitStatus==='IN_PROGRESS'?'<span class="np-tag blue">در حال بازدید</span>':''}${(x.visitStatus==='WAITING_LOCATION_APPROVAL'||x.visitStatus==='WAITING_LOCATION_CORRECTION')?'<span class="np-tag yellow">GPS Pending</span>':''}${String(x.locationStatus||'OK')!=='OK'?'<span class="np-tag red">مختصات نیازمند بررسی</span>':''}${Number(x.lastPeriodVisitIssues||0)>0?`<span class="np-tag red">${fa(x.lastPeriodVisitIssues)} مورد چک‌لیست</span>`:''}</div></article>`).join('')}`;
     el('performanceDrawer').classList.add('open');
   }catch(e){toast(e.message||'خطا در دریافت اطلاعات','error');}finally{loading(false);}
 }
