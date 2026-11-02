@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b5001d">
+<!-- V42 Store Management Presence Context -->
 <!-- Daily Market Area Head Dashboard V39 Day Status Display + V26 Checklist Operational Update + V25.2 GPS -->
 <title>رئیس ناحیه | چک لیست دیلی مارکت</title>
 
@@ -1000,6 +1001,22 @@ button{cursor:pointer}
 @media(max-width:1180px){.weekly-schedule-grid{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:820px){.weekly-schedule-panel{margin-top:12px}.weekly-schedule-head{padding:14px}.weekly-controls{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.weekly-controls .weekly-range{grid-column:1/-1;text-align:center}.weekly-controls .plan-week{grid-column:1/-1}.weekly-schedule-grid{grid-template-columns:1fr;padding:10px}.week-day-card.today{order:-1}.question-note-wrap{margin:9px 0 0}}
 
+
+
+/* ===== V42 STORE MANAGEMENT PRESENCE ===== */
+.presence-card{width:min(620px,100%)}
+.presence-intro{margin:0 0 14px;color:#697180;font-size:.75rem;line-height:1.95}
+.presence-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.presence-option{border:1px solid var(--line);background:#fff;border-radius:17px;padding:15px 14px;text-align:right;display:flex;align-items:center;gap:11px;transition:.15s;color:#303746}
+.presence-option:hover{border-color:#c8ced8;transform:translateY(-1px)}
+.presence-option.active{border-color:#c90022;background:#fff5f7;box-shadow:0 0 0 3px rgba(201,0,34,.07);color:#a9001b}
+.presence-option-icon{width:42px;height:42px;border-radius:14px;background:#f2f4f7;display:grid;place-items:center;font-size:1.1rem;flex:0 0 auto}
+.presence-option.active .presence-option-icon{background:#ffe7ec}
+.presence-option strong{display:block;font-size:.82rem}.presence-option span{display:block;margin-top:3px;color:#7c8492;font-size:.64rem;line-height:1.6}
+.presence-required-note{margin-top:12px;padding:10px 12px;border-radius:12px;background:#fff8e9;border:1px solid #efddb5;color:#856200;font-size:.66rem;line-height:1.8}
+.presence-current-btn{border:0;background:transparent;color:#315fc5;font-weight:900;font-size:.72rem;padding:0;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:600px){.presence-options{grid-template-columns:1fr}.presence-option{padding:13px}.presence-card{border-radius:24px 24px 0 0}}
+
 </style>
 
 <style id="dm-firstpaint-style">
@@ -1175,6 +1192,7 @@ button{cursor:pointer}
         <div class="checklist-meta-row"><span>شناسه بازدید</span><strong id="checklistVisitId">—</strong></div>
         <div class="checklist-meta-row"><span>نوع بازدید</span><strong id="checklistVisitType">—</strong></div>
         <div class="checklist-meta-row"><span>وضعیت</span><strong id="checklistStateText">در حال تکمیل</strong></div>
+        <div class="checklist-meta-row"><span>حضور مدیریت فروشگاه</span><strong id="checklistPresenceText">—</strong></div>
       </div>
       <div class="section-nav" id="checklistSectionNav"></div>
     </aside>
@@ -1189,6 +1207,25 @@ button{cursor:pointer}
   </div>
 </div>
 
+
+<!-- STORE MANAGEMENT PRESENCE MODAL -->
+<div class="modal hidden" id="storePresenceModal">
+  <div class="modal-card presence-card">
+    <div class="modal-head">
+      <div><h3>حضور مدیریت فروشگاه</h3><p id="storePresenceSub">—</p></div>
+      <button class="close hidden" id="storePresenceClose" onclick="closeStorePresenceModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="presence-intro">در زمان انجام این بازدید چه کسی از مدیریت فروشگاه حضور دارد؟</p>
+      <div class="presence-options" id="storePresenceOptions"></div>
+      <div class="presence-required-note" id="storePresenceRequiredNote">انتخاب یکی از گزینه‌ها برای ادامه چک‌لیست الزامی است.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost hidden" id="storePresenceCancel" onclick="closeStorePresenceModal()">انصراف</button>
+      <button class="btn primary" id="storePresenceSave" onclick="saveStorePresence()">ثبت و ادامه</button>
+    </div>
+  </div>
+</div>
 
 <!-- CANNOT VISIT MODAL -->
 <div class="modal hidden cannot-modal" id="cannotVisitModal">
@@ -1307,7 +1344,12 @@ const state={
   checklistSaveTimer:null,
   scheduleWeekStartIso:'',
   scheduleWeekData:null,
-  scheduleLoading:false
+  scheduleLoading:false,
+  storePresenceVisitId:'',
+  storePresenceSelected:'',
+  storePresenceRequired:false,
+  storePresenceAfterSave:'',
+  storePresenceStoreLabel:''
 };
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -1622,6 +1664,84 @@ async function submitCannotVisit(){
   finally{btn.disabled=false;}
 }
 
+const STORE_PRESENCE_OPTIONS=[
+  {code:'MANAGER',label:'مسئول فروشگاه',desc:'مسئول اصلی فروشگاه در محل حضور دارد',icon:'👤'},
+  {code:'DEPUTY',label:'جانشین مسئول فروشگاه',desc:'جانشین مسئول فروشگاه در محل حضور دارد',icon:'👥'},
+  {code:'BOTH',label:'هر دو حضور دارند',desc:'مسئول فروشگاه و جانشین هر دو حضور دارند',icon:'✓'},
+  {code:'NONE',label:'هیچ‌کدام حضور ندارند',desc:'نه مسئول فروشگاه و نه جانشین در محل حضور ندارند',icon:'—'}
+];
+function storePresenceLabel(code){return STORE_PRESENCE_OPTIONS.find(x=>x.code===String(code||'').toUpperCase())?.label||'';}
+function renderChecklistPresenceText(){
+  const el=document.getElementById('checklistPresenceText');if(!el)return;
+  const p=state.checklistData?.storePresence||{};const readOnly=!!state.checklistData?.readOnly;
+  if(p.code){
+    el.innerHTML=readOnly?esc(p.label||storePresenceLabel(p.code)):`<button class="presence-current-btn" onclick="openStorePresenceModal('${esc(state.checklistVisitId)}','${esc(p.code)}',false,'EDIT')">${esc(p.label||storePresenceLabel(p.code))} · تغییر</button>`;
+  }else{
+    el.innerHTML=readOnly?'ثبت نشده':`<button class="presence-current-btn" onclick="openStorePresenceModal('${esc(state.checklistVisitId)}','',true,'EDIT')">انتخاب</button>`;
+  }
+}
+function openStorePresenceModal(visitId,currentCode='',required=true,afterSave=''){
+  if(!visitId)return;
+  state.storePresenceVisitId=visitId;
+  state.storePresenceSelected=String(currentCode||'').toUpperCase();
+  state.storePresenceRequired=!!required;
+  state.storePresenceAfterSave=afterSave||'';
+  const storeName=state.checklistData?.store?.storeName||state.gpsTarget?.storeCode||'';
+  state.storePresenceStoreLabel=storeName;
+  document.getElementById('storePresenceSub').textContent=storeName?String(storeName):'بازدید فعال';
+  document.getElementById('storePresenceClose').classList.toggle('hidden',!!required);
+  document.getElementById('storePresenceCancel').classList.toggle('hidden',!!required);
+  document.getElementById('storePresenceRequiredNote').classList.toggle('hidden',!required);
+  document.getElementById('storePresenceSave').textContent=afterSave==='EDIT'?'ثبت تغییر':'ثبت و ادامه';
+  document.getElementById('storePresenceOptions').innerHTML=STORE_PRESENCE_OPTIONS.map(x=>`<button class="presence-option ${state.storePresenceSelected===x.code?'active':''}" onclick="selectStorePresence('${x.code}',this)"><span class="presence-option-icon">${x.icon}</span><span><strong>${esc(x.label)}</strong><span>${esc(x.desc)}</span></span></button>`).join('');
+  document.getElementById('storePresenceModal').classList.remove('hidden');
+}
+function selectStorePresence(code,btn){
+  state.storePresenceSelected=String(code||'').toUpperCase();
+  document.querySelectorAll('#storePresenceOptions .presence-option').forEach(x=>x.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+function closeStorePresenceModal(){
+  if(state.storePresenceRequired)return;
+  document.getElementById('storePresenceModal').classList.add('hidden');
+  state.storePresenceVisitId='';state.storePresenceSelected='';state.storePresenceAfterSave='';
+}
+async function saveStorePresence(){
+  const visitId=state.storePresenceVisitId;
+  const code=String(state.storePresenceSelected||'').toUpperCase();
+  if(!visitId)return;
+  if(!STORE_PRESENCE_OPTIONS.some(x=>x.code===code)){toast('یکی از وضعیت‌های حضور را انتخاب کن.','error');return;}
+  const btn=document.getElementById('storePresenceSave');btn.disabled=true;btn.textContent='در حال ثبت...';
+  try{
+    const answers=state.checklistVisitId===visitId?(state.checklistAnswers||{}):{};
+    const answerNotes=state.checklistVisitId===visitId?(state.checklistAnswerNotes||{}):{};
+    const visitNotes=state.checklistVisitId===visitId?(state.checklistNotes||''):'';
+    const res=await DMAuth.apiPost('saveChecklistDraft',{
+      visitId:visitId,
+      answersJson:JSON.stringify(answers),
+      answerNotesJson:JSON.stringify(answerNotes),
+      visitNotes:visitNotes,
+      storeResponsiblePresence:code
+    },40000);
+    if(!res.success)throw new Error(res.message||'ثبت وضعیت حضور ناموفق بود.');
+    if(state.checklistData&&state.checklistVisitId===visitId){
+      state.checklistData.storePresence=res.storePresence||{code:code,label:storePresenceLabel(code)};
+      state.checklistData.presenceRequired=false;
+      renderChecklistPresenceText();
+    }
+    const after=state.storePresenceAfterSave;
+    document.getElementById('storePresenceModal').classList.add('hidden');
+    state.storePresenceRequired=false;state.storePresenceVisitId='';state.storePresenceAfterSave='';
+    toast('وضعیت حضور مدیریت فروشگاه ثبت شد.','success');
+    if(after==='OPEN_CHECKLIST')await openChecklist(visitId);
+  }catch(e){toast(e.message||'خطا در ثبت وضعیت حضور','error');}
+  finally{btn.disabled=false;btn.textContent=state.storePresenceAfterSave==='EDIT'?'ثبت تغییر':'ثبت و ادامه';}
+}
+function continueAfterVisitStart(visitId){
+  closeGpsModal();
+  openStorePresenceModal(visitId,'',true,'OPEN_CHECKLIST');
+}
+
 function openGps(storeCode,routeItemId,planned,unplannedReason){
   if(state.data.openVisit){toast('ابتدا بازدید باز فعلی را تعیین تکلیف کنید.','error');return;}
   const s=storeByCode(storeCode);if(!s)return;
@@ -1779,7 +1899,7 @@ async function scanAndStart(){
       const box=document.getElementById('gpsResult');box.className='gps-result success';box.textContent=res.message||'حضور تأیید شد.';
       document.getElementById('gpsTitle').textContent='حضور تأیید شد';
       document.getElementById('gpsDesc').textContent='بازدید آغاز شد و Route این فروشگاه قفل شد.';
-      document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">ادامه</button>`;
+      document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="continueAfterVisitStart('${esc(res.visit?.visitId||'')}')">ثبت وضعیت حضور و ادامه</button>`;
       return;
     }
 
@@ -1906,7 +2026,7 @@ async function confirmSoftPresence(){
     const box=document.getElementById('gpsResult');box.className='gps-result success';box.textContent=res.message||'حضور ثبت شد.';
     document.getElementById('gpsTitle').textContent='بازدید آغاز شد';
     document.getElementById('gpsDesc').textContent='حضور شما به‌صورت تأیید ساده ثبت شد و می‌توانی چک‌لیست را ادامه بدهی.';
-    document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">ادامه به بازدید</button>`;
+    document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="continueAfterVisitStart('${esc(res.visit?.visitId||'')}')">ثبت وضعیت حضور و ادامه</button>`;
   }catch(e){showGpsFailure(e.message||'ثبت حضور ناموفق بود.',null,true,false,null,false,null);}
 }
 
@@ -1986,9 +2106,15 @@ async function openChecklist(visitId){
     document.getElementById('checklistVisitId').textContent=visitId;
     document.getElementById('checklistVisitType').textContent=res.visit?.plannedFlag?'برنامه‌ریزی‌شده':'خارج از برنامه';
     document.getElementById('checklistStateText').textContent=res.readOnly?'تکمیل شده':'در حال تکمیل';
+    if(res.presenceRequired){
+      setLoading(false);
+      openStorePresenceModal(visitId,res.storePresence?.code||'',true,'OPEN_CHECKLIST');
+      return;
+    }
     document.getElementById('checklistModal').classList.remove('hidden');
     document.body.style.overflow='hidden';
     renderChecklist();
+    renderChecklistPresenceText();
     if(state.checklistDirty)setChecklistSaveStatus('پیش‌نویس محلی بازیابی شد.','saving');
   }catch(e){toast(e.message||'خطا در دریافت چک‌لیست','error');}
   finally{setLoading(false);}
@@ -2291,7 +2417,7 @@ async function saveChecklistDraft(showToast=false){
   if(!state.checklistVisitId||state.checklistData?.readOnly||state.checklistSaving)return;
   state.checklistSaving=true;setChecklistSaveStatus('در حال ذخیره پیش‌نویس...','saving');
   try{
-    const res=await DMAuth.apiPost('saveChecklistDraft',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{}),answerNotesJson:JSON.stringify(state.checklistAnswerNotes||{}),visitNotes:state.checklistNotes||''},40000);
+    const res=await DMAuth.apiPost('saveChecklistDraft',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{}),answerNotesJson:JSON.stringify(state.checklistAnswerNotes||{}),visitNotes:state.checklistNotes||'',storeResponsiblePresence:state.checklistData?.storePresence?.code||''},40000);
     if(!res.success)throw new Error(res.message||'ذخیره پیش‌نویس ناموفق بود.');
     state.checklistDirty=false;clearLocalChecklistDraft(state.checklistVisitId);setChecklistSaveStatus('پیش‌نویس ذخیره شد.','saved');
     if(showToast)toast('پیش‌نویس چک‌لیست ذخیره شد.','success');
@@ -2310,13 +2436,14 @@ function highlightMissingQuestions(){
 
 async function finishChecklist(){
   if(state.checklistData?.readOnly)return;
+  if(!state.checklistData?.storePresence?.code){openStorePresenceModal(state.checklistVisitId,'',true,'EDIT');toast('قبل از ثبت نهایی وضعیت حضور مدیریت فروشگاه را مشخص کن.','error');return;}
   const p=checklistProgressClient();
   if(p.remainingRequired>0){highlightMissingQuestions();toast(`${p.remainingRequired} سؤال هنوز بدون پاسخ است.`,'error');return;}
   if(!confirm('چک‌لیست نهایی شود و این بازدید پایان پیدا کند؟ پس از ثبت نهایی امکان ویرایش وجود ندارد.'))return;
   setLoading(true,'در حال ثبت نهایی و پایان بازدید...');
   try{
-    const res=await DMAuth.apiPost('completeChecklist',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{}),answerNotesJson:JSON.stringify(state.checklistAnswerNotes||{}),visitNotes:state.checklistNotes||''},50000);
-    if(!res.success){if(res.code==='CHECKLIST_INCOMPLETE'){highlightMissingQuestions();}throw new Error(res.message||'ثبت نهایی ناموفق بود.');}
+    const res=await DMAuth.apiPost('completeChecklist',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{}),answerNotesJson:JSON.stringify(state.checklistAnswerNotes||{}),visitNotes:state.checklistNotes||'',storeResponsiblePresence:state.checklistData?.storePresence?.code||''},50000);
+    if(!res.success){if(res.code==='CHECKLIST_INCOMPLETE'){highlightMissingQuestions();}if(res.code==='STORE_PRESENCE_REQUIRED'){setLoading(false);openStorePresenceModal(state.checklistVisitId,'',true,'EDIT');toast(res.message||'وضعیت حضور را مشخص کن.','error');return;}throw new Error(res.message||'ثبت نهایی ناموفق بود.');}
     let maintenanceResult=null;
     const completedVisitId=state.checklistVisitId;
     const hasEquipmentFault=String(state.checklistAnswers['V4-EQUIPMENT-FAULT']||'').trim()==='بله';
