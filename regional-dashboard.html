@@ -251,6 +251,80 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 @media(max-width:430px){.health-meta-grid{grid-template-columns:repeat(2,1fr)}.health-tools{grid-template-columns:1fr}.health-tools input{grid-column:1}.health-kpi strong{font-size:1.15rem}}
 </style>
 
+
+<style id="v44RegionalPerformanceStyles">
+/* V44 — Regional performance: intentionally compact, decision-first */
+.v44-performance-hero{align-items:center}
+.v44-hero-tools{display:flex;align-items:center;gap:10px}
+.v44-summary-grid{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.v44-summary-card{min-height:132px;border:1px solid var(--line);border-radius:24px;padding:18px 20px;background:#fff;text-align:right;box-shadow:0 12px 30px rgba(20,28,48,.045);font-family:inherit;color:var(--ink);display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
+.v44-summary-card:before{content:"";position:absolute;inset:auto -35px -55px auto;width:150px;height:150px;border-radius:50%;background:rgba(49,95,197,.06)}
+.v44-summary-card.primary{background:linear-gradient(135deg,#111827,#202b3d);color:#fff;border-color:#111827}
+.v44-summary-card.primary:before{background:rgba(255,255,255,.08)}
+.v44-summary-card.warning{background:linear-gradient(135deg,#fff8e8,#fff);border-color:#efd9a4}
+.v44-summary-card.neutral{background:linear-gradient(135deg,#f7f9fc,#fff)}
+.v44-summary-card.clickable{cursor:pointer;transition:.16s}
+.v44-summary-card.clickable:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(20,28,48,.08)}
+.v44-summary-card span{font-size:.72rem;font-weight:800;opacity:.76;position:relative}
+.v44-summary-card strong{font-size:2rem;line-height:1.2;margin-top:8px;position:relative}
+.v44-summary-card strong em{font-style:normal;font-size:.7rem;font-weight:700;opacity:.65}
+.v44-summary-card small{font-size:.63rem;margin-top:6px;opacity:.68;position:relative}
+
+.v44-export-card{padding:0!important;overflow:visible;margin-bottom:14px;display:block!important;grid-template-columns:none!important;gap:0!important}
+.v44-export-card>summary{list-style:none;cursor:pointer;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border-radius:18px}
+.v44-export-card>summary::-webkit-details-marker{display:none}
+.v44-export-card>summary span{display:block}.v44-export-card>summary strong{font-size:.78rem}.v44-export-card>summary small{display:block;color:var(--muted);font-size:.6rem;margin-top:3px}.v44-export-card>summary>b{font-size:.64rem;color:#596170}
+.v44-export-body{border-top:1px solid var(--line);padding:13px 15px}
+.v44-export-card .performance-export-controls{margin:0}
+
+.v44-main-rank{border-top:4px solid #111827}
+.v44-store-rank{margin-top:14px;border-top:4px solid #315fc5}
+.v44-section-kicker{display:block;font-size:.56rem;color:#9a233a;font-weight:900;margin-bottom:4px}
+.v44-performance-table th{font-size:.62rem}
+.v44-link-metric{border:0;background:#fff0f2;color:#a9122c;border-radius:999px;padding:6px 9px;font:inherit;font-size:.64rem;font-weight:900;cursor:pointer}
+.v44-zero-good{display:inline-flex;padding:5px 9px;border-radius:999px;background:#eaf8f1;color:#14764e;font-size:.66rem;font-weight:900}
+.v44-sos{display:inline-flex;min-width:38px;justify-content:center;padding:6px 8px;border-radius:11px;font-weight:900}
+.v44-sos.excellent,.v44-sos.good{background:#eaf8f1;color:#14764e}.v44-sos.attention{background:#fff8e8;color:#966b00}.v44-sos.weak,.v44-sos.critical{background:#fff0f2;color:#ae001b}
+.v44-store-tools{display:flex!important;flex-wrap:wrap!important;gap:7px!important}
+.v44-filter-chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 11px;font:inherit;font-size:.62rem;font-weight:850;color:#596170;white-space:nowrap}
+.v44-filter-chip.active{background:#171b25;color:#fff;border-color:#171b25}
+.v44-filter-chip.ghost{color:#7c8492}
+.v44-latest-btn:disabled{opacity:.35;cursor:not-allowed}
+.v44-no-score{color:#9aa1ad}
+
+.v44-visit-modal{position:fixed;inset:0;z-index:260;background:rgba(9,13,23,.48);backdrop-filter:blur(5px);display:grid;place-items:center;padding:20px}
+.v44-visit-card{width:min(920px,100%);max-height:90vh;background:#f7f8fb;border-radius:26px;box-shadow:0 30px 90px rgba(8,14,28,.25);overflow:hidden;display:flex;flex-direction:column;border:1px solid #e1e5eb}
+.v44-visit-head{padding:18px 21px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:14px}
+.v44-visit-head h3{margin:0;font-size:1.05rem}.v44-visit-head p{margin:4px 0 0;font-size:.68rem;color:var(--muted)}
+.v44-visit-close{width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:12px;font-size:1.25rem}
+.v44-visit-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 18px;background:#fff;border-bottom:1px solid var(--line)}
+.v44-visit-summary>div{padding:11px 12px;border:1px solid var(--line);border-radius:14px;background:#fafbfc}.v44-visit-summary strong{display:block;font-size:1rem}.v44-visit-summary span{display:block;font-size:.6rem;color:var(--muted);margin-top:3px}
+.v44-visit-body{padding:14px 18px 24px;overflow:auto}
+.v44-visit-section{background:#fff;border:1px solid var(--line);border-radius:18px;margin-bottom:10px;overflow:hidden}
+.v44-visit-section h4{margin:0;padding:11px 14px;background:#f6f8fb;border-bottom:1px solid var(--line);font-size:.75rem}
+.v44-visit-item{display:grid;grid-template-columns:minmax(0,1fr) minmax(110px,.35fr) auto;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #eef0f4}
+.v44-visit-item:last-child{border-bottom:0}
+.v44-visit-item-copy strong{display:block;font-size:.72rem;line-height:1.7}.v44-visit-item-copy span{display:block;font-size:.58rem;color:var(--muted);margin-top:2px}
+.v44-visit-answer{font-size:.68rem;color:#4f5766;text-align:center}
+.v44-item-score{display:inline-flex;justify-content:center;min-width:70px;padding:6px 8px;border-radius:999px;font-size:.61rem;font-weight:900}
+.v44-item-score.good{background:#eaf8f1;color:#14764e}.v44-item-score.mid{background:#fff8e8;color:#966b00}.v44-item-score.bad{background:#fff0f2;color:#ae001b}.v44-item-score.neutral{background:#f0f2f5;color:#727987}
+body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
+
+@media(max-width:820px){
+  .v44-summary-grid{grid-template-columns:1fr}.v44-summary-card{min-height:108px;border-radius:18px;padding:15px}
+  .v44-summary-card strong{font-size:1.65rem}
+  .v44-hero-tools{margin-top:11px}
+  .v44-store-tools{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%}.v44-store-tools input{grid-column:1/-1}
+  .v44-visit-modal{align-items:end;padding:0}.v44-visit-card{width:100%;max-height:92vh;border-radius:24px 24px 0 0}
+  .v44-visit-summary{grid-template-columns:repeat(3,1fr);padding:10px}.v44-visit-body{padding:10px 10px 20px}
+  .v44-visit-item{grid-template-columns:1fr auto;padding:11px}.v44-visit-answer{grid-column:1/-1;text-align:right;background:#f8f9fb;padding:7px 8px;border-radius:9px}
+  .mobile-bottom{grid-template-columns:repeat(6,1fr)!important}
+}
+@media(max-width:520px){
+  .v44-visit-summary{grid-template-columns:1fr 1fr}.v44-visit-summary>div:first-child{grid-column:1/-1}
+}
+</style>
+
 </head>
 <body>
 <div class="loading-screen" id="loadingScreen"><div class="loader-card"><div class="spinner"></div><strong>در حال دریافت اطلاعات منطقه...</strong></div></div>
@@ -264,7 +338,6 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
       <button class="nav-btn" id="navGps" onclick="switchView('gps')"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z"/><circle cx="12" cy="10" r="2"/></svg>تأیید GPS <span class="nav-count zero" id="gpsNavCount">0</span></button>
       <button class="nav-btn" id="navPerformance" onclick="switchView('performance')"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>گزارش عملکرد</button>
       <button class="nav-btn" id="navStoreHealth" onclick="switchView('health')"><svg viewBox="0 0 24 24"><path d="M3 9l2-5h14l2 5M5 13v7h14v-7"/><path d="m8 12 2 2 5-5"/></svg>امتیاز عملیاتی فروشگاه‌ها</button>
-      <button class="nav-btn" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/><path d="M4 4h16"/></svg>سوابق بازدید</button>
     </nav>
     <div class="side-foot"><button class="logout" onclick="DMAuth.logout()">خروج از حساب</button></div>
   </aside>
@@ -301,115 +374,91 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
       </div>
 
       <div id="performanceView" class="performance-view hidden">
-        <div class="performance-hero">
-          <div><h2>تحلیل عملکرد منطقه</h2><p>مقایسه رؤسای ناحیه بر اساس AES: تحقق برنامه، پوشش ۱۰روزه، کنترل ۱۴+ روز و انضباط اجرای بازدید. SOS فروشگاه‌ها فقط به‌عنوان خروجی عملیاتی نمایش داده می‌شود و در AES دخالت ندارد.</p><div class="performance-sync"><i></i><span id="rpSyncText">همگام‌سازی خودکار عملکرد</span></div></div>
-          <div class="performance-periods">
-            <button class="performance-period active" data-days="7" onclick="changeRegionalPerformancePeriod(7)">۷ روز</button>
-            <button class="performance-period" data-days="14" onclick="changeRegionalPerformancePeriod(14)">۱۴ روز</button>
-            <button class="performance-period" data-days="30" onclick="changeRegionalPerformancePeriod(30)">۳۰ روز</button>
+        <div class="performance-hero v44-performance-hero">
+          <div>
+            <h2>گزارش عملکرد منطقه</h2>
+            <p>نمای مدیریتی فشرده: رتبه‌بندی رؤسای ناحیه بر اساس تحقق Route و رتبه‌بندی فروشگاه‌ها بر اساس SOS. جزئیات فقط جایی نمایش داده می‌شود که برای تصمیم‌گیری لازم باشد.</p>
+            <div class="performance-sync"><i></i><span id="rpSyncText">همگام‌سازی خودکار عملکرد</span></div>
           </div>
-        </div>
-
-        <section class="performance-export-card">
-          <div class="performance-export-copy">
-            <h3>خروجی Excel گزارش عملکرد</h3>
-            <p>بازه تاریخ و رئیس ناحیه را انتخاب کن. فایل خروجی شامل خلاصه مدیریتی، عملکرد رؤسای ناحیه، تکرار بازدید فروشگاه‌ها، جزئیات بازدیدها و عملکرد روزانه است.</p>
-          </div>
-          <div class="performance-export-controls">
-            <div class="performance-export-field"><label for="regionalExportFrom">از تاریخ</label><div class="jalali-field"><input type="text" id="regionalExportFromDisplay" readonly placeholder="انتخاب تاریخ شمسی" onclick="toggleJalaliPicker('regionalExportFrom')" aria-label="انتخاب تاریخ شمسی"><input type="hidden" id="regionalExportFrom"><button type="button" class="jalali-trigger" onclick="toggleJalaliPicker('regionalExportFrom')" aria-label="باز کردن تقویم">▦</button><div class="jalali-popup" id="regionalExportFromCalendar"></div></div></div>
-            <div class="performance-export-field"><label for="regionalExportTo">تا تاریخ</label><div class="jalali-field"><input type="text" id="regionalExportToDisplay" readonly placeholder="انتخاب تاریخ شمسی" onclick="toggleJalaliPicker('regionalExportTo')" aria-label="انتخاب تاریخ شمسی"><input type="hidden" id="regionalExportTo"><button type="button" class="jalali-trigger" onclick="toggleJalaliPicker('regionalExportTo')" aria-label="باز کردن تقویم">▦</button><div class="jalali-popup" id="regionalExportToCalendar"></div></div></div>
-            <div class="performance-export-field head"><label for="regionalExportHead">رئیس ناحیه</label><select id="regionalExportHead"><option value="">همه رؤسای ناحیه</option></select></div>
-            <div class="performance-export-actions">
-              <button class="btn btn-ghost performance-export-reset" onclick="syncPerformanceExportFilters(true)">همین دوره</button>
-              <button class="btn btn-primary performance-export-btn" id="regionalExportBtn" onclick="exportRegionalPerformanceXlsx()"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>دریافت Excel</button>
+          <div class="v44-hero-tools">
+            <div class="performance-periods">
+              <button class="performance-period active" data-days="10" onclick="changeRegionalPerformancePeriod(10)">۱۰ روز</button>
+              <button class="performance-period" data-days="20" onclick="changeRegionalPerformancePeriod(20)">۲۰ روز</button>
+              <button class="performance-period" data-days="30" onclick="changeRegionalPerformancePeriod(30)">۳۰ روز</button>
             </div>
-            <div class="performance-export-note">حداکثر بازه خروجی ۳۶۵ روز است. بازه Excel مستقل از فیلتر ۷/۱۴/۳۰ روزه صفحه قابل انتخاب است.</div>
           </div>
-        </section>
-
-        <section class="performance-kpis">
-          <article class="performance-kpi"><strong id="rpCompletion">—%</strong><div class="pk-label">تحقق برنامه</div><div class="pk-sub" id="rpCompletionSub">—</div></article>
-          <article class="performance-kpi"><strong id="rpDaily">—</strong><div class="pk-label">میانگین بازدید روزانه</div><div class="pk-sub">بازدید تکمیل‌شده</div></article>
-          <article class="performance-kpi"><strong id="rpCoverage">—%</strong><div class="pk-label">پوشش ۱۰روزه</div><div class="pk-sub" id="rpCoverageSub">—</div></article>
-          <article class="performance-kpi"><strong id="rpHeads">—%</strong><div class="pk-label">ثبات رؤسای ناحیه</div><div class="pk-sub" id="rpHeadsSub">—</div></article>
-          <article class="performance-kpi"><strong id="rpOverride">—%</strong><div class="pk-label">نرخ GPS Override</div><div class="pk-sub" id="rpOverrideSub">—</div></article>
-          <article class="performance-kpi"><strong id="rpUnplanned">—%</strong><div class="pk-label">بازدید خارج برنامه</div><div class="pk-sub" id="rpUnplannedSub">—</div></article>
-          <article class="performance-kpi"><strong id="rpWeak">—%</strong><div class="pk-label">فروشگاه ۱۴+ روز</div><div class="pk-sub" id="rpWeakSub">—</div></article>
-          <article class="performance-kpi quality"><strong id="rpChecklistQuality">—%</strong><div class="pk-label">کیفیت چک‌لیست</div><div class="pk-sub">شاخص تشخیصی؛ خارج از امتیاز مدیریتی</div></article>
-          <article class="performance-kpi"><strong id="rpDuration">—</strong><div class="pk-label">میانگین مدت بازدید</div><div class="pk-sub">دقیقه</div></article>
-        </section>
-
-        <section class="performance-dark">
-          <div><h3>تحقق عملیات دوره</h3><p id="rpPeriodCaption">—</p><div class="performance-big"><span id="rpBigCompletion">0%</span> <small>تحقق برنامه</small></div><div class="performance-bar"><span id="rpCompletionBar" style="width:0%"></span></div></div>
-          <div class="performance-minis">
-            <div class="performance-mini"><strong id="rpPlanned">0</strong><span>بازدید برنامه‌ریزی‌شده</span></div>
-            <div class="performance-mini"><strong id="rpCompleted">0</strong><span>کل بازدید تکمیل‌شده</span></div>
-            <div class="performance-mini"><strong id="rpVisitedStores">0</strong><span>فروشگاه بازدیدشده</span></div>
-            <div class="performance-mini"><strong id="rpWeakCount">0</strong><span>نیازمند توجه</span></div>
-          </div>
-        </section>
-
-        <div class="performance-grid">
-          <section class="performance-panel">
-            <div class="performance-panel-head"><div><h3>روند دوره</h3><p>برنامه، تکمیل و Override به تفکیک روز</p></div><div class="performance-legend"><span><i style="background:#dfe3eb"></i>برنامه</span><span><i style="background:#199166"></i>تکمیل</span><span><i style="background:#e5a100"></i>Override</span></div></div>
-            <div class="performance-trend" id="regionalPerformanceTrend"></div>
-          </section>
-          <section class="performance-panel">
-            <div class="performance-panel-head"><div><h3>پرتکرارترین موارد نیازمند توجه</h3><p>موضوعات نیازمند پیگیری در چک‌لیست‌ها</p></div></div>
-            <div class="performance-weak" id="regionalPerformanceWeak"></div>
-          </section>
         </div>
 
-        <section class="performance-panel checklist-quality-panel">
-          <div class="performance-panel-head"><div><h3>کیفیت چک‌لیست به تفکیک بخش</h3><p>امتیاز پاسخ‌ها و موارد نیازمند توجه در بخش‌های مختلف بازدید</p></div></div>
-          <div class="checklist-quality-grid" id="regionalChecklistSections"></div>
+        <section class="v44-summary-grid">
+          <article class="v44-summary-card primary">
+            <span>تحقق Route منطقه</span>
+            <strong id="rpCompletion">—%</strong>
+            <small id="rpCompletionSub">—</small>
+          </article>
+          <button class="v44-summary-card warning clickable" type="button" onclick="focusUnvisitedStores('')">
+            <span>فروشگاه بازدیدنشده</span>
+            <strong id="rpUnvisited">—</strong>
+            <small id="rpUnvisitedSub">در بازه انتخاب‌شده</small>
+          </button>
+          <article class="v44-summary-card neutral">
+            <span>متوسط زمان بازدید</span>
+            <strong><b id="rpDuration">—</b> <em>دقیقه</em></strong>
+            <small>بازدیدهای تکمیل‌شده</small>
+          </article>
         </section>
 
+        <details class="performance-export-card v44-export-card">
+          <summary>
+            <span><strong>خروجی Excel</strong><small>بازه دلخواه و رئیس ناحیه</small></span>
+            <b>باز کردن</b>
+          </summary>
+          <div class="v44-export-body">
+            <div class="performance-export-controls">
+              <div class="performance-export-field"><label for="regionalExportFrom">از تاریخ</label><div class="jalali-field"><input type="text" id="regionalExportFromDisplay" readonly placeholder="انتخاب تاریخ شمسی" onclick="toggleJalaliPicker('regionalExportFrom')" aria-label="انتخاب تاریخ شمسی"><input type="hidden" id="regionalExportFrom"><button type="button" class="jalali-trigger" onclick="toggleJalaliPicker('regionalExportFrom')" aria-label="باز کردن تقویم">▦</button><div class="jalali-popup" id="regionalExportFromCalendar"></div></div></div>
+              <div class="performance-export-field"><label for="regionalExportTo">تا تاریخ</label><div class="jalali-field"><input type="text" id="regionalExportToDisplay" readonly placeholder="انتخاب تاریخ شمسی" onclick="toggleJalaliPicker('regionalExportTo')" aria-label="انتخاب تاریخ شمسی"><input type="hidden" id="regionalExportTo"><button type="button" class="jalali-trigger" onclick="toggleJalaliPicker('regionalExportTo')" aria-label="باز کردن تقویم">▦</button><div class="jalali-popup" id="regionalExportToCalendar"></div></div></div>
+              <div class="performance-export-field head"><label for="regionalExportHead">رئیس ناحیه</label><select id="regionalExportHead"><option value="">همه رؤسای ناحیه</option></select></div>
+              <div class="performance-export-actions">
+                <button class="btn btn-ghost performance-export-reset" onclick="syncPerformanceExportFilters(true)">همین دوره</button>
+                <button class="btn btn-primary performance-export-btn" id="regionalExportBtn" onclick="exportRegionalPerformanceXlsx()"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>دریافت Excel</button>
+              </div>
+            </div>
+          </div>
+        </details>
 
-        <section class="performance-panel">
+        <section class="performance-panel v44-main-rank">
           <div class="performance-panel-head">
             <div>
-              <h3>عملکرد سؤال‌های اختصاصی منطقه</h3>
-              <p>نتیجه سؤال‌هایی که توسط مدیر منطقه به چک‌لیست اضافه شده‌اند؛ مستقل از سؤال‌های مرکزی.</p>
+              <span class="v44-section-kicker">اولویت اصلی</span>
+              <h3>رتبه‌بندی رؤسای ناحیه</h3>
+              <p>رتبه‌بندی بر اساس تحقق Route؛ SOS فروشگاه‌ها فقط برای مشاهده نتیجه عملیات است و در رتبه دخالت ندارد.</p>
             </div>
+            <div class="search"><input id="regionalPerfSearch" oninput="renderRegionalPerformanceHeads()" placeholder="جستجوی رئیس ناحیه..."></div>
           </div>
-          <div class="rq-performance-list" id="regionalQuestionPerformance"></div>
+          <div class="performance-table-wrap">
+            <table class="performance-table v44-performance-table">
+              <thead><tr><th>رتبه</th><th>رئیس ناحیه</th><th>فروشگاه</th><th>برنامه</th><th>تکمیل / درحال اجرا</th><th>تحقق Route</th><th>متوسط زمان</th><th>بازدیدنشده</th><th>SOS</th><th>آخرین فعالیت</th></tr></thead>
+              <tbody id="regionalPerformanceBody"></tbody>
+            </table>
+          </div>
         </section>
 
-        <div class="checklist-subsection-wrap">
-          <section class="performance-panel">
-            <div class="performance-panel-head"><div><h3>جزئیات بخش فروش</h3><p>لبنیات، گوشت و مرغ و سایر زیر‌بخش‌های فروش به تفکیک کیفیت</p></div></div>
-            <div class="checklist-subsection-list" id="regionalSalesSubsections"></div>
-          </section>
-          <section class="performance-panel">
-            <div class="performance-panel-head"><div><h3>ضعیف‌ترین زیر‌بخش‌ها</h3><p>اولویت‌های پیشنهادی برای پیگیری مدیر منطقه</p></div></div>
-            <div class="checklist-subsection-list" id="regionalWeakSubsections"></div>
-          </section>
-        </div>
-
-        <section class="performance-panel">
-          <div class="performance-panel-head"><div><h3>رتبه‌بندی رؤسای ناحیه</h3><p>برای مقایسه منصفانه، نرخ‌ها در کنار حجم عملیات نمایش داده شده‌اند.</p></div><div class="search"><input id="regionalPerfSearch" oninput="renderRegionalPerformanceHeads()" placeholder="جستجوی رئیس ناحیه..."></div></div>
-          <div class="performance-table-wrap"><table class="performance-table"><thead><tr><th>رتبه</th><th>رئیس ناحیه</th><th>تحقق برنامه</th><th>AES</th><th>SOS</th><th>روند سلامت</th><th>دقت گزارش</th><th>برنامه</th><th>تکمیل</th><th>تحقق</th><th>میانگین روزانه</th><th>پوشش ۱۰روزه</th><th>۱۴+ روز</th><th>روز غیرعملیاتی</th><th>خارج برنامه</th><th>انضباط اجرا</th><th>کیفیت چک‌لیست</th><th>مدت</th><th></th></tr></thead><tbody id="regionalPerformanceBody"></tbody></table></div>
-          <div class="performance-formula"><strong>AES رئیس ناحیه:</strong> ۴۰٪ تحقق برنامه + ۳۵٪ پوشش ۱۰روزه + ۱۵٪ عدم عبور از SLA چهارده‌روزه + ۱۰٪ انضباط اجرا. <strong>امتیاز فروشگاه (SOS)، کیفیت پاسخ‌های چک‌لیست و روند Store Health هیچ سهمی در AES ندارند.</strong> وجود فروشگاه ۱۴+ روزه Critical Flag ایجاد می‌کند.</div>
-        </section>
-
-        <section class="performance-panel" style="margin-top:16px">
+        <section class="performance-panel v44-store-rank" id="regionalStoreRankingSection">
           <div class="performance-panel-head">
-            <div><h3>پوشش و تکرار بازدید فروشگاه‌ها</h3><p>تعداد دفعات بازدید هر فروشگاه در دوره انتخابی؛ فروشگاه‌های بدون بازدید نیز نمایش داده می‌شوند.</p></div>
-            <div class="store-performance-tools">
+            <div>
+              <span class="v44-section-kicker">فروشگاه‌ها</span>
+              <h3>رتبه‌بندی سلامت فروشگاه‌ها</h3>
+              <p>رتبه‌بندی بر اساس Store Operational Score؛ دفعات و مدت بازدید مربوط به بازه انتخاب‌شده است.</p>
+            </div>
+            <div class="store-performance-tools v44-store-tools">
               <input id="regionalStorePerfSearch" placeholder="جستجوی کد یا نام فروشگاه..." oninput="resetStorePerformancePage()">
               <select id="regionalStorePerfHead" onchange="resetStorePerformancePage()"><option value="">همه رؤسای ناحیه</option></select>
-              <select id="regionalStorePerfSort" onchange="resetStorePerformancePage()">
-                <option value="VISITS_ASC">کمترین بازدید</option>
-                <option value="VISITS_DESC">بیشترین بازدید</option>
-                <option value="SLA">بحرانی‌ترین SLA</option>
-                <option value="NAME">نام فروشگاه</option>
-              </select>
+              <button class="v44-filter-chip" id="storePerfUnvisitedBtn" type="button" onclick="toggleUnvisitedStoreFilter()">فقط بازدیدنشده</button>
+              <button class="v44-filter-chip ghost" type="button" onclick="clearStorePerformanceFocus()">پاک کردن فیلتر</button>
             </div>
           </div>
           <div class="performance-table-wrap">
-            <table class="performance-table" id="storePerformanceTable">
-              <thead><tr><th>فروشگاه</th><th>رئیس ناحیه</th><th>کل بازدید</th><th>برنامه‌ای</th><th>خارج Route</th><th>Override</th><th>آخرین بازدید</th><th>فاصله از آخرین بازدید</th><th>وضعیت SLA</th></tr></thead>
+            <table class="performance-table v44-store-table" id="storePerformanceTable">
+              <thead><tr><th>رتبه</th><th>فروشگاه</th><th>رئیس ناحیه</th><th>امتیاز سلامت</th><th>دفعات بازدید</th><th>متوسط مدت</th><th>آخرین بازدید</th><th></th></tr></thead>
               <tbody id="regionalStorePerformanceBody"></tbody>
             </table>
           </div>
@@ -419,7 +468,6 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
           </div>
         </section>
       </div>
-
 
       <div id="regionalChecklistView" class="rq-view hidden">
         <div class="rq-hero">
@@ -631,7 +679,6 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
       <button class="mobile-nav" id="mobileGpsNav" onclick="switchView('gps')"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z"/></svg>GPS</button>
       <button class="mobile-nav" id="mobilePerformanceNav" onclick="switchView('performance')"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>عملکرد</button>
       <button class="mobile-nav" id="mobileStoreHealthNav" onclick="switchView('health')"><svg viewBox="0 0 24 24"><path d="M3 9l2-5h14l2 5M5 13v7h14v-7"/></svg>سلامت</button>
-      <button class="mobile-nav" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق</button>
       <button class="mobile-nav" onclick="DMAuth.logout()"><svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3M14 3h6v18h-6"/></svg>خروج</button>
     </nav>
   </main>
@@ -685,6 +732,18 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
   </aside>
 </div>
 
+
+<div class="v44-visit-modal hidden" id="latestVisitModal" onclick="if(event.target===this)closeLatestVisitDetail()">
+  <div class="v44-visit-card">
+    <div class="v44-visit-head">
+      <div><span class="v44-section-kicker">آخرین بازدید</span><h3 id="latestVisitTitle">—</h3><p id="latestVisitSub">—</p></div>
+      <button class="v44-visit-close" onclick="closeLatestVisitDetail()">×</button>
+    </div>
+    <div class="v44-visit-summary" id="latestVisitSummary"></div>
+    <div class="v44-visit-body" id="latestVisitBody"></div>
+  </div>
+</div>
+
 <div class="toast-wrap" id="toastWrap"></div>
 <script src="app-config.js"></script>
 <script src="auth-client.js"></script>
@@ -729,7 +788,7 @@ const state={
   weekStartIso:'',todayIso:'',days:[],selectedDayIso:'',filter:'ALL',dirty:false,sourceType:'MANUAL',dragIndex:null,moveIndex:null,
   activeView:'route',gpsMode:'approval',approvals:[],approvalFilter:'PENDING',approvalSummary:{pending:0,approved:0,rejected:0},decisionApprovalId:'',
   corrections:[],correctionFilter:'PENDING',correctionSummary:{pending:0,approved:0,rejected:0},correctionDecisionId:'',
-  routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:7,performanceRefreshTimer:null,performanceStorePage:1,performanceStorePageSize:20,performanceExportTouched:false,
+  routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:10,performanceRefreshTimer:null,performanceStorePage:1,performanceStorePageSize:20,performanceStoreOnlyUnvisited:false,performanceExportTouched:false,
   regionalChecklistLoaded:false,regionalChecklistData:null,rqFilter:'ACTIVE',rqOrderItems:null,rqOrderDirty:false,rqDragRef:'',healthData:null,healthLoaded:false,health360:null
 };
 
@@ -1314,7 +1373,7 @@ async function exportRegionalPerformanceXlsx(){
 function regionalScoreClass(n){return Number(n)>=75?'good':Number(n)>=45?'mid':'low';}
 
 async function changeRegionalPerformancePeriod(days){
-  state.performancePeriodDays=Number(days)||7;
+  state.performancePeriodDays=Number(days)||10;
   state.performanceStorePage=1;
   state.performanceExportTouched=false;
   document.querySelectorAll('.performance-period').forEach(b=>b.classList.toggle('active',Number(b.dataset.days)===state.performancePeriodDays));
@@ -1334,40 +1393,26 @@ async function loadRegionalPerformance(force=false){
 
 function renderRegionalPerformance(){
   const s=state.performance?.summary||{};
+  const storeRows=state.performance?.storePerformance||[];
+  const unvisited=storeRows.filter(x=>Number(x.visitCount||0)===0).length;
   document.getElementById('rpCompletion').textContent=(s.completionRate||0)+'%';
   document.getElementById('rpCompletionSub').textContent=`${s.completedPlanned||0} از ${s.planned||0} برنامه`;
-  document.getElementById('rpDaily').textContent=s.avgDailyCompleted??0;
-  document.getElementById('rpCoverage').textContent=(s.coverage10??s.coverageRate??0)+'%';
-  document.getElementById('rpCoverageSub').textContent=`${s.visitedStores||0} از ${s.stores||0} فروشگاه`;
-  document.getElementById('rpHeads').textContent=(s.headConsistency??s.headActivityRate??0)+'%';
-  document.getElementById('rpHeadsSub').textContent=`${s.criticalHeads||0} رئیس ناحیه بحرانی · فعالیت میدانی ${s.headActivityRate||0}%`;
-  document.getElementById('rpOverride').textContent=(s.overrideRate||0)+'%';
-  document.getElementById('rpOverrideSub').textContent=`${s.overrides||0} Override`;
-  document.getElementById('rpUnplanned').textContent=(s.unplannedRate||0)+'%';
-  document.getElementById('rpUnplannedSub').textContent=`${s.unplanned||0} بازدید`;
-  document.getElementById('rpWeak').textContent=(s.overdue14Count??0);
-  document.getElementById('rpWeakSub').textContent=`${s.weakAnswers||0} از ${s.responseCount||0} پاسخ`;
-  document.getElementById('rpChecklistQuality').textContent=(s.checklistQuality||0)+'%';
+  document.getElementById('rpUnvisited').textContent=unvisited;
+  document.getElementById('rpUnvisitedSub').textContent=`از ${storeRows.length||s.stores||0} فروشگاه در ${state.performancePeriodDays} روز`;
   document.getElementById('rpDuration').textContent=s.avgDuration??0;
-  document.getElementById('rpBigCompletion').textContent=(s.completionRate||0)+'%';
-  document.getElementById('rpCompletionBar').style.width=(s.completionRate||0)+'%';
-  document.getElementById('rpPlanned').textContent=s.planned??0;
-  document.getElementById('rpCompleted').textContent=s.completedTotal??0;
-  document.getElementById('rpVisitedStores').textContent=s.visitedStores??0;
-  document.getElementById('rpWeakCount').textContent=s.weakAnswers??0;
-  document.getElementById('rpPeriodCaption').textContent=`${faDateShort(state.performance.startIso)} تا ${faDateShort(state.performance.endIso)} · ${state.performance.periodDays} روز`;
-  renderRegionalPerformanceTrend(state.performance.trend||[]);
-  renderRegionalPerformanceWeak(state.performance.weakQuestions||[]);
-  renderChecklistSectionPerformance(state.performance.checklistSections||[]);
-  renderSalesSubsectionPerformance(state.performance.checklistSubsections||[]);
-  renderRegionalQuestionPerformance(state.performance.regionalQuestionStats||[]);
+
   renderRegionalPerformanceHeads();
-  const hkm=document.getElementById('hkManagement');if(hkm)hkm.textContent=(s.managementScore??'—')+(s.managementScore!=null?'/100':'');
   renderRegionalStorePerformanceFilters();
   renderRegionalStorePerformance();
   syncPerformanceExportFilters(false);
+
+  const hkm=document.getElementById('hkManagement');
+  if(hkm)hkm.textContent=(s.managementScore??'—')+(s.managementScore!=null?'/100':'');
   const sync=document.getElementById('rpSyncText');
-  if(sync){const repaired=Number(state.performance?.integrity?.repaired||0);sync.textContent='آخرین همگام‌سازی '+faDateTimeRegional(state.performance.serverTime)+(repaired?` · ${repaired} بازدید بازیابی شد`:' · همگام');}
+  if(sync){
+    const repaired=Number(state.performance?.integrity?.repaired||0);
+    sync.textContent='آخرین همگام‌سازی '+faDateTimeRegional(state.performance.serverTime)+(repaired?` · ${repaired} بازدید بازیابی شد`:' · همگام');
+  }
 }
 
 function checklistPerfColor(score){score=Number(score||0);if(score>=85)return'#218b61';if(score>=70)return'#3f72cf';if(score>=55)return'#d2951e';return'#c44258';}
@@ -1439,10 +1484,38 @@ function renderRegionalPerformanceWeak(rows){
 
 function renderRegionalPerformanceHeads(){
   const q=(document.getElementById('regionalPerfSearch')?.value||'').trim().toLowerCase();
-  const arr=(state.performance?.areaHeads||[]).filter(h=>!q||String(h.fullName).toLowerCase().includes(q)||String(h.userId).toLowerCase().includes(q));
+  const storeRows=state.performance?.storePerformance||[];
+  const unvisitedByHead={};
+  storeRows.forEach(x=>{if(Number(x.visitCount||0)===0)unvisitedByHead[x.areaHeadUserId]=(unvisitedByHead[x.areaHeadUserId]||0)+1;});
+
+  const arr=(state.performance?.areaHeads||[])
+    .filter(h=>!q||String(h.fullName||'').toLowerCase().includes(q)||String(h.userId||'').toLowerCase().includes(q))
+    .slice()
+    .sort((a,b)=>Number(b.completionRate||0)-Number(a.completionRate||0)
+      ||(Number(b.completedTotal||0)+Number(b.inProgress||0))-(Number(a.completedTotal||0)+Number(a.inProgress||0))
+      ||String(a.fullName||'').localeCompare(String(b.fullName||''),'fa'));
+
   const body=document.getElementById('regionalPerformanceBody');
-  if(!arr.length){body.innerHTML='<tr><td colspan="19" class="overview-empty">رئیس ناحیه‌ای پیدا نشد.</td></tr>';return;}
-  body.innerHTML=arr.map(h=>`<tr><td data-label="رتبه"><div class="performance-rank ${h.rank<=3?'top':''}">${h.rank}</div></td><td class="performance-name" data-label="رئیس ناحیه"><strong>${esc(h.fullName)}</strong><span>${h.storeCount} فروشگاه</span></td><td data-label="تحقق برنامه"><span class="performance-score ${regionalScoreClass(h.completionRate)}">${h.completionRate}%</span></td><td data-label="AES"><span class="performance-score ${regionalScoreClass(h.managementScore||0)}">${h.managementScore??'—'}</span></td><td data-label="امتیاز عملیاتی فروشگاه‌ها">${h.portfolioHealthScore??'—'}</td><td data-label="روند سلامت">${h.portfolioTrend==null?'—':(h.portfolioTrend>0?'+':'')+h.portfolioTrend}</td><td data-label="دقت گزارش">${h.validationAccuracy==null?'—':h.validationAccuracy+'%'}<div class="head-sub">${h.validationCount||0} اعتبارسنجی</div></td><td data-label="برنامه">${h.planned}</td><td data-label="تکمیل">${h.completedPlanned}</td><td data-label="تحقق">${h.completionRate}%</td><td data-label="میانگین روزانه">${h.avgDailyCompleted??h.avgDailyVisits??0}</td><td data-label="پوشش ۱۰روزه">${h.coverage10??0}%</td><td data-label="۱۴+ روز"><span class="tag ${Number(h.overdue14Count||0)?'red':'green'}">${h.overdue14Count||0}</span></td><td data-label="روز غیرعملیاتی"><strong>${h.unavailableDays||0} روز</strong><div class="head-sub">م ${h.leaveDays||0} · ا ${h.inventoryDays||0} · ف ${h.openingDays||0}</div></td><td data-label="خارج برنامه">${h.unplannedRate}%</td><td data-label="انضباط اجرا">${h.executionIntegrity??'—'}%</td><td data-label="کیفیت چک‌لیست">${h.checklistQuality||0}%</td><td data-label="مدت">${h.avgDuration} دقیقه</td><td class="performance-action"><button class="performance-route-btn" onclick="openAreaHeadRoute('${esc(h.userId)}')">Route</button></td></tr>`).join('');
+  if(!arr.length){body.innerHTML='<tr><td colspan="10" class="overview-empty">رئیس ناحیه‌ای پیدا نشد.</td></tr>';return;}
+
+  body.innerHTML=arr.map((h,i)=>{
+    const running=Number(h.inProgress||0);
+    const done=Number(h.completedTotal||0);
+    const unvisited=Number(unvisitedByHead[h.userId]||0);
+    const sos=h.portfolioHealthScore;
+    return `<tr>
+      <td data-label="رتبه"><div class="performance-rank ${i<3?'top':''}">${i+1}</div></td>
+      <td class="performance-name" data-label="رئیس ناحیه"><strong>${esc(h.fullName)}</strong><span>${h.executionCritical?'نیازمند توجه مدیریتی':'عملکرد دوره'}</span></td>
+      <td data-label="فروشگاه">${h.storeCount||0}</td>
+      <td data-label="برنامه">${h.planned||0}</td>
+      <td data-label="تکمیل / درحال اجرا"><strong>${done+running}</strong><div class="head-sub">${done} تکمیل · ${running} درحال اجرا</div></td>
+      <td data-label="تحقق Route"><span class="performance-score ${regionalScoreClass(h.completionRate)}">${h.completionRate||0}%</span></td>
+      <td data-label="متوسط زمان">${h.avgDuration||0} دقیقه</td>
+      <td data-label="بازدیدنشده">${unvisited?`<button class="v44-link-metric danger" onclick="focusUnvisitedStores('${esc(h.userId)}')">${unvisited} فروشگاه</button>`:'<span class="v44-zero-good">۰</span>'}</td>
+      <td data-label="SOS">${sos===null||sos===undefined?'—':`<span class="v44-sos ${healthBandClass(h.portfolioHealthScore>=85?'EXCELLENT':h.portfolioHealthScore>=75?'GOOD':h.portfolioHealthScore>=60?'ATTENTION':h.portfolioHealthScore>=45?'WEAK':'CRITICAL')}">${Math.round(Number(sos))}</span>`}</td>
+      <td data-label="آخرین فعالیت">${h.lastActivity?faDateTimeRegional(h.lastActivity):'—'}</td>
+    </tr>`;
+  }).join('');
 }
 
 function renderRegionalStorePerformanceFilters(){
@@ -1457,46 +1530,112 @@ function changeStorePerformancePage(delta){
   state.performanceStorePage=Math.max(1,Number(state.performanceStorePage||1)+Number(delta||0));
   renderRegionalStorePerformance();
 }
-function regionalStorePriorityRank(level){return({NO_HISTORY:5,OVERDUE:4,WARN12:3,WARN10:2,NORMAL:1})[String(level||'NORMAL').toUpperCase()]||0;}
-function regionalStoreSlaHtml(x){
-  const level=String(x.priorityLevel||'NORMAL').toUpperCase();
-  const cls=level==='NO_HISTORY'?'no_history':level==='OVERDUE'?'overdue':level==='WARN12'?'warn12':level==='WARN10'?'warn10':'normal';
-  const label=x.priorityLabel||(level==='NO_HISTORY'?'بدون سابقه':level==='OVERDUE'?'۱۴+ روز':level==='WARN12'?'۱۲ روز':level==='WARN10'?'۱۰ روز':'عادی');
-  return `<span class="sla-state ${cls}">${esc(label)}</span>`;
+function storeHealthBandLabelClient(band){
+  return ({EXCELLENT:'عالی',GOOD:'خوب',ATTENTION:'نیازمند توجه',WEAK:'ضعیف',CRITICAL:'بحرانی',NO_DATA:'بدون داده'})[String(band||'NO_DATA').toUpperCase()]||'—';
+}
+function toggleUnvisitedStoreFilter(){
+  state.performanceStoreOnlyUnvisited=!state.performanceStoreOnlyUnvisited;
+  state.performanceStorePage=1;
+  renderRegionalStorePerformance();
+}
+function clearStorePerformanceFocus(){
+  state.performanceStoreOnlyUnvisited=false;
+  const head=document.getElementById('regionalStorePerfHead');if(head)head.value='';
+  const search=document.getElementById('regionalStorePerfSearch');if(search)search.value='';
+  state.performanceStorePage=1;
+  renderRegionalStorePerformance();
+}
+function focusUnvisitedStores(headId){
+  state.performanceStoreOnlyUnvisited=true;
+  const head=document.getElementById('regionalStorePerfHead');
+  if(head)head.value=String(headId||'');
+  state.performanceStorePage=1;
+  renderRegionalStorePerformance();
+  document.getElementById('regionalStoreRankingSection')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderRegionalStorePerformance(){
   const body=document.getElementById('regionalStorePerformanceBody');if(!body)return;
   const q=toEn(document.getElementById('regionalStorePerfSearch')?.value||'').trim().toLowerCase();
   const headId=String(document.getElementById('regionalStorePerfHead')?.value||'');
-  const sort=String(document.getElementById('regionalStorePerfSort')?.value||'VISITS_ASC');
   let rows=(state.performance?.storePerformance||[]).filter(x=>{
     if(headId&&String(x.areaHeadUserId)!==headId)return false;
+    if(state.performanceStoreOnlyUnvisited&&Number(x.visitCount||0)!==0)return false;
     if(q&&!`${x.storeCode} ${x.storeName} ${x.areaHeadName}`.toLowerCase().includes(q))return false;
     return true;
   });
+
   rows.sort((a,b)=>{
-    if(sort==='VISITS_DESC')return Number(b.visitCount||0)-Number(a.visitCount||0)||String(a.storeName||'').localeCompare(String(b.storeName||''),'fa');
-    if(sort==='SLA')return regionalStorePriorityRank(b.priorityLevel)-regionalStorePriorityRank(a.priorityLevel)||Number(b.daysSinceLastVisit||0)-Number(a.daysSinceLastVisit||0);
-    if(sort==='NAME')return String(a.storeName||'').localeCompare(String(b.storeName||''),'fa');
-    return Number(a.visitCount||0)-Number(b.visitCount||0)||regionalStorePriorityRank(b.priorityLevel)-regionalStorePriorityRank(a.priorityLevel)||String(a.storeName||'').localeCompare(String(b.storeName||''),'fa');
+    const as=(a.healthScore===null||a.healthScore===undefined||a.healthScore==='')?-1:Number(a.healthScore);
+    const bs=(b.healthScore===null||b.healthScore===undefined||b.healthScore==='')?-1:Number(b.healthScore);
+    return bs-as||Number(b.visitCount||0)-Number(a.visitCount||0)||String(a.storeName||'').localeCompare(String(b.storeName||''),'fa');
   });
+
+  const filterBtn=document.getElementById('storePerfUnvisitedBtn');
+  if(filterBtn)filterBtn.classList.toggle('active',!!state.performanceStoreOnlyUnvisited);
+
   const size=Number(state.performanceStorePageSize||20),pages=Math.max(1,Math.ceil(rows.length/size));
   state.performanceStorePage=Math.min(Math.max(1,state.performanceStorePage||1),pages);
   const start=(state.performanceStorePage-1)*size,show=rows.slice(start,start+size);
-  body.innerHTML=show.length?show.map(x=>`<tr>
-    <td class="store-cell" data-label="فروشگاه"><div class="performance-name"><strong>${esc(x.storeName||x.storeCode)}</strong><span>کد ${esc(x.storeCode)}</span></div></td>
-    <td data-label="رئیس ناحیه">${esc(x.areaHeadName||'—')}</td>
-    <td data-label="کل بازدید"><span class="visit-count-pill ${Number(x.visitCount||0)===0?'zero':''}">${x.visitCount||0}</span></td>
-    <td data-label="برنامه‌ای">${x.plannedVisits||0}</td>
-    <td data-label="خارج Route">${x.unplannedVisits||0}</td>
-    <td data-label="Override">${x.overrideVisits||0}</td>
-    <td data-label="آخرین بازدید">${x.lastVisit?faDateTimeRegional(x.lastVisit):'—'}</td>
-    <td data-label="فاصله از آخرین بازدید">${Number(x.daysSinceLastVisit)>=999?'—':`${x.daysSinceLastVisit} روز`}</td>
-    <td data-label="وضعیت SLA">${regionalStoreSlaHtml(x)}</td>
-  </tr>`).join(''):'<tr><td colspan="9" class="overview-empty">فروشگاهی با این فیلتر پیدا نشد.</td></tr>';
-  document.getElementById('regionalStorePerformanceInfo').textContent=rows.length?`نمایش ${start+1} تا ${Math.min(start+size,rows.length)} از ${rows.length} فروشگاه · صفحه ${state.performanceStorePage} از ${pages}`:'۰ فروشگاه';
+
+  body.innerHTML=show.length?show.map((x,idx)=>{
+    const rank=start+idx+1;
+    const score=(x.healthScore===null||x.healthScore===undefined||x.healthScore==='')?null:Number(x.healthScore);
+    const band=String(x.healthBand||'NO_DATA').toUpperCase();
+    return `<tr>
+      <td data-label="رتبه"><div class="performance-rank ${rank<=3?'top':''}">${rank}</div></td>
+      <td class="store-cell" data-label="فروشگاه"><div class="performance-name"><strong>${esc(x.storeName||x.storeCode)}</strong><span>کد ${esc(x.storeCode)}</span></div></td>
+      <td data-label="رئیس ناحیه">${esc(x.areaHeadName||'—')}</td>
+      <td data-label="امتیاز سلامت">${score===null?'<span class="v44-no-score">—</span>':`<span class="health-score ${healthBandClass(band)}">${Math.round(score)}</span><div class="head-sub">${storeHealthBandLabelClient(band)}</div>`}</td>
+      <td data-label="دفعات بازدید"><span class="visit-count-pill ${Number(x.visitCount||0)===0?'zero':''}">${x.visitCount||0}</span></td>
+      <td data-label="متوسط مدت">${Number(x.avgDuration||0)} دقیقه</td>
+      <td data-label="آخرین بازدید">${x.lastVisit?faDateTimeRegional(x.lastVisit):'—'}${Number(x.daysSinceLastVisit||999)<999?`<div class="head-sub">${x.daysSinceLastVisit} روز قبل</div>`:''}</td>
+      <td class="performance-action"><button class="performance-route-btn v44-latest-btn" ${x.lastVisit?'': 'disabled'} onclick="openLatestVisitDetail('${esc(x.storeCode)}')">آخرین بازدید</button></td>
+    </tr>`;
+  }).join(''):'<tr><td colspan="8" class="overview-empty">فروشگاهی با این فیلتر پیدا نشد.</td></tr>';
+
+  document.getElementById('regionalStorePerformanceInfo').textContent=rows.length?`نمایش ${start+1} تا ${Math.min(start+size,rows.length)} از ${rows.length} فروشگاه · رتبه‌بندی بر اساس SOS`:'۰ فروشگاه';
   document.getElementById('storePerfPrev').disabled=state.performanceStorePage<=1;
   document.getElementById('storePerfNext').disabled=state.performanceStorePage>=pages;
+}
+
+function closeLatestVisitDetail(){
+  document.getElementById('latestVisitModal')?.classList.add('hidden');
+}
+function latestVisitScoreBadge(x){
+  if(!x.scorable||x.score===null||x.score===undefined)return '<span class="v44-item-score neutral">خارج از SOS</span>';
+  const n=Number(x.score||0),cls=n>=100?'good':n>=70?'mid':'bad';
+  return `<span class="v44-item-score ${cls}">${Math.round(n)}/100</span>`;
+}
+async function openLatestVisitDetail(storeCode){
+  setLoading(true,'در حال دریافت آخرین بازدید...');
+  try{
+    const r=await DMAuth.apiPost('storeHealth360',{storeCode:storeCode},60000);
+    if(!r.success)throw new Error(r.message||'جزئیات آخرین بازدید دریافت نشد.');
+    const s=r.store||{},v=r.latestVisit||{},h=r.health||{},items=r.latestChecklist||[];
+    document.getElementById('latestVisitTitle').textContent=`${s.storeCode||storeCode} · ${s.storeName||''}`;
+    document.getElementById('latestVisitSub').textContent=`${s.areaHeadName||'—'} · ${v.dateIso?faDateShort(v.dateIso):'آخرین بازدید ثبت‌شده'}`;
+    document.getElementById('latestVisitSummary').innerHTML=`
+      <div><strong>${h.score==null?'—':Math.round(Number(h.score))}</strong><span>SOS آخرین بازدید</span></div>
+      <div><strong>${items.filter(x=>x.scorable).length}</strong><span>آیتم امتیازدار</span></div>
+      <div><strong>${items.filter(x=>x.issue).length}</strong><span>آیتم با امتیاز صفر</span></div>`;
+    if(!items.length){
+      document.getElementById('latestVisitBody').innerHTML='<div class="overview-empty">چک‌لیست نهایی برای این فروشگاه پیدا نشد.</div>';
+    }else{
+      const groups=[];const map={};
+      items.forEach(x=>{const sec=String(x.section||'سایر');if(!map[sec]){map[sec]=[];groups.push(sec);}map[sec].push(x);});
+      document.getElementById('latestVisitBody').innerHTML=groups.map(sec=>`
+        <section class="v44-visit-section">
+          <h4>${esc(sec)}</h4>
+          ${map[sec].map(x=>`<div class="v44-visit-item">
+            <div class="v44-visit-item-copy"><strong>${esc(x.questionText||x.questionId)}</strong><span>${x.subsection?esc(x.subsection):''}</span></div>
+            <div class="v44-visit-answer">${esc(x.value||'—')}</div>
+            ${latestVisitScoreBadge(x)}
+          </div>`).join('')}
+        </section>`).join('');
+    }
+    document.getElementById('latestVisitModal').classList.remove('hidden');
+  }catch(e){toast(e.message||'خطا در دریافت آخرین بازدید','error');}
+  finally{setLoading(false);}
 }
 
 function startPerformanceAutoRefresh(){
