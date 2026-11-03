@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-<!-- V41 NATIONAL SCORING UI: SOS / AES / RMS / ECS -->
+<!-- V43 NATIONAL PERFORMANCE UI: Today / Period / Route Fulfillment Ranking -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b4001b">
@@ -132,6 +132,54 @@ button,input,select{font:inherit}
 @media(max-width:1250px){.ah-kpis{grid-template-columns:repeat(3,1fr)}.ah-layout{grid-template-columns:1fr}.ah-toolbar{grid-template-columns:1fr 1fr 1fr}.ah-toolbar .search{grid-column:1/-1}}
 @media(max-width:820px){.ah-kpis{grid-template-columns:1fr 1fr;gap:8px}.ah-kpi{padding:12px}.ah-kpi b{font-size:1.2rem}.ah-toolbar{grid-template-columns:1fr 1fr;padding:10px}.ah-toolbar .search{grid-column:1/-1}.ah-toolbar .btn{width:100%}.ah-form-grid{grid-template-columns:1fr}.ah-form-grid .full{grid-column:auto}.ah-modal-card{width:100%;max-height:100vh;border-radius:20px 20px 0 0}.credential-grid{grid-template-columns:1fr}.ah-deps{grid-template-columns:1fr 1fr}}
 
+
+/* ===== V43 NATIONAL PERFORMANCE REBUILD ===== */
+.npv43-top{display:grid;grid-template-columns:minmax(0,1.28fr) minmax(360px,.72fr);gap:16px;margin-bottom:18px}
+.npv43-today{position:relative;overflow:hidden;border-radius:28px;padding:22px;background:linear-gradient(135deg,#151b28 0%,#20293b 52%,#111722 100%);color:#fff;box-shadow:0 24px 60px rgba(16,23,36,.16)}
+.npv43-today:before{content:"";position:absolute;width:320px;height:320px;border-radius:50%;left:-110px;top:-160px;background:radial-gradient(circle,rgba(218,0,39,.34),rgba(218,0,39,0) 68%);pointer-events:none}
+.npv43-today:after{content:"";position:absolute;width:230px;height:230px;border-radius:50%;right:-90px;bottom:-130px;background:radial-gradient(circle,rgba(69,102,255,.22),rgba(69,102,255,0) 70%);pointer-events:none}
+.npv43-today-head,.npv43-period-head{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.npv43-eyebrow{font-size:.58rem;font-weight:900;letter-spacing:.08em;opacity:.64;text-transform:uppercase}
+.npv43-today h3,.npv43-period h3{margin:4px 0 0;font-size:1.2rem}.npv43-today-head p,.npv43-period-head p{margin:5px 0 0;font-size:.65rem;line-height:1.9;opacity:.67}
+.npv43-live-dot{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);border-radius:999px;padding:7px 10px;font-size:.57rem;font-weight:900;white-space:nowrap}
+.npv43-live-dot:before{content:"";width:7px;height:7px;border-radius:50%;background:#41d79a;box-shadow:0 0 0 5px rgba(65,215,154,.12)}
+.npv43-today-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px}
+.npv43-today-metric{min-width:0;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.055);border-radius:18px;padding:14px 14px 13px;text-align:right;color:#fff}
+button.npv43-today-metric{width:100%;cursor:pointer}.npv43-today-metric:hover{background:rgba(255,255,255,.085)}
+.npv43-today-metric b{display:block;font-size:1.55rem;line-height:1}.npv43-today-metric span{display:block;margin-top:7px;font-size:.61rem;color:#aeb8c7}.npv43-today-metric.clickable span:after{content:" ← جزئیات";color:#fff;font-size:.52rem;opacity:.66}
+.npv43-today-metric.attention b{color:#ffc267}.npv43-today-metric.danger b{color:#ff7087}.npv43-today-metric.success b{color:#55d9a2}
+.npv43-period{position:relative;overflow:hidden;border-radius:28px;padding:22px;background:linear-gradient(150deg,#fff 0%,#fff 58%,#fff4f6 100%);border:1px solid #e7eaf0;box-shadow:0 18px 45px rgba(22,29,48,.07)}
+.npv43-period:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;left:-120px;bottom:-160px;background:radial-gradient(circle,rgba(201,0,34,.13),rgba(201,0,34,0) 70%);pointer-events:none}
+.npv43-period .periods{position:relative;z-index:2;background:#f1f3f6}
+.npv43-period-body{position:relative;z-index:1;display:grid;grid-template-columns:1.15fr .85fr;gap:11px;margin-top:18px}
+.npv43-route-hero{border-radius:21px;background:linear-gradient(145deg,#fff0f3,#fff);border:1px solid #f1d7dc;padding:17px;display:flex;align-items:center;gap:14px}
+.npv43-route-ring{--route:0;width:86px;height:86px;flex:0 0 86px;border-radius:50%;background:conic-gradient(#c90022 calc(var(--route)*1%),#f1e5e8 0);display:grid;place-items:center;position:relative}
+.npv43-route-ring:after{content:"";position:absolute;inset:8px;border-radius:50%;background:#fff}.npv43-route-ring b{position:relative;z-index:1;font-size:1.15rem;color:#9f001a}
+.npv43-route-copy strong{font-size:.8rem}.npv43-route-copy span{display:block;font-size:.58rem;color:var(--muted);margin-top:5px;line-height:1.7}
+.npv43-period-stack{display:grid;gap:9px}.npv43-period-metric{border:1px solid var(--line);background:#fff;border-radius:17px;padding:13px;text-align:right;color:var(--ink)}
+button.npv43-period-metric{cursor:pointer;width:100%}.npv43-period-metric:hover{border-color:#d5d9e1;box-shadow:0 8px 18px rgba(20,28,48,.05)}
+.npv43-period-metric b{display:block;font-size:1.22rem}.npv43-period-metric span{display:block;font-size:.59rem;color:var(--muted);margin-top:5px}.npv43-period-metric.danger b{color:var(--danger)}
+.npv43-section{margin-bottom:18px}.npv43-section .card-head{padding:19px 20px}.npv43-section-title{display:flex;align-items:center;gap:10px}.npv43-section-rank{width:34px;height:34px;border-radius:12px;background:#171c28;color:#fff;display:grid;place-items:center;font-size:.68rem;font-weight:900}
+.npv43-exec-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;padding:14px}
+.npv43-exec{position:relative;border:1px solid var(--line);border-radius:19px;padding:15px;background:linear-gradient(180deg,#fff,#fbfcfe);cursor:pointer;transition:.16s;overflow:hidden}
+.npv43-exec:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(20,28,48,.08)}.npv43-exec.selected{border-color:#c90022;box-shadow:0 0 0 2px rgba(201,0,34,.07)}
+.npv43-exec-rank{position:absolute;top:12px;left:12px;width:32px;height:32px;border-radius:11px;background:#171c28;color:#fff;display:grid;place-items:center;font-size:.7rem;font-weight:900}
+.npv43-exec-rank.top{background:linear-gradient(135deg,#d00024,#990018)}
+.npv43-exec-name{padding-left:42px}.npv43-exec-name strong{font-size:.78rem}.npv43-exec-name span{display:block;color:var(--muted);font-size:.57rem;margin-top:4px}
+.npv43-exec-route{margin-top:14px;display:flex;justify-content:space-between;align-items:end;gap:10px}.npv43-exec-route b{font-size:1.45rem;color:#15774f}.npv43-exec-route span{font-size:.57rem;color:var(--muted)}
+.npv43-exec-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:11px}.npv43-exec-mini{border-radius:11px;background:#f4f6f9;padding:8px}.npv43-exec-mini b{display:block;font-size:.68rem}.npv43-exec-mini span{display:block;font-size:.49rem;color:#8b929e;margin-top:3px}
+.npv43-link-count{border:0;background:transparent;padding:0;font:inherit;color:inherit;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;cursor:pointer;font-weight:900}
+.npv43-table-rank{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:9px;background:#171c28;color:#fff;font-size:.62rem;font-weight:900}.npv43-table-rank.top{background:linear-gradient(135deg,#d00024,#980018)}
+.npv43-score{display:inline-flex;align-items:center;justify-content:center;min-width:47px;padding:5px 8px;border-radius:999px;background:#edf8f3;color:#147650;font-weight:900}
+.npv43-muted{color:var(--muted);font-size:.6rem}.npv43-click-note{font-size:.56rem;color:#a0a6af;margin-top:3px}
+.npv43-drawer-list{display:grid;gap:8px}.npv43-drawer-row{border:1px solid var(--line);border-radius:15px;padding:11px 12px;background:#fff}.npv43-drawer-row strong{display:block;font-size:.73rem}.npv43-drawer-row span{display:block;font-size:.6rem;color:var(--muted);margin-top:4px;line-height:1.8}.npv43-drawer-row .actions{margin-top:8px}
+.npv43-drawer-group{font-size:.68rem;font-weight:900;margin:15px 0 7px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
+@media(max-width:1200px){.npv43-top{grid-template-columns:1fr}.npv43-exec-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:820px){
+  .npv43-today,.npv43-period{border-radius:21px;padding:15px}.npv43-today-grid{grid-template-columns:1fr 1fr}.npv43-period-body{grid-template-columns:1fr}.npv43-exec-grid{grid-template-columns:1fr;padding:10px}
+  .npv43-exec-metrics{grid-template-columns:1fr 1fr}.npv43-today-head,.npv43-period-head{display:block}.npv43-live-dot,.npv43-period .periods{margin-top:10px}
+}
+
 </style>
 </head>
 <body>
@@ -212,80 +260,70 @@ button,input,select{font:inherit}
 
     <section class="tabs-pane" id="pane-performance">
       <div class="hero">
-        <div><h2>کنترل عملکرد کل کشور · V41</h2><p id="performancePeriodText">نمای مدیریتی کشور از سطح مدیر اجرایی تا فروشگاه.</p></div>
-        <div class="periods">
-          <button class="period-btn active" data-days="7" onclick="changePerformancePeriod(7,this)">۷ روز</button>
-          <button class="period-btn" data-days="14" onclick="changePerformancePeriod(14,this)">۱۴ روز</button>
-          <button class="period-btn" data-days="30" onclick="changePerformancePeriod(30,this)">۳۰ روز</button>
-        </div>
+        <div><h2>عملکرد کل کشور</h2><p id="performancePeriodText">کنترل اجرای Route از امروز تا سطح مدیر اجرایی، مدیر منطقه و رئیس ناحیه.</p></div>
+        <div class="actions"><button class="btn ghost" onclick="loadPerformance(true)">↻ بروزرسانی</button></div>
       </div>
 
       <div id="performanceEmpty" class="card empty-performance">در حال آماده‌سازی نمای مدیریتی کشور...</div>
 
       <div id="performanceContent" class="hidden">
-        <div class="np-command">
-          <div class="np-country">
-            <div class="np-score-ring" id="npScoreRing"><b id="npNationalScore">—</b></div>
-            <div><h3>امتیاز کنترل اجرای شبکه</h3><p id="npNationalReason">—</p><span class="np-country-status" id="npNationalStatus">—</span></div>
-          </div>
-          <div class="np-today">
-            <div class="np-today-item"><strong id="npTodayPlanned">—</strong><span>برنامه امروز</span></div>
-            <div class="np-today-item"><strong id="npTodayCompleted">—</strong><span>تکمیل امروز</span></div>
-            <div class="np-today-item"><strong id="npTodayActive">—</strong><span>در حال بازدید</span></div>
-            <div class="np-today-item alert"><strong id="npTodayGps">—</strong><span>GPS در انتظار</span></div>
-            <div class="np-today-item danger"><strong id="npTodayNotStarted">—</strong><span>رئیس ناحیه شروع‌نکرده</span></div>
-            <div class="np-today-item alert"><strong id="npTodayNoPlan">—</strong><span>رئیس ناحیه بدون Route</span></div>
-          </div>
+        <div class="npv43-top">
+          <section class="npv43-today">
+            <div class="npv43-today-head">
+              <div><div class="npv43-eyebrow">LIVE OPERATIONS</div><h3>عملکرد روز جاری</h3><p>وضعیت واقعی برنامه و اجرای بازدیدهای امروز در سراسر کشور.</p></div>
+              <span class="npv43-live-dot">امروز · زنده</span>
+            </div>
+            <div class="npv43-today-grid">
+              <div class="npv43-today-metric"><b id="npTodayPlanned">—</b><span>تعداد برنامه امروز</span></div>
+              <div class="npv43-today-metric attention"><b id="npTodayActive">—</b><span>در حال بازدید</span></div>
+              <div class="npv43-today-metric success"><b id="npTodayCompleted">—</b><span>تکمیل امروز</span></div>
+              <button class="npv43-today-metric clickable" onclick="openTodayHeads('WITH_PLAN')"><b id="npTodayHeadsWithPlan">—</b><span>رئیس ناحیه که برنامه دارد</span></button>
+              <button class="npv43-today-metric clickable danger" onclick="openTodayHeads('NO_PLAN')"><b id="npTodayNoPlan">—</b><span>رئیس ناحیه که برنامه ندارد</span></button>
+              <button class="npv43-today-metric clickable attention" onclick="openTodayHeads('NOT_STARTED')"><b id="npTodayNotStarted">—</b><span>رئیس ناحیه که شروع نکرده</span></button>
+            </div>
+          </section>
+
+          <section class="npv43-period">
+            <div class="npv43-period-head">
+              <div><div class="npv43-eyebrow" style="color:#9b1730;opacity:1">PERIOD PERFORMANCE</div><h3>عملکرد ماه جاری</h3><p id="npRangeDates">بازه انتخابی از امروز به عقب محاسبه می‌شود.</p></div>
+              <div class="periods">
+                <button class="period-btn" data-days="10" onclick="changePerformancePeriod(10,this)">۱۰ روز</button>
+                <button class="period-btn" data-days="20" onclick="changePerformancePeriod(20,this)">۲۰ روز</button>
+                <button class="period-btn active" data-days="30" onclick="changePerformancePeriod(30,this)">۳۰ روز</button>
+              </div>
+            </div>
+            <div class="npv43-period-body">
+              <div class="npv43-route-hero"><div class="npv43-route-ring" id="npRouteRing"><b id="npCompletion">—٪</b></div><div class="npv43-route-copy"><strong>تحقق Route</strong><span id="npCompletionSub">—</span></div></div>
+              <div class="npv43-period-stack">
+                <button class="npv43-period-metric danger" onclick="openUnvisitedStores('ALL','')"><b id="npUnvisitedStores">—</b><span>فروشگاه بازدیدنشده در بازه · مشاهده جزئیات</span></button>
+                <div class="npv43-period-metric"><b id="npDuration">—</b><span>متوسط زمان بازدید · دقیقه</span></div>
+              </div>
+            </div>
+          </section>
         </div>
 
-        <div class="np-kpis">
-          <div class="np-kpi good"><b id="npCompletion">—٪</b><span>تحقق Route</span><small id="npCompletionSub">—</small></div>
-          <div class="np-kpi blue"><b id="npCoverage">—٪</b><span>پوشش ۱۰روزه فروشگاه‌ها</span><small id="npCoverageSub">—</small></div>
-          <div class="np-kpi"><b id="npWithin14">—٪</b><span>کنترل SLA چهارده‌روزه</span><small id="npSlaSub">—</small></div>
-          <div class="np-kpi"><b id="npHeadActivity">—٪</b><span>مشارکت رؤسای ناحیه</span><small id="npHeadActivitySub">—</small></div>
-          <div class="np-kpi"><b id="npQuality">—</b><span>SOS فروشگاه‌ها</span><small id="npQualitySub">Outcome مستقل از امتیاز مدیریت</small></div>
-          <div class="np-kpi warn"><b id="npUnplanned">—٪</b><span>خارج از Route</span><small id="npUnplannedSub">—</small></div>
-          <div class="np-kpi warn"><b id="npOverride">—٪</b><span>Manager Override</span><small id="npOverrideSub">—</small></div>
-          <div class="np-kpi"><b id="npDuration">—</b><span>میانگین مدت بازدید</span><small>دقیقه</small></div>
-        </div>
+        <section class="card npv43-section">
+          <div class="card-head"><div class="npv43-section-title"><span class="npv43-section-rank">01</span><div><h3>عملکرد مناطق مدیران اجرایی</h3><p>رتبه‌بندی براساس تحقق Route در بازه انتخابی؛ کیفیت فروشگاه‌ها به‌صورت SOS مستقل نمایش داده می‌شود.</p></div></div></div>
+          <div class="npv43-exec-grid" id="npExecutiveGrid"></div>
+        </section>
 
-        <div class="np-two">
-          <div class="card" style="margin:0">
-            <div class="card-head"><div><h3>صف اقدام مدیریتی</h3><p>مواردی که از دید کنترل کشور باید زودتر بررسی شوند.</p></div><span class="badge red" id="npActionCount">—</span></div>
-            <div class="np-action-list" id="npActionList"></div>
-          </div>
-          <div class="card" style="margin:0">
-            <div class="card-head"><div><h3>لایه مدیران اجرایی</h3><p>وضعیت تجمیعی مناطق زیرمجموعه هر مدیر اجرایی.</p></div></div>
-            <div class="np-exec-grid" id="npExecutiveGrid"></div>
-          </div>
-        </div>
-
-        <div class="card">
+        <section class="card npv43-section">
           <div class="card-head">
-            <div><h3>کنترل مناطق کشور</h3><p>RMS هر منطقه بر اساس تحقق برنامه، پوشش ۱۰روزه، SLA و ثبات رؤسای ناحیه. SOS فقط Outcome مستقل است.</p></div>
+            <div class="npv43-section-title"><span class="npv43-section-rank">02</span><div><h3>عملکرد مدیران مناطق</h3><p>رتبه‌بندی براساس تحقق Route و Drill-down فروشگاه‌های بازدیدنشده.</p></div></div>
             <div class="np-filters">
               <input class="search" id="performanceSearch" placeholder="جستجوی مدیر منطقه، رئیس ناحیه یا مدیر اجرایی..." oninput="performanceFilterChanged()">
               <select class="filter" id="performanceExecutiveFilter" onchange="performanceFilterChanged()"><option value="ALL">همه مدیران اجرایی</option></select>
               <select class="filter" id="performanceRegionFilter" onchange="performanceFilterChanged()"><option value="ALL">همه مناطق</option></select>
-              <select class="filter" id="performanceStatusFilter" onchange="performanceFilterChanged()"><option value="ALL">همه وضعیت‌ها</option><option value="CRITICAL">بحرانی</option><option value="ATTENTION">نیازمند توجه</option><option value="GOOD">پایدار</option><option value="EXCELLENT">عالی</option></select>
-              <button class="btn ghost" onclick="clearPerformanceFilters()">پاک‌کردن فیلتر</button>
-              <span class="np-filter-count" id="npFilterCount">—</span>
+              <button class="btn ghost" onclick="clearPerformanceFilters()">پاک‌کردن فیلتر</button><span class="np-filter-count" id="npFilterCount">—</span>
             </div>
           </div>
-          <div class="table-wrap"><table class="table" style="min-width:1450px"><thead><tr>
-            <th>#</th><th>منطقه</th><th>مدیر اجرایی</th><th>وضعیت</th><th>RMS</th><th>فروشگاه</th><th>رئیس ناحیه</th><th>برنامه / تکمیل</th><th>تحقق</th><th>پوشش ۱۰روزه</th><th>SLA 14</th><th>ثبات رؤسا</th><th>SOS</th><th>۱۴+ روز</th><th>امروز</th><th></th>
-          </tr></thead><tbody id="performanceRegionBody"></tbody></table></div>
-        </div>
+          <div class="table-wrap"><table class="table" style="min-width:1220px"><thead><tr><th>رتبه</th><th>مدیر منطقه</th><th>مدیر اجرایی</th><th>فروشگاه</th><th>رئیس ناحیه</th><th>برنامه داده‌شده</th><th>تکمیل/در حال اجرا</th><th>تحقق Route</th><th>متوسط زمان</th><th>بازدیدنشده</th><th>کیفیت فروشگاه‌ها</th><th></th></tr></thead><tbody id="performanceRegionBody"></tbody></table></div>
+        </section>
 
-        <div class="card" id="npHeadsCard">
-          <div class="card-head">
-            <div><h3>کنترل رؤسای ناحیه</h3><p id="npHeadsSub">تمام رؤسای ناحیه کشور با AES مستقل از امتیاز فروشگاه و کیفیت چک‌لیست.</p></div>
-            <div class="np-head-pager"><button onclick="performanceHeadPage(-1)">قبلی</button><span id="npHeadPageLabel">—</span><button onclick="performanceHeadPage(1)">بعدی</button></div>
-          </div>
-          <div class="table-wrap"><table class="table" style="min-width:1500px"><thead><tr>
-            <th>رئیس ناحیه</th><th>منطقه</th><th>وضعیت</th><th>AES</th><th>فروشگاه</th><th>برنامه / تکمیل</th><th>تحقق</th><th>پوشش ۱۰روزه</th><th>۱۴+ / بدون سابقه</th><th>انضباط اجرا</th><th>SOS</th><th>GPS</th><th>امروز</th><th>آخرین فعالیت</th><th></th>
-          </tr></thead><tbody id="performanceHeadBody"></tbody></table></div>
-        </div>
+        <section class="card npv43-section" id="npHeadsCard">
+          <div class="card-head"><div class="npv43-section-title"><span class="npv43-section-rank">03</span><div><h3>عملکرد رؤسای ناحیه</h3><p id="npHeadsSub">رتبه‌بندی رؤسای ناحیه براساس تحقق Route در بازه انتخابی.</p></div></div><div class="np-head-pager"><button onclick="performanceHeadPage(-1)">قبلی</button><span id="npHeadPageLabel">—</span><button onclick="performanceHeadPage(1)">بعدی</button></div></div>
+          <div class="table-wrap"><table class="table" style="min-width:1250px"><thead><tr><th>رتبه</th><th>رئیس ناحیه</th><th>مدیر منطقه</th><th>فروشگاه</th><th>برنامه</th><th>تکمیل/در حال اجرا</th><th>تحقق Route</th><th>متوسط زمان</th><th>بازدیدنشده</th><th>کیفیت فروشگاه‌ها</th><th>آخرین فعالیت</th><th></th></tr></thead><tbody id="performanceHeadBody"></tbody></table></div>
+        </section>
 
         <div class="np-lower">
           <div class="card" style="margin:0">
@@ -568,7 +606,7 @@ button,input,select{font:inherit}
 <script>
 const state={
   data:null,currentTab:'overview',editStore:null,
-  performance:null,performanceLoaded:false,performancePeriodDays:7,
+  performance:null,performanceLoaded:false,performancePeriodDays:30,
   performanceManager:null,
   storeMaster:null,storeMasterLoaded:false,storePage:1,storePageSize:25,storeEditingCode:'',
   storeImportRows:[],storeImportPreview:null,storeImportFileName:'',
@@ -1008,7 +1046,7 @@ function changePerformancePeriod(days,btn){
 function npStatusBadge(status,label){return `<span class="np-status ${esc(status)}">${esc(label||npStatusFa(status))}</span>`;}
 function npStatusFa(s){return {EXCELLENT:'عالی',GOOD:'پایدار',ATTENTION:'نیازمند توجه',CRITICAL:'بحرانی'}[s]||'نامشخص';}
 function npScoreClass(s){return Number(s)>=80?'good':Number(s)>=60?'mid':'low';}
-function npTodayFa(s){return {COMPLETED:'تکمیل',ACTIVE:'در حال بازدید',GPS_PENDING:'GPS Pending',PARTIAL:'بخشی انجام‌شده',NOT_STARTED:'شروع نشده',NO_PLAN:'بدون Route'}[s]||s||'—';}
+function npTodayFa(s){return {COMPLETED:'تکمیل',ACTIVE:'در حال بازدید',GPS_PENDING:'GPS Pending',PARTIAL:'بخشی انجام‌شده',NOT_STARTED:'شروع نشده',NO_PLAN:'بدون Route',UNAVAILABLE:'غیرعملیاتی'}[s]||s||'—';}
 function npTodayBadge(s){return `<span class="np-today-badge ${esc(s||'NO_PLAN')}">${esc(npTodayFa(s))}</span>`;}
 function npQualityText(v){return v===null||v===undefined?'بدون داده':fa(v);}
 function npArg(v){return encodeURIComponent(String(v??'')).replace(/'/g,'%27');}
@@ -1024,29 +1062,25 @@ function renderPerformance(){
   const d=state.performance;if(!d)return;
   const s=d.summary||{};
   el('performanceEmpty').classList.add('hidden');el('performanceContent').classList.remove('hidden');
-  el('performancePeriodText').textContent=`دوره ${fa(d.periodDays)} روزه · ${fmtShortDate(d.startIso)} تا ${fmtShortDate(d.endIso)} · بروزرسانی ${fmtDate(d.serverTime)}`;
+  el('performancePeriodText').textContent=`آخرین ${fa(d.periodDays)} روز · ${fmtShortDate(d.startIso)} تا ${fmtShortDate(d.endIso)} · بروزرسانی ${fmtDate(d.serverTime)}`;
+  el('npRangeDates').textContent=`آخرین ${fa(d.periodDays)} روز · ${fmtShortDate(d.startIso)} تا ${fmtShortDate(d.endIso)}`;
+  document.querySelectorAll('.period-btn').forEach(x=>x.classList.toggle('active',Number(x.dataset.days)===Number(d.periodDays)));
 
-  el('npNationalScore').textContent=fa(s.nationalScore);
-  el('npScoreRing').style.setProperty('--score',Math.max(0,Math.min(100,Number(s.nationalScore||0))));
-  el('npScoreRing').style.setProperty('--ring',({EXCELLENT:'#35c98a',GOOD:'#6f8fff',ATTENTION:'#f0ac31',CRITICAL:'#ff4865'}[s.nationalStatus]||'#ff4865'));
-  el('npNationalStatus').textContent=s.nationalStatusLabel||npStatusFa(s.nationalStatus);
-  el('npNationalReason').textContent=(s.nationalReasons||[]).join(' · ')||'شاخص‌های اصلی شبکه در محدوده پایدار قرار دارند.';
+  el('npTodayPlanned').textContent=fa(s.todayPlanned);
+  el('npTodayActive').textContent=fa(s.inProgress);
+  el('npTodayCompleted').textContent=fa(s.todayCompletedTotal);
+  el('npTodayHeadsWithPlan').textContent=fa(s.todayHeadsWithPlan||0);
+  el('npTodayNoPlan').textContent=fa(s.todayHeadsNoPlan);
+  el('npTodayNotStarted').textContent=fa(s.todayHeadsNotStarted);
 
-  el('npTodayPlanned').textContent=fa(s.todayPlanned);el('npTodayCompleted').textContent=fa(s.todayCompletedTotal);
-  el('npTodayActive').textContent=fa(s.inProgress);el('npTodayGps').textContent=fa(s.pendingGps);
-  el('npTodayNotStarted').textContent=fa(s.todayHeadsNotStarted);el('npTodayNoPlan').textContent=fa(s.todayHeadsNoPlan);
-
-  el('npCompletion').textContent=pct(s.completionRate);el('npCompletionSub').textContent=`${fa(s.completedPlanned)} از ${fa(s.planned)} برنامه`;
-  el('npCoverage').textContent=pct(s.coverage10);el('npCoverageSub').textContent=`${fa(Math.round(Number(s.coverage10||0)*Number(s.stores||0)/100))} از ${fa(s.stores)} فروشگاه در پوشش ۱۰روزه`;
-  el('npWithin14').textContent=pct(s.slaHealthRate??s.within14Rate);el('npSlaSub').textContent=`${fa(s.overdue14Count??s.overdue)} فروشگاه ۱۴+ روز / بدون سابقه`;
-  el('npHeadActivity').textContent=pct(s.headActivityRate);el('npHeadActivitySub').textContent=`${fa(s.activeHeads)} از ${fa(s.areaHeads)} رئیس ناحیه`;
-  el('npQuality').textContent=(s.portfolioHealthScore===null||s.portfolioHealthScore===undefined)?'بدون داده':fa(s.portfolioHealthScore);el('npQualitySub').textContent=`SOS · ${fa(s.sosScoredStores||0)} فروشگاه دارای امتیاز · خارج از NCS`;
-  el('npUnplanned').textContent=pct(s.unplannedRate);el('npUnplannedSub').textContent=`${fa(s.unplanned)} بازدید`;
-  el('npOverride').textContent=pct(s.overrideRate);el('npOverrideSub').textContent=`${fa(s.overrides)} مورد`;
-  el('npDuration').textContent=fa(s.avgDuration);
+  el('npCompletion').textContent=pct(s.completionRate);
+  el('npCompletionSub').textContent=`${fa(s.completedPlanned)} بازدید برنامه‌ای تکمیل‌شده از ${fa(s.planned)} برنامه`;
+  el('npRouteRing').style.setProperty('--route',Math.max(0,Math.min(100,Number(s.completionRate||0))));
+  el('npUnvisitedStores').textContent=fa(s.unvisitedStoreCount||0);
+  el('npDuration').textContent=fa(s.avgDuration||0);
 
   populatePerformanceFilters();
-  renderPerformanceExecutives();renderPerformanceActions();renderPerformanceRegions();renderPerformanceHeads();
+  renderPerformanceExecutives();renderPerformanceRegions();renderPerformanceHeads();
   renderPerformanceTrend();renderPerformanceSla();renderPerformanceQuality();renderPerformanceLive();renderPerformanceWatch();
 }
 
@@ -1058,7 +1092,7 @@ function populatePerformanceFilters(){
   rg.innerHTML='<option value="ALL">همه مناطق</option>'+ (d.managers||[]).map(x=>`<option value="${esc(x.regionalUserId)}">${esc(x.fullName)}</option>`).join('');
   ex.value=[...ex.options].some(o=>o.value===exVal)?exVal:'ALL';rg.value=[...rg.options].some(o=>o.value===rgVal)?rgVal:'ALL';
   state.performanceFilters.executive=ex.value;state.performanceFilters.region=rg.value;
-  el('performanceStatusFilter').value=state.performanceFilters.status||'ALL';el('performanceSearch').value=state.performanceFilters.search||'';
+  if(el('performanceSearch'))el('performanceSearch').value=state.performanceFilters.search||'';
 }
 
 function performanceFilterChanged(){
@@ -1067,11 +1101,13 @@ function performanceFilterChanged(){
     const m=(state.performance?.managers||[]).find(x=>String(x.regionalUserId)===String(region));
     if(!m||String(m.executiveKey)!==String(executive)){region='ALL';el('performanceRegionFilter').value='ALL';}
   }
-  state.performanceFilters={executive,region,status:el('performanceStatusFilter').value||'ALL',search:(el('performanceSearch').value||'').trim().toLowerCase()};
+  state.performanceFilters={executive,region,status:'ALL',search:(el('performanceSearch').value||'').trim().toLowerCase()};
   state.performanceHeadPage=1;renderPerformanceExecutives();renderPerformanceRegions();renderPerformanceHeads();
 }
 function clearPerformanceFilters(){
-  state.performanceFilters={executive:'ALL',region:'ALL',status:'ALL',search:''};state.performanceHeadPage=1;populatePerformanceFilters();renderPerformanceExecutives();renderPerformanceRegions();renderPerformanceHeads();
+  state.performanceFilters={executive:'ALL',region:'ALL',status:'ALL',search:''};state.performanceHeadPage=1;
+  if(el('performanceSearch'))el('performanceSearch').value='';
+  populatePerformanceFilters();renderPerformanceExecutives();renderPerformanceRegions();renderPerformanceHeads();
 }
 function setPerformanceExecutive(key){
   state.performanceFilters.executive=String(key||'ALL');state.performanceFilters.region='ALL';state.performanceHeadPage=1;populatePerformanceFilters();renderPerformanceExecutives();renderPerformanceRegions();renderPerformanceHeads();
@@ -1101,43 +1137,52 @@ function npHeadFiltered(h){
 
 function renderPerformanceExecutives(){
   const d=state.performance;if(!d)return;const selected=state.performanceFilters.executive;
-  el('npExecutiveGrid').innerHTML=(d.executives||[]).map(x=>`<article class="np-exec ${selected===x.executiveKey?'selected':''}" onclick="setPerformanceExecutive(decodeURIComponent('${npArg(x.executiveKey)}'))">
-    <div class="np-exec-top"><div><strong>${esc(x.fullName)}</strong><div class="np-exec-meta">${fa(x.regions)} منطقه · ${fa(x.areaHeads)} رئیس ناحیه · ${fa(x.storeCount)} فروشگاه</div></div><span class="np-exec-score ${npScoreClass(x.score)}">${fa(x.score)} <small style="font-size:.5em">ECS</small></span></div>
-    <div style="margin-top:8px">${npStatusBadge(x.status,x.statusLabel)}</div>
-    <div class="np-exec-bars"><div class="np-mini-metric"><b>${pct(x.completionRate)}</b><span>تحقق Route</span></div><div class="np-mini-metric"><b>${pct(x.coverage10)}</b><span>پوشش ۱۰روزه</span></div><div class="np-mini-metric"><b>${fa(x.overdue14Count||0)}</b><span>۱۴+ روز</span></div><div class="np-mini-metric"><b>${pct(x.regionConsistency)}</b><span>ثبات مناطق</span></div></div>
+  const arr=(d.executives||[]).slice().sort((a,b)=>Number(b.completionRate||0)-Number(a.completionRate||0)||Number(a.routeRank||999)-Number(b.routeRank||999));
+  el('npExecutiveGrid').innerHTML=arr.map((x,i)=>`<article class="npv43-exec ${selected===x.executiveKey?'selected':''}" onclick="setPerformanceExecutive(decodeURIComponent('${npArg(x.executiveKey)}'))">
+    <span class="npv43-exec-rank ${(i<3)?'top':''}">${fa(x.routeRank||i+1)}</span>
+    <div class="npv43-exec-name"><strong>${esc(x.fullName)}</strong><span>${fa(x.regions)} منطقه · ${fa(x.storeCount)} فروشگاه</span></div>
+    <div class="npv43-exec-route"><div><b>${pct(x.completionRate)}</b><span>تحقق Route</span></div><span>${fa(x.completedPlanned)} / ${fa(x.planned)} برنامه تکمیل</span></div>
+    <div class="npv43-exec-metrics">
+      <div class="npv43-exec-mini"><b>${fa(x.storeCount)}</b><span>فروشگاه</span></div>
+      <div class="npv43-exec-mini"><b>${fa(x.avgDuration||0)} دقیقه</b><span>متوسط بازدید</span></div>
+      <div class="npv43-exec-mini"><b><button class="npv43-link-count" onclick="event.stopPropagation();openUnvisitedStores('EXECUTIVE',decodeURIComponent('${npArg(x.executiveKey)}'))">${fa(x.unvisitedStoreCount||0)}</button></b><span>بازدیدنشده</span></div>
+      <div class="npv43-exec-mini"><b>${x.portfolioHealthScore===null||x.portfolioHealthScore===undefined?'—':fa(x.portfolioHealthScore)}</b><span>کیفیت فروشگاه‌ها</span></div>
+    </div>
   </article>`).join('')||'<div style="padding:15px;color:var(--muted)">مدیر اجرایی ثبت نشده است.</div>';
 }
 
-function renderPerformanceActions(){
-  const arr=state.performance?.actionQueue||[];el('npActionCount').textContent=fa(arr.length);
-  el('npActionList').innerHTML=arr.slice(0,25).map(x=>{
-    let fn='';if(x.entityType==='REGION')fn=`openPerformanceRegion(decodeURIComponent('${npArg(x.entityId)}'))`;else if(x.entityType==='AREA_HEAD')fn=`openPerformanceHead(decodeURIComponent('${npArg(x.entityId)}'))`;
-    return `<article class="np-action"><div><span class="np-sev ${esc(x.severity)}">${esc(npStatusFa(x.severity)==='نامشخص'?(x.severity==='WATCH'?'پایش':x.severity):npStatusFa(x.severity))}</span><strong>${esc(x.title)}</strong><p>${esc(x.subtitle||'')}<br>${esc(x.reason||'')}</p></div>${fn?`<button class="act" onclick="${fn}">بررسی</button>`:''}</article>`;
-  }).join('')||'<div style="padding:15px;color:var(--muted)">مورد فوری برای اقدام ثبت نشده است.</div>';
-}
-
 function renderPerformanceRegions(){
-  const d=state.performance;if(!d)return;const arr=(d.managers||[]).filter(npRegionFiltered);
-  el('npFilterCount').textContent=`${fa(arr.length)} منطقه · ${fa((d.areaHeads||[]).filter(npHeadFiltered).length)} رئیس ناحیه`;
+  const d=state.performance;if(!d)return;
+  const arr=(d.managers||[]).filter(npRegionFiltered).slice().sort((a,b)=>Number(b.completionRate||0)-Number(a.completionRate||0)||Number(a.routeRank||999)-Number(b.routeRank||999));
+  el('npFilterCount').textContent=`${fa(arr.length)} مدیر منطقه · ${fa((d.areaHeads||[]).filter(npHeadFiltered).length)} رئیس ناحیه`;
   el('performanceRegionBody').innerHTML=arr.map((m,i)=>`<tr>
-    <td><span class="np-rank">${fa(i+1)}</span></td><td><strong>${esc(m.fullName)}</strong><br><span style="color:var(--muted)">${(m.reasons||[]).slice(0,2).map(esc).join(' · ')||'وضعیت پایدار'}</span></td>
-    <td>${esc(m.executiveName||'—')}</td><td>${npStatusBadge(m.status,m.statusLabel)}</td><td><span class="np-score ${npScoreClass(m.score)}">${fa(m.score)}</span></td>
-    <td>${fa(m.storeCount)}</td><td>${fa(m.areaHeads)}</td><td>${fa(m.planned)} / ${fa(m.completedPlanned)}</td><td>${pct(m.completionRate)}</td><td>${pct(m.coverage10)}</td>
-    <td>${pct(m.slaHealthRate??m.within14Rate)}</td><td>${pct(m.headConsistency)}</td><td>${m.portfolioHealthScore===null||m.portfolioHealthScore===undefined?'—':fa(m.portfolioHealthScore)}</td><td>${fa(m.overdue14Count||0)}</td><td>${npTodayBadge(m.todayState)}</td>
+    <td><span class="npv43-table-rank ${(Number(m.routeRank||i+1)<=3)?'top':''}">${fa(m.routeRank||i+1)}</span></td>
+    <td><strong>${esc(m.fullName)}</strong></td><td>${esc(m.executiveName||'—')}</td><td>${fa(m.storeCount)}</td><td>${fa(m.areaHeads)}</td>
+    <td>${fa(m.planned)}</td><td>${fa(m.completedOrActive ?? (Number(m.completedTotal||0)+Number(m.inProgress||0)))}</td>
+    <td><span class="npv43-score">${pct(m.completionRate)}</span></td><td>${fa(m.avgDuration||0)} دقیقه</td>
+    <td><button class="npv43-link-count" onclick="openUnvisitedStores('REGION',decodeURIComponent('${npArg(m.regionalUserId)}'))">${fa(m.unvisitedStoreCount||0)}</button><div class="npv43-click-note">مشاهده فروشگاه‌ها</div></td>
+    <td>${m.portfolioHealthScore===null||m.portfolioHealthScore===undefined?'—':fa(m.portfolioHealthScore)}</td>
     <td><div class="actions"><button class="btn ghost" onclick="openPerformanceRegion(decodeURIComponent('${npArg(m.regionalUserId)}'))">جزئیات</button><button class="btn soft" onclick="setPerformanceRegion(decodeURIComponent('${npArg(m.regionalUserId)}'))">رؤسای ناحیه</button></div></td>
-  </tr>`).join('')||'<tr><td colspan="16">منطقه‌ای مطابق فیلتر پیدا نشد.</td></tr>';
+  </tr>`).join('')||'<tr><td colspan="12">مدیر منطقه‌ای مطابق فیلتر پیدا نشد.</td></tr>';
 }
 
 function renderPerformanceHeads(){
-  const d=state.performance;if(!d)return;const arr=(d.areaHeads||[]).filter(npHeadFiltered);const pages=Math.max(1,Math.ceil(arr.length/NP_HEAD_PAGE_SIZE));
-  state.performanceHeadPage=Math.max(1,Math.min(pages,state.performanceHeadPage||1));const start=(state.performanceHeadPage-1)*NP_HEAD_PAGE_SIZE,rows=arr.slice(start,start+NP_HEAD_PAGE_SIZE);
+  const d=state.performance;if(!d)return;
+  const arr=(d.areaHeads||[]).filter(npHeadFiltered).slice().sort((a,b)=>Number(b.completionRate||0)-Number(a.completionRate||0)||Number(a.routeRank||999)-Number(b.routeRank||999));
+  const pages=Math.max(1,Math.ceil(arr.length/NP_HEAD_PAGE_SIZE));
+  state.performanceHeadPage=Math.max(1,Math.min(pages,state.performanceHeadPage||1));
+  const start=(state.performanceHeadPage-1)*NP_HEAD_PAGE_SIZE,rows=arr.slice(start,start+NP_HEAD_PAGE_SIZE);
   el('npHeadPageLabel').textContent=`صفحه ${fa(state.performanceHeadPage)} از ${fa(pages)} · ${fa(arr.length)} نفر`;
-  el('npHeadsSub').textContent=state.performanceFilters.region==='ALL'?'تمام رؤسای ناحیه کشور با AES مستقل از امتیاز فروشگاه و کیفیت چک‌لیست.':`رؤسای ناحیه منطقه انتخاب‌شده · ${fa(arr.length)} نفر · رتبه‌بندی بر اساس AES`;
-  el('performanceHeadBody').innerHTML=rows.map(h=>`<tr>
-    <td><strong>${esc(h.fullName)}</strong><br><span style="color:var(--muted)">${esc(h.executiveName||'')}</span></td><td>${esc(h.regionalManagerName||'—')}</td><td>${npStatusBadge(h.status,h.statusLabel)}</td><td><span class="np-score ${npScoreClass(h.score)}">${fa(h.score)}</span></td>
-    <td>${fa(h.storeCount)}</td><td>${fa(h.planned)} / ${fa(h.completedPlanned)}</td><td>${pct(h.completionRate)}</td><td>${pct(h.coverage10)}</td><td>${fa(h.overdue14Count||0)} / ${fa(h.noHistoryCount||0)}</td><td>${pct(h.executionIntegrity)}</td><td>${h.portfolioHealthScore===null||h.portfolioHealthScore===undefined?'—':fa(h.portfolioHealthScore)}</td><td>${fa(h.pendingGps)}</td><td>${npTodayBadge(h.todayState)}</td><td>${fmtDate(h.lastActivity)}</td>
+  el('npHeadsSub').textContent=state.performanceFilters.region==='ALL'?`رتبه‌بندی ${fa(arr.length)} رئیس ناحیه براساس تحقق Route`:`رؤسای ناحیه منطقه انتخاب‌شده · ${fa(arr.length)} نفر · رتبه‌بندی براساس تحقق Route`;
+  el('performanceHeadBody').innerHTML=rows.map((h,i)=>`<tr>
+    <td><span class="npv43-table-rank ${(Number(h.routeRank||start+i+1)<=3)?'top':''}">${fa(h.routeRank||start+i+1)}</span></td>
+    <td><strong>${esc(h.fullName)}</strong><br><span class="npv43-muted">${esc(h.executiveName||'')}</span></td><td>${esc(h.regionalManagerName||'—')}</td>
+    <td>${fa(h.storeCount)}</td><td>${fa(h.planned)}</td><td>${fa(h.completedOrActive ?? (Number(h.completedTotal||0)+Number(h.inProgress||0)))}</td>
+    <td><span class="npv43-score">${pct(h.completionRate)}</span></td><td>${fa(h.avgDuration||0)} دقیقه</td>
+    <td><button class="npv43-link-count" onclick="openUnvisitedStores('HEAD',decodeURIComponent('${npArg(h.userId)}'))">${fa(h.unvisitedStoreCount||0)}</button><div class="npv43-click-note">مشاهده فروشگاه‌ها</div></td>
+    <td>${h.portfolioHealthScore===null||h.portfolioHealthScore===undefined?'—':fa(h.portfolioHealthScore)}</td><td>${fmtDate(h.lastActivity)}</td>
     <td><button class="btn ghost" onclick="openPerformanceHead(decodeURIComponent('${npArg(h.userId)}'))">فروشگاه‌ها</button></td>
-  </tr>`).join('')||'<tr><td colspan="15">رئیس ناحیه‌ای مطابق فیلتر پیدا نشد.</td></tr>';
+  </tr>`).join('')||'<tr><td colspan="12">رئیس ناحیه‌ای مطابق فیلتر پیدا نشد.</td></tr>';
 }
 function performanceHeadPage(delta){state.performanceHeadPage=(state.performanceHeadPage||1)+Number(delta||0);renderPerformanceHeads();el('npHeadsCard')?.scrollIntoView({behavior:'smooth',block:'start'});}
 
@@ -1163,6 +1208,31 @@ function renderPerformanceLive(){
 function renderPerformanceWatch(){
   const arr=(state.performance?.watchlist||[]).slice(0,18);el('npRiskCount').textContent=fa(state.performance?.watchlist?.length||0);
   el('performanceWatchList').innerHTML=arr.map(x=>`<article class="np-risk"><strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong><p>${esc(x.regionalManagerName)} · ${esc(x.areaHeadName)}</p><div class="np-tags">${npPriorityTag(x.priorityLevel)}<span class="np-tag">${fa(x.visits7)} بازدید / ۷ روز</span>${String(x.locationStatus||'OK')!=='OK'?'<span class="np-tag red">GPS فروشگاه</span>':''}</div></article>`).join('')||'<div style="padding:12px;color:var(--muted)">فروشگاه پرریسکی ثبت نشده است.</div>';
+}
+
+
+function openTodayHeads(mode){
+  const d=state.performance||{};let arr=(d.areaHeads||[]).slice();
+  if(mode==='WITH_PLAN')arr=arr.filter(h=>Number(h.todayPlanned||0)>0);
+  else if(mode==='NO_PLAN')arr=arr.filter(h=>String(h.todayState)==='NO_PLAN');
+  else if(mode==='NOT_STARTED')arr=arr.filter(h=>String(h.todayState)==='NOT_STARTED');
+  arr.sort((a,b)=>String(a.executiveName||'').localeCompare(String(b.executiveName||''),'fa')||String(a.regionalManagerName||'').localeCompare(String(b.regionalManagerName||''),'fa')||String(a.fullName||'').localeCompare(String(b.fullName||''),'fa'));
+  const title=mode==='WITH_PLAN'?'رؤسای ناحیه دارای برنامه امروز':mode==='NO_PLAN'?'رؤسای ناحیه بدون برنامه امروز':'رؤسای ناحیه دارای برنامه که شروع نکرده‌اند';
+  el('drawerTitle').textContent=title;el('drawerSub').textContent=`${fa(arr.length)} رئیس ناحیه · وضعیت امروز`;
+  el('drawerBody').innerHTML=`<div class="npv43-drawer-list">${arr.map(h=>`<article class="npv43-drawer-row"><strong>${esc(h.fullName)}</strong><span>مدیر اجرایی: ${esc(h.executiveName||'—')}<br>مدیر منطقه: ${esc(h.regionalManagerName||'—')} · برنامه امروز: ${fa(h.todayPlanned||0)} · تکمیل: ${fa(h.todayCompleted||0)}</span><div class="actions"><button class="btn ghost" onclick="openPerformanceHead(decodeURIComponent('${npArg(h.userId)}'))">فروشگاه‌ها</button></div></article>`).join('')||'<div style="color:var(--muted);padding:10px">موردی وجود ندارد.</div>'}</div>`;
+  el('performanceDrawer').classList.add('open');
+}
+
+function openUnvisitedStores(scope,id){
+  const d=state.performance||{};let arr=(d.unvisitedStores||[]).slice();let title='فروشگاه‌های بازدیدنشده در بازه';
+  if(scope==='EXECUTIVE'){arr=arr.filter(x=>String(x.executiveKey)===String(id));const e=(d.executives||[]).find(x=>String(x.executiveKey)===String(id));if(e)title+=' · '+e.fullName;}
+  else if(scope==='REGION'){arr=arr.filter(x=>String(x.regionalUserId)===String(id));const m=(d.managers||[]).find(x=>String(x.regionalUserId)===String(id));if(m)title+=' · '+m.fullName;}
+  else if(scope==='HEAD'){arr=arr.filter(x=>String(x.areaHeadUserId)===String(id));const h=(d.areaHeads||[]).find(x=>String(x.userId)===String(id));if(h)title+=' · '+h.fullName;}
+  arr.sort((a,b)=>String(a.regionalManagerName||'').localeCompare(String(b.regionalManagerName||''),'fa')||String(a.areaHeadName||'').localeCompare(String(b.areaHeadName||''),'fa')||String(a.storeCode||'').localeCompare(String(b.storeCode||''),'fa'));
+  el('drawerTitle').textContent=title;el('drawerSub').textContent=`${fa(arr.length)} فروشگاه بدون بازدید تکمیل‌شده در آخرین ${fa(d.periodDays||30)} روز`;
+  let lastGroup='';
+  el('drawerBody').innerHTML=arr.map(x=>{const group=`${x.regionalManagerName||'—'}|${x.areaHeadName||'—'}`;let head='';if(group!==lastGroup){lastGroup=group;head=`<div class="npv43-drawer-group">مدیر منطقه: ${esc(x.regionalManagerName||'—')} · رئیس ناحیه: ${esc(x.areaHeadName||'—')}</div>`;}return head+`<article class="npv43-drawer-row"><strong>${esc(x.storeCode)} · ${esc(x.storeName)}</strong><span>مدیر اجرایی: ${esc(x.executiveName||'—')}<br>آخرین بازدید: ${x.lastVisit?fmtDate(x.lastVisit):'بدون سابقه'}${Number(x.daysSinceLastVisit||0)<999?' · '+fa(x.daysSinceLastVisit)+' روز قبل':''}</span></article>`;}).join('')||'<div style="color:var(--muted);padding:10px">همه فروشگاه‌های این محدوده در بازه انتخابی حداقل یک بازدید تکمیل‌شده داشته‌اند.</div>';
+  el('performanceDrawer').classList.add('open');
 }
 
 function openPerformanceRegion(id){
