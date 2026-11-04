@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b4001b">
-<!-- Daily Market Regional Dashboard V38 Stale Location-Correction Resolution + V32.1 Opening Name-Only + V32 Day Status + V29 Performance Excel Export + V27 TURBO -->
+<!-- Daily Market Regional Dashboard V32.1 Opening Name-Only + V32 Day Status + V29 Performance Excel Export + V27 TURBO -->
 <title>مدیر منطقه | چک لیست دیلی مارکت</title>
+<!-- V51 ROUTE INSTANT: predictive Area Head warmup + smart session snapshots + non-blocking safe save -->
 <style>
 @font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2");font-display:swap;font-weight:400}
 @font-face{font-family:Vazir;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2") format("woff2");font-display:swap;font-weight:700}
@@ -49,7 +50,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 
 /* ========================= GPS APPROVAL VIEW ========================= */
 .nav-count{margin-right:auto;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:rgba(255,255,255,.16);display:inline-grid;place-items:center;font-size:.68rem;font-weight:900}.nav-btn.active .nav-count{background:#fff0f2;color:#ad001b}.nav-count.zero{opacity:.55}.view-hidden{display:none!important}
-.gps-mode-tabs{display:flex;gap:8px;flex-wrap:wrap}.gps-mode-btn{border:1px solid var(--line);background:#fff;color:#555d6c;border-radius:13px;padding:9px 13px;font-weight:800;font-size:.74rem;display:inline-flex;align-items:center;gap:7px}.gps-mode-btn.active{background:#171c27;color:#fff;border-color:#171c27}.gps-mode-count{min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#fff0f2;color:#b0001c;display:inline-grid;place-items:center;font-size:.65rem}.gps-mode-btn.active .gps-mode-count{background:rgba(255,255,255,.15);color:#fff}.coord-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.coord-box{border:1px solid var(--line);background:#fafbfc;border-radius:12px;padding:9px 10px}.coord-box strong{display:block;font-size:.65rem;color:#858c99;margin-bottom:5px}.coord-box span{display:block;font-size:.7rem;font-weight:800;direction:ltr;text-align:left}.correction-note{margin-top:9px;padding:9px 10px;border-radius:11px;background:#eef4ff;color:#3158b7;font-size:.68rem;line-height:1.8}.correction-note.stale{background:#fff7e6;color:#8a5c00;border:1px solid #f0ddae}.correction-note.changed{background:#fff0f2;color:#a7001a;border:1px solid #efcbd2}.approval-chip.stale{background:#fff2d8;color:#8d6200;border:1px solid #efdcae}.correction-pane{display:grid;gap:12px}
+.gps-mode-tabs{display:flex;gap:8px;flex-wrap:wrap}.gps-mode-btn{border:1px solid var(--line);background:#fff;color:#555d6c;border-radius:13px;padding:9px 13px;font-weight:800;font-size:.74rem;display:inline-flex;align-items:center;gap:7px}.gps-mode-btn.active{background:#171c27;color:#fff;border-color:#171c27}.gps-mode-count{min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#fff0f2;color:#b0001c;display:inline-grid;place-items:center;font-size:.65rem}.gps-mode-btn.active .gps-mode-count{background:rgba(255,255,255,.15);color:#fff}.coord-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.coord-box{border:1px solid var(--line);background:#fafbfc;border-radius:12px;padding:9px 10px}.coord-box strong{display:block;font-size:.65rem;color:#858c99;margin-bottom:5px}.coord-box span{display:block;font-size:.7rem;font-weight:800;direction:ltr;text-align:left}.correction-note{margin-top:9px;padding:9px 10px;border-radius:11px;background:#eef4ff;color:#3158b7;font-size:.68rem;line-height:1.8}.correction-pane{display:grid;gap:12px}
 .gps-view{display:grid;gap:18px}.gps-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:18px}.gps-hero h2{margin:0;font-size:1.7rem}.gps-hero p{margin:7px 0 0;color:var(--muted);font-size:.88rem}.gps-live{display:inline-flex;align-items:center;gap:7px;border:1px solid #caeadc;background:#f4fcf8;color:#13774d;padding:8px 12px;border-radius:999px;font-size:.75rem;font-weight:800}.gps-live-dot{width:8px;height:8px;border-radius:50%;background:#19a365;box-shadow:0 0 0 5px rgba(25,163,101,.09)}
 .approval-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.approval-stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px 18px;box-shadow:0 8px 28px rgba(20,28,48,.04)}.approval-stat strong{display:block;font-size:1.45rem}.approval-stat span{display:block;color:var(--muted);font-size:.75rem;margin-top:5px}.approval-stat.pending strong{color:#b77700}.approval-stat.approved strong{color:#138a57}.approval-stat.rejected strong{color:#b22238}
 .approval-panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}.approval-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 22px;border-bottom:1px solid var(--line)}.approval-head h3{margin:0;font-size:1.05rem}.approval-head p{margin:5px 0 0;color:var(--muted);font-size:.75rem}.approval-filters{display:flex;gap:7px;flex-wrap:wrap}.approval-filter{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;color:#656c7a;font-size:.72rem;font-weight:700}.approval-filter.active{background:#161b26;color:#fff;border-color:#161b26}
@@ -167,11 +168,6 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 
 <style id="regionalChecklistV25Styles">
 .rq-view{display:block}.rq-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:16px}.rq-hero h2{font-size:1.55rem;margin:0 0 6px;color:#121827}.rq-hero p{margin:0;color:#7b8494;font-size:.82rem;line-height:1.9}.rq-hero-actions{display:flex;gap:9px;flex-wrap:wrap}.rq-btn{border:1px solid #e0e5ec;background:#fff;color:#273142;border-radius:12px;padding:10px 14px;font-family:inherit;font-weight:800;cursor:pointer}.rq-btn.primary{background:#d10020;color:#fff;border-color:#d10020}.rq-btn.dark{background:#171e2b;color:#fff;border-color:#171e2b}.rq-btn:disabled{opacity:.5;cursor:not-allowed}.rq-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}.rq-stat{background:#fff;border:1px solid #e6eaf0;border-radius:18px;padding:17px 18px;box-shadow:0 8px 24px rgba(20,28,45,.035)}.rq-stat strong{display:block;font-size:1.4rem;color:#131b29}.rq-stat span{display:block;color:#7a8494;font-size:.7rem;margin-top:5px}.rq-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);gap:16px;align-items:start}.rq-panel{background:#fff;border:1px solid #e4e8ee;border-radius:22px;box-shadow:0 12px 34px rgba(25,34,52,.045);overflow:hidden}.rq-panel-head{padding:17px 19px;border-bottom:1px solid #edf0f4;display:flex;align-items:center;justify-content:space-between;gap:12px}.rq-panel-head h3{margin:0;font-size:.95rem}.rq-panel-head p{margin:3px 0 0;color:#8a93a1;font-size:.66rem}.rq-tools{display:flex;gap:7px;flex-wrap:wrap}.rq-filter{border:1px solid #e2e6ed;background:#fff;border-radius:999px;padding:7px 10px;font-family:inherit;font-size:.64rem;font-weight:800;cursor:pointer}.rq-filter.active{background:#171e2b;color:#fff;border-color:#171e2b}.rq-search{border:1px solid #e2e6ed;border-radius:11px;padding:8px 10px;font-family:inherit;min-width:180px}.rq-list{padding:13px;display:grid;gap:10px;max-height:640px;overflow:auto}.rq-card{border:1px solid #e6eaf0;border-radius:16px;padding:14px;background:#fff}.rq-card.inactive{background:#fafbfc;opacity:.76}.rq-card-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.rq-card h4{margin:0 0 6px;font-size:.82rem;line-height:1.8;color:#202a39}.rq-meta{display:flex;gap:6px;flex-wrap:wrap}.rq-badge{display:inline-flex;align-items:center;border-radius:999px;padding:4px 7px;font-size:.56rem;font-weight:850;background:#f1f4f8;color:#596374}.rq-badge.live{background:#e8f7ef;color:#14744e}.rq-badge.off{background:#fff0f2;color:#b01b35}.rq-badge.region{background:#eef3ff;color:#315fc5}.rq-actions{display:flex;gap:6px;flex:0 0 auto}.rq-icon-btn{border:1px solid #e1e6ed;background:#fff;border-radius:10px;padding:7px 9px;font-family:inherit;font-size:.61rem;font-weight:850;cursor:pointer}.rq-icon-btn.danger{color:#b51631;background:#fff8f9}.rq-editor{position:sticky;top:18px}.rq-form{padding:16px;display:grid;gap:12px}.rq-form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rq-field{display:grid;gap:6px}.rq-field.full{grid-column:1/-1}.rq-field label{font-size:.62rem;color:#6e7787;font-weight:800}.rq-field input,.rq-field select,.rq-field textarea{width:100%;border:1px solid #dfe5ec;border-radius:12px;padding:10px 11px;font-family:inherit;background:#fff;outline:none;color:#202938}.rq-field textarea{min-height:92px;resize:vertical;line-height:1.9}.rq-field input:focus,.rq-field select:focus,.rq-field textarea:focus{border-color:#d10020;box-shadow:0 0 0 3px rgba(209,0,32,.07)}.rq-toggle-row{display:flex;gap:14px;flex-wrap:wrap;padding:9px 11px;background:#f8fafc;border-radius:12px}.rq-toggle-row label{display:flex;align-items:center;gap:7px;font-size:.68rem;font-weight:800}.rq-options-preview{padding:10px 11px;border-radius:12px;background:#f5f7fa;border:1px dashed #d9e0e8;color:#5c6676;font-size:.65rem;line-height:1.9}.rq-form-actions{display:flex;gap:8px}.rq-form-actions button{flex:1}.rq-preview-panel{margin-top:16px}.rq-preview{padding:14px;display:grid;gap:10px}.rq-preview-section{border:1px solid #e6eaf0;border-radius:16px;overflow:hidden}.rq-preview-section h4{margin:0;padding:10px 13px;background:#f7f9fc;font-size:.72rem}.rq-preview-q{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:10px 13px;border-top:1px solid #eff2f5;font-size:.67rem;line-height:1.8}.rq-preview-q.regional{background:#fff9fa}.rq-empty{padding:32px 18px;text-align:center;color:#8a93a1;font-size:.72rem}.rq-safety{margin-top:12px;padding:11px 13px;border-radius:13px;background:#fff7e8;border:1px solid #f3ddb3;color:#775715;font-size:.65rem;line-height:1.9}
-
-.rq-order-panel{margin-bottom:16px}.rq-order-head-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.rq-order-status{font-size:.62rem;color:#7b8493}.rq-order-status.dirty{color:#a45c00;font-weight:900}.rq-order-list{padding:12px;display:grid;gap:8px;max-height:720px;overflow:auto;background:#fbfcfe}.rq-order-item{display:grid;grid-template-columns:34px 34px minmax(0,1fr) auto;gap:9px;align-items:center;border:1px solid #e4e9ef;border-radius:14px;background:#fff;padding:10px 11px;box-shadow:0 4px 12px rgba(20,28,45,.025);transition:.15s}.rq-order-item.dragging{opacity:.45}.rq-order-item.drag-over{border-color:#d10020;box-shadow:0 0 0 2px rgba(209,0,32,.07)}.rq-order-handle{width:32px;height:32px;border:1px dashed #cbd3df;border-radius:9px;display:grid;place-items:center;color:#7b8493;font-size:1rem;cursor:grab;user-select:none}.rq-order-no{width:31px;height:31px;border-radius:9px;background:#171e2b;color:#fff;display:grid;place-items:center;font-size:.62rem;font-weight:900}.rq-order-main{min-width:0}.rq-order-q{font-size:.72rem;font-weight:900;color:#263142;line-height:1.7}.rq-order-meta{margin-top:4px;display:flex;gap:5px;flex-wrap:wrap}.rq-order-actions{display:flex;gap:5px}.rq-order-move{width:30px;height:30px;border:1px solid #dfe4eb;background:#fff;border-radius:9px;color:#4c5666;font-weight:900;cursor:pointer}.rq-order-move:disabled{opacity:.3;cursor:not-allowed}.rq-order-help{padding:10px 13px;border-top:1px solid #edf0f4;background:#fff;color:#6f7887;font-size:.63rem;line-height:1.9}.rq-order-source-central{background:#f0f2f5;color:#56606f}.rq-order-source-regional{background:#eef3ff;color:#315fc5}
-.rq-preview-q .rq-preview-seq{flex:0 0 auto;width:26px;height:26px;border-radius:8px;background:#171e2b;color:#fff;display:grid;place-items:center;font-size:.56rem;font-weight:900}.rq-preview-q-main{flex:1;min-width:0}.rq-response-note{margin-top:7px;padding:7px 9px;border-radius:9px;background:#f7f8fa;border:1px solid #e7ebf0;color:#5c6574;font-size:.61rem;line-height:1.8}
-@media(max-width:700px){.rq-order-list{max-height:none}.rq-order-item{grid-template-columns:28px minmax(0,1fr) auto}.rq-order-handle{display:none}.rq-order-no{width:27px;height:27px}.rq-order-actions{flex-direction:column}.rq-order-head-actions{margin-top:10px}.rq-order-head-actions .rq-btn{flex:1}}
-
 @media(max-width:1000px){.rq-grid{grid-template-columns:1fr}.rq-editor{position:static}.rq-stats{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.rq-hero{display:block}.rq-hero-actions{margin-top:12px}.rq-stats{grid-template-columns:1fr 1fr}.rq-form-row{grid-template-columns:1fr}.rq-search{min-width:0;width:100%}.rq-panel-head{align-items:flex-start;display:block}.rq-tools{margin-top:10px}.rq-list{max-height:none}.mobile-bottom{display:flex!important;overflow-x:auto;overflow-y:hidden}.mobile-nav{flex:1 0 72px;min-width:72px}}
 </style>
@@ -184,8 +180,6 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 .day-tab.inventory .day-count{background:#fff0cd;color:#8f6200}.day-tab.active.inventory{background:#a66e00;border-color:#a66e00}
 .day-tab.opening:not(.active){background:#eef7ff;border-color:#cfe2f7;color:#245f9d}
 .day-tab.opening .day-count{background:#deedfb;color:#245f9d}.day-tab.active.opening{background:#2869a8;border-color:#2869a8}
-.day-tab.other:not(.active){background:#f2f4f7;border-color:#d7dce4;color:#505967}
-.day-tab.other .day-count{background:#e8ebf0;color:#505967}.day-tab.active.other{background:#505967;border-color:#505967}
 .day-status-control{margin:0 18px 14px;border:1px solid #dde2ea;background:linear-gradient(135deg,#fbfcff,#fff);border-radius:18px;padding:14px 15px;display:grid;grid-template-columns:minmax(220px,.9fr) minmax(0,1.5fr);gap:14px;align-items:center}
 .day-status-main{min-width:0}.day-status-main strong{display:block;font-size:.82rem;color:#303846}.day-status-main span{display:block;font-size:.64rem;color:#7b8391;margin-top:4px;line-height:1.8}
 .day-status-fields{display:grid;grid-template-columns:150px minmax(150px,1fr) minmax(160px,1fr) auto;gap:8px;align-items:center}
@@ -194,7 +188,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 .day-status-save{border:0;border-radius:11px;padding:10px 13px;background:#171d29;color:#fff;font-family:inherit;font-size:.68rem;font-weight:900;white-space:nowrap}.day-status-save:disabled{opacity:.45;cursor:not-allowed}
 .day-status-control.past{opacity:.62}.day-status-control.past .day-status-fields{pointer-events:none}
 .day-status-note{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 8px;font-size:.64rem;font-weight:800}
-.day-status-note.leave{color:#65458d;background:#f4effb;border:1px solid #e2d7f2}.day-status-note.inventory{color:#8c6100;background:#fff6df;border:1px solid #efddb0}.day-status-note.opening{color:#245f9d;background:#eef7ff;border:1px solid #cfe2f7}.day-status-note.other{color:#505967;background:#f2f4f7;border:1px solid #d7dce4}
+.day-status-note.leave{color:#65458d;background:#f4effb;border:1px solid #e2d7f2}.day-status-note.inventory{color:#8c6100;background:#fff6df;border:1px solid #efddb0}.day-status-note.opening{color:#245f9d;background:#eef7ff;border:1px solid #cfe2f7}
 .day-status-empty{min-height:180px;border:1px dashed #d8dde6;border-radius:18px;background:#fbfcfe;display:grid;place-items:center;text-align:center;padding:28px;color:#697484}.day-status-empty strong{display:block;color:#3f4856;margin-bottom:6px}
 .store-performance-tools{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.store-performance-tools{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 .store-performance-tools .search{margin:0}
@@ -240,7 +234,7 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 /* ========================= STORE HEALTH / STORE 360 V34 ========================= */
 .health-view{display:block}.health-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:16px}.health-hero h2{margin:0;font-size:1.7rem}.health-hero p{margin:6px 0 0;color:var(--muted);font-size:.82rem}.health-hero-actions{display:flex;gap:8px;flex-wrap:wrap}
 .health-kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:15px}.health-kpi{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px 16px;box-shadow:0 7px 22px rgba(20,28,48,.035)}.health-kpi strong{display:block;font-size:1.35rem}.health-kpi span{display:block;color:var(--muted);font-size:.66rem;margin-top:6px}.health-kpi.good strong{color:#16865a}.health-kpi.bad strong{color:#b82439}.health-kpi.blue strong{color:#315ed5}
-.health-panel{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}.health-tools{display:grid;grid-template-columns:minmax(220px,1.2fr) repeat(3,minmax(140px,.55fr));gap:8px;padding:14px 16px;border-bottom:1px solid var(--line);background:#fbfcfd}.health-tools input,.health-tools select{width:100%;border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px 11px;font:inherit;font-size:.69rem;outline:none}.health-table-wrap{overflow:auto}.health-table{width:100%;border-collapse:collapse;min-width:1120px}.health-table th{font-size:.65rem;color:#7c8492;background:#fafbfc;padding:10px 11px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}.health-table td{font-size:.72rem;padding:12px 11px;border-bottom:1px solid #eff1f4;vertical-align:middle}.health-table tr:hover td{background:#fcfcfd}.health-table tr:last-child td{border-bottom:0}.health-score{font-size:1rem;font-weight:950}.health-score.excellent,.health-score.good{color:#16865a}.health-score.attention{color:#b27b00}.health-score.weak{color:#d06a00}.health-score.critical{color:#bd2037}.health-score.no_data{color:#9299a5}.health-trend{display:inline-flex;align-items:center;gap:4px;font-weight:850}.health-trend.up{color:#16865a}.health-trend.down{color:#b82439}.health-trend.flat{color:#747c89}.health-confidence{display:inline-flex;padding:4px 7px;border-radius:999px;background:#f1f3f6;color:#626b79;font-size:.61rem;font-weight:850}.health-confidence.high{background:#eaf8f2;color:#14774e}.health-confidence.medium{background:#fff7df;color:#946a00}.health-confidence.low{background:#fff0f2;color:#b1001c}.health-open{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 10px;font-size:.66rem;font-weight:900;color:#343c4a}.health-open:hover{background:#f5f6f8}
+.health-panel{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}.health-tools{display:grid;grid-template-columns:minmax(220px,1.2fr) repeat(3,minmax(140px,.55fr));gap:8px;padding:14px 16px;border-bottom:1px solid var(--line);background:#fbfcfd}.health-tools input,.health-tools select{width:100%;border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px 11px;font:inherit;font-size:.69rem;outline:none}.health-table-wrap{overflow:auto}.health-table{width:100%;border-collapse:collapse;min-width:1120px}.health-table th{font-size:.65rem;color:#7c8492;background:#fafbfc;padding:10px 11px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}.health-table td{font-size:.72rem;padding:12px 11px;border-bottom:1px solid #eff1f4;vertical-align:middle}.health-table tr:hover td{background:#fcfcfd}.health-table tr:last-child td{border-bottom:0}.health-score{font-size:1rem;font-weight:950}.health-score.excellent,.health-score.good{color:#16865a}.health-score.attention{color:#b27b00}.health-score.critical{color:#bd2037}.health-score.no_data{color:#9299a5}.health-trend{display:inline-flex;align-items:center;gap:4px;font-weight:850}.health-trend.up{color:#16865a}.health-trend.down{color:#b82439}.health-trend.flat{color:#747c89}.health-confidence{display:inline-flex;padding:4px 7px;border-radius:999px;background:#f1f3f6;color:#626b79;font-size:.61rem;font-weight:850}.health-confidence.high{background:#eaf8f2;color:#14774e}.health-confidence.medium{background:#fff7df;color:#946a00}.health-confidence.low{background:#fff0f2;color:#b1001c}.health-open{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 10px;font-size:.66rem;font-weight:900;color:#343c4a}.health-open:hover{background:#f5f6f8}
 .health-drawer-backdrop{position:fixed;inset:0;background:rgba(10,15,25,.46);backdrop-filter:blur(5px);z-index:300;opacity:0;pointer-events:none;transition:.2s}.health-drawer-backdrop.open{opacity:1;pointer-events:auto}.health-drawer{position:absolute;top:0;left:0;width:min(850px,96vw);height:100%;background:#f5f7fa;box-shadow:25px 0 80px rgba(8,14,27,.26);transform:translateX(-105%);transition:.24s ease;display:flex;flex-direction:column}.health-drawer-backdrop.open .health-drawer{transform:none}.health-drawer-head{padding:18px 20px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.health-drawer-head h3{margin:0;font-size:1.04rem}.health-drawer-head p{margin:4px 0 0;color:var(--muted);font-size:.69rem}.health-close{width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:11px;font-size:1.1rem}.health-drawer-body{padding:16px;overflow:auto}.health-summary{display:grid;grid-template-columns:210px 1fr;gap:12px;margin-bottom:12px}.health-score-card{background:linear-gradient(145deg,#171e2b,#263244);color:#fff;border-radius:20px;padding:18px}.health-score-card .big{font-size:2.7rem;font-weight:950;line-height:1}.health-score-card .band{font-size:.72rem;color:#c3ccda;margin-top:6px}.health-score-card .delta{margin-top:16px;font-size:.75rem}.health-meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.health-meta{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px}.health-meta strong{display:block;font-size:1rem}.health-meta span{display:block;color:var(--muted);font-size:.61rem;margin-top:4px}
 .health-section{background:#fff;border:1px solid var(--line);border-radius:18px;margin-top:11px;overflow:hidden}.health-section-title{padding:13px 15px;border-bottom:1px solid var(--line);font-size:.79rem;font-weight:900;display:flex;align-items:center;justify-content:space-between;gap:8px}.health-section-body{padding:12px 14px}.health-trend-chart{height:180px;display:flex;align-items:flex-end;gap:10px;overflow:auto;padding:16px 4px 4px}.health-trend-col{min-width:60px;flex:1;text-align:center}.health-trend-bar{height:120px;display:flex;align-items:flex-end;justify-content:center}.health-trend-bar i{display:block;width:25px;border-radius:8px 8px 3px 3px;background:#315ed5;min-height:3px}.health-trend-col b{display:block;font-size:.69rem;margin-top:5px}.health-trend-col span{display:block;color:#8a929f;font-size:.57rem;margin-top:3px}
 .health-reasons{display:grid;grid-template-columns:1fr 1fr;gap:10px}.health-reason-box{border:1px solid var(--line);border-radius:15px;padding:11px}.health-reason-box.good{background:#f7fcfa}.health-reason-box.bad{background:#fff9fa}.health-reason-box h4{margin:0 0 8px;font-size:.73rem}.health-reason-row{padding:7px 0;border-bottom:1px dashed #e7eaf0;font-size:.68rem;line-height:1.8}.health-reason-row:last-child{border-bottom:0}.health-reason-row small{display:block;color:#8a929f;margin-top:2px}
@@ -249,80 +243,6 @@ button,input,select{font:inherit} button{cursor:pointer}.hidden{display:none!imp
 @media(max-width:1180px){.health-kpis{grid-template-columns:repeat(3,1fr)}.health-summary{grid-template-columns:180px 1fr}}
 @media(max-width:820px){.health-hero{display:block}.health-hero-actions{margin-top:10px}.health-kpis{grid-template-columns:repeat(2,1fr);gap:8px}.health-tools{grid-template-columns:1fr 1fr}.health-tools input{grid-column:1/-1}.health-table{min-width:0}.health-table thead{display:none}.health-table,.health-table tbody,.health-table tr,.health-table td{display:block;width:100%}.health-table tr{padding:10px 12px;border-bottom:1px solid var(--line)}.health-table td{border:0;padding:5px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.health-table td:before{content:attr(data-label);font-size:.61rem;color:#8a929f}.health-table .health-store-cell{display:block}.health-table .health-store-cell:before{display:none}.health-drawer{width:100vw}.health-summary{grid-template-columns:1fr}.health-meta-grid{grid-template-columns:repeat(3,1fr)}.health-reasons{grid-template-columns:1fr}.mobile-bottom{grid-template-columns:repeat(7,1fr)}}
 @media(max-width:430px){.health-meta-grid{grid-template-columns:repeat(2,1fr)}.health-tools{grid-template-columns:1fr}.health-tools input{grid-column:1}.health-kpi strong{font-size:1.15rem}}
-</style>
-
-
-<style id="v44RegionalPerformanceStyles">
-/* V44 — Regional performance: intentionally compact, decision-first */
-.v44-performance-hero{align-items:center}
-.v44-hero-tools{display:flex;align-items:center;gap:10px}
-.v44-summary-grid{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:12px;margin-bottom:14px}
-.v44-summary-card{min-height:132px;border:1px solid var(--line);border-radius:24px;padding:18px 20px;background:#fff;text-align:right;box-shadow:0 12px 30px rgba(20,28,48,.045);font-family:inherit;color:var(--ink);display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
-.v44-summary-card:before{content:"";position:absolute;inset:auto -35px -55px auto;width:150px;height:150px;border-radius:50%;background:rgba(49,95,197,.06)}
-.v44-summary-card.primary{background:linear-gradient(135deg,#111827,#202b3d);color:#fff;border-color:#111827}
-.v44-summary-card.primary:before{background:rgba(255,255,255,.08)}
-.v44-summary-card.warning{background:linear-gradient(135deg,#fff8e8,#fff);border-color:#efd9a4}
-.v44-summary-card.neutral{background:linear-gradient(135deg,#f7f9fc,#fff)}
-.v44-summary-card.clickable{cursor:pointer;transition:.16s}
-.v44-summary-card.clickable:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(20,28,48,.08)}
-.v44-summary-card span{font-size:.72rem;font-weight:800;opacity:.76;position:relative}
-.v44-summary-card strong{font-size:2rem;line-height:1.2;margin-top:8px;position:relative}
-.v44-summary-card strong em{font-style:normal;font-size:.7rem;font-weight:700;opacity:.65}
-.v44-summary-card small{font-size:.63rem;margin-top:6px;opacity:.68;position:relative}
-
-.v44-export-card{padding:0!important;overflow:visible;margin-bottom:14px;display:block!important;grid-template-columns:none!important;gap:0!important}
-.v44-export-card>summary{list-style:none;cursor:pointer;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border-radius:18px}
-.v44-export-card>summary::-webkit-details-marker{display:none}
-.v44-export-card>summary span{display:block}.v44-export-card>summary strong{font-size:.78rem}.v44-export-card>summary small{display:block;color:var(--muted);font-size:.6rem;margin-top:3px}.v44-export-card>summary>b{font-size:.64rem;color:#596170}
-.v44-export-body{border-top:1px solid var(--line);padding:13px 15px}
-.v44-export-card .performance-export-controls{margin:0}
-
-.v44-main-rank{border-top:4px solid #111827}
-.v44-store-rank{margin-top:14px;border-top:4px solid #315fc5}
-.v44-section-kicker{display:block;font-size:.56rem;color:#9a233a;font-weight:900;margin-bottom:4px}
-.v44-performance-table th{font-size:.62rem}
-.v44-link-metric{border:0;background:#fff0f2;color:#a9122c;border-radius:999px;padding:6px 9px;font:inherit;font-size:.64rem;font-weight:900;cursor:pointer}
-.v44-zero-good{display:inline-flex;padding:5px 9px;border-radius:999px;background:#eaf8f1;color:#14764e;font-size:.66rem;font-weight:900}
-.v44-sos{display:inline-flex;min-width:38px;justify-content:center;padding:6px 8px;border-radius:11px;font-weight:900}
-.v44-sos.excellent,.v44-sos.good{background:#eaf8f1;color:#14764e}.v44-sos.attention{background:#fff8e8;color:#966b00}.v44-sos.weak,.v44-sos.critical{background:#fff0f2;color:#ae001b}
-.v44-store-tools{display:flex!important;flex-wrap:wrap!important;gap:7px!important}
-.v44-filter-chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 11px;font:inherit;font-size:.62rem;font-weight:850;color:#596170;white-space:nowrap}
-.v44-filter-chip.active{background:#171b25;color:#fff;border-color:#171b25}
-.v44-filter-chip.ghost{color:#7c8492}
-.v44-latest-btn:disabled{opacity:.35;cursor:not-allowed}
-.v44-no-score{color:#9aa1ad}
-
-.v44-visit-modal{position:fixed;inset:0;z-index:260;background:rgba(9,13,23,.48);backdrop-filter:blur(5px);display:grid;place-items:center;padding:20px}
-.v44-visit-card{width:min(920px,100%);max-height:90vh;background:#f7f8fb;border-radius:26px;box-shadow:0 30px 90px rgba(8,14,28,.25);overflow:hidden;display:flex;flex-direction:column;border:1px solid #e1e5eb}
-.v44-visit-head{padding:18px 21px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:14px}
-.v44-visit-head h3{margin:0;font-size:1.05rem}.v44-visit-head p{margin:4px 0 0;font-size:.68rem;color:var(--muted)}
-.v44-visit-close{width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:12px;font-size:1.25rem}
-.v44-visit-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 18px;background:#fff;border-bottom:1px solid var(--line)}
-.v44-visit-summary>div{padding:11px 12px;border:1px solid var(--line);border-radius:14px;background:#fafbfc}.v44-visit-summary strong{display:block;font-size:1rem}.v44-visit-summary span{display:block;font-size:.6rem;color:var(--muted);margin-top:3px}
-.v44-visit-body{padding:14px 18px 24px;overflow:auto}
-.v44-visit-section{background:#fff;border:1px solid var(--line);border-radius:18px;margin-bottom:10px;overflow:hidden}
-.v44-visit-section h4{margin:0;padding:11px 14px;background:#f6f8fb;border-bottom:1px solid var(--line);font-size:.75rem}
-.v44-visit-item{display:grid;grid-template-columns:minmax(0,1fr) minmax(110px,.35fr) auto;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #eef0f4}
-.v44-visit-item:last-child{border-bottom:0}
-.v44-visit-item-copy strong{display:block;font-size:.72rem;line-height:1.7}.v44-visit-item-copy span{display:block;font-size:.58rem;color:var(--muted);margin-top:2px}
-.v44-visit-answer{font-size:.68rem;color:#4f5766;text-align:center}
-.v44-item-score{display:inline-flex;justify-content:center;min-width:70px;padding:6px 8px;border-radius:999px;font-size:.61rem;font-weight:900}
-.v44-item-score.good{background:#eaf8f1;color:#14764e}.v44-item-score.mid{background:#fff8e8;color:#966b00}.v44-item-score.bad{background:#fff0f2;color:#ae001b}.v44-item-score.neutral{background:#f0f2f5;color:#727987}
-body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
-
-@media(max-width:820px){
-  .v44-summary-grid{grid-template-columns:1fr}.v44-summary-card{min-height:108px;border-radius:18px;padding:15px}
-  .v44-summary-card strong{font-size:1.65rem}
-  .v44-hero-tools{margin-top:11px}
-  .v44-store-tools{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%}.v44-store-tools input{grid-column:1/-1}
-  .v44-visit-modal{align-items:end;padding:0}.v44-visit-card{width:100%;max-height:92vh;border-radius:24px 24px 0 0}
-  .v44-visit-summary{grid-template-columns:repeat(3,1fr);padding:10px}.v44-visit-body{padding:10px 10px 20px}
-  .v44-visit-item{grid-template-columns:1fr auto;padding:11px}.v44-visit-answer{grid-column:1/-1;text-align:right;background:#f8f9fb;padding:7px 8px;border-radius:9px}
-  .mobile-bottom{grid-template-columns:repeat(6,1fr)!important}
-}
-@media(max-width:520px){
-  .v44-visit-summary{grid-template-columns:1fr 1fr}.v44-visit-summary>div:first-child{grid-column:1/-1}
-}
 </style>
 
 </head>
@@ -337,7 +257,8 @@ body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
       <button class="nav-btn" id="navRegionalChecklist" onclick="switchView('regionalChecklist')"><svg viewBox="0 0 24 24"><path d="M6 4h12v16H6z"/><path d="M9 8h6M9 12h6M9 16h3"/><path d="M4 7H2M4 12H2M4 17H2"/></svg>سؤالات منطقه‌ای</button>
       <button class="nav-btn" id="navGps" onclick="switchView('gps')"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z"/><circle cx="12" cy="10" r="2"/></svg>تأیید GPS <span class="nav-count zero" id="gpsNavCount">0</span></button>
       <button class="nav-btn" id="navPerformance" onclick="switchView('performance')"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>گزارش عملکرد</button>
-      <button class="nav-btn" id="navStoreHealth" onclick="switchView('health')"><svg viewBox="0 0 24 24"><path d="M3 9l2-5h14l2 5M5 13v7h14v-7"/><path d="m8 12 2 2 5-5"/></svg>امتیاز عملیاتی فروشگاه‌ها</button>
+      <button class="nav-btn" id="navStoreHealth" onclick="switchView('health')"><svg viewBox="0 0 24 24"><path d="M3 9l2-5h14l2 5M5 13v7h14v-7"/><path d="m8 12 2 2 5-5"/></svg>سلامت فروشگاه‌ها</button>
+      <button class="nav-btn" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/><path d="M4 4h16"/></svg>سوابق بازدید</button>
     </nav>
     <div class="side-foot"><button class="logout" onclick="DMAuth.logout()">خروج از حساب</button></div>
   </aside>
@@ -351,7 +272,7 @@ body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
 
       <div id="storeHealthView" class="health-view hidden">
         <div class="health-hero">
-          <div><h2>امتیاز عملیاتی فروشگاه‌ها · Store 360</h2><p>آخرین وضعیت هر فروشگاه، روند تغییرات، علت امتیاز و اعتبارسنجی گزارش رئیس ناحیه در یک نگاه.</p></div>
+          <div><h2>سلامت فروشگاه‌ها · Store 360</h2><p>آخرین وضعیت هر فروشگاه، روند تغییرات، علت امتیاز و اعتبارسنجی گزارش رئیس ناحیه در یک نگاه.</p></div>
           <div class="health-hero-actions"><button class="btn btn-ghost" onclick="loadStoreHealth(true)">↻ بروزرسانی</button></div>
         </div>
         <section class="health-kpis">
@@ -360,13 +281,13 @@ body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
           <article class="health-kpi bad"><strong id="hkDeclining">—</strong><span>فروشگاه در حال افت</span></article>
           <article class="health-kpi bad"><strong id="hkCritical">—</strong><span>بحرانی / Critical</span></article>
           <article class="health-kpi"><strong id="hkScored">—</strong><span>فروشگاه دارای امتیاز</span></article>
-          <article class="health-kpi"><strong id="hkManagement">—</strong><span>RMS مدیر منطقه</span></article>
+          <article class="health-kpi"><strong id="hkManagement">—</strong><span>امتیاز مدیریتی منطقه</span></article>
         </section>
         <section class="health-panel">
           <div class="health-tools">
             <input id="healthSearch" type="search" placeholder="جستجوی کد یا نام فروشگاه..." oninput="renderHealthStores()">
             <select id="healthHeadFilter" onchange="renderHealthStores()"><option value="ALL">همه رؤسای ناحیه</option></select>
-            <select id="healthBandFilter" onchange="renderHealthStores()"><option value="ALL">همه وضعیت‌ها</option><option value="CRITICAL">بحرانی</option><option value="WEAK">ضعیف</option><option value="ATTENTION">نیازمند توجه</option><option value="GOOD">خوب</option><option value="EXCELLENT">عالی</option><option value="NO_DATA">بدون داده</option></select>
+            <select id="healthBandFilter" onchange="renderHealthStores()"><option value="ALL">همه وضعیت‌ها</option><option value="CRITICAL">بحرانی</option><option value="ATTENTION">نیازمند توجه</option><option value="GOOD">خوب</option><option value="EXCELLENT">عالی</option><option value="NO_DATA">بدون داده</option></select>
             <select id="healthTrendFilter" onchange="renderHealthStores()"><option value="ALL">همه روندها</option><option value="IMPROVING">رو به بهبود</option><option value="DECLINING">در حال افت</option><option value="STABLE">پایدار</option></select>
           </div>
           <div class="health-table-wrap"><table class="health-table"><thead><tr><th>فروشگاه</th><th>رئیس ناحیه</th><th>امتیاز سلامت</th><th>روند</th><th>اعتماد داده</th><th>مسئله</th><th>آخرین بازدید</th><th>دلیل اصلی</th><th></th></tr></thead><tbody id="healthStoreBody"></tbody></table></div>
@@ -374,91 +295,115 @@ body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
       </div>
 
       <div id="performanceView" class="performance-view hidden">
-        <div class="performance-hero v44-performance-hero">
-          <div>
-            <h2>گزارش عملکرد منطقه</h2>
-            <p>نمای مدیریتی فشرده: رتبه‌بندی رؤسای ناحیه بر اساس تحقق Route و رتبه‌بندی فروشگاه‌ها بر اساس SOS. جزئیات فقط جایی نمایش داده می‌شود که برای تصمیم‌گیری لازم باشد.</p>
-            <div class="performance-sync"><i></i><span id="rpSyncText">همگام‌سازی خودکار عملکرد</span></div>
-          </div>
-          <div class="v44-hero-tools">
-            <div class="performance-periods">
-              <button class="performance-period active" data-days="10" onclick="changeRegionalPerformancePeriod(10)">۱۰ روز</button>
-              <button class="performance-period" data-days="20" onclick="changeRegionalPerformancePeriod(20)">۲۰ روز</button>
-              <button class="performance-period" data-days="30" onclick="changeRegionalPerformancePeriod(30)">۳۰ روز</button>
-            </div>
+        <div class="performance-hero">
+          <div><h2>تحلیل عملکرد منطقه</h2><p>مقایسه رؤسای ناحیه بر اساس تحقق برنامه، پوشش فروشگاه‌ها، فعالیت میدانی و کیفیت چک‌لیست.</p><div class="performance-sync"><i></i><span id="rpSyncText">همگام‌سازی خودکار عملکرد</span></div></div>
+          <div class="performance-periods">
+            <button class="performance-period active" data-days="7" onclick="changeRegionalPerformancePeriod(7)">۷ روز</button>
+            <button class="performance-period" data-days="14" onclick="changeRegionalPerformancePeriod(14)">۱۴ روز</button>
+            <button class="performance-period" data-days="30" onclick="changeRegionalPerformancePeriod(30)">۳۰ روز</button>
           </div>
         </div>
 
-        <section class="v44-summary-grid">
-          <article class="v44-summary-card primary">
-            <span>تحقق Route منطقه</span>
-            <strong id="rpCompletion">—%</strong>
-            <small id="rpCompletionSub">—</small>
-          </article>
-          <button class="v44-summary-card warning clickable" type="button" onclick="focusUnvisitedStores('')">
-            <span>فروشگاه بازدیدنشده</span>
-            <strong id="rpUnvisited">—</strong>
-            <small id="rpUnvisitedSub">در بازه انتخاب‌شده</small>
-          </button>
-          <article class="v44-summary-card neutral">
-            <span>متوسط زمان بازدید</span>
-            <strong><b id="rpDuration">—</b> <em>دقیقه</em></strong>
-            <small>بازدیدهای تکمیل‌شده</small>
-          </article>
-        </section>
-
-        <details class="performance-export-card v44-export-card">
-          <summary>
-            <span><strong>خروجی Excel</strong><small>بازه دلخواه و رئیس ناحیه</small></span>
-            <b>باز کردن</b>
-          </summary>
-          <div class="v44-export-body">
-            <div class="performance-export-controls">
-              <div class="performance-export-field"><label for="regionalExportFrom">از تاریخ</label><div class="jalali-field"><input type="text" id="regionalExportFromDisplay" readonly placeholder="انتخاب تاریخ شمسی" onclick="toggleJalaliPicker('regionalExportFrom')" aria-label="انتخاب تاریخ شمسی"><input type="hidden" id="regionalExportFrom"><button type="button" class="jalali-trigger" onclick="toggleJalaliPicker('regionalExportFrom')" aria-label="باز کردن تقویم">▦</button><div class="jalali-popup" id="regionalExportFromCalendar"></div></div></div>
-              <div class="performance-export-field"><label for="regionalExportTo">تا تاریخ</label><div class="jalali-field"><input type="text" id="regionalExportToDisplay" readonly placeholder="انتخاب تاریخ شمسی" onclick="toggleJalaliPicker('regionalExportTo')" aria-label="انتخاب تاریخ شمسی"><input type="hidden" id="regionalExportTo"><button type="button" class="jalali-trigger" onclick="toggleJalaliPicker('regionalExportTo')" aria-label="باز کردن تقویم">▦</button><div class="jalali-popup" id="regionalExportToCalendar"></div></div></div>
-              <div class="performance-export-field head"><label for="regionalExportHead">رئیس ناحیه</label><select id="regionalExportHead"><option value="">همه رؤسای ناحیه</option></select></div>
-              <div class="performance-export-actions">
-                <button class="btn btn-ghost performance-export-reset" onclick="syncPerformanceExportFilters(true)">همین دوره</button>
-                <button class="btn btn-primary performance-export-btn" id="regionalExportBtn" onclick="exportRegionalPerformanceXlsx()"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>دریافت Excel</button>
-              </div>
-            </div>
+        <section class="performance-export-card">
+          <div class="performance-export-copy">
+            <h3>خروجی Excel گزارش عملکرد</h3>
+            <p>بازه تاریخ و رئیس ناحیه را انتخاب کن. فایل خروجی شامل خلاصه مدیریتی، عملکرد رؤسای ناحیه، تکرار بازدید فروشگاه‌ها، جزئیات بازدیدها و عملکرد روزانه است.</p>
           </div>
-        </details>
-
-        <section class="performance-panel v44-main-rank">
-          <div class="performance-panel-head">
-            <div>
-              <span class="v44-section-kicker">اولویت اصلی</span>
-              <h3>رتبه‌بندی رؤسای ناحیه</h3>
-              <p>رتبه‌بندی بر اساس تحقق Route؛ SOS فروشگاه‌ها فقط برای مشاهده نتیجه عملیات است و در رتبه دخالت ندارد.</p>
+          <div class="performance-export-controls">
+            <div class="performance-export-field"><label for="regionalExportFrom">از تاریخ</label><div class="jalali-field"><input type="text" id="regionalExportFromDisplay" readonly placeholder="انتخاب تاریخ شمسی" onclick="toggleJalaliPicker('regionalExportFrom')" aria-label="انتخاب تاریخ شمسی"><input type="hidden" id="regionalExportFrom"><button type="button" class="jalali-trigger" onclick="toggleJalaliPicker('regionalExportFrom')" aria-label="باز کردن تقویم">▦</button><div class="jalali-popup" id="regionalExportFromCalendar"></div></div></div>
+            <div class="performance-export-field"><label for="regionalExportTo">تا تاریخ</label><div class="jalali-field"><input type="text" id="regionalExportToDisplay" readonly placeholder="انتخاب تاریخ شمسی" onclick="toggleJalaliPicker('regionalExportTo')" aria-label="انتخاب تاریخ شمسی"><input type="hidden" id="regionalExportTo"><button type="button" class="jalali-trigger" onclick="toggleJalaliPicker('regionalExportTo')" aria-label="باز کردن تقویم">▦</button><div class="jalali-popup" id="regionalExportToCalendar"></div></div></div>
+            <div class="performance-export-field head"><label for="regionalExportHead">رئیس ناحیه</label><select id="regionalExportHead"><option value="">همه رؤسای ناحیه</option></select></div>
+            <div class="performance-export-actions">
+              <button class="btn btn-ghost performance-export-reset" onclick="syncPerformanceExportFilters(true)">همین دوره</button>
+              <button class="btn btn-primary performance-export-btn" id="regionalExportBtn" onclick="exportRegionalPerformanceXlsx()"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>دریافت Excel</button>
             </div>
-            <div class="search"><input id="regionalPerfSearch" oninput="renderRegionalPerformanceHeads()" placeholder="جستجوی رئیس ناحیه..."></div>
-          </div>
-          <div class="performance-table-wrap">
-            <table class="performance-table v44-performance-table">
-              <thead><tr><th>رتبه</th><th>رئیس ناحیه</th><th>فروشگاه</th><th>برنامه</th><th>تکمیل / درحال اجرا</th><th>تحقق Route</th><th>متوسط زمان</th><th>بازدیدنشده</th><th>SOS</th><th>آخرین فعالیت</th></tr></thead>
-              <tbody id="regionalPerformanceBody"></tbody>
-            </table>
+            <div class="performance-export-note">حداکثر بازه خروجی ۳۶۵ روز است. بازه Excel مستقل از فیلتر ۷/۱۴/۳۰ روزه صفحه قابل انتخاب است.</div>
           </div>
         </section>
 
-        <section class="performance-panel v44-store-rank" id="regionalStoreRankingSection">
+        <section class="performance-kpis">
+          <article class="performance-kpi"><strong id="rpCompletion">—%</strong><div class="pk-label">تحقق برنامه</div><div class="pk-sub" id="rpCompletionSub">—</div></article>
+          <article class="performance-kpi"><strong id="rpDaily">—</strong><div class="pk-label">میانگین بازدید روزانه</div><div class="pk-sub">بازدید تکمیل‌شده</div></article>
+          <article class="performance-kpi"><strong id="rpCoverage">—%</strong><div class="pk-label">پوشش فروشگاه‌ها</div><div class="pk-sub" id="rpCoverageSub">—</div></article>
+          <article class="performance-kpi"><strong id="rpHeads">—%</strong><div class="pk-label">فعالیت رؤسای ناحیه</div><div class="pk-sub" id="rpHeadsSub">—</div></article>
+          <article class="performance-kpi"><strong id="rpOverride">—%</strong><div class="pk-label">نرخ GPS Override</div><div class="pk-sub" id="rpOverrideSub">—</div></article>
+          <article class="performance-kpi"><strong id="rpUnplanned">—%</strong><div class="pk-label">بازدید خارج برنامه</div><div class="pk-sub" id="rpUnplannedSub">—</div></article>
+          <article class="performance-kpi"><strong id="rpWeak">—%</strong><div class="pk-label">نرخ موارد نیازمند توجه</div><div class="pk-sub" id="rpWeakSub">—</div></article>
+          <article class="performance-kpi quality"><strong id="rpChecklistQuality">—%</strong><div class="pk-label">کیفیت چک‌لیست</div><div class="pk-sub">میانگین امتیاز پاسخ‌ها</div></article>
+          <article class="performance-kpi"><strong id="rpDuration">—</strong><div class="pk-label">میانگین مدت بازدید</div><div class="pk-sub">دقیقه</div></article>
+        </section>
+
+        <section class="performance-dark">
+          <div><h3>تحقق عملیات دوره</h3><p id="rpPeriodCaption">—</p><div class="performance-big"><span id="rpBigCompletion">0%</span> <small>تحقق برنامه</small></div><div class="performance-bar"><span id="rpCompletionBar" style="width:0%"></span></div></div>
+          <div class="performance-minis">
+            <div class="performance-mini"><strong id="rpPlanned">0</strong><span>بازدید برنامه‌ریزی‌شده</span></div>
+            <div class="performance-mini"><strong id="rpCompleted">0</strong><span>کل بازدید تکمیل‌شده</span></div>
+            <div class="performance-mini"><strong id="rpVisitedStores">0</strong><span>فروشگاه بازدیدشده</span></div>
+            <div class="performance-mini"><strong id="rpWeakCount">0</strong><span>نیازمند توجه</span></div>
+          </div>
+        </section>
+
+        <div class="performance-grid">
+          <section class="performance-panel">
+            <div class="performance-panel-head"><div><h3>روند دوره</h3><p>برنامه، تکمیل و Override به تفکیک روز</p></div><div class="performance-legend"><span><i style="background:#dfe3eb"></i>برنامه</span><span><i style="background:#199166"></i>تکمیل</span><span><i style="background:#e5a100"></i>Override</span></div></div>
+            <div class="performance-trend" id="regionalPerformanceTrend"></div>
+          </section>
+          <section class="performance-panel">
+            <div class="performance-panel-head"><div><h3>پرتکرارترین موارد نیازمند توجه</h3><p>موضوعات نیازمند پیگیری در چک‌لیست‌ها</p></div></div>
+            <div class="performance-weak" id="regionalPerformanceWeak"></div>
+          </section>
+        </div>
+
+        <section class="performance-panel checklist-quality-panel">
+          <div class="performance-panel-head"><div><h3>کیفیت چک‌لیست به تفکیک بخش</h3><p>امتیاز پاسخ‌ها و موارد نیازمند توجه در بخش‌های مختلف بازدید</p></div></div>
+          <div class="checklist-quality-grid" id="regionalChecklistSections"></div>
+        </section>
+
+
+        <section class="performance-panel">
           <div class="performance-panel-head">
             <div>
-              <span class="v44-section-kicker">فروشگاه‌ها</span>
-              <h3>رتبه‌بندی سلامت فروشگاه‌ها</h3>
-              <p>رتبه‌بندی بر اساس Store Operational Score؛ دفعات و مدت بازدید مربوط به بازه انتخاب‌شده است.</p>
+              <h3>عملکرد سؤال‌های اختصاصی منطقه</h3>
+              <p>نتیجه سؤال‌هایی که توسط مدیر منطقه به چک‌لیست اضافه شده‌اند؛ مستقل از سؤال‌های مرکزی.</p>
             </div>
-            <div class="store-performance-tools v44-store-tools">
+          </div>
+          <div class="rq-performance-list" id="regionalQuestionPerformance"></div>
+        </section>
+
+        <div class="checklist-subsection-wrap">
+          <section class="performance-panel">
+            <div class="performance-panel-head"><div><h3>جزئیات بخش فروش</h3><p>لبنیات، گوشت و مرغ و سایر زیر‌بخش‌های فروش به تفکیک کیفیت</p></div></div>
+            <div class="checklist-subsection-list" id="regionalSalesSubsections"></div>
+          </section>
+          <section class="performance-panel">
+            <div class="performance-panel-head"><div><h3>ضعیف‌ترین زیر‌بخش‌ها</h3><p>اولویت‌های پیشنهادی برای پیگیری مدیر منطقه</p></div></div>
+            <div class="checklist-subsection-list" id="regionalWeakSubsections"></div>
+          </section>
+        </div>
+
+        <section class="performance-panel">
+          <div class="performance-panel-head"><div><h3>رتبه‌بندی رؤسای ناحیه</h3><p>برای مقایسه منصفانه، نرخ‌ها در کنار حجم عملیات نمایش داده شده‌اند.</p></div><div class="search"><input id="regionalPerfSearch" oninput="renderRegionalPerformanceHeads()" placeholder="جستجوی رئیس ناحیه..."></div></div>
+          <div class="performance-table-wrap"><table class="performance-table"><thead><tr><th>رتبه</th><th>رئیس ناحیه</th><th>امتیاز عملیات</th><th>امتیاز مدیریتی</th><th>Store Health</th><th>روند سلامت</th><th>دقت گزارش</th><th>برنامه</th><th>تکمیل</th><th>تحقق</th><th>میانگین روزانه</th><th>پوشش</th><th>روز غیرعملیاتی</th><th>خارج برنامه</th><th>Override</th><th>نیازمند توجه</th><th>کیفیت چک‌لیست</th><th>مدت</th><th></th></tr></thead><tbody id="regionalPerformanceBody"></tbody></table></div>
+          <div class="performance-formula">امتیاز عملیات فعلی همان فرمول قبلی است. امتیاز مدیریتی V34 جداگانه محاسبه می‌شود: ۳۵٪ بهبود Store Health + ۲۰٪ تحقق Route + ۱۵٪ پوشش + ۱۰٪ SLA + ۱۰٪ کیفیت Checklist + ۱۰٪ دقت اعتبارسنجی مدیر منطقه (در صورت وجود داده). روزهای مرخصی، انبارگردانی و افتتاحیه از روز عملیاتی خارج می‌شوند.</div>
+        </section>
+
+        <section class="performance-panel" style="margin-top:16px">
+          <div class="performance-panel-head">
+            <div><h3>پوشش و تکرار بازدید فروشگاه‌ها</h3><p>تعداد دفعات بازدید هر فروشگاه در دوره انتخابی؛ فروشگاه‌های بدون بازدید نیز نمایش داده می‌شوند.</p></div>
+            <div class="store-performance-tools">
               <input id="regionalStorePerfSearch" placeholder="جستجوی کد یا نام فروشگاه..." oninput="resetStorePerformancePage()">
               <select id="regionalStorePerfHead" onchange="resetStorePerformancePage()"><option value="">همه رؤسای ناحیه</option></select>
-              <button class="v44-filter-chip" id="storePerfUnvisitedBtn" type="button" onclick="toggleUnvisitedStoreFilter()">فقط بازدیدنشده</button>
-              <button class="v44-filter-chip ghost" type="button" onclick="clearStorePerformanceFocus()">پاک کردن فیلتر</button>
+              <select id="regionalStorePerfSort" onchange="resetStorePerformancePage()">
+                <option value="VISITS_ASC">کمترین بازدید</option>
+                <option value="VISITS_DESC">بیشترین بازدید</option>
+                <option value="SLA">بحرانی‌ترین SLA</option>
+                <option value="NAME">نام فروشگاه</option>
+              </select>
             </div>
           </div>
           <div class="performance-table-wrap">
-            <table class="performance-table v44-store-table" id="storePerformanceTable">
-              <thead><tr><th>رتبه</th><th>فروشگاه</th><th>رئیس ناحیه</th><th>امتیاز سلامت</th><th>دفعات بازدید</th><th>متوسط مدت</th><th>آخرین بازدید</th><th></th></tr></thead>
+            <table class="performance-table" id="storePerformanceTable">
+              <thead><tr><th>فروشگاه</th><th>رئیس ناحیه</th><th>کل بازدید</th><th>برنامه‌ای</th><th>خارج Route</th><th>Override</th><th>آخرین بازدید</th><th>فاصله از آخرین بازدید</th><th>وضعیت SLA</th></tr></thead>
               <tbody id="regionalStorePerformanceBody"></tbody>
             </table>
           </div>
@@ -469,9 +414,10 @@ body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
         </section>
       </div>
 
+
       <div id="regionalChecklistView" class="rq-view hidden">
         <div class="rq-hero">
-          <div><h2>مدیریت چک‌لیست منطقه</h2><p>سؤال‌های اختصاصی منطقه را مدیریت کن و ترتیب نمایش تمام سؤال‌های مرکزی و منطقه‌ای را برای بازدیدهای جدید همین منطقه تعیین کن.</p></div>
+          <div><h2>سؤالات اختصاصی منطقه</h2><p>سؤال‌هایی که اینجا فعال می‌کنی فقط در بازدیدهای جدید رؤسای ناحیه همین منطقه به چک‌لیست مرکزی اضافه می‌شوند.</p></div>
           <div class="rq-hero-actions"><button class="rq-btn" onclick="loadRegionalChecklistBuilder(true)">↻ بروزرسانی</button><button class="rq-btn primary" onclick="resetRegionalQuestionForm(true)">+ سؤال جدید</button></div>
         </div>
         <div class="rq-stats">
@@ -479,22 +425,6 @@ body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
           <div class="rq-stat"><strong id="rqCentralCount">0</strong><span>سؤال مرکزی فعلی</span></div>
           <div class="rq-stat"><strong id="rqCapacity">0 / 30</strong><span>ظرفیت سؤال‌های فعال</span></div>
         </div>
-
-        <section class="rq-panel rq-order-panel">
-          <div class="rq-panel-head">
-            <div>
-              <h3>ترتیب و اولویت تمام سؤال‌های چک‌لیست</h3>
-              <p>سؤال‌های مرکزی و اختصاصی منطقه را جابه‌جا کن. این ترتیب فقط برای بازدیدهای جدید همین منطقه اعمال می‌شود.</p>
-            </div>
-            <div class="rq-order-head-actions">
-              <span class="rq-order-status" id="rqOrderStatus">بدون تغییر ذخیره‌نشده</span>
-              <button class="rq-btn" onclick="resetRegionalChecklistOrder()">بازگشت به ترتیب ذخیره‌شده</button>
-              <button class="rq-btn primary" id="rqOrderSaveBtn" onclick="saveRegionalChecklistOrder()" disabled>ذخیره ترتیب</button>
-            </div>
-          </div>
-          <div class="rq-order-list" id="rqOrderList"></div>
-          <div class="rq-order-help">در دسکتاپ می‌توانی کارت سؤال را با دستگیره جابه‌جا کنی. در موبایل از دکمه‌های بالا و پایین استفاده کن. متن و نوع سؤال‌های مرکزی قابل ویرایش نیست؛ فقط ترتیب نمایش آن‌ها در این منطقه تغییر می‌کند.</div>
-        </section>
 
         <div class="rq-grid">
           <section class="rq-panel">
@@ -513,7 +443,7 @@ body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
               <div class="rq-field full"><label>متن سؤال</label><textarea id="rqQuestionText" maxlength="500" placeholder="متن سؤال اختصاصی منطقه را بنویس..."></textarea></div>
               <div class="rq-form-row">
                 <div class="rq-field"><label>نوع پاسخ</label><select id="rqResponseType" onchange="renderRqOptionsPreview()"><option value="QUALITY_3">ضعیف / خوب / عالی</option><option value="YES_NO">بله / خیر</option><option value="TARGET_80">بالاتر از ۸۰٪ / زیر ۸۰٪</option><option value="ACHIEVEMENT">محقق شده / محقق نشده</option><option value="TEXT">پاسخ متنی</option></select></div>
-                <div class="rq-field"><label>ترتیب اولیه</label><input id="rqSortOrder" type="number" min="1" max="999" value="100"><small style="color:#8a93a1;font-size:.58rem;line-height:1.7">ترتیب نهایی از بخش «ترتیب و اولویت تمام سؤال‌ها» تعیین می‌شود.</small></div>
+                <div class="rq-field"><label>ترتیب در زیربخش</label><input id="rqSortOrder" type="number" min="1" max="999" value="100"></div>
               </div>
               <div class="rq-options-preview" id="rqOptionsPreview"></div>
               <div class="rq-toggle-row"><label><input type="checkbox" id="rqRequired" checked> پاسخ اجباری</label><label><input type="checkbox" id="rqActive" checked> فعال برای بازدیدهای جدید</label></div>
@@ -524,7 +454,7 @@ body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
         </div>
 
         <section class="rq-panel rq-preview-panel">
-          <div class="rq-panel-head"><div><h3>پیش‌نمایش ترتیب نهایی چک‌لیست</h3><p>همان توالی‌ای که در بازدید جدید رئیس ناحیه نمایش داده می‌شود.</p></div></div>
+          <div class="rq-panel-head"><div><h3>پیش‌نمایش چک‌لیست منطقه</h3><p>ترکیب سؤال‌های مرکزی با سؤال‌های فعال منطقه‌ای برای بازدید جدید</p></div></div>
           <div class="rq-preview" id="rqPreview"></div>
         </section>
       </div>
@@ -578,10 +508,10 @@ body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
         <div class="day-tabs" id="dayTabs"></div>
 
         <div class="day-status-control" id="dayStatusControl">
-          <div class="day-status-main"><strong id="dayStatusTitle">وضعیت عملیاتی روز رئیس ناحیه</strong><span id="dayStatusSub">روز کاری، مرخصی، انبارگردانی، افتتاحیه یا سایر را مشخص کن. روزهای غیرعملیاتی Route و انتظار عملکرد روزانه ندارند.</span></div>
+          <div class="day-status-main"><strong id="dayStatusTitle">وضعیت عملیاتی روز رئیس ناحیه</strong><span id="dayStatusSub">روز کاری، مرخصی، انبارگردانی یا افتتاحیه را مشخص کن. روزهای غیرعملیاتی Route و انتظار عملکرد روزانه ندارند.</span></div>
           <div class="day-status-fields">
             <select id="dayStatusType" onchange="renderDayStatusFields()">
-              <option value="WORKING">روز کاری</option><option value="LEAVE">مرخصی</option><option value="INVENTORY">انبارگردانی</option><option value="OPENING">افتتاحیه</option><option value="OTHER">سایر</option>
+              <option value="WORKING">روز کاری</option><option value="LEAVE">مرخصی</option><option value="INVENTORY">انبارگردانی</option><option value="OPENING">افتتاحیه</option>
             </select>
             <select id="dayStatusStore" class="hidden"><option value="">انتخاب فروشگاه انبارگردانی</option></select>
             <input id="dayStatusOpeningName" class="hidden" maxlength="120" placeholder="نام فروشگاه افتتاحیه">
@@ -679,6 +609,7 @@ body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
       <button class="mobile-nav" id="mobileGpsNav" onclick="switchView('gps')"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z"/></svg>GPS</button>
       <button class="mobile-nav" id="mobilePerformanceNav" onclick="switchView('performance')"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>عملکرد</button>
       <button class="mobile-nav" id="mobileStoreHealthNav" onclick="switchView('health')"><svg viewBox="0 0 24 24"><path d="M3 9l2-5h14l2 5M5 13v7h14v-7"/></svg>سلامت</button>
+      <button class="mobile-nav" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق</button>
       <button class="mobile-nav" onclick="DMAuth.logout()"><svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3M14 3h6v18h-6"/></svg>خروج</button>
     </nav>
   </main>
@@ -732,18 +663,6 @@ body:has(.v44-visit-modal:not(.hidden)){overflow:hidden}
   </aside>
 </div>
 
-
-<div class="v44-visit-modal hidden" id="latestVisitModal" onclick="if(event.target===this)closeLatestVisitDetail()">
-  <div class="v44-visit-card">
-    <div class="v44-visit-head">
-      <div><span class="v44-section-kicker">آخرین بازدید</span><h3 id="latestVisitTitle">—</h3><p id="latestVisitSub">—</p></div>
-      <button class="v44-visit-close" onclick="closeLatestVisitDetail()">×</button>
-    </div>
-    <div class="v44-visit-summary" id="latestVisitSummary"></div>
-    <div class="v44-visit-body" id="latestVisitBody"></div>
-  </div>
-</div>
-
 <div class="toast-wrap" id="toastWrap"></div>
 <script src="app-config.js"></script>
 <script src="auth-client.js"></script>
@@ -788,8 +707,9 @@ const state={
   weekStartIso:'',todayIso:'',days:[],selectedDayIso:'',filter:'ALL',dirty:false,sourceType:'MANUAL',dragIndex:null,moveIndex:null,
   activeView:'route',gpsMode:'approval',approvals:[],approvalFilter:'PENDING',approvalSummary:{pending:0,approved:0,rejected:0},decisionApprovalId:'',
   corrections:[],correctionFilter:'PENDING',correctionSummary:{pending:0,approved:0,rejected:0},correctionDecisionId:'',
-  routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:10,performanceRefreshTimer:null,performanceStorePage:1,performanceStorePageSize:20,performanceStoreOnlyUnvisited:false,performanceExportTouched:false,
-  regionalChecklistLoaded:false,regionalChecklistData:null,rqFilter:'ACTIVE',rqOrderItems:null,rqOrderDirty:false,rqDragRef:'',healthData:null,healthLoaded:false,health360:null
+  routeLoaded:false,planningMode:'REGIONAL_MANAGER',cannotVisitNotices:[],bootstrapSeq:0,performance:null,performanceLoaded:false,performancePeriodDays:7,performanceRefreshTimer:null,performanceStorePage:1,performanceStorePageSize:20,performanceExportTouched:false,
+  regionalChecklistLoaded:false,regionalChecklistData:null,rqFilter:'ACTIVE',healthData:null,healthLoaded:false,health360:null,
+  routeSnapshotMem:{},routeWarmGeneration:0,routeSaving:false,routeSaveSeq:0
 };
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -829,7 +749,112 @@ function markDirty(kind='MANUAL'){
   }
   renderSaveState();
 }
-function renderSaveState(){const el=document.getElementById('saveInfo');el.innerHTML=state.dirty?'<span class="dirty-dot"></span><strong>تغییرات ذخیره نشده</strong> · بعد از ثبت، برنامه برای رئیس ناحیه قابل مشاهده خواهد بود.':'<strong>برنامه ذخیره شده است.</strong> هر تغییر جدید را دوباره ثبت کنید.';}
+function renderSaveState(){
+  const el=document.getElementById('saveInfo');if(!el)return;
+  if(state.routeSaving){
+    el.innerHTML='<span class="dirty-dot"></span><strong>در حال ثبت امن برنامه…</strong> · صفحه قفل نیست؛ تأیید نهایی از سرور در پس‌زمینه انجام می‌شود.';
+    return;
+  }
+  el.innerHTML=state.dirty?'<span class="dirty-dot"></span><strong>تغییرات ذخیره نشده</strong> · بعد از ثبت، برنامه برای رئیس ناحیه قابل مشاهده خواهد بود.':'<strong>برنامه ذخیره شده است.</strong> هر تغییر جدید را دوباره ثبت کنید.';
+}
+
+const ROUTE_SNAPSHOT_VERSION='V51.0';
+const ROUTE_SNAPSHOT_PREFIX='dmRouteInstantV51:';
+const ROUTE_SNAPSHOT_FRESH_MS=5*60*1000;
+const ROUTE_SNAPSHOT_MAX_STALE_MS=6*60*60*1000;
+
+function routeClone(v){try{return JSON.parse(JSON.stringify(v));}catch(_){return v;}}
+function routeSnapshotKey(areaHeadId,weekStartIso=state.weekStartIso){return `${String(weekStartIso||'')}|${String(areaHeadId||'').trim()}`;}
+function routeSnapshotStorageKey(key){return ROUTE_SNAPSHOT_PREFIX+key;}
+function routeSnapshotPrune(){
+  try{
+    const rows=[];
+    for(let i=0;i<sessionStorage.length;i++){
+      const k=sessionStorage.key(i);if(!k||!k.startsWith(ROUTE_SNAPSHOT_PREFIX))continue;
+      try{const e=JSON.parse(sessionStorage.getItem(k)||'null');rows.push({k,t:Number(e?.t||0)});}catch(_){sessionStorage.removeItem(k);}
+    }
+    rows.sort((a,b)=>b.t-a.t);rows.slice(32).forEach(x=>sessionStorage.removeItem(x.k));
+  }catch(_){}
+}
+function routeSnapshotPut(res,areaHeadId,weekStartIso=state.weekStartIso){
+  if(!res||!res.success)return false;
+  const resolved=String(areaHeadId||res.selectedAreaHead?.userId||'').trim();
+  if(!resolved)return false;
+  if(res.selectedAreaHead&&String(res.selectedAreaHead.userId||'').trim()!==resolved)return false;
+  const week=String(weekStartIso||res.week?.startIso||state.weekStartIso||'');
+  const key=routeSnapshotKey(resolved,week);
+  const entry={v:ROUTE_SNAPSHOT_VERSION,t:Date.now(),data:routeClone(res)};
+  state.routeSnapshotMem[key]=entry;
+  try{sessionStorage.setItem(routeSnapshotStorageKey(key),JSON.stringify(entry));routeSnapshotPrune();}catch(_){}
+  return true;
+}
+function routeSnapshotGet(areaHeadId,weekStartIso=state.weekStartIso,maxAgeMs=ROUTE_SNAPSHOT_MAX_STALE_MS){
+  const id=String(areaHeadId||'').trim();if(!id)return null;
+  const week=String(weekStartIso||'');const key=routeSnapshotKey(id,week);const now=Date.now();
+  let entry=state.routeSnapshotMem[key]||null;
+  if(!entry){
+    try{entry=JSON.parse(sessionStorage.getItem(routeSnapshotStorageKey(key))||'null');}catch(_){entry=null;}
+    if(entry)state.routeSnapshotMem[key]=entry;
+  }
+  if(entry&&entry.v===ROUTE_SNAPSHOT_VERSION&&entry.data?.success&&(now-Number(entry.t||0))<=maxAgeMs)return entry;
+  try{
+    const hit=window.DMInstant?.peek?.('regionalBootstrap',{weekStartIso:week,areaHeadUserId:id},maxAgeMs);
+    if(hit?.data?.success){routeSnapshotPut(hit.data,id,week);return state.routeSnapshotMem[key]||{v:ROUTE_SNAPSHOT_VERSION,t:Date.now(),data:hit.data};}
+  }catch(_){}
+  return null;
+}
+function routeSnapshotApply(areaHeadId,weekStartIso=state.weekStartIso){
+  const hit=routeSnapshotGet(areaHeadId,weekStartIso);
+  if(!hit?.data?.success)return false;
+  const ok=applyRegionalBootstrap(hit.data,String(areaHeadId||'').trim());
+  if(ok){
+    const age=Date.now()-Number(hit.t||0);
+    window.DMInstant?.status?.(age<=ROUTE_SNAPSHOT_FRESH_MS?'Route آماده شد':'Route فوری • بروزرسانی در پس‌زمینه',age<=ROUTE_SNAPSHOT_FRESH_MS,900);
+  }
+  return ok;
+}
+function routeCurrentPlan(){
+  return state.days.map(d=>({dateIso:d.dateIso,dateFa:faDateLong(d.dateIso),storeCodes:dayIsUnavailable(d)?[]:d.items.map(x=>x.storeCode)}));
+}
+function routePlanSignature(plan){return JSON.stringify(plan||[]);}
+function routeSnapshotFromCurrentState(){
+  const h=state.areaHeads.find(a=>String(a.userId||'').trim()===String(state.areaHeadId||'').trim())||{};
+  return {
+    success:true,code:'REGIONAL_BOOTSTRAP_CLIENT_V51',manager:routeClone(state.user),settings:routeClone(state.settings),summary:routeClone(state.summary),areaHeads:routeClone(state.areaHeads),
+    selectedAreaHead:{userId:state.areaHeadId,fullName:h.fullName||'',stores:routeClone(state.stores),planningMode:state.planningMode,cannotVisitNotices:routeClone(state.cannotVisitNotices)},
+    week:{startIso:state.weekStartIso,days:routeClone(state.days)},todayIso:state.todayIso||iso(new Date()),serverTime:new Date().toISOString(),turbo:{clientSnapshot:true,version:'V51'}
+  };
+}
+function scheduleRouteWarmup(){
+  const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+  if(conn&&(conn.saveData||/2g/.test(String(conn.effectiveType||''))))return;
+  const generation=++state.routeWarmGeneration,week=String(state.weekStartIso||'');
+  const ids=(state.areaHeads||[]).map(x=>String(x.userId||'').trim()).filter(Boolean).filter(id=>id!==String(state.areaHeadId||'').trim());
+  ids.forEach((id,index)=>{
+    const delay=120+Math.min(index,8)*180+Math.max(0,index-8)*450;
+    setTimeout(()=>{
+      if(generation!==state.routeWarmGeneration||week!==String(state.weekStartIso||''))return;
+      if(routeSnapshotGet(id,week,ROUTE_SNAPSHOT_FRESH_MS))return;
+      try{window.DMInstant?.prefetch?.('regionalBootstrap',{weekStartIso:week,areaHeadUserId:id},35000);}catch(_){}
+    },delay);
+  });
+}
+async function refreshRouteSnapshotInBackground(areaHeadId,weekStartIso=state.weekStartIso){
+  const id=String(areaHeadId||'').trim(),week=String(weekStartIso||'');if(!id||!week)return;
+  try{
+    const res=await DMAuth.apiPost('regionalBootstrap',{weekStartIso:week,areaHeadUserId:id},35000);
+    if(!res?.success)return;
+    routeSnapshotPut(res,id,week);
+    if(String(state.areaHeadId||'').trim()===id&&String(state.weekStartIso||'')===week&&!state.dirty&&!state.routeSaving){
+      applyRegionalBootstrap(res,id);
+    }
+  }catch(e){console.warn('[V51 route refresh]',e);}
+}
+function showRouteSwitchPlaceholder(areaHeadId){
+  const head=(state.areaHeads||[]).find(a=>String(a.userId||'').trim()===String(areaHeadId||'').trim());
+  const list=document.getElementById('routeList');if(list)list.innerHTML=`<div class=\"empty-route\" style=\"min-height:180px\"><div><strong>${esc(head?.fullName||'رئیس ناحیه')}</strong><span>اطلاعات این Route در پس‌زمینه در حال آماده‌سازی است؛ صفحه قفل نشده است.</span></div></div>`;
+  const pool=document.getElementById('storeList');if(pool)pool.innerHTML='';
+}
 
 function applyRegionalBootstrap(res,requestedId=''){
   if(!res||!res.success)return false;
@@ -877,6 +902,7 @@ async function init(){
 
   const instant=hydrateRegionalInstant();
   await loadBootstrap('',instant,false);
+  scheduleRouteWarmup();
   // Badge is non-blocking; Route UI is already usable.
   loadApprovalBadge();
 }
@@ -884,19 +910,29 @@ async function init(){
 async function loadBootstrap(areaHeadId,silent=false,forceFresh=false){
   const requestedId=String(areaHeadId||state.areaHeadId||'').trim();
   const seq=++state.bootstrapSeq;
-  let loadingTimer=null;
-  if(!silent)loadingTimer=setTimeout(()=>setLoading(true,'در حال دریافت اطلاعات منطقه...'),180);
+  let servedSnapshot=false,loadingTimer=null;
+
+  if(!forceFresh&&requestedId&&!state.dirty&&!state.routeSaving){
+    servedSnapshot=routeSnapshotApply(requestedId,state.weekStartIso);
+  }
+  if(!silent&&!servedSnapshot)loadingTimer=setTimeout(()=>setLoading(true,'در حال دریافت اطلاعات منطقه...'),220);
+
   try{
     const params={weekStartIso:state.weekStartIso,areaHeadUserId:requestedId};
     if(forceFresh)params.forceFresh='true';
     const res=await DMAuth.apiPost('regionalBootstrap',params,35000);
+    routeSnapshotPut(res,requestedId||res?.selectedAreaHead?.userId,state.weekStartIso);
     if(seq!==state.bootstrapSeq)return;
     if(!res.success)throw new Error(res.message||'دریافت اطلاعات ناموفق بود.');
+
+    // Never let a background refresh overwrite unsaved Route edits.
+    if(state.dirty&&!forceFresh&&requestedId===String(state.areaHeadId||'').trim())return;
     if(!applyRegionalBootstrap(res,requestedId))throw new Error('اطلاعات رئیس ناحیه انتخاب‌شده با پاسخ سرور همخوانی ندارد. صفحه را بروزرسانی کنید.');
+    scheduleRouteWarmup();
   }catch(e){toast(e.message||'خطا در دریافت اطلاعات','error');}
   finally{
     if(loadingTimer)clearTimeout(loadingTimer);
-    if(seq===state.bootstrapSeq&&!silent)setLoading(false);
+    if(seq===state.bootstrapSeq&&!silent&&!servedSnapshot)setLoading(false);
   }
 }
 
@@ -987,8 +1023,8 @@ function renderWeek(){
 }
 function dayCountClass(n){const max=Number(state.settings.smartMaxStops||6);if(n===0)return'low';if(n<=max)return'ok';return'high';}
 function dayStatusType(d){return String(d?.dayStatus?.eventType||d?.leave?.eventType||(d?.isLeave?'LEAVE':'')).toUpperCase();}
-function dayStatusLabel(d){const t=dayStatusType(d);return ({LEAVE:'مرخصی',INVENTORY:'انبارگردانی',OPENING:'افتتاحیه',OTHER:'سایر'})[t]||'روز کاری';}
-function dayStatusClass(d){const t=dayStatusType(d);return t==='INVENTORY'?'inventory':t==='OPENING'?'opening':t==='OTHER'?'other':t==='LEAVE'?'leave':'';}
+function dayStatusLabel(d){const t=dayStatusType(d);return ({LEAVE:'مرخصی',INVENTORY:'انبارگردانی',OPENING:'افتتاحیه'})[t]||'روز کاری';}
+function dayStatusClass(d){const t=dayStatusType(d);return t==='INVENTORY'?'inventory':t==='OPENING'?'opening':t==='LEAVE'?'leave':'';}
 function dayIsUnavailable(d){return !!(d&&(d.isUnavailable||d.isLeave||d.dayStatus||d.leave));}
 function smartTimeText(min){min=Number(min||0);if(!min)return'—';const h=Math.floor(min/60),m=Math.round(min%60);return h?`${h}س ${m?m+'د':''}`:`${m}د`;}
 function renderDays(){
@@ -1025,14 +1061,9 @@ function populateDayStatusStoreSelect(d){
   if(current)sel.value=current;
 }
 function renderDayStatusFields(){
-  const d=selectedDay(),type=document.getElementById('dayStatusType')?.value||'WORKING',store=document.getElementById('dayStatusStore'),openingName=document.getElementById('dayStatusOpeningName'),note=document.getElementById('dayStatusNoteInput');
+  const d=selectedDay(),type=document.getElementById('dayStatusType')?.value||'WORKING',store=document.getElementById('dayStatusStore'),openingName=document.getElementById('dayStatusOpeningName');
   if(store)store.classList.toggle('hidden',type!=='INVENTORY');
   if(openingName)openingName.classList.toggle('hidden',type!=='OPENING');
-  if(note){
-    note.required=type==='OTHER';
-    note.placeholder=type==='OTHER'?'توضیحات الزامی برای «سایر»':'توضیح اختیاری';
-    note.setAttribute('aria-required',type==='OTHER'?'true':'false');
-  }
   const btn=document.getElementById('dayStatusSaveBtn');if(btn)btn.textContent=type==='WORKING'&&dayIsUnavailable(d)?'لغو وضعیت و تبدیل به روز کاری':'ثبت وضعیت';
 }
 function renderDayStatusControl(){
@@ -1043,9 +1074,8 @@ function renderDayStatusControl(){
   title.textContent=`وضعیت ${DAY_NAMES[idx]||''} · ${faDateShort(d.dateIso)}`;
   if(dayIsUnavailable(d)){
     const storeText=current==='OPENING'&&status?.relatedStoreName?` · ${status.relatedStoreName}`:(status?.relatedStoreCode?` · ${status.relatedStoreCode}${status.relatedStoreName?' - '+status.relatedStoreName:''}`:'');
-    const noteText=current==='OTHER'&&status?.note?` · ${status.note}`:'';
-    sub.textContent=`${dayStatusLabel(d)} ثبت شده${storeText}${noteText}. این روز Route و انتظار عملکرد روزانه ندارد.`;
-  }else sub.textContent=past?'روز گذشته قابل تغییر نیست.':'اگر رئیس ناحیه مرخصی، انبارگردانی، افتتاحیه یا وضعیت دیگری دارد، همان وضعیت را ثبت کن؛ Route شروع‌نشده روز پاک می‌شود.';
+    sub.textContent=`${dayStatusLabel(d)} ثبت شده${storeText}. این روز Route و انتظار عملکرد روزانه ندارد.`;
+  }else sub.textContent=past?'روز گذشته قابل تغییر نیست.':'اگر رئیس ناحیه مرخصی، انبارگردانی یا افتتاحیه دارد، همان وضعیت را ثبت کن؛ Route شروع‌نشده روز پاک می‌شود.';
   typeSel.disabled=past;btn.disabled=past;renderDayStatusFields();
 }
 async function saveSelectedDayStatus(){
@@ -1058,8 +1088,7 @@ async function saveSelectedDayStatus(){
   const note=(document.getElementById('dayStatusNoteInput')?.value||'').trim();
   if(active&&type==='INVENTORY'&&!storeCode){toast('برای انبارگردانی، فروشگاه مربوط را انتخاب کن.','error');return;}
   if(active&&type==='OPENING'&&!openingName){toast('برای افتتاحیه، فقط نام فروشگاه را وارد کن.','error');return;}
-  if(active&&type==='OTHER'&&!note){toast('برای گزینه «سایر»، توضیحات الزامی است.','error');document.getElementById('dayStatusNoteInput')?.focus();return;}
-  const label=({LEAVE:'مرخصی',INVENTORY:'انبارگردانی',OPENING:'افتتاحیه',OTHER:'سایر'})[type]||'روز کاری';
+  const label=({LEAVE:'مرخصی',INVENTORY:'انبارگردانی',OPENING:'افتتاحیه'})[type]||'روز کاری';
   const msg=active?`برای ${faDateShort(d.dateIso)} وضعیت «${label}» ثبت شود؟ Route شروع‌نشده این روز پاک می‌شود.`:`وضعیت غیرعملیاتی ${faDateShort(d.dateIso)} لغو و روز به حالت کاری برگردد؟`;
   if(!confirm(msg))return;
   setLoading(true,active?'در حال ثبت وضعیت روز...':'در حال بازگرداندن روز کاری...');
@@ -1273,24 +1302,80 @@ async function suggestRoutes(){
 }
 
 async function saveWeek(){
-  if(!state.areaHeadId)return;
+  if(!state.areaHeadId||state.routeSaving)return;
   if(!managerCanEditRoutes()){toast('برای ویرایش Route ابتدا مسیر‌بندی را به مدیر منطقه برگردانید.','error');return;}
-  const plan=state.days.map(d=>({dateIso:d.dateIso,dateFa:faDateLong(d.dateIso),storeCodes:dayIsUnavailable(d)?[]:d.items.map(x=>x.storeCode)}));
+
+  const plan=routeCurrentPlan();
   const max=Number(state.settings.smartMaxStops||6),heavy=plan.filter((x,i)=>!dayIsUnavailable(state.days[i])&&x.storeCodes.length>max).length;
   if(heavy&&!confirm(`در ${heavy} روز بیش از سقف پیشنهادی ${max} فروشگاه وجود دارد. زمان و فاصله را بررسی کن. با همین برنامه ثبت شود؟`))return;
   if((state.smartSuggestion?.capacityConflicts||[]).length&&!confirm('Smart Route تعارض ظرفیت/SLA گزارش کرده است. اگر این موارد را دستی تعیین تکلیف نکرده‌ای ممکن است پوشش کامل نباشد. با برنامه فعلی ثبت شود؟'))return;
-  setLoading(true,'در حال ثبت برنامه هفتگی...');
+
+  const savedArea=String(state.areaHeadId||'').trim();
+  const savedWeek=String(state.weekStartIso||'');
+  const savedSource=state.sourceType;
+  const savedPlanJson=routePlanSignature(plan);
+  const saveSeq=++state.routeSaveSeq;
+  const btn=document.getElementById('saveBtn');
+
+  state.routeSaving=true;renderSaveState();
+  if(btn){btn.disabled=true;btn.dataset.oldText=btn.textContent;btn.textContent='در حال ثبت امن…';}
+  window.DMInstant?.status?.('ثبت برنامه در پس‌زمینه');
+
   try{
-    const res=await DMAuth.apiPost('saveWeekRoutes',{areaHeadUserId:state.areaHeadId,weekStartIso:state.weekStartIso,sourceType:state.sourceType,planJson:JSON.stringify(plan)},50000);
+    const res=await DMAuth.apiPost('saveWeekRoutes',{areaHeadUserId:savedArea,weekStartIso:savedWeek,sourceType:savedSource,planJson:savedPlanJson},50000);
     if(!res.success)throw new Error(res.message||'ثبت برنامه ناموفق بود.');
-    state.dirty=false;renderSaveState();toast(res.message||'برنامه ثبت شد.','success');await loadBootstrap(state.areaHeadId);
-  }catch(e){toast(e.message||'خطا در ثبت برنامه','error');}
-  finally{setLoading(false);}
+
+    const sameContext=String(state.areaHeadId||'').trim()===savedArea&&String(state.weekStartIso||'')===savedWeek;
+    const samePlan=sameContext&&routePlanSignature(routeCurrentPlan())===savedPlanJson;
+    if(samePlan){
+      state.dirty=false;
+      routeSnapshotPut(routeSnapshotFromCurrentState(),savedArea,savedWeek);
+    }
+
+    toast(samePlan?(res.message||'برنامه ثبت شد.'):'نسخه‌ای که روی آن کلیک کردی ثبت شد؛ تغییرات جدیدتر هنوز ذخیره نشده‌اند.','success');
+    window.DMInstant?.status?.('برنامه روی سرور ثبت شد',true,1100);
+
+    // Reconcile route ids/statuses silently. Never block the manager with a second bootstrap.
+    setTimeout(()=>refreshRouteSnapshotInBackground(savedArea,savedWeek),120);
+  }catch(e){
+    toast(e.message||'خطا در ثبت برنامه','error');
+    window.DMInstant?.status?.('ثبت انجام نشد');
+  }finally{
+    if(saveSeq===state.routeSaveSeq)state.routeSaving=false;
+    if(btn){btn.disabled=!managerCanEditRoutes();btn.textContent=btn.dataset.oldText||'ثبت برنامه هفته';delete btn.dataset.oldText;}
+    renderSaveState();
+  }
 }
-async function changeAreaHead(id){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟')){renderAreaHeads();return;}state.areaHeadId=id;await loadBootstrap(id);}
-async function shiftWeek(n){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟'))return;state.weekStartIso=iso(addDays(parseIso(state.weekStartIso),n));state.selectedDayIso='';await loadBootstrap(state.areaHeadId);}
-async function goCurrentWeek(){if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟'))return;state.weekStartIso=iso(saturdayStart(new Date()));state.selectedDayIso='';await loadBootstrap(state.areaHeadId);}
-async function reloadData(){if(state.dirty&&!confirm('تغییرات ذخیره نشده لغو شود؟'))return;await loadBootstrap(state.areaHeadId,false,true);}
+async function changeAreaHead(id){
+  if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟')){renderAreaHeads();return;}
+  const target=String(id||'').trim();if(!target)return;
+  state.areaHeadId=target;
+  const instant=routeSnapshotApply(target,state.weekStartIso);
+  if(instant){refreshRouteSnapshotInBackground(target,state.weekStartIso);return;}
+  renderAreaHeads();showRouteSwitchPlaceholder(target);
+  await loadBootstrap(target,true,false);
+}
+async function shiftWeek(n){
+  if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟'))return;
+  state.weekStartIso=iso(addDays(parseIso(state.weekStartIso),n));state.selectedDayIso='';
+  const instant=routeSnapshotApply(state.areaHeadId,state.weekStartIso);
+  scheduleRouteWarmup();
+  if(instant){refreshRouteSnapshotInBackground(state.areaHeadId,state.weekStartIso);return;}
+  await loadBootstrap(state.areaHeadId,true,false);
+}
+async function goCurrentWeek(){
+  if(state.dirty&&!confirm('تغییرات ذخیره نشده از بین برود؟'))return;
+  state.weekStartIso=iso(saturdayStart(new Date()));state.selectedDayIso='';
+  const instant=routeSnapshotApply(state.areaHeadId,state.weekStartIso);
+  scheduleRouteWarmup();
+  if(instant){refreshRouteSnapshotInBackground(state.areaHeadId,state.weekStartIso);return;}
+  await loadBootstrap(state.areaHeadId,true,false);
+}
+async function reloadData(){
+  if(state.dirty&&!confirm('تغییرات ذخیره نشده لغو شود؟'))return;
+  state.routeWarmGeneration++;
+  await loadBootstrap(state.areaHeadId,false,true);
+}
 
 
 async function openAreaHeadRoute(id){
@@ -1373,7 +1458,7 @@ async function exportRegionalPerformanceXlsx(){
 function regionalScoreClass(n){return Number(n)>=75?'good':Number(n)>=45?'mid':'low';}
 
 async function changeRegionalPerformancePeriod(days){
-  state.performancePeriodDays=Number(days)||10;
+  state.performancePeriodDays=Number(days)||7;
   state.performanceStorePage=1;
   state.performanceExportTouched=false;
   document.querySelectorAll('.performance-period').forEach(b=>b.classList.toggle('active',Number(b.dataset.days)===state.performancePeriodDays));
@@ -1393,26 +1478,40 @@ async function loadRegionalPerformance(force=false){
 
 function renderRegionalPerformance(){
   const s=state.performance?.summary||{};
-  const storeRows=state.performance?.storePerformance||[];
-  const unvisited=storeRows.filter(x=>Number(x.visitCount||0)===0).length;
   document.getElementById('rpCompletion').textContent=(s.completionRate||0)+'%';
   document.getElementById('rpCompletionSub').textContent=`${s.completedPlanned||0} از ${s.planned||0} برنامه`;
-  document.getElementById('rpUnvisited').textContent=unvisited;
-  document.getElementById('rpUnvisitedSub').textContent=`از ${storeRows.length||s.stores||0} فروشگاه در ${state.performancePeriodDays} روز`;
+  document.getElementById('rpDaily').textContent=s.avgDailyCompleted??0;
+  document.getElementById('rpCoverage').textContent=(s.coverageRate||0)+'%';
+  document.getElementById('rpCoverageSub').textContent=`${s.visitedStores||0} از ${s.stores||0} فروشگاه`;
+  document.getElementById('rpHeads').textContent=(s.headActivityRate||0)+'%';
+  document.getElementById('rpHeadsSub').textContent=`${s.activeHeads||0} از ${s.eligibleHeads??s.areaHeads??0} رئیس ناحیه واجد روز کاری${Number(s.unavailableDays||0)?` · ${s.unavailableDays} روز غیرعملیاتی (مرخصی ${s.leaveDays||0} · انبارگردانی ${s.inventoryDays||0} · افتتاحیه ${s.openingDays||0})`:''}`;
+  document.getElementById('rpOverride').textContent=(s.overrideRate||0)+'%';
+  document.getElementById('rpOverrideSub').textContent=`${s.overrides||0} Override`;
+  document.getElementById('rpUnplanned').textContent=(s.unplannedRate||0)+'%';
+  document.getElementById('rpUnplannedSub').textContent=`${s.unplanned||0} بازدید`;
+  document.getElementById('rpWeak').textContent=(s.weakRate||0)+'%';
+  document.getElementById('rpWeakSub').textContent=`${s.weakAnswers||0} از ${s.responseCount||0} پاسخ`;
+  document.getElementById('rpChecklistQuality').textContent=(s.checklistQuality||0)+'%';
   document.getElementById('rpDuration').textContent=s.avgDuration??0;
-
+  document.getElementById('rpBigCompletion').textContent=(s.completionRate||0)+'%';
+  document.getElementById('rpCompletionBar').style.width=(s.completionRate||0)+'%';
+  document.getElementById('rpPlanned').textContent=s.planned??0;
+  document.getElementById('rpCompleted').textContent=s.completedTotal??0;
+  document.getElementById('rpVisitedStores').textContent=s.visitedStores??0;
+  document.getElementById('rpWeakCount').textContent=s.weakAnswers??0;
+  document.getElementById('rpPeriodCaption').textContent=`${faDateShort(state.performance.startIso)} تا ${faDateShort(state.performance.endIso)} · ${state.performance.periodDays} روز`;
+  renderRegionalPerformanceTrend(state.performance.trend||[]);
+  renderRegionalPerformanceWeak(state.performance.weakQuestions||[]);
+  renderChecklistSectionPerformance(state.performance.checklistSections||[]);
+  renderSalesSubsectionPerformance(state.performance.checklistSubsections||[]);
+  renderRegionalQuestionPerformance(state.performance.regionalQuestionStats||[]);
   renderRegionalPerformanceHeads();
+  const hkm=document.getElementById('hkManagement');if(hkm)hkm.textContent=(s.managementScore??'—')+(s.managementScore!=null?'/100':'');
   renderRegionalStorePerformanceFilters();
   renderRegionalStorePerformance();
   syncPerformanceExportFilters(false);
-
-  const hkm=document.getElementById('hkManagement');
-  if(hkm)hkm.textContent=(s.managementScore??'—')+(s.managementScore!=null?'/100':'');
   const sync=document.getElementById('rpSyncText');
-  if(sync){
-    const repaired=Number(state.performance?.integrity?.repaired||0);
-    sync.textContent='آخرین همگام‌سازی '+faDateTimeRegional(state.performance.serverTime)+(repaired?` · ${repaired} بازدید بازیابی شد`:' · همگام');
-  }
+  if(sync){const repaired=Number(state.performance?.integrity?.repaired||0);sync.textContent='آخرین همگام‌سازی '+faDateTimeRegional(state.performance.serverTime)+(repaired?` · ${repaired} بازدید بازیابی شد`:' · همگام');}
 }
 
 function checklistPerfColor(score){score=Number(score||0);if(score>=85)return'#218b61';if(score>=70)return'#3f72cf';if(score>=55)return'#d2951e';return'#c44258';}
@@ -1484,38 +1583,10 @@ function renderRegionalPerformanceWeak(rows){
 
 function renderRegionalPerformanceHeads(){
   const q=(document.getElementById('regionalPerfSearch')?.value||'').trim().toLowerCase();
-  const storeRows=state.performance?.storePerformance||[];
-  const unvisitedByHead={};
-  storeRows.forEach(x=>{if(Number(x.visitCount||0)===0)unvisitedByHead[x.areaHeadUserId]=(unvisitedByHead[x.areaHeadUserId]||0)+1;});
-
-  const arr=(state.performance?.areaHeads||[])
-    .filter(h=>!q||String(h.fullName||'').toLowerCase().includes(q)||String(h.userId||'').toLowerCase().includes(q))
-    .slice()
-    .sort((a,b)=>Number(b.completionRate||0)-Number(a.completionRate||0)
-      ||(Number(b.completedTotal||0)+Number(b.inProgress||0))-(Number(a.completedTotal||0)+Number(a.inProgress||0))
-      ||String(a.fullName||'').localeCompare(String(b.fullName||''),'fa'));
-
+  const arr=(state.performance?.areaHeads||[]).filter(h=>!q||String(h.fullName).toLowerCase().includes(q)||String(h.userId).toLowerCase().includes(q));
   const body=document.getElementById('regionalPerformanceBody');
-  if(!arr.length){body.innerHTML='<tr><td colspan="10" class="overview-empty">رئیس ناحیه‌ای پیدا نشد.</td></tr>';return;}
-
-  body.innerHTML=arr.map((h,i)=>{
-    const running=Number(h.inProgress||0);
-    const done=Number(h.completedTotal||0);
-    const unvisited=Number(unvisitedByHead[h.userId]||0);
-    const sos=h.portfolioHealthScore;
-    return `<tr>
-      <td data-label="رتبه"><div class="performance-rank ${i<3?'top':''}">${i+1}</div></td>
-      <td class="performance-name" data-label="رئیس ناحیه"><strong>${esc(h.fullName)}</strong><span>${h.executionCritical?'نیازمند توجه مدیریتی':'عملکرد دوره'}</span></td>
-      <td data-label="فروشگاه">${h.storeCount||0}</td>
-      <td data-label="برنامه">${h.planned||0}</td>
-      <td data-label="تکمیل / درحال اجرا"><strong>${done+running}</strong><div class="head-sub">${done} تکمیل · ${running} درحال اجرا</div></td>
-      <td data-label="تحقق Route"><span class="performance-score ${regionalScoreClass(h.completionRate)}">${h.completionRate||0}%</span></td>
-      <td data-label="متوسط زمان">${h.avgDuration||0} دقیقه</td>
-      <td data-label="بازدیدنشده">${unvisited?`<button class="v44-link-metric danger" onclick="focusUnvisitedStores('${esc(h.userId)}')">${unvisited} فروشگاه</button>`:'<span class="v44-zero-good">۰</span>'}</td>
-      <td data-label="SOS">${sos===null||sos===undefined?'—':`<span class="v44-sos ${healthBandClass(h.portfolioHealthScore>=85?'EXCELLENT':h.portfolioHealthScore>=75?'GOOD':h.portfolioHealthScore>=60?'ATTENTION':h.portfolioHealthScore>=45?'WEAK':'CRITICAL')}">${Math.round(Number(sos))}</span>`}</td>
-      <td data-label="آخرین فعالیت">${h.lastActivity?faDateTimeRegional(h.lastActivity):'—'}</td>
-    </tr>`;
-  }).join('');
+  if(!arr.length){body.innerHTML='<tr><td colspan="19" class="overview-empty">رئیس ناحیه‌ای پیدا نشد.</td></tr>';return;}
+  body.innerHTML=arr.map(h=>`<tr><td data-label="رتبه"><div class="performance-rank ${h.rank<=3?'top':''}">${h.rank}</div></td><td class="performance-name" data-label="رئیس ناحیه"><strong>${esc(h.fullName)}</strong><span>${h.storeCount} فروشگاه</span></td><td data-label="امتیاز عملیات"><span class="performance-score ${regionalScoreClass(h.performanceScore)}">${h.performanceScore}</span></td><td data-label="امتیاز مدیریتی"><span class="performance-score ${regionalScoreClass(h.managementScore||0)}">${h.managementScore??'—'}</span></td><td data-label="سلامت فروشگاه‌ها">${h.portfolioHealthScore??'—'}</td><td data-label="روند سلامت">${h.portfolioTrend==null?'—':(h.portfolioTrend>0?'+':'')+h.portfolioTrend}</td><td data-label="دقت گزارش">${h.validationAccuracy==null?'—':h.validationAccuracy+'%'}<div class="head-sub">${h.validationCount||0} اعتبارسنجی</div></td><td data-label="برنامه">${h.planned}</td><td data-label="تکمیل">${h.completedPlanned}</td><td data-label="تحقق">${h.completionRate}%</td><td data-label="میانگین روزانه">${h.avgDailyCompleted??h.avgDailyVisits??0}</td><td data-label="پوشش">${h.coverageRate}%</td><td data-label="روز غیرعملیاتی"><strong>${h.unavailableDays||0} روز</strong><div class="head-sub">م ${h.leaveDays||0} · ا ${h.inventoryDays||0} · ف ${h.openingDays||0}</div></td><td data-label="خارج برنامه">${h.unplannedRate}%</td><td data-label="Override">${h.overrideRate}%</td><td data-label="نیازمند توجه">${h.weakRate}%</td><td data-label="کیفیت چک‌لیست">${h.checklistQuality||0}%</td><td data-label="مدت">${h.avgDuration} دقیقه</td><td class="performance-action"><button class="performance-route-btn" onclick="openAreaHeadRoute('${esc(h.userId)}')">Route</button></td></tr>`).join('');
 }
 
 function renderRegionalStorePerformanceFilters(){
@@ -1530,112 +1601,46 @@ function changeStorePerformancePage(delta){
   state.performanceStorePage=Math.max(1,Number(state.performanceStorePage||1)+Number(delta||0));
   renderRegionalStorePerformance();
 }
-function storeHealthBandLabelClient(band){
-  return ({EXCELLENT:'عالی',GOOD:'خوب',ATTENTION:'نیازمند توجه',WEAK:'ضعیف',CRITICAL:'بحرانی',NO_DATA:'بدون داده'})[String(band||'NO_DATA').toUpperCase()]||'—';
-}
-function toggleUnvisitedStoreFilter(){
-  state.performanceStoreOnlyUnvisited=!state.performanceStoreOnlyUnvisited;
-  state.performanceStorePage=1;
-  renderRegionalStorePerformance();
-}
-function clearStorePerformanceFocus(){
-  state.performanceStoreOnlyUnvisited=false;
-  const head=document.getElementById('regionalStorePerfHead');if(head)head.value='';
-  const search=document.getElementById('regionalStorePerfSearch');if(search)search.value='';
-  state.performanceStorePage=1;
-  renderRegionalStorePerformance();
-}
-function focusUnvisitedStores(headId){
-  state.performanceStoreOnlyUnvisited=true;
-  const head=document.getElementById('regionalStorePerfHead');
-  if(head)head.value=String(headId||'');
-  state.performanceStorePage=1;
-  renderRegionalStorePerformance();
-  document.getElementById('regionalStoreRankingSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+function regionalStorePriorityRank(level){return({NO_HISTORY:5,OVERDUE:4,WARN12:3,WARN10:2,NORMAL:1})[String(level||'NORMAL').toUpperCase()]||0;}
+function regionalStoreSlaHtml(x){
+  const level=String(x.priorityLevel||'NORMAL').toUpperCase();
+  const cls=level==='NO_HISTORY'?'no_history':level==='OVERDUE'?'overdue':level==='WARN12'?'warn12':level==='WARN10'?'warn10':'normal';
+  const label=x.priorityLabel||(level==='NO_HISTORY'?'بدون سابقه':level==='OVERDUE'?'۱۴+ روز':level==='WARN12'?'۱۲ روز':level==='WARN10'?'۱۰ روز':'عادی');
+  return `<span class="sla-state ${cls}">${esc(label)}</span>`;
 }
 function renderRegionalStorePerformance(){
   const body=document.getElementById('regionalStorePerformanceBody');if(!body)return;
   const q=toEn(document.getElementById('regionalStorePerfSearch')?.value||'').trim().toLowerCase();
   const headId=String(document.getElementById('regionalStorePerfHead')?.value||'');
+  const sort=String(document.getElementById('regionalStorePerfSort')?.value||'VISITS_ASC');
   let rows=(state.performance?.storePerformance||[]).filter(x=>{
     if(headId&&String(x.areaHeadUserId)!==headId)return false;
-    if(state.performanceStoreOnlyUnvisited&&Number(x.visitCount||0)!==0)return false;
     if(q&&!`${x.storeCode} ${x.storeName} ${x.areaHeadName}`.toLowerCase().includes(q))return false;
     return true;
   });
-
   rows.sort((a,b)=>{
-    const as=(a.healthScore===null||a.healthScore===undefined||a.healthScore==='')?-1:Number(a.healthScore);
-    const bs=(b.healthScore===null||b.healthScore===undefined||b.healthScore==='')?-1:Number(b.healthScore);
-    return bs-as||Number(b.visitCount||0)-Number(a.visitCount||0)||String(a.storeName||'').localeCompare(String(b.storeName||''),'fa');
+    if(sort==='VISITS_DESC')return Number(b.visitCount||0)-Number(a.visitCount||0)||String(a.storeName||'').localeCompare(String(b.storeName||''),'fa');
+    if(sort==='SLA')return regionalStorePriorityRank(b.priorityLevel)-regionalStorePriorityRank(a.priorityLevel)||Number(b.daysSinceLastVisit||0)-Number(a.daysSinceLastVisit||0);
+    if(sort==='NAME')return String(a.storeName||'').localeCompare(String(b.storeName||''),'fa');
+    return Number(a.visitCount||0)-Number(b.visitCount||0)||regionalStorePriorityRank(b.priorityLevel)-regionalStorePriorityRank(a.priorityLevel)||String(a.storeName||'').localeCompare(String(b.storeName||''),'fa');
   });
-
-  const filterBtn=document.getElementById('storePerfUnvisitedBtn');
-  if(filterBtn)filterBtn.classList.toggle('active',!!state.performanceStoreOnlyUnvisited);
-
   const size=Number(state.performanceStorePageSize||20),pages=Math.max(1,Math.ceil(rows.length/size));
   state.performanceStorePage=Math.min(Math.max(1,state.performanceStorePage||1),pages);
   const start=(state.performanceStorePage-1)*size,show=rows.slice(start,start+size);
-
-  body.innerHTML=show.length?show.map((x,idx)=>{
-    const rank=start+idx+1;
-    const score=(x.healthScore===null||x.healthScore===undefined||x.healthScore==='')?null:Number(x.healthScore);
-    const band=String(x.healthBand||'NO_DATA').toUpperCase();
-    return `<tr>
-      <td data-label="رتبه"><div class="performance-rank ${rank<=3?'top':''}">${rank}</div></td>
-      <td class="store-cell" data-label="فروشگاه"><div class="performance-name"><strong>${esc(x.storeName||x.storeCode)}</strong><span>کد ${esc(x.storeCode)}</span></div></td>
-      <td data-label="رئیس ناحیه">${esc(x.areaHeadName||'—')}</td>
-      <td data-label="امتیاز سلامت">${score===null?'<span class="v44-no-score">—</span>':`<span class="health-score ${healthBandClass(band)}">${Math.round(score)}</span><div class="head-sub">${storeHealthBandLabelClient(band)}</div>`}</td>
-      <td data-label="دفعات بازدید"><span class="visit-count-pill ${Number(x.visitCount||0)===0?'zero':''}">${x.visitCount||0}</span></td>
-      <td data-label="متوسط مدت">${Number(x.avgDuration||0)} دقیقه</td>
-      <td data-label="آخرین بازدید">${x.lastVisit?faDateTimeRegional(x.lastVisit):'—'}${Number(x.daysSinceLastVisit||999)<999?`<div class="head-sub">${x.daysSinceLastVisit} روز قبل</div>`:''}</td>
-      <td class="performance-action"><button class="performance-route-btn v44-latest-btn" ${x.lastVisit?'': 'disabled'} onclick="openLatestVisitDetail('${esc(x.storeCode)}')">آخرین بازدید</button></td>
-    </tr>`;
-  }).join(''):'<tr><td colspan="8" class="overview-empty">فروشگاهی با این فیلتر پیدا نشد.</td></tr>';
-
-  document.getElementById('regionalStorePerformanceInfo').textContent=rows.length?`نمایش ${start+1} تا ${Math.min(start+size,rows.length)} از ${rows.length} فروشگاه · رتبه‌بندی بر اساس SOS`:'۰ فروشگاه';
+  body.innerHTML=show.length?show.map(x=>`<tr>
+    <td class="store-cell" data-label="فروشگاه"><div class="performance-name"><strong>${esc(x.storeName||x.storeCode)}</strong><span>کد ${esc(x.storeCode)}</span></div></td>
+    <td data-label="رئیس ناحیه">${esc(x.areaHeadName||'—')}</td>
+    <td data-label="کل بازدید"><span class="visit-count-pill ${Number(x.visitCount||0)===0?'zero':''}">${x.visitCount||0}</span></td>
+    <td data-label="برنامه‌ای">${x.plannedVisits||0}</td>
+    <td data-label="خارج Route">${x.unplannedVisits||0}</td>
+    <td data-label="Override">${x.overrideVisits||0}</td>
+    <td data-label="آخرین بازدید">${x.lastVisit?faDateTimeRegional(x.lastVisit):'—'}</td>
+    <td data-label="فاصله از آخرین بازدید">${Number(x.daysSinceLastVisit)>=999?'—':`${x.daysSinceLastVisit} روز`}</td>
+    <td data-label="وضعیت SLA">${regionalStoreSlaHtml(x)}</td>
+  </tr>`).join(''):'<tr><td colspan="9" class="overview-empty">فروشگاهی با این فیلتر پیدا نشد.</td></tr>';
+  document.getElementById('regionalStorePerformanceInfo').textContent=rows.length?`نمایش ${start+1} تا ${Math.min(start+size,rows.length)} از ${rows.length} فروشگاه · صفحه ${state.performanceStorePage} از ${pages}`:'۰ فروشگاه';
   document.getElementById('storePerfPrev').disabled=state.performanceStorePage<=1;
   document.getElementById('storePerfNext').disabled=state.performanceStorePage>=pages;
-}
-
-function closeLatestVisitDetail(){
-  document.getElementById('latestVisitModal')?.classList.add('hidden');
-}
-function latestVisitScoreBadge(x){
-  if(!x.scorable||x.score===null||x.score===undefined)return '<span class="v44-item-score neutral">خارج از SOS</span>';
-  const n=Number(x.score||0),cls=n>=100?'good':n>=70?'mid':'bad';
-  return `<span class="v44-item-score ${cls}">${Math.round(n)}/100</span>`;
-}
-async function openLatestVisitDetail(storeCode){
-  setLoading(true,'در حال دریافت آخرین بازدید...');
-  try{
-    const r=await DMAuth.apiPost('storeHealth360',{storeCode:storeCode},60000);
-    if(!r.success)throw new Error(r.message||'جزئیات آخرین بازدید دریافت نشد.');
-    const s=r.store||{},v=r.latestVisit||{},h=r.health||{},items=r.latestChecklist||[];
-    document.getElementById('latestVisitTitle').textContent=`${s.storeCode||storeCode} · ${s.storeName||''}`;
-    document.getElementById('latestVisitSub').textContent=`${s.areaHeadName||'—'} · ${v.dateIso?faDateShort(v.dateIso):'آخرین بازدید ثبت‌شده'}`;
-    document.getElementById('latestVisitSummary').innerHTML=`
-      <div><strong>${h.score==null?'—':Math.round(Number(h.score))}</strong><span>SOS آخرین بازدید</span></div>
-      <div><strong>${items.filter(x=>x.scorable).length}</strong><span>آیتم امتیازدار</span></div>
-      <div><strong>${items.filter(x=>x.issue).length}</strong><span>آیتم با امتیاز صفر</span></div>`;
-    if(!items.length){
-      document.getElementById('latestVisitBody').innerHTML='<div class="overview-empty">چک‌لیست نهایی برای این فروشگاه پیدا نشد.</div>';
-    }else{
-      const groups=[];const map={};
-      items.forEach(x=>{const sec=String(x.section||'سایر');if(!map[sec]){map[sec]=[];groups.push(sec);}map[sec].push(x);});
-      document.getElementById('latestVisitBody').innerHTML=groups.map(sec=>`
-        <section class="v44-visit-section">
-          <h4>${esc(sec)}</h4>
-          ${map[sec].map(x=>`<div class="v44-visit-item">
-            <div class="v44-visit-item-copy"><strong>${esc(x.questionText||x.questionId)}</strong><span>${x.subsection?esc(x.subsection):''}</span></div>
-            <div class="v44-visit-answer">${esc(x.value||'—')}</div>
-            ${latestVisitScoreBadge(x)}
-          </div>`).join('')}
-        </section>`).join('');
-    }
-    document.getElementById('latestVisitModal').classList.remove('hidden');
-  }catch(e){toast(e.message||'خطا در دریافت آخرین بازدید','error');}
-  finally{setLoading(false);}
 }
 
 function startPerformanceAutoRefresh(){
@@ -1656,7 +1661,7 @@ async function loadRegionalChecklistBuilder(force=false){
   try{
     const r=await DMAuth.apiPost('regionalChecklistBuilderBootstrap',{},30000);
     if(!r.success)throw new Error(r.message||'دریافت سؤال‌های منطقه‌ای ناموفق بود.');
-    state.regionalChecklistData=r;state.regionalChecklistLoaded=true;state.rqOrderItems=null;state.rqOrderDirty=false;state.rqDragRef='';renderRegionalChecklistBuilder();
+    state.regionalChecklistData=r;state.regionalChecklistLoaded=true;renderRegionalChecklistBuilder();
   }catch(e){toast(e.message||'خطا در دریافت سؤال‌های منطقه‌ای','error');}
   finally{setLoading(false);}
 }
@@ -1671,131 +1676,7 @@ function renderRegionalChecklistBuilder(){
   const subs=[...new Set([...(d.centralTemplate||[]).map(q=>q.subsection),...(d.questions||[]).map(q=>q.subsection)].filter(Boolean))];
   document.getElementById('rqSectionSuggestions').innerHTML=sections.map(x=>`<option value="${esc(x)}"></option>`).join('');
   document.getElementById('rqSubsectionSuggestions').innerHTML=subs.map(x=>`<option value="${esc(x)}"></option>`).join('');
-  renderRegionalChecklistOrder();renderRegionalQuestionList();renderRegionalChecklistPreview();renderRqOptionsPreview();
-}
-
-function rqQuestionRefClient(q){
-  const source=String(q?.source||(String(q?.questionId||'').startsWith('RQ-')?'REGIONAL':'CENTRAL')).toUpperCase();
-  return source==='REGIONAL'
-    ? 'R:'+String(q?.questionKey||q?.questionId||'').trim()
-    : 'C:'+String(q?.questionId||'').trim();
-}
-
-function ensureRqOrderItems(force=false){
-  if(state.rqOrderItems&&!force)return state.rqOrderItems;
-  const d=state.regionalChecklistData||{};
-  let template=Array.isArray(d.orderedTemplate)&&d.orderedTemplate.length
-    ? d.orderedTemplate.slice()
-    : [
-        ...(d.centralTemplate||[]).map(q=>({...q,source:'CENTRAL',sourceLabel:'مرکزی'})),
-        ...(d.questions||[]).filter(q=>q.active).map(q=>({...q,source:'REGIONAL',sourceLabel:'اختصاصی منطقه'}))
-      ];
-  const refs=Array.isArray(d.orderRefs)?d.orderRefs:[];
-  state.rqOrderItems=template.map((q,i)=>({
-    q:{...q},
-    ref:String(refs[i]||rqQuestionRefClient(q))
-  })).filter(x=>x.ref);
-  return state.rqOrderItems;
-}
-
-function rqOrderMarkDirty(){
-  state.rqOrderDirty=true;
-  const status=document.getElementById('rqOrderStatus');
-  const save=document.getElementById('rqOrderSaveBtn');
-  if(status){status.textContent='تغییرات ذخیره نشده';status.classList.add('dirty');}
-  if(save)save.disabled=false;
-  renderRegionalChecklistPreview();
-}
-
-function renderRegionalChecklistOrder(){
-  const items=ensureRqOrderItems();
-  const el=document.getElementById('rqOrderList');
-  const status=document.getElementById('rqOrderStatus');
-  const save=document.getElementById('rqOrderSaveBtn');
-  if(status){
-    status.textContent=state.rqOrderDirty?'تغییرات ذخیره نشده':'ترتیب ذخیره شده';
-    status.classList.toggle('dirty',!!state.rqOrderDirty);
-  }
-  if(save)save.disabled=!state.rqOrderDirty;
-  if(!el)return;
-  if(!items.length){el.innerHTML='<div class="rq-empty">سؤالی برای مرتب‌سازی وجود ندارد.</div>';return;}
-  el.innerHTML=items.map((item,i)=>{
-    const q=item.q||{};
-    const regional=String(q.source||'').toUpperCase()==='REGIONAL';
-    return `<article class="rq-order-item" draggable="true" data-ref="${esc(item.ref)}" ondragstart="rqOrderDragStart(event)" ondragover="rqOrderDragOver(event)" ondragleave="rqOrderDragLeave(event)" ondrop="rqOrderDrop(event)" ondragend="rqOrderDragEnd(event)">
-      <div class="rq-order-handle" title="برای جابه‌جایی بکش">⋮⋮</div>
-      <div class="rq-order-no">${i+1}</div>
-      <div class="rq-order-main">
-        <div class="rq-order-q">${esc(q.questionText||'')}</div>
-        <div class="rq-order-meta">
-          <span class="rq-badge ${regional?'rq-order-source-regional':'rq-order-source-central'}">${regional?'اختصاصی منطقه':'مرکزی'}</span>
-          <span class="rq-badge">${esc(q.section||'سایر')}${q.subsection?' · '+esc(q.subsection):''}</span>
-          ${q.required?'<span class="rq-badge live">اجباری</span>':'<span class="rq-badge">اختیاری</span>'}
-        </div>
-      </div>
-      <div class="rq-order-actions">
-        <button class="rq-order-move" ${i===0?'disabled':''} onclick="moveRegionalChecklistQuestion('${esc(item.ref)}',-1)" title="یک ردیف بالاتر">↑</button>
-        <button class="rq-order-move" ${i===items.length-1?'disabled':''} onclick="moveRegionalChecklistQuestion('${esc(item.ref)}',1)" title="یک ردیف پایین‌تر">↓</button>
-      </div>
-    </article>`;
-  }).join('');
-}
-
-function moveRegionalChecklistQuestion(ref,delta){
-  const items=ensureRqOrderItems();
-  const idx=items.findIndex(x=>x.ref===ref);if(idx<0)return;
-  const to=idx+Number(delta||0);if(to<0||to>=items.length)return;
-  const tmp=items[idx];items[idx]=items[to];items[to]=tmp;
-  rqOrderMarkDirty();renderRegionalChecklistOrder();
-}
-
-function rqOrderDragStart(e){
-  const row=e.currentTarget;state.rqDragRef=String(row?.dataset?.ref||'');
-  row?.classList.add('dragging');
-  if(e.dataTransfer){e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',state.rqDragRef);}catch(_){}}
-}
-function rqOrderDragOver(e){e.preventDefault();e.currentTarget?.classList.add('drag-over');if(e.dataTransfer)e.dataTransfer.dropEffect='move';}
-function rqOrderDragLeave(e){e.currentTarget?.classList.remove('drag-over');}
-function rqOrderDrop(e){
-  e.preventDefault();
-  const targetRef=String(e.currentTarget?.dataset?.ref||'');
-  const dragRef=state.rqDragRef||String(e.dataTransfer?.getData('text/plain')||'');
-  e.currentTarget?.classList.remove('drag-over');
-  if(!dragRef||!targetRef||dragRef===targetRef)return;
-  const items=ensureRqOrderItems();
-  const from=items.findIndex(x=>x.ref===dragRef),to=items.findIndex(x=>x.ref===targetRef);
-  if(from<0||to<0)return;
-  const moved=items.splice(from,1)[0];
-  items.splice(to,0,moved);
-  rqOrderMarkDirty();renderRegionalChecklistOrder();
-}
-function rqOrderDragEnd(e){
-  state.rqDragRef='';
-  document.querySelectorAll('.rq-order-item').forEach(x=>x.classList.remove('dragging','drag-over'));
-}
-
-function resetRegionalChecklistOrder(){
-  if(state.rqOrderDirty&&!confirm('تغییرات ذخیره‌نشده ترتیب سؤال‌ها لغو شود؟'))return;
-  state.rqOrderItems=null;state.rqOrderDirty=false;state.rqDragRef='';
-  renderRegionalChecklistOrder();renderRegionalChecklistPreview();
-}
-
-async function saveRegionalChecklistOrder(){
-  const items=ensureRqOrderItems();
-  if(!items.length)return;
-  const btn=document.getElementById('rqOrderSaveBtn');if(btn)btn.disabled=true;
-  try{
-    const r=await DMAuth.apiPost('regionalChecklistOrderSave',{orderJson:JSON.stringify(items.map(x=>x.ref))},40000);
-    if(!r.success)throw new Error(r.message||'ذخیره ترتیب سؤال‌ها ناموفق بود.');
-    state.regionalChecklistData.orderedTemplate=r.orderedTemplate||items.map(x=>x.q);
-    state.regionalChecklistData.orderRefs=r.orderRefs||items.map(x=>x.ref);
-    state.rqOrderItems=null;state.rqOrderDirty=false;state.rqDragRef='';
-    toast(r.message||'ترتیب سؤال‌ها ذخیره شد.','success');
-    renderRegionalChecklistOrder();renderRegionalChecklistPreview();
-  }catch(e){
-    toast(e.message||'ذخیره ترتیب سؤال‌ها ناموفق بود.','error');
-    if(btn)btn.disabled=false;
-  }
+  renderRegionalQuestionList();renderRegionalChecklistPreview();renderRqOptionsPreview();
 }
 
 function setRqFilter(filter,btn){state.rqFilter=filter;document.querySelectorAll('[data-rq-filter]').forEach(x=>x.classList.toggle('active',x===btn));renderRegionalQuestionList();}
@@ -1832,28 +1713,11 @@ async function toggleRegionalQuestion(key,active){
 }
 
 function renderRegionalChecklistPreview(){
-  const items=ensureRqOrderItems();
-  const el=document.getElementById('rqPreview');
-  if(!items.length){el.innerHTML='<div class="rq-empty">چک‌لیست فعالی وجود ندارد.</div>';return;}
-  el.innerHTML=`<div class="rq-preview-section">
-    <h4>توالی نهایی · ${items.length} سؤال</h4>
-    ${items.map((item,i)=>{
-      const q=item.q||{};
-      const regional=String(q.source||'').toUpperCase()==='REGIONAL';
-      return `<div class="rq-preview-q ${regional?'regional':''}">
-        <span class="rq-preview-seq">${i+1}</span>
-        <div class="rq-preview-q-main">
-          <span>${esc(q.questionText||'')}</span>
-          <div class="rq-meta" style="margin-top:4px">
-            <span class="rq-badge">${esc(q.section||'سایر')}${q.subsection?' · '+esc(q.subsection):''}</span>
-          </div>
-        </div>
-        <span class="rq-badge ${regional?'region':''}">${regional?'اختصاصی منطقه':'مرکزی'}</span>
-      </div>`;
-    }).join('')}
-  </div>`;
+  const d=state.regionalChecklistData||{centralTemplate:[],questions:[]};const all=[...(d.centralTemplate||[]).map(q=>({...q,source:'CENTRAL'})),...(d.questions||[]).filter(q=>q.active).map(q=>({...q,source:'REGIONAL'}))];
+  const sections=[];const map={};all.forEach(q=>{const sec=q.section||'سایر';if(!map[sec]){map[sec]=[];sections.push(sec);}map[sec].push(q);});
+  const el=document.getElementById('rqPreview');if(!all.length){el.innerHTML='<div class="rq-empty">چک‌لیست فعالی وجود ندارد.</div>';return;}
+  el.innerHTML=sections.map(sec=>`<div class="rq-preview-section"><h4>${esc(sec)} · ${map[sec].length} سؤال</h4>${map[sec].map(q=>`<div class="rq-preview-q ${q.source==='REGIONAL'?'regional':''}"><span>${esc(q.questionText)}</span><span class="rq-badge ${q.source==='REGIONAL'?'region':''}">${q.source==='REGIONAL'?'اختصاصی منطقه':'مرکزی'}</span></div>`).join('')}</div>`).join('');
 }
-
 
 
 /* ========================= STORE HEALTH / STORE 360 V34 ========================= */
@@ -1863,9 +1727,9 @@ function healthConfidenceHtml(x,label){return `<span class="health-confidence ${
 function healthScoreText(v){return v===null||v===undefined?'—':Math.round(Number(v))+'/100';}
 async function loadStoreHealth(force=false){
   if(state.healthLoaded&&!force){renderHealthStores();return;}
-  setLoading(true,'در حال تحلیل امتیاز عملیاتی فروشگاه‌ها...');
-  try{const r=await DMAuth.apiPost('storeHealthList',{},60000);if(!r.success)throw new Error(r.message||'دریافت امتیاز عملیاتی فروشگاه‌ها ناموفق بود.');state.healthData=r;state.healthLoaded=true;if(!state.performanceLoaded){try{const pr=await DMAuth.apiPost('regionalPerformance',{periodDays:state.performancePeriodDays},60000);if(pr&&pr.success){state.performance=pr;state.performanceLoaded=true;}}catch(_){}}renderStoreHealth();}
-  catch(e){toast(e.message||'خطا در دریافت امتیاز عملیاتی فروشگاه‌ها','error');}finally{setLoading(false);}
+  setLoading(true,'در حال تحلیل سلامت فروشگاه‌ها...');
+  try{const r=await DMAuth.apiPost('storeHealthList',{},60000);if(!r.success)throw new Error(r.message||'دریافت سلامت فروشگاه‌ها ناموفق بود.');state.healthData=r;state.healthLoaded=true;if(!state.performanceLoaded){try{const pr=await DMAuth.apiPost('regionalPerformance',{periodDays:state.performancePeriodDays},60000);if(pr&&pr.success){state.performance=pr;state.performanceLoaded=true;}}catch(_){}}renderStoreHealth();}
+  catch(e){toast(e.message||'خطا در دریافت سلامت فروشگاه‌ها','error');}finally{setLoading(false);}
 }
 function renderStoreHealth(){
   const p=state.healthData?.portfolio||{};
@@ -1893,13 +1757,8 @@ function renderStore360(r){
   const changes=(r.changes||[]).map(x=>`<div class="health-change"><div><strong>${esc(x.questionText)}</strong><span>${esc(x.previousValue)} ← ${esc(x.currentValue)}</span></div><b class="health-change-delta ${x.direction==='POSITIVE'?'up':'down'}">${x.delta>0?'+':''}${x.delta}</b></div>`).join('')||'<div class="overview-empty">تغییر معناداری نسبت به بازدید قبلی وجود ندارد.</div>';
   const life=(r.lifecycle||[]).map(x=>`<div class="health-change"><div><strong>${esc(x.questionText)}</strong><span>${esc(x.previousValue||'—')} ← ${esc(x.currentValue||'—')}</span></div><span class="life-chip ${String(x.status).toLowerCase()}">${lifecycleLabel(x.status)}</span></div>`).join('')||'<div class="overview-empty">Issue Lifecycle فعالی وجود ندارد.</div>';
   const sections=(h.sectionScores||[]).map(x=>`<div class="checklist-subsection-row"><div class="checklist-subsection-name"><strong>${esc(x.section)}</strong><span>${x.responseCount||0} پاسخ · ${x.issueCount||0} مسئله</span></div><div class="checklist-mini-bar"><span style="width:${x.score}%;background:${checklistPerfColor(x.score)}"></span></div><div class="checklist-subsection-score" style="color:${checklistPerfColor(x.score)}">${x.score}%</div><div></div></div>`).join('')||'<div class="overview-empty">داده بخش‌بندی موجود نیست.</div>';
-  const checklist=(r.latestChecklist||[]).map(x=>{
-    const v=x.validation||{};
-    const controls=r.canValidate?`<div class="validation-row"><button class="validation-btn match ${v.decision==='MATCH'?'active':''}" onclick="saveStoreValidation('${esc(s.storeCode)}','${esc(r.latestVisit?.visitId||'')}','${esc(x.questionId)}','MATCH',this)">تأیید می‌کنم</button><button class="validation-btn mismatch ${v.decision==='MISMATCH'?'active':''}" onclick="saveStoreValidation('${esc(s.storeCode)}','${esc(r.latestVisit?.visitId||'')}','${esc(x.questionId)}','MISMATCH',this)">مغایرت دارد</button><button class="validation-btn not_checked ${v.decision==='NOT_CHECKED'?'active':''}" onclick="saveStoreValidation('${esc(s.storeCode)}','${esc(r.latestVisit?.visitId||'')}','${esc(x.questionId)}','NOT_CHECKED',this)">بررسی نکردم</button><input class="validation-note" id="valnote-${safeDomId(x.questionId)}" placeholder="یادداشت اختیاری" value="${esc(v.note||'')}"></div>`:'';
-    const answerNote=String(x.responseNote||'').trim()?`<div class="rq-response-note"><strong>توضیحات:</strong> ${esc(x.responseNote)}</div>`:'';
-    return `<div class="health-check-row"><div class="health-check-top"><div><div class="health-check-q">${esc(x.questionText)}</div><div class="head-sub">${esc(x.section)}${x.subsection?' · '+esc(x.subsection):''}</div>${answerNote}</div><span class="health-check-value ${x.issue?'issue':''}">${esc(x.value||'—')}</span></div>${controls}</div>`;
-  }).join('')||'<div class="overview-empty">چک‌لیست نهایی پیدا نشد.</div>';
-  document.getElementById('healthDrawerBody').innerHTML=`<div class="health-summary"><div class="health-score-card"><div class="big">${h.score==null?'—':h.score}</div><div class="band">${esc(h.scoreBandLabel||'بدون داده')} · اعتماد داده ${esc(h.confidenceLabel||'—')}</div><div class="delta">${h.trend==='IMPROVING'?'↑':h.trend==='DECLINING'?'↓':'→'} ${Number(h.delta||0)>0?'+':''}${h.delta||0} نسبت به بازدید قبل</div></div><div class="health-meta-grid"><div class="health-meta"><strong>${h.issueCount||0}</strong><span>مسئله فعلی</span></div><div class="health-meta"><strong>${h.criticalIssueCount||0}</strong><span>Critical</span></div><div class="health-meta"><strong>${trend.length}</strong><span>بازدید در روند</span></div><div class="health-meta"><strong>${esc(s.areaHeadName||'—')}</strong><span>رئیس ناحیه</span></div><div class="health-meta"><strong>${r.latestVisit?.dateIso?faDateShort(r.latestVisit.dateIso):'—'}</strong><span>آخرین بازدید</span></div><div class="health-meta"><strong>${h.score==null?'—':h.score+'/100'}</strong><span>SOS</span></div></div></div><section class="health-section"><div class="health-section-title">روند سلامت ۶ بازدید اخیر</div><div class="health-section-body"><div class="health-trend-chart">${trendHtml}</div></div></section><section class="health-section"><div class="health-section-title">چرا این امتیاز؟</div><div class="health-section-body"><div class="health-reasons"><div class="health-reason-box good"><h4>نقاط مثبت</h4>${strengths}</div><div class="health-reason-box bad"><h4>عوامل کاهنده</h4>${risks}</div></div></div></section><section class="health-section"><div class="health-section-title">تغییرات نسبت به بازدید قبل</div><div class="health-section-body">${changes}</div></section><section class="health-section"><div class="health-section-title">چرخه مسائل</div><div class="health-section-body">${life}</div></section><section class="health-section"><div class="health-section-title">امتیاز بخش‌های چک‌لیست</div><div class="health-section-body">${sections}</div></section><section class="health-section"><div class="health-section-title">آخرین چک‌لیست و اعتبارسنجی مدیر منطقه</div><div class="health-section-body">${checklist}</div></section>`;
+  const checklist=(r.latestChecklist||[]).map(x=>{const v=x.validation||{};const controls=r.canValidate?`<div class="validation-row"><button class="validation-btn match ${v.decision==='MATCH'?'active':''}" onclick="saveStoreValidation('${esc(s.storeCode)}','${esc(r.latestVisit?.visitId||'')}','${esc(x.questionId)}','MATCH',this)">تأیید می‌کنم</button><button class="validation-btn mismatch ${v.decision==='MISMATCH'?'active':''}" onclick="saveStoreValidation('${esc(s.storeCode)}','${esc(r.latestVisit?.visitId||'')}','${esc(x.questionId)}','MISMATCH',this)">مغایرت دارد</button><button class="validation-btn not_checked ${v.decision==='NOT_CHECKED'?'active':''}" onclick="saveStoreValidation('${esc(s.storeCode)}','${esc(r.latestVisit?.visitId||'')}','${esc(x.questionId)}','NOT_CHECKED',this)">بررسی نکردم</button><input class="validation-note" id="valnote-${safeDomId(x.questionId)}" placeholder="یادداشت اختیاری" value="${esc(v.note||'')}"></div>`:'';return `<div class="health-check-row"><div class="health-check-top"><div><div class="health-check-q">${esc(x.questionText)}</div><div class="head-sub">${esc(x.section)}${x.subsection?' · '+esc(x.subsection):''}</div></div><span class="health-check-value ${x.issue?'issue':''}">${esc(x.value||'—')}</span></div>${controls}</div>`;}).join('')||'<div class="overview-empty">چک‌لیست نهایی پیدا نشد.</div>';
+  document.getElementById('healthDrawerBody').innerHTML=`<div class="health-summary"><div class="health-score-card"><div class="big">${h.score==null?'—':h.score}</div><div class="band">${esc(h.scoreBandLabel||'بدون داده')} · اعتماد داده ${esc(h.confidenceLabel||'—')}</div><div class="delta">${h.trend==='IMPROVING'?'↑':h.trend==='DECLINING'?'↓':'→'} ${Number(h.delta||0)>0?'+':''}${h.delta||0} نسبت به بازدید قبل</div></div><div class="health-meta-grid"><div class="health-meta"><strong>${h.issueCount||0}</strong><span>مسئله فعلی</span></div><div class="health-meta"><strong>${h.criticalIssueCount||0}</strong><span>Critical</span></div><div class="health-meta"><strong>${trend.length}</strong><span>بازدید در روند</span></div><div class="health-meta"><strong>${esc(s.areaHeadName||'—')}</strong><span>رئیس ناحیه</span></div><div class="health-meta"><strong>${r.latestVisit?.dateIso?faDateShort(r.latestVisit.dateIso):'—'}</strong><span>آخرین بازدید</span></div><div class="health-meta"><strong>${h.score==null?'—':h.score+'/100'}</strong><span>Store Health</span></div></div></div><section class="health-section"><div class="health-section-title">روند سلامت ۶ بازدید اخیر</div><div class="health-section-body"><div class="health-trend-chart">${trendHtml}</div></div></section><section class="health-section"><div class="health-section-title">چرا این امتیاز؟</div><div class="health-section-body"><div class="health-reasons"><div class="health-reason-box good"><h4>نقاط مثبت</h4>${strengths}</div><div class="health-reason-box bad"><h4>عوامل کاهنده</h4>${risks}</div></div></div></section><section class="health-section"><div class="health-section-title">تغییرات نسبت به بازدید قبل</div><div class="health-section-body">${changes}</div></section><section class="health-section"><div class="health-section-title">چرخه مسائل</div><div class="health-section-body">${life}</div></section><section class="health-section"><div class="health-section-title">امتیاز بخش‌های چک‌لیست</div><div class="health-section-body">${sections}</div></section><section class="health-section"><div class="health-section-title">آخرین چک‌لیست و اعتبارسنجی مدیر منطقه</div><div class="health-section-body">${checklist}</div></section>`;
 }
 async function openStore360(code){setLoading(true,'در حال ساخت نمای ۳۶۰ فروشگاه...');try{const r=await DMAuth.apiPost('storeHealth360',{storeCode:code},60000);if(!r.success)throw new Error(r.message||'Store 360 دریافت نشد.');state.health360=r;renderStore360(r);document.getElementById('healthDrawerBackdrop').classList.add('open');}catch(e){toast(e.message||'خطا','error');}finally{setLoading(false);}}
 async function saveStoreValidation(storeCode,visitId,questionId,decision,btn){const note=document.getElementById('valnote-'+safeDomId(questionId))?.value||'';try{btn.disabled=true;const r=await DMAuth.apiPost('saveManagerValidation',{storeCode,visitId,questionId,decision,note},30000);if(!r.success)throw new Error(r.message||'ثبت اعتبارسنجی ناموفق بود.');toast('اعتبارسنجی ثبت شد.','success');await openStore360(storeCode);state.performanceLoaded=false;}catch(e){toast(e.message||'خطا در ثبت اعتبارسنجی','error');}finally{btn.disabled=false;}}
@@ -1947,7 +1806,7 @@ async function switchView(view){
     route:'مدیریت Route و مسیر بازدید',
     gps:'تأیید موقعیت رؤسای ناحیه',
     regionalChecklist:'سؤالات اختصاصی منطقه',
-    health:'امتیاز عملیاتی فروشگاه‌ها · Store 360'
+    health:'سلامت فروشگاه‌ها · Store 360'
   };
   const suffix={
     performance:' · تحلیل عملکرد ۷ / ۱۴ / ۳۰ روزه',
@@ -2189,24 +2048,16 @@ function renderCorrections(){
   const list=document.getElementById('correctionList');
   if(!state.corrections.length){list.innerHTML=`<div class="approval-empty"><div><strong>درخواستی وجود ندارد</strong><span>وقتی رئیس ناحیه گزینه «لوکیشن فروشگاه اشتباه است» را بزند، درخواست اینجا نمایش داده می‌شود.</span></div></div>`;return;}
   list.innerHTML=state.corrections.map(c=>{
-    const st=String(c.status||'').toUpperCase(),pending=st==='PENDING',stale=pending&&!!c.isStalePending;
+    const st=String(c.status||'').toUpperCase(),pending=st==='PENDING';
     const diff=c.distanceDifferenceM!==''?distanceText(Number(c.distanceDifferenceM)):'—';
     const acc=c.gpsAccuracyM!==''?`${Math.round(Number(c.gpsAccuracyM))} متر`:'—';
-    const currentLat=c.currentStoreLat!==''&&c.currentStoreLat!==undefined?c.currentStoreLat:c.oldLat;
-    const currentLng=c.currentStoreLng!==''&&c.currentStoreLng!==undefined?c.currentStoreLng:c.oldLng;
-    const visitState=String(c.visitStatus||'').toUpperCase();
-    const staleNote=stale
-      ? `<div class="correction-note stale"><strong>درخواست قدیمی:</strong> بازدید مرتبط دیگر در وضعیت انتظار اصلاح لوکیشن نیست${visitState?` (وضعیت فعلی Visit: ${esc(visitState)})`:''}. می‌توانید درخواست را تأیید یا رد کنید؛ در صورت تأیید فقط Master لوکیشن اصلاح می‌شود و بازدید قدیمی دوباره فعال نخواهد شد.</div>`
-      : (pending?'<div class="correction-note">با تأیید، مختصات فروشگاه در STORES به نقطه پیشنهادی تغییر می‌کند، نسخه قبلی در LOCATION_CORRECTIONS باقی می‌ماند و بازدید رئیس ناحیه فعال می‌شود.</div>':'');
-    const changedNote=pending&&c.masterChangedSinceRequest
-      ? `<div class="correction-note changed"><strong>توجه:</strong> مختصات فعلی Master از زمان ثبت این درخواست تغییر کرده است. قبل از تأیید، مختصات فعلی و GPS پیشنهادی را با دقت مقایسه کنید.</div>`:'';
     return `<article class="approval-card">
       <div class="approval-main">
-        <div class="approval-topline"><span class="approval-name">${esc(c.areaHeadName||c.areaHeadUserId)}</span><span class="approval-chip ${approvalStatusClass(st)}">${esc(correctionStatusText(st))}</span>${stale?'<span class="approval-chip stale">درخواست قدیمی</span>':''}</div>
+        <div class="approval-topline"><span class="approval-name">${esc(c.areaHeadName||c.areaHeadUserId)}</span><span class="approval-chip ${approvalStatusClass(st)}">${esc(correctionStatusText(st))}</span></div>
         <div class="approval-store">فروشگاه ${esc(c.storeCode)} · ${esc(c.storeName||'')}</div>
         <div class="approval-meta"><span class="approval-chip distance">اختلاف: ${esc(diff)}</span><span class="approval-chip accuracy">دقت GPS: ${esc(acc)}</span><span class="approval-chip time">${c.gpsSampleCount||0} نمونه</span><span class="approval-chip time">${esc(formatApprovalDate(c.requestedAt))}</span></div>
-        <div class="coord-grid"><div class="coord-box"><strong>مختصات فعلی Master</strong><span>${esc(currentLat)}, ${esc(currentLng)}</span></div><div class="coord-box"><strong>GPS پیشنهادی رئیس ناحیه</strong><span>${esc(c.newLat)}, ${esc(c.newLng)}</span></div></div>
-        ${staleNote}${changedNote}
+        <div class="coord-grid"><div class="coord-box"><strong>مختصات فعلی سیستم</strong><span>${esc(c.oldLat)}, ${esc(c.oldLng)}</span></div><div class="coord-box"><strong>GPS پیشنهادی رئیس ناحیه</strong><span>${esc(c.newLat)}, ${esc(c.newLng)}</span></div></div>
+        ${pending?'<div class="correction-note">با تأیید، مختصات فروشگاه در STORES به نقطه پیشنهادی تغییر می‌کند، نسخه قبلی در LOCATION_CORRECTIONS باقی می‌ماند و بازدید رئیس ناحیه فعال می‌شود.</div>':''}
         ${c.decisionNote?`<div class="approval-reason">یادداشت تصمیم: ${esc(c.decisionNote)}</div>`:''}
         <div class="approval-id">${esc(c.correctionId)} · Visit ${esc(c.visitId)}</div>
       </div>
@@ -2215,13 +2066,7 @@ function renderCorrections(){
   }).join('');
 }
 async function approveCorrection(correctionId,storeName){
-  const c=(state.corrections||[]).find(x=>String(x.correctionId)===String(correctionId))||{};
-  const stale=!!c.isStalePending,changed=!!c.masterChangedSinceRequest;
-  let msg=`لوکیشن ${storeName} اصلاح شود؟\nمختصات جدید فوراً در STORES ثبت می‌شود.`;
-  if(stale)msg+='\n\nاین درخواست مربوط به یک بازدید قدیمی است؛ بازدید قبلی دوباره فعال نخواهد شد.';
-  else msg+='\nچک‌لیست رئیس ناحیه برای همین بازدید باز خواهد شد.';
-  if(changed)msg+='\n\n⚠ مختصات Master از زمان ثبت درخواست تغییر کرده است. با تأیید، مختصات فعلی با GPS پیشنهادی این درخواست جایگزین می‌شود.';
-  if(!confirm(msg))return;
+  if(!confirm(`لوکیشن ${storeName} اصلاح شود؟\nمختصات جدید فوراً در STORES ثبت می‌شود و چک‌لیست رئیس ناحیه باز خواهد شد.`))return;
   setLoading(true,'در حال اصلاح مختصات فروشگاه...');
   try{
     const res=await DMAuth.apiPost('decideLocationCorrection',{correctionId:correctionId,decision:'APPROVED',note:''},35000);
@@ -2248,14 +2093,16 @@ window.addEventListener('beforeunload',e=>{if(state.dirty){e.preventDefault();e.
 
 DMInstant.on('regionalBootstrap',(res,params)=>{
   if(!res||!res.success)return;
-  if(params.weekStartIso!==state.weekStartIso)return;
-  const requested=String(params.areaHeadUserId||'').trim();
+  const week=String(params.weekStartIso||res.week?.startIso||'');
+  const requested=String(params.areaHeadUserId||res.selectedAreaHead?.userId||'').trim();
+  if(requested)routeSnapshotPut(res,requested,week);
+
+  // Prefetches for other Area Heads only warm the snapshot; they never hijack the visible Route.
+  if(week!==String(state.weekStartIso||''))return;
   if(requested&&requested!==String(state.areaHeadId||'').trim())return;
-  state.summary=res.summary||{};state.settings=res.settings||state.settings;state.areaHeads=res.areaHeads||[];state.todayIso=res.todayIso||iso(new Date());
-  state.areaHeadId=res.selectedAreaHead?.userId||'';state.stores=res.selectedAreaHead?.stores||[];state.planningMode=res.selectedAreaHead?.planningMode||'REGIONAL_MANAGER';state.cannotVisitNotices=res.selectedAreaHead?.cannotVisitNotices||[];state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
-  state.days=(res.week?.days||[]).map(d=>({dateIso:d.dateIso,items:(d.items||[]).map(item=>Object.assign({},state.storeMap[item.storeCode]||{},item)),routeId:d.routeId||'',status:d.status||'DRAFT',sourceType:d.sourceType||'',isUnavailable:!!(d.isUnavailable||d.isLeave),isLeave:!!d.isLeave,dayStatus:d.dayStatus||d.leave||null,leave:d.leave||d.dayStatus||null}));
-  state.selectedDayIso=state.days.some(d=>d.dateIso===state.selectedDayIso)?state.selectedDayIso:(state.days[0]?.dateIso||'');
-  state.dirty=false;state.sourceType='MANUAL';state.routeLoaded=true;renderAll();
+  if(state.dirty||state.routeSaving)return;
+
+  applyRegionalBootstrap(res,requested);
 });
 DMInstant.on('regionalPerformance',(res,params)=>{
   if(!res||!res.success||Number(params.periodDays||7)!==Number(state.performancePeriodDays||7))return;
