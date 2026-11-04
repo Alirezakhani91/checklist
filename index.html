@@ -352,6 +352,39 @@
     const togglePasswordBtn = document.getElementById('togglePassword');
 
     let loginTimer = null;
+    let lastServerWarmAt = 0;
+
+    // V52 Instant Entry:
+    // Warm the Apps Script web app before the user submits credentials.
+    // This only calls the public health endpoint; no username/password is sent.
+    window.dmLoginWarm = function () {
+      lastServerWarmAt = Date.now();
+    };
+
+    function warmLoginServer(force = false) {
+      try {
+        const url = window.DM_CONFIG && window.DM_CONFIG.APPS_SCRIPT_URL;
+        if (!url || url.includes('PASTE_YOUR')) return;
+
+        const now = Date.now();
+        if (!force && now - lastServerWarmAt < 20000) return;
+        lastServerWarmAt = now;
+
+        const tag = document.createElement('script');
+        const sep = url.includes('?') ? '&' : '?';
+        tag.src = url + sep +
+          'action=health&callback=dmLoginWarm&_v52=' + encodeURIComponent(String(now));
+        tag.async = true;
+        tag.dataset.dmLoginWarm = '1';
+
+        const cleanup = () => {
+          try { tag.remove(); } catch (_) {}
+        };
+        tag.onload = cleanup;
+        tag.onerror = cleanup;
+        document.head.appendChild(tag);
+      } catch (_) {}
+    }
 
     function setStatus(message = '', type = '') {
       statusBox.textContent = message;
@@ -441,9 +474,10 @@
       saveRememberedUser();
       DMAuth.saveAuth(data);
       setStatus(`خوش آمدید ${data.user.fullName}. در حال ورود...`, 'success');
-      setTimeout(() => {
-        location.href = data.redirect || 'index.html';
-      }, 650);
+
+      // V52: no artificial 650ms delay after successful authentication.
+      // replace() also prevents the login page from polluting browser history.
+      location.replace(data.redirect || 'index.html');
     });
 
     loginForm.addEventListener('submit', (event) => {
@@ -462,6 +496,10 @@
 
       try {
         setLoading(true);
+
+        // If the user stayed on the page for a while, refresh the warm connection.
+        // Credentials are still submitted only through the normal login POST.
+        warmLoginServer(false);
         submitToAppsScript(username, password);
         loginTimer = setTimeout(() => {
           setLoading(false);
@@ -474,7 +512,13 @@
     });
 
     loadRememberedUser();
+
+    // Warm once as soon as the login UI is ready, and again when the user
+    // interacts after a long idle period. This reduces Apps Script cold-start pain.
+    warmLoginServer(true);
+    usernameInput.addEventListener('focus', () => warmLoginServer(false), { passive: true });
+    passwordInput.addEventListener('focus', () => warmLoginServer(false), { passive: true });
+    usernameInput.addEventListener('input', () => warmLoginServer(false), { passive: true });
   </script>
 </body>
 </html>
-
