@@ -1,83 +1,95 @@
 (() => {
   'use strict';
 
-  const VERSION = '50.0.0';
-  const PREFIX = 'dmInstant:v50:';
-  const SESSION_MAX_ENTRIES = 32;
-  const LOCAL_MAX_ENTRIES = 18;
-  const SESSION_MAX_CHARS = 850000;
-  const LOCAL_MAX_CHARS = 420000;
+  const VERSION = '53.0.0';
+  const PREFIX = 'dmInstant:v53:';
+  const MAX_ENTRIES_SESSION = 42;
+  const MAX_ENTRIES_LOCAL = 22;
+  const MAX_ITEM_CHARS = 900000;
 
-  const POLICY = {
-    areaHeadBootstrap:{freshMs:15000,staleMs:6*60*60*1000,persist:true,daily:true,tags:['TOPOLOGY','ROUTES','VISITS','DAYSTATUS','SETTINGS']},
-    areaHeadRouteBootstrap:{freshMs:20000,staleMs:6*60*60*1000,persist:true,tags:['TOPOLOGY','ROUTES','VISITS','DAYSTATUS','SETTINGS']},
-    regionalBootstrap:{freshMs:15000,staleMs:4*60*60*1000,persist:true,tags:['TOPOLOGY','ROUTES','VISITS','DAYSTATUS','SETTINGS']},
-    regionalChecklistBuilderBootstrap:{freshMs:120000,staleMs:8*60*60*1000,persist:true,tags:['CHECKLIST','TOPOLOGY']},
-    regionalPerformance:{freshMs:60000,staleMs:6*60*60*1000,persist:true,tags:['TOPOLOGY','ROUTES','VISITS','CHECKLIST','HEALTH','DAYSTATUS']},
-    storeHealthList:{freshMs:90000,staleMs:6*60*60*1000,persist:true,tags:['TOPOLOGY','VISITS','CHECKLIST','HEALTH']},
-    storeHealth360:{freshMs:120000,staleMs:6*60*60*1000,persist:true,tags:['TOPOLOGY','VISITS','CHECKLIST','HEALTH']},
-    executiveOverview:{freshMs:30000,staleMs:4*60*60*1000,persist:true,daily:true,tags:['TOPOLOGY','ROUTES','VISITS','DAYSTATUS']},
-    executivePerformance:{freshMs:60000,staleMs:6*60*60*1000,persist:true,tags:['TOPOLOGY','ROUTES','VISITS','CHECKLIST','HEALTH','DAYSTATUS']},
-    executiveRegionDetail:{freshMs:60000,staleMs:4*60*60*1000,persist:true,tags:['TOPOLOGY','ROUTES','VISITS','CHECKLIST','HEALTH']},
-    executiveAreaHeadDetail:{freshMs:60000,staleMs:4*60*60*1000,persist:true,tags:['TOPOLOGY','ROUTES','VISITS','CHECKLIST','HEALTH']},
-    adminNationalPerformance:{freshMs:45000,staleMs:4*60*60*1000,persist:true,tags:['TOPOLOGY','ROUTES','VISITS','CHECKLIST','HEALTH','DAYSTATUS']},
-    adminNationalAreaHeadDetail:{freshMs:60000,staleMs:4*60*60*1000,persist:true,tags:['TOPOLOGY','ROUTES','VISITS','CHECKLIST','HEALTH']},
-    adminBootstrap:{freshMs:45000,staleMs:4*60*60*1000,persist:true,daily:true,tags:['TOPOLOGY','SETTINGS','ADMIN','GPS']},
-    adminRegionalManagersBootstrap:{freshMs:180000,staleMs:12*60*60*1000,persist:true,tags:['TOPOLOGY','ADMIN']},
-    adminAreaHeadsBootstrap:{freshMs:180000,staleMs:12*60*60*1000,persist:true,tags:['TOPOLOGY','ADMIN']},
-    adminStoreMasterBootstrap:{freshMs:180000,staleMs:12*60*60*1000,persist:true,tags:['TOPOLOGY','ADMIN','GPS']},
-    adminPilotBootstrap:{freshMs:60000,staleMs:4*60*60*1000,persist:true,daily:true,tags:['ADMIN']},
-    alertsCenter:{freshMs:20000,staleMs:2*60*60*1000,persist:true,daily:true,tags:['ROUTES','VISITS','DAYSTATUS','GPS']},
-    visitHistory:{freshMs:60000,staleMs:4*60*60*1000,persist:true,tags:['TOPOLOGY','VISITS','CHECKLIST','GPS']},
-    visitDetail:{freshMs:180000,staleMs:12*60*60*1000,persist:true,tags:['TOPOLOGY','VISITS','CHECKLIST','GPS']},
-    checklistBootstrap:{freshMs:8000,staleMs:30*60*1000,persist:false,daily:true,tags:['VISITS','CHECKLIST','DRAFT']}
-  };
+  // Read-only endpoints eligible for stale-while-revalidate.
+  // GPS / location actions are intentionally NOT here.
+  const CACHEABLE = new Set([
+    'areaHeadBootstrap',
+    'areaHeadRouteBootstrap',
+    'checklistBootstrap',
+    'regionalBootstrap',
+    'regionalChecklistBuilderBootstrap',
+    'regionalPerformance',
+    'executiveOverview',
+    'executivePerformance',
+    'adminBootstrap',
+    'adminRegionalManagersBootstrap',
+    'adminAreaHeadsBootstrap',
+    'adminStoreMasterBootstrap',
+    'alertsCenter',
+    'visitHistory',
+    'visitDetail',
+    'adminPilotBootstrap'
+  ]);
 
-  const WRITE_TAGS = {
-    adminStoreUpsert:['TOPOLOGY','ROUTES','HEALTH','ADMIN'],
-    adminStoreBulkApply:['TOPOLOGY','ROUTES','HEALTH','ADMIN'],
-    adminUpdateStoreLocation:['TOPOLOGY','GPS','ROUTES','ADMIN'],
-    adminRegionalManagerUpsert:['TOPOLOGY','ROUTES','ADMIN'],
-    adminRegionalManagerArchive:['TOPOLOGY','ROUTES','ADMIN'],
-    adminAreaHeadUpsert:['TOPOLOGY','ROUTES','ADMIN'],
-    adminAreaHeadArchive:['TOPOLOGY','ROUTES','ADMIN'],
-    adminUserCommand:['TOPOLOGY','ADMIN'],
-    adminUpdateSettings:['SETTINGS','ROUTES','GPS','ADMIN'],
-    adminPilotSaveCohort:['ADMIN'],adminPilotUpdateTest:['ADMIN'],adminPilotSaveIssue:['ADMIN'],adminPilotSetStatus:['ADMIN'],
-    regionalChecklistQuestionUpsert:['CHECKLIST','HEALTH'],
-    regionalChecklistQuestionSetActive:['CHECKLIST','HEALTH'],
-    regionalChecklistOrderSave:['CHECKLIST','HEALTH'],
-    saveWeekRoutes:['ROUTES'],areaHeadSaveWeekRoutes:['ROUTES'],setRoutePlanningMode:['ROUTES'],
-    setAreaHeadDayStatus:['DAYSTATUS','ROUTES'],setAreaHeadLeave:['DAYSTATUS','ROUTES'],
-    reportCannotVisit:['ROUTES','VISITS'],regionalResolveCannotVisit:['ROUTES','VISITS'],
-    startVisit:['VISITS','ROUTES','GPS'],confirmSoftPresence:['VISITS','ROUTES','GPS'],requestLocationApproval:['VISITS','GPS'],
-    requestStoreLocationCorrection:['VISITS','GPS','TOPOLOGY'],cancelPendingLocationCorrection:['VISITS','GPS'],
-    cancelPendingApproval:['VISITS','GPS'],cancelVisitStart:['VISITS','ROUTES'],
-    decideLocationApproval:['VISITS','ROUTES','GPS'],decideLocationCorrection:['VISITS','ROUTES','GPS','TOPOLOGY'],
-    saveChecklistDraft:['DRAFT'],completeChecklist:['DRAFT','CHECKLIST','VISITS','HEALTH','ROUTES'],
-    saveManagerValidation:['CHECKLIST','HEALTH'],createMaintenanceRequest:['VISITS']
-  };
+  // Persist only the operational reads that materially improve the Area Head's daily flow.
+  // Keying by user + day prevents yesterday's operational snapshot from becoming today's truth.
+  const LOCAL_PERSIST = new Set([
+    'areaHeadBootstrap',
+    'areaHeadRouteBootstrap',
+    'checklistBootstrap'
+  ]);
 
-  const handlers = new Map();
+  const DAILY = new Set([
+    'areaHeadBootstrap',
+    'areaHeadRouteBootstrap',
+    'executiveOverview',
+    'adminBootstrap',
+    'adminPilotBootstrap'
+  ]);
+
+  // These actions must always be live. They are never replayed from cache.
+  const GPS_LIVE = new Set([
+    'areaHeadVisitState',
+    'startVisit',
+    'confirmSoftPresence',
+    'requestLocationApproval',
+    'requestStoreLocationCorrection',
+    'cancelPendingLocationCorrection',
+    'cancelPendingApproval',
+    'cancelVisitStart',
+    'regionalGpsBadgeCounts',
+    'regionalGpsCenter',
+    'regionalLocationApprovals',
+    'decideLocationApproval',
+    'regionalLocationCorrections',
+    'decideLocationCorrection'
+  ]);
+
   const memory = new Map();
-  const inflight = new Map();
-  const dirtyTags = new Set();
+  const handlers = new Map();
+  const inFlight = new Map();
+
   const metrics = {
-    memoryHits:0, sessionHits:0, localHits:0, networkFresh:0,
-    skippedRefreshes:0, backgroundRefreshes:0, coalesced:0,
-    lastAction:'', lastNetworkMs:0, lastCacheAgeMs:0
+    cacheHits: 0,
+    memoryHits: 0,
+    sessionHits: 0,
+    localHits: 0,
+    networkFresh: 0,
+    backgroundRefreshes: 0,
+    coalescedReads: 0,
+    targetedInvalidations: 0,
+    lastAction: '',
+    lastNetworkMs: 0,
+    lastCacheAgeMs: 0
   };
 
   let patched = false;
   let statusTimer = null;
-  let channel = null;
+  let originalPost = null;
 
   function stable(value) {
     if (Array.isArray(value)) return value.map(stable);
     if (value && typeof value === 'object') {
       const out = {};
       Object.keys(value).sort().forEach(k => {
-        if (['token','requestId','forceFresh','_dmNoCache','cacheBust','_'].includes(k)) return;
+        if (k === 'token' || k === 'forceFresh' || k === '_fresh' || k === 'cacheBust') return;
         out[k] = stable(value[k]);
       });
       return out;
@@ -85,314 +97,515 @@
     return value;
   }
 
-  function tehranDay() {
-    try {
-      const parts = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
-      const m={}; parts.forEach(x=>m[x.type]=x.value);
-      return `${m.year}-${m.month}-${m.day}`;
-    } catch (_) {
-      const d=new Date();
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    }
+  function canonicalParams(params) {
+    const out = {};
+    Object.keys(params || {}).forEach(k => {
+      if (k === 'token' || k === 'forceFresh' || k === '_fresh' || k === 'cacheBust') return;
+      out[k] = params[k];
+    });
+    return out;
+  }
+
+  function isForceFresh(params) {
+    const v = params && (params.forceFresh ?? params._fresh);
+    return v === true || String(v || '').toLowerCase() === 'true' || String(v || '') === '1';
+  }
+
+  function localDay() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
   }
 
   function userKey() {
     try {
-      const u = window.DMAuth && typeof DMAuth.getUser === 'function' ? DMAuth.getUser() : null;
+      const u = window.DMAuth && DMAuth.getUser ? DMAuth.getUser() : null;
       return `${String(u?.userId || 'anon')}|${String(u?.role || '')}`;
-    } catch (_) { return 'anon|'; }
+    } catch (_) {
+      return 'anon|';
+    }
   }
 
   function cacheKey(action, params) {
-    const p = POLICY[action];
-    const day = p?.daily ? `|${tehranDay()}` : '';
-    return `${PREFIX}${userKey()}|${action}${day}|${JSON.stringify(stable(params||{}))}`;
+    const day = DAILY.has(action) ? `|${localDay()}` : '';
+    const signature = JSON.stringify(stable(canonicalParams(params || {})));
+    return `${PREFIX}${userKey()}|${action}${day}|${signature}`;
   }
 
-  function entryPrefixForUser(){ return `${PREFIX}${userKey()}|`; }
-  function safeStorage(kind){ try { return kind==='local'?window.localStorage:window.sessionStorage; } catch(_){ return null; } }
+  function sessionStore() {
+    try { return window.sessionStorage; } catch (_) { return null; }
+  }
 
-  function parseEntry(raw, policy) {
+  function localStore() {
+    try { return window.localStorage; } catch (_) { return null; }
+  }
+
+  function ttlFor(action) {
+    switch (action) {
+      case 'areaHeadBootstrap': return 6 * 60 * 60 * 1000;
+      case 'areaHeadRouteBootstrap': return 10 * 60 * 1000;
+      case 'checklistBootstrap': return 20 * 60 * 1000;
+      case 'regionalPerformance': return 20 * 1000;
+      case 'visitHistory':
+      case 'visitDetail':
+      case 'alertsCenter': return 2 * 60 * 60 * 1000;
+      default: return 6 * 60 * 60 * 1000;
+    }
+  }
+
+  function parseEntry(raw, action, maxAgeMs) {
     if (!raw) return null;
     try {
-      const e = typeof raw === 'string' ? JSON.parse(raw) : raw;
-      if (!e || e.v !== VERSION || !e.data) return null;
-      const ageMs = Date.now() - Number(e.t||0);
-      if (!Number.isFinite(ageMs) || ageMs < 0 || ageMs > Number(policy?.staleMs||0)) return null;
-      return {...e,ageMs};
-    } catch (_) { return null; }
+      const entry = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      if (!entry || entry.v !== VERSION || !entry.data) return null;
+      const ageMs = Date.now() - Number(entry.t || 0);
+      const maxAge = Number(maxAgeMs || ttlFor(action));
+      if (!Number.isFinite(ageMs) || ageMs < 0 || ageMs > maxAge) return null;
+      return { data: entry.data, ageMs, t: entry.t };
+    } catch (_) {
+      return null;
+    }
   }
 
-  function readEntry(action, params, overrideMaxAgeMs) {
-    const policy = POLICY[action];
-    if (!policy) return null;
-    const key = cacheKey(action,params);
-    const effectivePolicy = overrideMaxAgeMs ? {...policy,staleMs:Number(overrideMaxAgeMs)} : policy;
+  function readEntry(action, params = {}, maxAgeMs) {
+    const key = cacheKey(action, params);
 
-    const mem = parseEntry(memory.get(key),effectivePolicy);
-    if (mem) { metrics.memoryHits++; return {key,...mem,source:'memory'}; }
+    const mem = parseEntry(memory.get(key), action, maxAgeMs);
+    if (mem) {
+      metrics.memoryHits++;
+      return { key, source: 'memory', ...mem };
+    }
     memory.delete(key);
 
-    const ss = safeStorage('session');
+    const ss = sessionStore();
     if (ss) {
-      const e = parseEntry(ss.getItem(key),effectivePolicy);
-      if (e) { memory.set(key,e); metrics.sessionHits++; return {key,...e,source:'session'}; }
-      try { ss.removeItem(key); } catch (_) {}
+      try {
+        const raw = ss.getItem(key);
+        const hit = parseEntry(raw, action, maxAgeMs);
+        if (hit) {
+          memory.set(key, { v: VERSION, t: hit.t, data: hit.data });
+          metrics.sessionHits++;
+          return { key, source: 'session', ...hit };
+        }
+        if (raw) ss.removeItem(key);
+      } catch (_) {}
     }
 
-    if (policy.persist) {
-      const ls = safeStorage('local');
+    if (LOCAL_PERSIST.has(action)) {
+      const ls = localStore();
       if (ls) {
-        const e = parseEntry(ls.getItem(key),effectivePolicy);
-        if (e) { memory.set(key,e); metrics.localHits++; return {key,...e,source:'local'}; }
-        try { ls.removeItem(key); } catch (_) {}
+        try {
+          const raw = ls.getItem(key);
+          const hit = parseEntry(raw, action, maxAgeMs);
+          if (hit) {
+            const entry = { v: VERSION, t: hit.t, data: hit.data };
+            memory.set(key, entry);
+            try { ss?.setItem(key, JSON.stringify(entry)); } catch (_) {}
+            metrics.localHits++;
+            return { key, source: 'local', ...hit };
+          }
+          if (raw) ls.removeItem(key);
+        } catch (_) {}
       }
     }
+
     return null;
   }
 
-  function pruneStorage(storage,maxEntries){
-    if(!storage)return;
-    try{
-      const rows=[];
-      for(let i=0;i<storage.length;i++){
-        const k=storage.key(i); if(!k||!k.startsWith(PREFIX))continue;
-        try{const e=JSON.parse(storage.getItem(k)||'null');rows.push({k,t:Number(e?.t||0)});}catch(_){storage.removeItem(k);}
+  function pruneStore(store, limit) {
+    if (!store) return;
+    const rows = [];
+    try {
+      for (let i = 0; i < store.length; i++) {
+        const k = store.key(i);
+        if (!k || !k.startsWith(PREFIX)) continue;
+        try {
+          const e = JSON.parse(store.getItem(k) || 'null');
+          rows.push({ k, t: Number(e?.t || 0) });
+        } catch (_) {
+          store.removeItem(k);
+        }
       }
-      rows.sort((a,b)=>b.t-a.t);
-      rows.slice(maxEntries).forEach(x=>storage.removeItem(x.k));
-    }catch(_){}
+      rows.sort((a, b) => b.t - a.t);
+      rows.slice(limit).forEach(x => store.removeItem(x.k));
+    } catch (_) {}
   }
 
-  function writeEntry(action,params,data){
-    const policy=POLICY[action];
-    if(!policy||!data||data.success===false)return false;
-    const key=cacheKey(action,params);
-    const entry={v:VERSION,t:Date.now(),tags:policy.tags||[],data};
-    memory.set(key,entry);
-    let payload='';
-    try{payload=JSON.stringify(entry);}catch(_){return true;}
+  function writeEntry(action, params, data, timestamp = Date.now()) {
+    if (!data || data.success === false) return false;
 
-    const ss=safeStorage('session');
-    if(ss&&payload.length<=SESSION_MAX_CHARS){
-      try{ss.setItem(key,payload);pruneStorage(ss,SESSION_MAX_ENTRIES);}catch(_){}
+    const key = cacheKey(action, params);
+    const entry = { v: VERSION, t: timestamp, data };
+    let payload;
+    try {
+      payload = JSON.stringify(entry);
+      if (payload.length > MAX_ITEM_CHARS) return false;
+    } catch (_) {
+      return false;
     }
-    if(policy.persist&&payload.length<=LOCAL_MAX_CHARS){
-      const ls=safeStorage('local');
-      if(ls){try{ls.setItem(key,payload);pruneStorage(ls,LOCAL_MAX_ENTRIES);}catch(_){}}
+
+    memory.set(key, entry);
+
+    const ss = sessionStore();
+    try {
+      ss?.setItem(key, payload);
+      pruneStore(ss, MAX_ENTRIES_SESSION);
+    } catch (_) {}
+
+    if (LOCAL_PERSIST.has(action)) {
+      const ls = localStore();
+      try {
+        ls?.setItem(key, payload);
+        pruneStore(ls, MAX_ENTRIES_LOCAL);
+      } catch (_) {}
     }
+
     return true;
   }
 
-  function deleteMatching(predicate){
-    for(const [k,e] of [...memory.entries()]){ if(k.startsWith(entryPrefixForUser())&&predicate(e,k)) memory.delete(k); }
-    ['session','local'].forEach(kind=>{
-      const s=safeStorage(kind); if(!s)return;
-      const keys=[];
-      try{
-        for(let i=0;i<s.length;i++){
-          const k=s.key(i); if(!k||!k.startsWith(entryPrefixForUser()))continue;
-          try{const e=JSON.parse(s.getItem(k)||'null');if(predicate(e,k))keys.push(k);}catch(_){keys.push(k);}
+  function forEachUserCacheKey(fn) {
+    const prefix = `${PREFIX}${userKey()}|`;
+
+    [...memory.keys()].forEach(k => {
+      if (k.startsWith(prefix)) fn({ type: 'memory', key: k, store: memory });
+    });
+
+    [sessionStore(), localStore()].forEach(store => {
+      if (!store) return;
+      try {
+        const keys = [];
+        for (let i = 0; i < store.length; i++) {
+          const k = store.key(i);
+          if (k && k.startsWith(prefix)) keys.push(k);
         }
-        keys.forEach(k=>s.removeItem(k));
-      }catch(_){}
+        keys.forEach(k => fn({ type: 'storage', key: k, store }));
+      } catch (_) {}
     });
   }
 
-  function invalidateTags(tags,broadcast=true,markDirty=true){
-    const set=new Set((tags||[]).map(x=>String(x).toUpperCase()));
-    if(!set.size)return;
-    if(markDirty)set.forEach(t=>dirtyTags.add(t));
-    deleteMatching(e=>(e?.tags||[]).some(t=>set.has(String(t).toUpperCase())));
-    if(broadcast&&channel){ try{channel.postMessage({type:'invalidate',user:userKey(),tags:[...set]});}catch(_){} }
+  function removeCacheKey(entry) {
+    try {
+      if (entry.type === 'memory') entry.store.delete(entry.key);
+      else entry.store.removeItem(entry.key);
+    } catch (_) {}
   }
 
-  function clearUserCache(broadcast=true){
-    deleteMatching(()=>true);
-    if(broadcast&&channel){try{channel.postMessage({type:'clear',user:userKey()});}catch(_){} }
+  function clearUserCache() {
+    forEachUserCacheKey(removeCacheKey);
   }
 
-  function ensureStatus(){
-    let el=document.getElementById('dm-instant-status'); if(el)return el;
-    const style=document.createElement('style'); style.id='dm-instant-style-v50';
-    style.textContent=`#dm-instant-status{position:fixed;left:18px;bottom:18px;z-index:999998;display:flex;align-items:center;gap:7px;padding:8px 11px;border-radius:999px;background:rgba(20,25,34,.9);color:#fff;box-shadow:0 10px 30px rgba(17,24,39,.18);font-family:inherit;font-size:.62rem;font-weight:800;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .18s ease,transform .18s ease;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}#dm-instant-status.show{opacity:1;transform:translateY(0)}#dm-instant-status .dot{width:7px;height:7px;border-radius:50%;background:#ff3858}#dm-instant-status.fresh .dot{background:#20b26b}@media(max-width:700px){#dm-instant-status{left:10px;bottom:76px;font-size:.57rem;padding:7px 9px}}`;
+  function invalidateAction(action) {
+    const marker = `|${String(action)}${DAILY.has(action) ? `|${localDay()}|` : ''}`;
+    forEachUserCacheKey(entry => {
+      const k = entry.key;
+      const hit = DAILY.has(action)
+        ? k.includes(marker)
+        : k.includes(`|${String(action)}|`);
+      if (hit) removeCacheKey(entry);
+    });
+    metrics.targetedInvalidations++;
+  }
+
+  function invalidateActions(actions) {
+    (actions || []).forEach(invalidateAction);
+  }
+
+  function patchChecklistDraft(params, result) {
+    const visitId = String(params?.visitId || '').trim();
+    if (!visitId) return;
+
+    const p = { visitId };
+    const hit = readEntry('checklistBootstrap', p, 24 * 60 * 60 * 1000);
+    if (!hit?.data?.success) return;
+
+    let answers = {};
+    try { answers = JSON.parse(String(params.answersJson || '{}')) || {}; } catch (_) {}
+
+    const next = Object.assign({}, hit.data, {
+      answers: result?.answers || answers,
+      visitNotes: String(params.visitNotes || ''),
+      progress: result?.progress || hit.data.progress
+    });
+    writeEntry('checklistBootstrap', p, next);
+  }
+
+  function handleWriteSuccess(action, params, result) {
+    // Most frequent Area Head write: keep the operating cache intact.
+    if (action === 'saveChecklistDraft') {
+      patchChecklistDraft(params, result);
+      return;
+    }
+
+    // This write does not change route/checklist state.
+    if (action === 'createMaintenanceRequest') return;
+
+    if (action === 'completeChecklist') {
+      invalidateActions(['checklistBootstrap', 'areaHeadBootstrap', 'visitHistory', 'visitDetail', 'alertsCenter']);
+      return;
+    }
+
+    if (action === 'reportCannotVisit') {
+      invalidateActions(['areaHeadBootstrap']);
+      return;
+    }
+
+    if (action === 'areaHeadSaveWeekRoutes' || action === 'setAreaHeadDayStatus' || action === 'setAreaHeadLeave') {
+      invalidateActions(['areaHeadBootstrap', 'areaHeadRouteBootstrap']);
+      return;
+    }
+
+    if (GPS_LIVE.has(action)) {
+      // Location itself is never cached. Only dependent screen snapshots are invalidated.
+      invalidateActions(['areaHeadBootstrap', 'checklistBootstrap', 'visitHistory', 'visitDetail']);
+      return;
+    }
+
+    // Preserve correctness for other management write actions.
+    clearUserCache();
+  }
+
+  function ensureStatus() {
+    let el = document.getElementById('dm-instant-status');
+    if (el) return el;
+
+    const style = document.createElement('style');
+    style.id = 'dm-instant-style';
+    style.textContent = `
+      #dm-instant-status{
+        position:fixed;left:18px;bottom:18px;z-index:999998;
+        display:flex;align-items:center;gap:7px;
+        padding:8px 11px;border-radius:999px;
+        background:rgba(20,25,34,.90);color:#fff;
+        box-shadow:0 10px 30px rgba(17,24,39,.18);
+        font-family:inherit;font-size:.63rem;font-weight:800;
+        opacity:0;transform:translateY(8px);pointer-events:none;
+        transition:opacity .18s ease,transform .18s ease;
+        backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)
+      }
+      #dm-instant-status.show{opacity:1;transform:translateY(0)}
+      #dm-instant-status .dot{width:7px;height:7px;border-radius:50%;background:#ff3858}
+      #dm-instant-status.fresh .dot{background:#20b26b}
+      @media(max-width:700px){
+        #dm-instant-status{left:12px;bottom:76px;font-size:.58rem;padding:7px 9px}
+      }
+    `;
     document.head.appendChild(style);
-    el=document.createElement('div');el.id='dm-instant-status';el.innerHTML='<span class="dot"></span><span class="txt"></span>';
-    (document.body||document.documentElement).appendChild(el);return el;
+
+    el = document.createElement('div');
+    el.id = 'dm-instant-status';
+    el.innerHTML = '<span class="dot"></span><span class="txt"></span>';
+    (document.body || document.documentElement).appendChild(el);
+    return el;
   }
 
-  function status(text,fresh=false,keepMs=1200){
-    if(!text)return;const el=ensureStatus();const t=el.querySelector('.txt');if(t)t.textContent=text;
-    el.classList.toggle('fresh',!!fresh);el.classList.add('show');clearTimeout(statusTimer);
-    statusTimer=setTimeout(()=>el.classList.remove('show'),keepMs);
+  function status(text, fresh = false, keepMs = 1200) {
+    if (!text) return;
+    const el = ensureStatus();
+    const t = el.querySelector('.txt');
+    if (t) t.textContent = text;
+    el.classList.toggle('fresh', !!fresh);
+    el.classList.add('show');
+    clearTimeout(statusTimer);
+    statusTimer = setTimeout(() => el.classList.remove('show'), keepMs);
   }
 
-  function emit(action,params,data,meta){
-    const list=handlers.get(action)||[];list.forEach(fn=>{try{fn(data,params||{},meta||{});}catch(e){console.warn('[DMInstant handler]',action,e);}});
-    try{window.dispatchEvent(new CustomEvent('dm:instant-fresh',{detail:{action,params:params||{},data,meta:meta||{}}}));}catch(_){}
+  function emit(action, params, data, meta) {
+    const list = handlers.get(action) || [];
+    list.forEach(fn => {
+      try { fn(data, params || {}, meta || {}); }
+      catch (e) { console.warn('[DMInstant handler]', action, e); }
+    });
+
+    try {
+      window.dispatchEvent(new CustomEvent('dm:instant-fresh', {
+        detail: { action, params: params || {}, data, meta: meta || {} }
+      }));
+    } catch (_) {}
   }
-  function on(action,fn){if(!handlers.has(action))handlers.set(action,[]);handlers.get(action).push(fn);}
-  function peek(action,params={},maxAgeMs){return readEntry(String(action||''),params,maxAgeMs);}
 
-  function requestKey(action,params){return `${action}|${JSON.stringify(stable(params||{}))}`;}
+  function on(action, fn) {
+    if (!handlers.has(action)) handlers.set(action, []);
+    handlers.get(action).push(fn);
+  }
 
-  async function fetchFresh(original,action,params,timeoutMs,background=false){
-    const k=requestKey(action,params);
-    if(inflight.has(k)){metrics.coalesced++;return inflight.get(k);}
-    const p=(async()=>{
-      const t0=performance.now();
-      try{
-        const fresh=await original(action,params,timeoutMs);
-        metrics.lastNetworkMs=Math.round(performance.now()-t0);metrics.networkFresh++;metrics.lastAction=action;
-        if(fresh&&fresh.success!==false){
-          writeEntry(action,params,fresh);
-          (POLICY[action]?.tags||[]).forEach(t=>dirtyTags.delete(String(t).toUpperCase()));
-          emit(action,params,fresh,{source:'fresh',background,networkMs:metrics.lastNetworkMs});
+  function peek(action, params = {}, maxAgeMs) {
+    return readEntry(action, params, maxAgeMs || ttlFor(action));
+  }
+
+  function put(action, params = {}, data) {
+    return writeEntry(action, params, data);
+  }
+
+  function networkKey(action, params) {
+    return `${action}|${JSON.stringify(stable(canonicalParams(params || {})))}`;
+  }
+
+  async function networkRead(action, params, timeoutMs) {
+    const key = networkKey(action, params);
+    if (inFlight.has(key)) {
+      metrics.coalescedReads++;
+      return inFlight.get(key);
+    }
+
+    const p = (async () => {
+      const t0 = performance.now();
+      try {
+        const fresh = await originalPost(action, params, timeoutMs);
+        metrics.lastNetworkMs = Math.round(performance.now() - t0);
+        metrics.networkFresh++;
+        metrics.lastAction = action;
+
+        if (fresh && fresh.success !== false) {
+          writeEntry(action, canonicalParams(params), fresh);
+          emit(action, canonicalParams(params), fresh, {
+            source: 'fresh',
+            networkMs: metrics.lastNetworkMs
+          });
+
+          if (action === 'areaHeadBootstrap') {
+            const visitId = String(fresh?.openVisit?.visitId || '').trim();
+            const status = String(fresh?.openVisit?.visitStatus || '').toUpperCase();
+            if (visitId && status === 'IN_PROGRESS') {
+              setTimeout(() => prefetch('checklistBootstrap', { visitId }, 40000), 120);
+            }
+          }
         }
         return fresh;
-      }finally{inflight.delete(k);}
+      } finally {
+        inFlight.delete(key);
+      }
     })();
-    inflight.set(k,p);return p;
+
+    inFlight.set(key, p);
+    return p;
   }
 
-  function writeTagsFor(action){return WRITE_TAGS[String(action||'')]||[];}
+  function prefetch(action, params = {}, timeoutMs = 60000) {
+    if (!CACHEABLE.has(action) || !originalPost) return;
 
-  function patchApiPost(){
-    if(patched||!window.DMAuth||typeof DMAuth.apiPost!=='function')return false;
-    patched=true;
-    const original=DMAuth.apiPost.bind(DMAuth);
-    window.__DM_ORIGINAL_API_POST__=original;
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (conn && (conn.saveData || /2g/.test(String(conn.effectiveType || '')))) return;
 
-    DMAuth.apiPost=async function(action,params={},timeoutMs){
-      action=String(action||'');params=params||{};
-      const policy=POLICY[action];
-      const force=!!(params.forceFresh===true||String(params.forceFresh).toLowerCase()==='true'||params._dmNoCache===true||String(params._dmNoCache).toLowerCase()==='true');
+    const run = () => {
+      if (readEntry(action, params, Math.min(ttlFor(action), 20 * 60 * 1000))) return;
+      networkRead(action, canonicalParams(params), timeoutMs).catch(() => {});
+    };
 
-      if(!policy){
-        const result=await original(action,params,timeoutMs);
-        if(result&&result.success!==false){
-          const tags=writeTagsFor(action);
-          if(tags.length)invalidateTags(tags,true,true);
-          if(action==='logout')clearUserCache(true);
+    if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout: 1200 });
+    else setTimeout(run, 300);
+  }
+
+  function schedulePagePrefetch() {
+    setTimeout(() => {
+      const path = (location.pathname.split('/').pop() || '').toLowerCase();
+      if (path.includes('areahead-dashboard')) {
+        prefetch('areaHeadBootstrap', {}, 40000);
+      } else if (path.includes('regional-dashboard')) {
+        prefetch('regionalPerformance', { periodDays: 7 }, 60000);
+      } else if (path.includes('executive-dashboard')) {
+        prefetch('executivePerformance', { periodDays: 7 }, 60000);
+      } else if (path.includes('admin-dashboard')) {
+        prefetch('adminRegionalManagersBootstrap', {}, 60000);
+        setTimeout(() => prefetch('adminAreaHeadsBootstrap', {}, 60000), 500);
+      }
+    }, 500);
+  }
+
+  function patchApiPost() {
+    if (patched || !window.DMAuth || typeof DMAuth.apiPost !== 'function') return false;
+
+    patched = true;
+    originalPost = DMAuth.apiPost.bind(DMAuth);
+
+    DMAuth.apiPost = async function(action, params = {}, timeoutMs) {
+      action = String(action || '');
+      params = params || {};
+
+      // Writes and all GPS/location operations are always live.
+      if (!CACHEABLE.has(action)) {
+        const t0 = performance.now();
+        const result = await originalPost(action, params, timeoutMs);
+        metrics.lastNetworkMs = Math.round(performance.now() - t0);
+        metrics.networkFresh++;
+        metrics.lastAction = action;
+
+        if (result && result.success !== false) {
+          handleWriteSuccess(action, params, result);
         }
         return result;
       }
 
-      const policyTags=(policy.tags||[]).map(t=>String(t).toUpperCase());
-      const actorNeedsFresh=policyTags.some(t=>dirtyTags.has(t));
-      if(force||actorNeedsFresh){
-        const freshParams=actorNeedsFresh&&!force?Object.assign({},params,{forceFresh:'true'}):params;
-        return fetchFresh(original,action,freshParams,timeoutMs,false);
+      const forceFresh = isForceFresh(params);
+      const canonical = canonicalParams(params);
+      const maxAge = ttlFor(action);
+
+      if (forceFresh) {
+        const fresh = await networkRead(action, canonical, timeoutMs);
+        return fresh;
       }
 
-      const cached=readEntry(action,params);
-      if(!cached)return fetchFresh(original,action,params,timeoutMs,false);
+      const cached = readEntry(action, canonical, maxAge);
 
-      metrics.lastAction=action;metrics.lastCacheAgeMs=cached.ageMs;
-      if(cached.ageMs<=policy.freshMs){
-        metrics.skippedRefreshes++;
-        return cached.data;
+      if (!cached) {
+        return networkRead(action, canonical, timeoutMs);
       }
 
+      metrics.cacheHits++;
+      metrics.lastAction = action;
+      metrics.lastCacheAgeMs = cached.ageMs;
+
+      status(cached.source === 'local'
+        ? 'نمایش فوری • همگام‌سازی'
+        : 'نمایش فوری');
+
+      // SWR: UI gets snapshot now; server refreshes in background.
       metrics.backgroundRefreshes++;
-      status('نمایش فوری • بروزرسانی در پس‌زمینه');
-      fetchFresh(original,action,params,timeoutMs,true).then(()=>status('اطلاعات تازه شد',true,850)).catch(()=>status('نسخه ذخیره‌شده نمایش داده شد'));
+      networkRead(action, canonical, timeoutMs)
+        .then(() => status('اطلاعات تازه شد', true, 900))
+        .catch(err => {
+          console.warn('[DMInstant refresh failed]', action, err);
+          status('نسخه ذخیره‌شده فعال است');
+        });
+
       return cached.data;
     };
+
     return true;
   }
 
-  function prefetch(action,params={},timeoutMs=60000){
-    action=String(action||'');const policy=POLICY[action];if(!policy||!window.DMAuth||typeof DMAuth.apiPost!=='function')return;
-    const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
-    if(conn&&(conn.saveData||/2g/.test(String(conn.effectiveType||''))))return;
-    const hit=readEntry(action,params); if(hit&&hit.ageMs<=policy.freshMs)return;
-    const run=()=>Promise.resolve(DMAuth.apiPost(action,params,timeoutMs)).catch(()=>{});
-    if('requestIdleCallback'in window)requestIdleCallback(run,{timeout:900}); else setTimeout(run,80);
-  }
+  function init() {
+    ensureStatus();
 
-  function currentSaturdayIso(offsetWeeks=0){
-    const d=new Date();d.setHours(12,0,0,0);const diff=(d.getDay()+1)%7;d.setDate(d.getDate()-diff+offsetWeeks*7);
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }
-
-  function warmRole(){
-    let u=null;try{u=DMAuth.getUser?.();}catch(_){}
-    const role=String(u?.role||'');
-    const jobs=[];
-    if(role==='AREA_HEAD'){
-      jobs.push(['areaHeadBootstrap',{}],['storeHealthList',{}],['alertsCenter',{}]);
-      const b=readEntry('areaHeadBootstrap',{});
-      if(b?.data?.canSelfRoute)jobs.push(['areaHeadRouteBootstrap',{weekStartIso:currentSaturdayIso(0)}],['areaHeadRouteBootstrap',{weekStartIso:currentSaturdayIso(1)}]);
-    }else if(role==='REGIONAL_MANAGER'){
-      jobs.push(['regionalBootstrap',{}],['regionalPerformance',{periodDays:10}],['storeHealthList',{}],['regionalChecklistBuilderBootstrap',{}]);
-    }else if(role==='EXECUTIVE_MANAGER'){
-      jobs.push(['executiveOverview',{}],['executivePerformance',{periodDays:7}],['executivePerformance',{periodDays:10}]);
-    }else if(role==='SYSTEM_ADMIN'){
-      jobs.push(['adminNationalPerformance',{periodDays:10}],['adminBootstrap',{}],['adminRegionalManagersBootstrap',{}],['adminAreaHeadsBootstrap',{}],['adminStoreMasterBootstrap',{}]);
+    if (!patchApiPost()) {
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (patchApiPost() || tries > 120) clearInterval(timer);
+      }, 35);
     }
-    jobs.forEach((j,i)=>setTimeout(()=>prefetch(j[0],j[1],70000),120+i*260));
+
+    schedulePagePrefetch();
   }
 
-  function navigationWarmup(target){
-    const s=String(target||'').toLowerCase();
-    if(s.includes('areahead-route')){
-      prefetch('areaHeadRouteBootstrap',{weekStartIso:currentSaturdayIso(0)},60000);
-      prefetch('areaHeadRouteBootstrap',{weekStartIso:currentSaturdayIso(1)},60000);
-    }else if(s.includes('areahead-store-health'))prefetch('storeHealthList',{},60000);
-    else if(s.includes('alerts'))prefetch('alertsCenter',{},45000);
-    else if(s.includes('visit-history'))prefetch('visitHistory',{days:30,page:1,pageSize:25,query:'',regionalUserId:'',areaHeadUserId:'',status:'ALL',planned:'ALL',location:'ALL'},60000);
-    else if(s.includes('regional-dashboard')){prefetch('regionalBootstrap',{},60000);prefetch('regionalPerformance',{periodDays:10},60000);}
-    else if(s.includes('executive-dashboard')){prefetch('executiveOverview',{},60000);prefetch('executivePerformance',{periodDays:7},60000);}
-    else if(s.includes('admin-dashboard'))prefetch('adminNationalPerformance',{periodDays:10},60000);
-  }
-
-  function bindNavigationWarmup(){
-    const handler=e=>{
-      const el=e.target?.closest?.('a,button');if(!el)return;
-      const href=el.getAttribute?.('href')||'';const oc=el.getAttribute?.('onclick')||'';
-      const target=href||oc;if(target)navigationWarmup(target);
-    };
-    document.addEventListener('pointerover',handler,{passive:true,capture:true});
-    document.addEventListener('touchstart',handler,{passive:true,capture:true});
-  }
-
-  function initChannel(){
-    try{
-      channel=new BroadcastChannel('dm-instant-v50');
-      channel.onmessage=e=>{
-        const m=e.data||{};if(m.user!==userKey())return;
-        if(m.type==='invalidate')invalidateTags(m.tags||[],false,true);
-        else if(m.type==='clear')clearUserCache(false);
-      };
-    }catch(_){}
-  }
-
-  function registerServiceWorker(){
-    if(!('serviceWorker'in navigator))return;
-    try{
-      window.addEventListener('load',()=>{
-        navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(reg=>{
-          try{reg.update();}catch(_){}
-        }).catch(()=>{});
-      },{once:true});
-    }catch(_){}
-  }
-
-  function init(){
-    ensureStatus();initChannel();registerServiceWorker();bindNavigationWarmup();
-    if(!patchApiPost()){
-      let tries=0;const timer=setInterval(()=>{tries++;if(patchApiPost()||tries>160)clearInterval(timer);},25);
-    }
-    setTimeout(warmRole,180);
-    window.addEventListener('pageshow',e=>{if(e.persisted)setTimeout(warmRole,50);});
-    document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(warmRole,80);});
-  }
-
-  window.DMInstant={
-    version:VERSION,on,peek,prefetch,clearUserCache,invalidateTags,status,warm:warmRole,
-    stats:()=>Object.assign({},metrics),policy:action=>POLICY[action]||null
+  window.DMInstant = {
+    version: VERSION,
+    on,
+    peek,
+    put,
+    prefetch,
+    invalidateAction,
+    invalidateActions,
+    clearUserCache,
+    isGpsLive: action => GPS_LIVE.has(String(action || '')),
+    stats: () => Object.assign({}, metrics),
+    status
   };
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
 })();
