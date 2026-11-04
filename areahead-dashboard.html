@@ -1217,11 +1217,7 @@ const state={
   cannotVisitTarget:null,
   cannotVisitReason:'',
   checklistSaving:false,
-  checklistSaveQueued:false,
-  checklistSaveTimer:null,
-  authValidated:false,
-  instantPainted:false,
-  gpsStartedVisitId:''
+  checklistSaveTimer:null
 };
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -1232,35 +1228,15 @@ function toast(msg,type=''){const w=document.getElementById('toastWrap'),el=docu
 function setLoading(on,text){DMLoading.set(!!on,text||'', 'loading');}
 function storeByCode(code){return state.stores.find(s=>s.storeCode===code)||null;}
 
-function paintAreaHeadUser(user){
-  if(!user)return;
-  state.user=user;
-  document.getElementById('sideName').textContent=user.fullName||'رئیس ناحیه';
-  document.getElementById('sideAvatar').textContent=initials(user.fullName);
-  document.getElementById('mobileAvatar').textContent=initials(user.fullName);
-  document.getElementById('sideRegion').textContent=user.regionalManagerName||'پنل بازدید';
-  document.getElementById('topUserText').textContent=(user.fullName||'رئیس ناحیه')+' · '+(user.regionalManagerName||'');
-}
-
-function prewarmOpenChecklist(res){
-  try{
-    const visit=res?.openVisit;
-    if(!visit||String(visit.visitStatus||'').toUpperCase()!=='IN_PROGRESS'||!visit.visitId)return;
-    window.DMInstant?.prefetch?.('checklistBootstrap',{visitId:visit.visitId},40000);
-  }catch(_){}
-}
-
 function applyAreaHeadBootstrap(res){
   if(!res||!res.success)return false;
   state.data=res;
   state.route=res.route||{items:[]};
   state.stores=res.allStores||[];
   state.settings=res.settings||state.settings;
-  if(res.user)paintAreaHeadUser(res.user);
+  if(res.user)state.user=res.user;
   renderAll();
   schedulePendingPoll();
-  prewarmOpenChecklist(res);
-  state.instantPainted=true;
   return true;
 }
 
@@ -1277,56 +1253,32 @@ function hydrateAreaHeadInstant(){
 }
 
 async function init(){
-  // V53: paint identity + today's cached operating snapshot before waiting on network validation.
-  // Validation still runs immediately in parallel and remains authoritative.
-  let cachedUser=null;
-  try{cachedUser=window.DMAuth?.getUser?.()||null;}catch(_){}
+  const auth=await DMAuth.validateSession('AREA_HEAD');
+  if(!auth.ok){DMAuth.clearAuth();location.replace('index.html');return;}
+  state.user=auth.user;
+  document.getElementById('sideName').textContent=state.user.fullName||'رئیس ناحیه';
+  document.getElementById('sideAvatar').textContent=initials(state.user.fullName);
+  document.getElementById('mobileAvatar').textContent=initials(state.user.fullName);
+  document.getElementById('sideRegion').textContent=state.user.regionalManagerName||'پنل بازدید';
+  document.getElementById('topUserText').textContent=(state.user.fullName||'رئیس ناحیه')+' · '+(state.user.regionalManagerName||'');
 
-  let instant=false;
-  if(cachedUser&&String(cachedUser.role||'').toUpperCase()==='AREA_HEAD'){
-    paintAreaHeadUser(cachedUser);
-    instant=hydrateAreaHeadInstant();
-  }
-
-  const authPromise=DMAuth.validateSession('AREA_HEAD');
-  const dataPromise=(cachedUser&&String(cachedUser.role||'').toUpperCase()==='AREA_HEAD')
-    ? loadData(instant,false)
-    : null;
-
-  const auth=await authPromise;
-  if(!auth.ok){
-    DMAuth.clearAuth();
-    location.replace('index.html');
-    return;
-  }
-
-  state.authValidated=true;
-  paintAreaHeadUser(auth.user);
-
-  if(dataPromise){
-    await dataPromise;
-  }else{
-    instant=hydrateAreaHeadInstant();
-    await loadData(instant,false);
-  }
+  const instant=hydrateAreaHeadInstant();
+  await loadData(instant,false);
 }
 
 async function loadData(silent=false,forceFresh=false){
   let loadingTimer=null;
-
-  if(!silent&&!state.data){
-    // Only show a blocking loader when there is literally nothing useful to paint.
-    loadingTimer=setTimeout(()=>setLoading(true,'در حال دریافت برنامه امروز...'),260);
+  if(!silent){
+    // Avoid flashing a full-screen loader for fast cache hits.
+    loadingTimer=setTimeout(()=>setLoading(true,'در حال دریافت برنامه امروز...'),180);
   }
-
   try{
     const params=forceFresh?{forceFresh:'true'}:{};
     const res=await DMAuth.apiPost('areaHeadBootstrap',params,40000);
     if(!res.success)throw new Error(res.message||'دریافت برنامه ناموفق بود.');
     applyAreaHeadBootstrap(res);
-  }catch(e){
-    if(!state.data)toast(e.message||'خطا در دریافت اطلاعات','error');
-  }finally{
+  }catch(e){toast(e.message||'خطا در دریافت اطلاعات','error');}
+  finally{
     if(loadingTimer)clearTimeout(loadingTimer);
     if(!silent)setLoading(false);
   }
@@ -1417,82 +1369,19 @@ async function submitCannotVisit(){
   if(!state.cannotVisitReason){toast('دلیل عدم امکان بازدید را انتخاب کن.','error');return;}
   const note=document.getElementById('cannotVisitNote').value.trim();
   if(state.cannotVisitReason==='OTHER'&&!note){toast('برای گزینه «سایر» توضیح بنویس.','error');return;}
-
-  const target=Object.assign({},state.cannotVisitTarget);
-  const reasonCode=state.cannotVisitReason;
-  const btn=document.getElementById('cannotVisitSubmitBtn');
-  btn.disabled=true;
-
+  const btn=document.getElementById('cannotVisitSubmitBtn');btn.disabled=true;
   try{
     const res=await DMAuth.apiPost('reportCannotVisit',{
-      routeItemId:target.routeItemId,
-      reasonCode,
+      routeItemId:state.cannotVisitTarget.routeItemId,
+      reasonCode:state.cannotVisitReason,
       note
     },40000);
     if(!res.success)throw new Error(res.message||'ارسال اطلاع ناموفق بود.');
-
-    // V53 optimistic operating update: no full reload in the user's path.
-    const item=(state.route.items||[]).find(x=>x.routeItemId===target.routeItemId);
-    if(item){
-      item.cannotVisit={
-        routeItemId:target.routeItemId,
-        storeCode:target.storeCode,
-        reasonCode,
-        note,
-        status:'OPEN'
-      };
-    }
     closeCannotVisitModal();
-    renderRoute();
-    try{window.DMInstant?.put?.('areaHeadBootstrap',{},state.data);}catch(_){}
     toast(res.message||'به مدیر منطقه اطلاع داده شد.','success');
-
-    // Reconcile silently with server truth.
-    loadData(true,true);
-  }catch(e){
-    toast(e.message||'خطا در ارسال اطلاع','error');
-  }finally{
-    btn.disabled=false;
-  }
-}
-
-function applyLiveVisitStarted(visit){
-  if(!visit||!visit.visitId)return;
-  state.gpsStartedVisitId=visit.visitId;
-
-  if(state.data){
-    state.data.openVisit=visit;
-    state.data.pendingApproval=null;
-    state.data.pendingLocationCorrection=null;
-  }
-
-  const item=(state.route?.items||[]).find(x =>
-    (visit.routeItemId&&x.routeItemId===visit.routeItemId) ||
-    (!visit.routeItemId&&x.storeCode===visit.storeCode)
-  );
-
-  if(item){
-    item.uiStatus='IN_PROGRESS';
-    item.visitId=visit.visitId;
-    item.visit=visit;
-    item.locked=true;
-  }
-
-  renderAll();
-  try{window.DMInstant?.put?.('areaHeadBootstrap',{},state.data);}catch(_){}
-  try{window.DMInstant?.prefetch?.('checklistBootstrap',{visitId:visit.visitId},40000);}catch(_){}
-}
-
-function continueAfterGps(){
-  const visitId=state.gpsStartedVisitId||state.data?.openVisit?.visitId||'';
-  closeGpsModal();
-  if(visitId){
-    openChecklist(visitId);
-    // Reconcile in background; never block the transition to checklist.
-    loadData(true,true);
-  }else{
-    loadData(false,true);
-  }
+    await reloadData();
+  }catch(e){toast(e.message||'خطا در ارسال اطلاع','error');}
+  finally{btn.disabled=false;}
 }
 
 function openGps(storeCode,routeItemId,planned,unplannedReason){
@@ -1649,11 +1538,10 @@ async function scanAndStart(){
     if(res.gps){document.getElementById('metricDistance').textContent=mText(res.gps.distanceM);document.getElementById('metricAccuracy').textContent=mText(res.gps.accuracyM);}
 
     if(res.success){
-      if(res.visit)applyLiveVisitStarted(res.visit);
       const box=document.getElementById('gpsResult');box.className='gps-result success';box.textContent=res.message||'حضور تأیید شد.';
       document.getElementById('gpsTitle').textContent='حضور تأیید شد';
       document.getElementById('gpsDesc').textContent='بازدید آغاز شد و Route این فروشگاه قفل شد.';
-      document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="continueAfterGps()">ادامه به چک‌لیست</button>`;
+      document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">ادامه</button>`;
       return;
     }
 
@@ -1776,11 +1664,10 @@ async function confirmSoftPresence(){
       if(res.canRequestApproval){showGpsFailure(res.message,res.gps,true,false,null,false,null);return;}
       throw new Error(res.message||'ثبت حضور ناموفق بود.');
     }
-    if(res.visit)applyLiveVisitStarted(res.visit);
     const box=document.getElementById('gpsResult');box.className='gps-result success';box.textContent=res.message||'حضور ثبت شد.';
     document.getElementById('gpsTitle').textContent='بازدید آغاز شد';
     document.getElementById('gpsDesc').textContent='حضور شما به‌صورت تأیید ساده ثبت شد و می‌توانی چک‌لیست را ادامه بدهی.';
-    document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="continueAfterGps()">ادامه به چک‌لیست</button>`;
+    document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">ادامه به بازدید</button>`;
   }catch(e){showGpsFailure(e.message||'ثبت حضور ناموفق بود.',null,true,false,null,false,null);}
 }
 
@@ -1843,67 +1730,28 @@ function saveLocalChecklistDraft(){
 }
 function clearLocalChecklistDraft(visitId){try{localStorage.removeItem(checklistLocalKey(visitId));}catch(_){}}
 
-function applyChecklistBootstrap(res,visitId,{preserveDirty=true}={}){
-  if(!res||!res.success)return false;
-
-  state.checklistVisitId=visitId;
-  state.checklistData=res;
-
-  const local=loadLocalChecklistDraft(visitId);
-  const currentDirty=preserveDirty&&state.checklistDirty&&state.checklistVisitId===visitId;
-
-  if(!currentDirty){
-    state.checklistAnswers=Object.assign({},res.answers||{},local?.answers||{});
-    state.checklistNotes=local?.notes!=null?String(local.notes):String(res.visitNotes||'');
-    state.checklistDirty=
-      Object.keys(local?.answers||{}).some(k=>String(local.answers[k]||'')!==String((res.answers||{})[k]||'')) ||
-      !!(local&&String(local.notes||'')!==String(res.visitNotes||''));
-  }
-
-  document.getElementById('checklistStoreTitle').textContent=res.store?.storeName||'چک‌لیست فروشگاه';
-  document.getElementById('checklistStoreSub').textContent='کد '+(res.store?.storeCode||'')+' · '+(res.readOnly?'بازدید تکمیل شده':'بازدید فعال');
-  document.getElementById('checklistVisitId').textContent=visitId;
-  document.getElementById('checklistVisitType').textContent=res.visit?.plannedFlag?'برنامه‌ریزی‌شده':'خارج از برنامه';
-  document.getElementById('checklistStateText').textContent=res.readOnly?'تکمیل شده':'در حال تکمیل';
-
-  document.getElementById('checklistModal').classList.remove('hidden');
-  document.body.style.overflow='hidden';
-  renderChecklist();
-
-  if(state.checklistDirty){
-    setChecklistSaveStatus('پیش‌نویس محلی آماده است • همگام‌سازی خودکار','saving');
-  }
-
-  return true;
-}
-
 async function openChecklist(visitId){
   if(!visitId){toast('شناسه بازدید پیدا نشد.','error');return;}
-
-  let instant=false;
-  try{
-    const hit=window.DMInstant?.peek?.('checklistBootstrap',{visitId},20*60*1000);
-    if(hit?.data?.success){
-      applyChecklistBootstrap(hit.data,visitId,{preserveDirty:true});
-      instant=true;
-    }
-  }catch(_){}
-
-  let loadingTimer=null;
-  if(!instant){
-    loadingTimer=setTimeout(()=>setLoading(true,'در حال دریافت چک‌لیست...'),220);
-  }
-
+  setLoading(true,'در حال دریافت چک‌لیست...');
   try{
     const res=await DMAuth.apiPost('checklistBootstrap',{visitId},40000);
     if(!res.success)throw new Error(res.message||'چک‌لیست دریافت نشد.');
-    applyChecklistBootstrap(res,visitId,{preserveDirty:true});
-  }catch(e){
-    if(!instant)toast(e.message||'خطا در دریافت چک‌لیست','error');
-  }finally{
-    if(loadingTimer)clearTimeout(loadingTimer);
-    if(!instant)setLoading(false);
-  }
+    state.checklistVisitId=visitId;state.checklistData=res;
+    const local=loadLocalChecklistDraft(visitId);
+    state.checklistAnswers=Object.assign({},res.answers||{},local?.answers||{});
+    state.checklistNotes=local?.notes!=null?String(local.notes):String(res.visitNotes||'');
+    state.checklistDirty=Object.keys(local?.answers||{}).some(k=>String(local.answers[k]||'')!==String((res.answers||{})[k]||'')) || (local&&String(local.notes||'')!==String(res.visitNotes||''));
+    document.getElementById('checklistStoreTitle').textContent=res.store?.storeName||'چک‌لیست فروشگاه';
+    document.getElementById('checklistStoreSub').textContent='کد '+(res.store?.storeCode||'')+' · '+(res.readOnly?'بازدید تکمیل شده':'بازدید فعال');
+    document.getElementById('checklistVisitId').textContent=visitId;
+    document.getElementById('checklistVisitType').textContent=res.visit?.plannedFlag?'برنامه‌ریزی‌شده':'خارج از برنامه';
+    document.getElementById('checklistStateText').textContent=res.readOnly?'تکمیل شده':'در حال تکمیل';
+    document.getElementById('checklistModal').classList.remove('hidden');
+    document.body.style.overflow='hidden';
+    renderChecklist();
+    if(state.checklistDirty)setChecklistSaveStatus('پیش‌نویس محلی بازیابی شد.','saving');
+  }catch(e){toast(e.message||'خطا در دریافت چک‌لیست','error');}
+  finally{setLoading(false);}
 }
 
 function closeChecklist(){
@@ -2170,61 +2018,15 @@ function setChecklistSaveStatus(text,cls=''){
 }
 
 async function saveChecklistDraft(showToast=false){
-  if(!state.checklistVisitId||state.checklistData?.readOnly)return;
-
-  if(state.checklistSaving){
-    state.checklistSaveQueued=true;
-    return;
-  }
-
-  state.checklistSaving=true;
-  state.checklistSaveQueued=false;
-
-  const visitId=state.checklistVisitId;
-  const answersSnapshot=JSON.stringify(state.checklistAnswers||{});
-  const notesSnapshot=String(state.checklistNotes||'');
-  const signature=answersSnapshot+'|'+notesSnapshot;
-
-  setChecklistSaveStatus('ذخیره محلی انجام شد • همگام‌سازی سرور...','saving');
-
+  if(!state.checklistVisitId||state.checklistData?.readOnly||state.checklistSaving)return;
+  state.checklistSaving=true;setChecklistSaveStatus('در حال ذخیره پیش‌نویس...','saving');
   try{
-    const res=await DMAuth.apiPost('saveChecklistDraft',{
-      visitId,
-      answersJson:answersSnapshot,
-      visitNotes:notesSnapshot
-    },40000);
-
+    const res=await DMAuth.apiPost('saveChecklistDraft',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{}),visitNotes:state.checklistNotes||''},40000);
     if(!res.success)throw new Error(res.message||'ذخیره پیش‌نویس ناموفق بود.');
-
-    const currentSignature=JSON.stringify(state.checklistAnswers||{})+'|'+String(state.checklistNotes||'');
-
-    if(currentSignature===signature){
-      state.checklistDirty=false;
-      clearLocalChecklistDraft(visitId);
-      setChecklistSaveStatus('پیش‌نویس همگام شد.','saved');
-    }else{
-      // User changed another answer while the previous save was in-flight.
-      state.checklistDirty=true;
-      state.checklistSaveQueued=true;
-      saveLocalChecklistDraft();
-      setChecklistSaveStatus('تغییر جدید ثبت شد • ادامه همگام‌سازی...','saving');
-    }
-
+    state.checklistDirty=false;clearLocalChecklistDraft(state.checklistVisitId);setChecklistSaveStatus('پیش‌نویس ذخیره شد.','saved');
     if(showToast)toast('پیش‌نویس چک‌لیست ذخیره شد.','success');
-  }catch(e){
-    state.checklistDirty=true;
-    saveLocalChecklistDraft();
-    setChecklistSaveStatus('نسخه محلی محفوظ است • همگام‌سازی دوباره انجام می‌شود.','error');
-    if(showToast)toast(e.message||'خطا در ذخیره پیش‌نویس','error');
-  }finally{
-    state.checklistSaving=false;
-
-    if(state.checklistSaveQueued&&state.checklistDirty){
-      state.checklistSaveQueued=false;
-      clearTimeout(state.checklistSaveTimer);
-      state.checklistSaveTimer=setTimeout(()=>saveChecklistDraft(false),180);
-    }
-  }
+  }catch(e){state.checklistDirty=true;saveLocalChecklistDraft();setChecklistSaveStatus('ذخیره سرور ناموفق بود؛ نسخه محلی حفظ شد.','error');if(showToast)toast(e.message||'خطا در ذخیره پیش‌نویس','error');}
+  finally{state.checklistSaving=false;}
 }
 
 function highlightMissingQuestions(){
@@ -2236,134 +2038,61 @@ function highlightMissingQuestions(){
   if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
 }
 
-function applyCompletedVisitLocally(visitId){
-  if(state.data?.openVisit?.visitId===visitId){
-    state.data.openVisit=null;
-    state.data.pendingApproval=null;
-    state.data.pendingLocationCorrection=null;
-  }
-
-  const item=(state.route?.items||[]).find(x =>
-    String(x.visit?.visitId||x.visitId||'')===String(visitId)
-  );
-
-  if(item){
-    item.uiStatus='COMPLETED';
-    item.locked=true;
-    item.plannedStatus='COMPLETED';
-    if(item.visit)item.visit.visitStatus='COMPLETED';
-  }
-
-  renderAll();
-  try{window.DMInstant?.put?.('areaHeadBootstrap',{},state.data);}catch(_){}
-}
-
-function backToTodayInstant(){
-  closeChecklist();
-  renderAll();
-  // Silent reconciliation only; user is already back in today's route.
-  loadData(true,true);
-}
-
 async function finishChecklist(){
   if(state.checklistData?.readOnly)return;
-
   const p=checklistProgressClient();
-  if(p.remainingRequired>0){
-    highlightMissingQuestions();
-    toast(`${p.remainingRequired} سؤال هنوز بدون پاسخ است.`,'error');
-    return;
-  }
-
+  if(p.remainingRequired>0){highlightMissingQuestions();toast(`${p.remainingRequired} سؤال هنوز بدون پاسخ است.`,'error');return;}
   if(!confirm('چک‌لیست نهایی شود و این بازدید پایان پیدا کند؟ پس از ثبت نهایی امکان ویرایش وجود ندارد.'))return;
-
-  const finishBtn=document.getElementById('finishChecklistBtn');
-  const draftBtn=document.getElementById('draftBtn');
-  const topDraftBtn=document.getElementById('topDraftBtn');
-
-  finishBtn.disabled=true;
-  draftBtn.disabled=true;
-  topDraftBtn.disabled=true;
-  setChecklistSaveStatus('در حال ثبت نهایی...','saving');
-
+  setLoading(true,'در حال ثبت نهایی و پایان بازدید...');
   try{
+    const res=await DMAuth.apiPost('completeChecklist',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{}),visitNotes:state.checklistNotes||''},50000);
+    if(!res.success){if(res.code==='CHECKLIST_INCOMPLETE'){highlightMissingQuestions();}throw new Error(res.message||'ثبت نهایی ناموفق بود.');}
+    let maintenanceResult=null;
     const completedVisitId=state.checklistVisitId;
-    const answersPayload=JSON.stringify(state.checklistAnswers||{});
-    const notesPayload=state.checklistNotes||'';
+    const hasEquipmentFault=String(state.checklistAnswers['V4-EQUIPMENT-FAULT']||'').trim()==='بله';
 
-    const res=await DMAuth.apiPost('completeChecklist',{
-      visitId:completedVisitId,
-      answersJson:answersPayload,
-      visitNotes:notesPayload
-    },50000);
-
-    if(!res.success){
-      if(res.code==='CHECKLIST_INCOMPLETE')highlightMissingQuestions();
-      throw new Error(res.message||'ثبت نهایی ناموفق بود.');
+    if(hasEquipmentFault){
+      try{
+        const now=new Date();
+        maintenanceResult=await DMAuth.apiPost('createMaintenanceRequest',{
+          visitId:completedVisitId,
+          priority:'normal',
+          reportedDate:now.toLocaleDateString('fa-IR'),
+          reportedTime:now.toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})
+        },50000);
+      }catch(syncError){
+        maintenanceResult={
+          success:true,
+          synced:false,
+          queued:true,
+          message:'بازدید تکمیل شد؛ ارسال گزارش خرابی به واحد فنی در صف همگام‌سازی قرار گرفت.'
+        };
+      }
     }
 
-    clearLocalChecklistDraft(completedVisitId);
-    state.checklistDirty=false;
-    state.checklistNotes='';
-    applyCompletedVisitLocally(completedVisitId);
-
-    const hasEquipmentFault=
-      String(state.checklistAnswers['V4-EQUIPMENT-FAULT']||'').trim()==='بله';
+    clearLocalChecklistDraft(completedVisitId);state.checklistDirty=false;state.checklistNotes='';
 
     const maintenanceHtml=hasEquipmentFault
-      ?`<div class="maintenance-sync-result queued" id="v53MaintenanceSync"><strong>بازدید تکمیل شد</strong><span>گزارش خرابی در حال ارسال به واحد فنی است...</span></div>`
+      ?(
+        maintenanceResult&&maintenanceResult.synced
+          ?`<div class="maintenance-sync-result success"><strong>تیکت فنی ثبت شد</strong><span>${maintenanceResult.ticketNumber?'شماره تیکت: '+esc(maintenanceResult.ticketNumber):'گزارش خرابی با موفقیت به واحد فنی ارسال شد.'}</span></div>`
+          :`<div class="maintenance-sync-result queued"><strong>گزارش خرابی محفوظ شد</strong><span>ارسال به واحد فنی در صف همگام‌سازی است و از بین نمی‌رود.</span></div>`
+      )
       :'';
 
-    document.getElementById('checklistMain').innerHTML=
-      `<div class="checklist-complete-box">
-        <div class="complete-icon">✓</div>
-        <h3>بازدید با موفقیت تکمیل شد</h3>
-        <p>چک‌لیست ثبت شد و برنامه امروز همین حالا به‌روزرسانی شد.</p>
-        ${maintenanceHtml}
-        <button class="btn primary" onclick="backToTodayInstant()">بازگشت فوری به برنامه امروز</button>
-      </div>`;
+    document.getElementById('checklistMain').innerHTML=`<div class="checklist-complete-box"><div class="complete-icon">✓</div><h3>بازدید با موفقیت تکمیل شد</h3><p>چک‌لیست ثبت شد، زمان پایان بازدید ذخیره شد و وضعیت این فروشگاه در Route امروز به «تکمیل شده» تغییر کرد.</p>${maintenanceHtml}<button class="btn primary" onclick="closeChecklist();reloadData()">بازگشت به برنامه امروز</button></div>`;
+    document.getElementById('checklistSectionNav').innerHTML='';document.getElementById('checklistBottomInfo').textContent=`مدت بازدید: ${res.durationMinutes||0} دقیقه`;
+    document.getElementById('finishChecklistBtn').disabled=true;document.getElementById('draftBtn').disabled=true;document.getElementById('topDraftBtn').disabled=true;setChecklistSaveStatus('ثبت نهایی انجام شد.','saved');
 
-    document.getElementById('checklistSectionNav').innerHTML='';
-    document.getElementById('checklistBottomInfo').textContent=`مدت بازدید: ${res.durationMinutes||0} دقیقه`;
-    setChecklistSaveStatus('ثبت نهایی انجام شد.','saved');
-    toast(res.message||'بازدید تکمیل شد.','success');
-
-    // Maintenance sync is intentionally backgrounded so it cannot delay the Area Head.
-    if(hasEquipmentFault){
-      const now=new Date();
-      Promise.resolve(DMAuth.apiPost('createMaintenanceRequest',{
-        visitId:completedVisitId,
-        priority:'normal',
-        reportedDate:now.toLocaleDateString('fa-IR'),
-        reportedTime:now.toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})
-      },50000)).then(maintenanceResult=>{
-        const el=document.getElementById('v53MaintenanceSync');
-        if(!el)return;
-        if(maintenanceResult&&maintenanceResult.success!==false){
-          el.className='maintenance-sync-result success';
-          el.innerHTML=`<strong>گزارش فنی ثبت شد</strong><span>${maintenanceResult.ticketNumber?'شماره تیکت: '+esc(maintenanceResult.ticketNumber):'گزارش خرابی با موفقیت به واحد فنی ارسال شد.'}</span>`;
-        }else{
-          el.className='maintenance-sync-result queued';
-          el.innerHTML='<strong>بازدید محفوظ است</strong><span>ارسال گزارش فنی نیاز به همگام‌سازی مجدد دارد.</span>';
-        }
-      }).catch(()=>{
-        const el=document.getElementById('v53MaintenanceSync');
-        if(el){
-          el.className='maintenance-sync-result queued';
-          el.innerHTML='<strong>بازدید محفوظ است</strong><span>ارسال گزارش فنی نیاز به همگام‌سازی مجدد دارد.</span>';
-        }
-      });
+    if(hasEquipmentFault&&maintenanceResult&&maintenanceResult.synced){
+      toast('بازدید تکمیل شد و تیکت خرابی برای واحد فنی ثبت شد.','success');
+    }else if(hasEquipmentFault){
+      toast('بازدید تکمیل شد؛ گزارش خرابی در صف ارسال واحد فنی است.','success');
+    }else{
+      toast(res.message||'بازدید تکمیل شد.','success');
     }
-
-    // Refresh exact server truth without blocking the completion experience.
-    loadData(true,true);
-  }catch(e){
-    finishBtn.disabled=false;
-    draftBtn.disabled=false;
-    topDraftBtn.disabled=false;
-    setChecklistSaveStatus('ثبت نهایی انجام نشد. دوباره تلاش کن.','error');
-    toast(e.message||'خطا در ثبت نهایی چک‌لیست','error');
-  }
+  }catch(e){toast(e.message||'خطا در ثبت نهایی چک‌لیست','error');}
+  finally{setLoading(false);}
 }
 
 function scrollChecklistSection(id,btn){
@@ -2433,13 +2162,6 @@ async function reloadData(){await loadData(false,true);}
 
 DMInstant.on('areaHeadBootstrap',(res)=>{
   applyAreaHeadBootstrap(res);
-});
-
-DMInstant.on('checklistBootstrap',(res,params)=>{
-  const visitId=String(params?.visitId||'');
-  if(!visitId||visitId!==String(state.checklistVisitId||''))return;
-  if(state.checklistDirty)return; // Never overwrite unsaved local answers.
-  applyChecklistBootstrap(res,visitId,{preserveDirty:true});
 });
 
 init().catch(e=>{setLoading(false);toast(e.message||'خطای غیرمنتظره','error');});
