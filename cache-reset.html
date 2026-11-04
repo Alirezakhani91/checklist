@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>بازیابی سامانه Daily Market</title>
+  <style>
+    body{font-family:Tahoma,Arial,sans-serif;background:#f5f6f8;color:#171a20;display:grid;place-items:center;min-height:100vh;margin:0}
+    .box{width:min(520px,calc(100vw - 32px));background:#fff;border:1px solid #e4e7ec;border-radius:22px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.08);text-align:center}
+    h1{font-size:1.2rem;margin:0 0 10px}.msg{font-size:.9rem;color:#606775;line-height:2}.bar{height:8px;background:#eee;border-radius:999px;overflow:hidden;margin:20px 0}.bar i{display:block;height:100%;width:20%;background:#c70022;animation:p 1.4s infinite ease-in-out}@keyframes p{50%{width:85%}100%{width:100%}}
+  </style>
+</head>
+<body>
+<div class="box">
+  <h1>در حال بازیابی نسخه سالم سامانه...</h1>
+  <div class="msg" id="msg">کش قدیمی و Service Worker در حال پاک‌سازی است.</div>
+  <div class="bar"><i></i></div>
+</div>
+<script>
+(async()=>{
+  const msg=document.getElementById('msg');
+  try{
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r=>r.unregister().catch(()=>false)));
+    }
+
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.map(k=>caches.delete(k)));
+    }
+
+    // Clear only Daily Market instant-cache keys, preserve auth/session credentials.
+    for(const storage of [sessionStorage, localStorage]){
+      try{
+        const kill=[];
+        for(let i=0;i<storage.length;i++){
+          const k=storage.key(i);
+          if(k && (
+            k.startsWith('dmInstant:') ||
+            k.startsWith('dm-instant:') ||
+            k.startsWith('dmCache:')
+          )) kill.push(k);
+        }
+        kill.forEach(k=>storage.removeItem(k));
+      }catch(_){}
+    }
+
+    msg.textContent='پاک‌سازی انجام شد. در حال باز کردن نسخه تازه...';
+  }catch(e){
+    msg.textContent='پاک‌سازی انجام شد. در حال بارگذاری مجدد...';
+  }
+
+  setTimeout(()=>{
+    location.replace('index.html?recovery='+Date.now());
+  },500);
+})();
+</script>
+</body>
+</html>
