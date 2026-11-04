@@ -361,6 +361,33 @@
       lastServerWarmAt = Date.now();
     };
 
+
+    function prefetchAreaHeadShell(){
+      const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+      if(conn&&(conn.saveData||/2g/.test(String(conn.effectiveType||''))))return;
+
+      const assets=[
+        'areahead-dashboard.html',
+        'dm-instant.js',
+        'dm-loading.js'
+      ];
+
+      const run=()=>{
+        assets.forEach(url=>{
+          try{
+            const link=document.createElement('link');
+            link.rel='prefetch';
+            link.href=url;
+            link.as=url.endsWith('.js')?'script':'document';
+            document.head.appendChild(link);
+          }catch(_){}
+        });
+      };
+
+      if('requestIdleCallback'in window)requestIdleCallback(run,{timeout:1200});
+      else setTimeout(run,350);
+    }
+
     function warmLoginServer(force = false) {
       try {
         const url = window.DM_CONFIG && window.DM_CONFIG.APPS_SCRIPT_URL;
@@ -516,6 +543,7 @@
     // Warm once as soon as the login UI is ready, and again when the user
     // interacts after a long idle period. This reduces Apps Script cold-start pain.
     warmLoginServer(true);
+    prefetchAreaHeadShell();
     usernameInput.addEventListener('focus', () => warmLoginServer(false), { passive: true });
     passwordInput.addEventListener('focus', () => warmLoginServer(false), { passive: true });
     usernameInput.addEventListener('input', () => warmLoginServer(false), { passive: true });
