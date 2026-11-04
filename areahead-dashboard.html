@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b5001d">
-<!-- Daily Market Area Head Dashboard V26 Checklist Operational Update + V25.2 GPS -->
+<!-- Daily Market Area Head Dashboard V26 Checklist Operational Update + V25.2 GPS | HOTFIX 2026-11-04: store-manager/substitute presence is NOT mandatory -->
 <title>رئیس ناحیه | چک لیست دیلی مارکت</title>
 
 <style>
@@ -1160,8 +1160,8 @@ button{cursor:pointer}
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script src="app-config.js"></script>
-<script src="auth-client.js"></script>
+<script src="app-config.js?v=20261104-presence-hotfix"></script>
+<script src="auth-client.js?v=20261104-presence-hotfix"></script>
 
 <script id="dm-firstpaint-script">
 (function(){
@@ -1194,8 +1194,8 @@ button{cursor:pointer}
 })();
 </script>
 
-<script src="dm-loading.js"></script>
-<script src="dm-instant.js"></script>
+<script src="dm-loading.js?v=20261104-presence-hotfix"></script>
+<script src="dm-instant.js?v=20261104-presence-hotfix"></script>
 <script>
 const state={
   user:null,
@@ -2038,8 +2038,42 @@ function highlightMissingQuestions(){
   if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
 }
 
+
+/* ===== 2026-11-04 HOTFIX: STORE RESPONSIBLE / SUBSTITUTE PRESENCE IS OPTIONAL =====
+   This release intentionally does NOT gate final checklist submission on any
+   store-manager / responsible-person / substitute attendance field.
+   The only frontend completion gate is unanswered required checklist questions.
+*/
+function clearLegacyPresenceRequirement(){
+  try{
+    // Remove obsolete local/session flags left by older builds, if present.
+    const storages=[window.localStorage,window.sessionStorage];
+    const legacyHints=[
+      'storeManagerPresence','storeResponsiblePresence','responsiblePresence',
+      'substitutePresence','managerAttendance','storeAttendance',
+      'presenceRequired','responsibleAttendance'
+    ];
+    storages.forEach(storage=>{
+      if(!storage)return;
+      const keys=[];
+      for(let i=0;i<storage.length;i++){
+        const k=storage.key(i);
+        if(!k)continue;
+        const lower=String(k).toLowerCase();
+        if(legacyHints.some(h=>lower.includes(h.toLowerCase())))keys.push(k);
+      }
+      keys.forEach(k=>{try{storage.removeItem(k);}catch(_){}});
+    });
+  }catch(_){}
+  return true;
+}
+
 async function finishChecklist(){
   if(state.checklistData?.readOnly)return;
+
+  // Presence of store responsible person / substitute is deliberately OPTIONAL.
+  clearLegacyPresenceRequirement();
+
   const p=checklistProgressClient();
   if(p.remainingRequired>0){highlightMissingQuestions();toast(`${p.remainingRequired} سؤال هنوز بدون پاسخ است.`,'error');return;}
   if(!confirm('چک‌لیست نهایی شود و این بازدید پایان پیدا کند؟ پس از ثبت نهایی امکان ویرایش وجود ندارد.'))return;
@@ -2164,6 +2198,7 @@ DMInstant.on('areaHeadBootstrap',(res)=>{
   applyAreaHeadBootstrap(res);
 });
 
+clearLegacyPresenceRequirement();
 init().catch(e=>{setLoading(false);toast(e.message||'خطای غیرمنتظره','error');});
 </script>
 </body>
