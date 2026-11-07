@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Daily Market - Fast Login Test</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;display:grid;place-items:center;
+      font-family:Tahoma,Arial,sans-serif;background:#f4f6f9;color:#151922;
+      padding:20px
+    }
+    .card{
+      width:min(520px,100%);background:#fff;border:1px solid #e1e6ee;
+      border-radius:24px;padding:28px;box-shadow:0 18px 60px rgba(24,33,50,.10)
+    }
+    h1{margin:0 0 8px;font-size:1.35rem}
+    .sub{color:#687184;font-size:.88rem;line-height:1.9;margin-bottom:24px}
+    label{display:block;font-size:.82rem;font-weight:800;margin:14px 0 7px}
+    input{
+      width:100%;height:50px;border:1px solid #d9dee7;border-radius:14px;
+      padding:0 14px;font:inherit;font-size:1rem;outline:none
+    }
+    input:focus{border-color:#bd0c28;box-shadow:0 0 0 3px rgba(189,12,40,.08)}
+    button{
+      width:100%;height:52px;border:0;border-radius:14px;margin-top:20px;
+      background:#c50024;color:#fff;font:inherit;font-weight:900;font-size:1rem;
+      cursor:pointer
+    }
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .status{
+      margin-top:18px;border-radius:14px;padding:14px 16px;
+      background:#f5f6f8;color:#5e6674;font-size:.85rem;line-height:1.8
+    }
+    .status.ok{background:#effaf4;color:#147343}
+    .status.err{background:#fff0f2;color:#a30e27}
+    .metric{
+      margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px
+    }
+    .box{background:#f7f8fa;border:1px solid #e6e9ef;border-radius:14px;padding:12px}
+    .k{font-size:.7rem;color:#7c8493} .v{font-size:1.05rem;font-weight:900;margin-top:4px}
+    code{direction:ltr;display:block;overflow:auto;font-size:.72rem;margin-top:16px;
+      background:#111827;color:#e5e7eb;padding:12px;border-radius:12px}
+    iframe{display:none}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>تست Fast Login</h1>
+    <div class="sub">
+      این صفحه فقط به Test Deployment متصل است و هیچ Redirect یا عملیات عملیاتی انجام نمی‌دهد.
+    </div>
+
+    <form id="loginForm">
+      <label for="username">کد کاربری</label>
+      <input id="username" autocomplete="username" inputmode="numeric">
+
+      <label for="password">رمز عبور</label>
+      <input id="password" type="password" autocomplete="current-password">
+
+      <button id="btn" type="submit">تست ورود</button>
+    </form>
+
+    <div id="status" class="status">آماده تست.</div>
+
+    <div class="metric">
+      <div class="box"><div class="k">زمان پاسخ</div><div class="v" id="elapsed">—</div></div>
+      <div class="box"><div class="k">نتیجه</div><div class="v" id="result">—</div></div>
+    </div>
+
+    <code id="details">Test URL: https://script.google.com/macros/s/AKfycbzzU9a3y1YIK0HNyLCUslt5NsweRs9sJ82OYeToTlo/dev</code>
+
+    <iframe name="dmFastLoginFrame" id="dmFastLoginFrame"></iframe>
+  </div>
+
+<script>
+(() => {
+  const TEST_URL = 'https://script.google.com/macros/s/AKfycbzzU9a3y1YIK0HNyLCUslt5NsweRs9sJ82OYeToTlo/dev';
+  const form = document.getElementById('loginForm');
+  const btn = document.getElementById('btn');
+  const statusEl = document.getElementById('status');
+  const elapsedEl = document.getElementById('elapsed');
+  const resultEl = document.getElementById('result');
+  const detailsEl = document.getElementById('details');
+
+  let startedAt = 0;
+  let timer = null;
+
+  function setStatus(text, type='') {
+    statusEl.className = 'status' + (type ? ' ' + type : '');
+    statusEl.textContent = text;
+  }
+
+  function submitLogin(username, password) {
+    const bridge = document.createElement('form');
+    bridge.method = 'POST';
+    bridge.action = TEST_URL;
+    bridge.target = 'dmFastLoginFrame';
+    bridge.style.display = 'none';
+
+    const payload = {
+      action: 'login',
+      username,
+      password,
+      userAgent: navigator.userAgent
+    };
+
+    Object.keys(payload).forEach(key => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = payload[key];
+      bridge.appendChild(input);
+    });
+
+    document.body.appendChild(bridge);
+    bridge.submit();
+    setTimeout(() => bridge.remove(), 1000);
+  }
+
+  window.addEventListener('message', event => {
+    const data = event.data;
+    if (!data || data.source !== 'DM_AUTH') return;
+
+    clearTimeout(timer);
+    const ms = Math.round(performance.now() - startedAt);
+
+    btn.disabled = false;
+    elapsedEl.textContent = ms.toLocaleString('fa-IR') + ' ms';
+
+    if (data.success) {
+      resultEl.textContent = 'LOGIN_OK';
+      setStatus('ورود تستی موفق بود. هیچ Redirect انجام نشد.', 'ok');
+      detailsEl.textContent =
+        'role: ' + (data.user?.role || '') +
+        '\nuser: ' + (data.user?.fullName || '') +
+        '\nredirect returned by backend: ' + (data.redirect || '') +
+        '\nresponse time: ' + ms + ' ms';
+    } else {
+      resultEl.textContent = data.code || 'FAILED';
+      setStatus(data.message || 'ورود ناموفق بود.', 'err');
+      detailsEl.textContent =
+        'code: ' + (data.code || '') +
+        '\nresponse time: ' + ms + ' ms';
+    }
+  });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) {
+      setStatus('کد کاربری و رمز عبور را وارد کن.', 'err');
+      return;
+    }
+
+    btn.disabled = true;
+    elapsedEl.textContent = '...';
+    resultEl.textContent = 'WAITING';
+    setStatus('در حال ارسال Login فقط به Test Deployment...');
+
+    startedAt = performance.now();
+    submitLogin(username, password);
+
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      btn.disabled = false;
+      const ms = Math.round(performance.now() - startedAt);
+      elapsedEl.textContent = ms.toLocaleString('fa-IR') + ' ms';
+      resultEl.textContent = 'TIMEOUT';
+      setStatus('تا ۲۰ ثانیه پاسخ DM_AUTH دریافت نشد.', 'err');
+    }, 20000);
+  });
+})();
+</script>
+</body>
+</html>
