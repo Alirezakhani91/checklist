@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Daily Market - Prewarm Login Test</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Tahoma,Arial,sans-serif;background:#f4f6f9;color:#151922;padding:20px}
+    .card{width:min(700px,100%);background:#fff;border:1px solid #e1e6ee;border-radius:24px;padding:28px;box-shadow:0 18px 60px rgba(24,33,50,.10)}
+    h1{margin:0 0 8px;font-size:1.35rem}
+    .sub{color:#687184;font-size:.88rem;line-height:1.9;margin-bottom:24px}
+    label{display:block;font-size:.82rem;font-weight:800;margin:14px 0 7px}
+    input{width:100%;height:50px;border:1px solid #d9dee7;border-radius:14px;padding:0 14px;font:inherit;font-size:1rem;outline:none}
+    button{width:100%;height:52px;border:0;border-radius:14px;margin-top:20px;background:#c50024;color:#fff;font:inherit;font-weight:900;font-size:1rem;cursor:pointer}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .status{margin-top:16px;border-radius:14px;padding:14px 16px;background:#f5f6f8;color:#5e6674;font-size:.85rem;line-height:1.8}
+    .status.ok{background:#effaf4;color:#147343}
+    .status.err{background:#fff0f2;color:#a30e27}
+    .grid{margin-top:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .box{background:#f7f8fa;border:1px solid #e6e9ef;border-radius:14px;padding:12px}
+    .k{font-size:.7rem;color:#7c8493} .v{font-size:1.05rem;font-weight:900;margin-top:4px}
+    code{direction:ltr;display:block;overflow:auto;font-size:.72rem;margin-top:16px;background:#111827;color:#e5e7eb;padding:12px;border-radius:12px;white-space:pre-wrap}
+    iframe{display:none}
+    @media(max-width:600px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>تست Login با Pre-Warm</h1>
+  <div class="sub">ابتدا همان Web App تستی با یک Health سبک Warm می‌شود؛ سپس Login اندازه‌گیری می‌شود.</div>
+
+  <div id="warmStatus" class="status">در حال Warm کردن Deployment تستی...</div>
+
+  <form id="loginForm">
+    <label for="username">کد کاربری</label>
+    <input id="username" autocomplete="username" inputmode="numeric">
+
+    <label for="password">رمز عبور</label>
+    <input id="password" type="password" autocomplete="current-password">
+
+    <button id="btn" type="submit" disabled>تست ورود بعد از Warm-up</button>
+  </form>
+
+  <div id="loginStatus" class="status">بعد از تکمیل Warm-up آماده تست می‌شود.</div>
+
+  <div class="grid">
+    <div class="box"><div class="k">Warm-up</div><div class="v" id="warmMs">—</div></div>
+    <div class="box"><div class="k">زمان کل Login مرورگر</div><div class="v" id="loginMs">—</div></div>
+    <div class="box"><div class="k">کل Backend</div><div class="v" id="backendMs">—</div></div>
+    <div class="box"><div class="k">نتیجه</div><div class="v" id="result">—</div></div>
+  </div>
+
+  <code id="details">Test URL: https://script.google.com/macros/s/AKfycbwTT3XulRf4jfDx0uh3EFJKLtEIapXKdDcGHx3JtwsLnTdJ4zbitL1cKnhSBdz3LgYE/exec</code>
+  <iframe name="dmFastLoginFrame" id="dmFastLoginFrame"></iframe>
+</div>
+
+<script>
+(() => {
+  const TEST_URL = 'https://script.google.com/macros/s/AKfycbwTT3XulRf4jfDx0uh3EFJKLtEIapXKdDcGHx3JtwsLnTdJ4zbitL1cKnhSBdz3LgYE/exec';
+  const btn = document.getElementById('btn');
+  const warmStatus = document.getElementById('warmStatus');
+  const loginStatus = document.getElementById('loginStatus');
+  const warmMsEl = document.getElementById('warmMs');
+  const loginMsEl = document.getElementById('loginMs');
+  const backendMsEl = document.getElementById('backendMs');
+  const resultEl = document.getElementById('result');
+  const detailsEl = document.getElementById('details');
+
+  let loginStartedAt = 0;
+  let loginTimer = null;
+
+  function healthCallback(data) {
+    const ms = Math.round(performance.now() - window.__warmStartedAt);
+    warmMsEl.textContent = ms.toLocaleString('fa-IR') + ' ms';
+
+    if (data && data.success) {
+      warmStatus.className = 'status ok';
+      warmStatus.textContent = 'Deployment تستی Warm شد. حالا Login را تست کن.';
+      btn.disabled = false;
+    } else {
+      warmStatus.className = 'status err';
+      warmStatus.textContent = 'Health پاسخ معتبر نداد؛ Login هنوز قابل تست است.';
+      btn.disabled = false;
+    }
+
+    try {
+      document.getElementById('warmScript')?.remove();
+    } catch (_) {}
+  }
+  window.dmWarmCallback = healthCallback;
+
+  function warm() {
+    window.__warmStartedAt = performance.now();
+    const s = document.createElement('script');
+    s.id = 'warmScript';
+    const sep = TEST_URL.includes('?') ? '&' : '?';
+    s.src = TEST_URL + sep + 'action=health&callback=dmWarmCallback&_=' + Date.now();
+    s.onerror = () => {
+      const ms = Math.round(performance.now() - window.__warmStartedAt);
+      warmMsEl.textContent = ms.toLocaleString('fa-IR') + ' ms';
+      warmStatus.className = 'status err';
+      warmStatus.textContent = 'Warm-up خطا داد؛ Login هنوز قابل تست است.';
+      btn.disabled = false;
+    };
+    document.head.appendChild(s);
+  }
+
+  function submitLogin(username, password) {
+    const bridge = document.createElement('form');
+    bridge.method = 'POST';
+    bridge.action = TEST_URL;
+    bridge.target = 'dmFastLoginFrame';
+    bridge.style.display = 'none';
+
+    const payload = {
+      action:'login',
+      username,
+      password,
+      userAgent:navigator.userAgent
+    };
+
+    Object.keys(payload).forEach(key => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = payload[key];
+      bridge.appendChild(input);
+    });
+
+    document.body.appendChild(bridge);
+    bridge.submit();
+    setTimeout(() => bridge.remove(), 1000);
+  }
+
+  window.addEventListener('message', event => {
+    const data = event.data;
+    if (!data || data.source !== 'DM_AUTH') return;
+
+    clearTimeout(loginTimer);
+    const ms = Math.round(performance.now() - loginStartedAt);
+    loginMsEl.textContent = ms.toLocaleString('fa-IR') + ' ms';
+    backendMsEl.textContent = data.loginPerf?.totalBackendMs != null
+      ? Number(data.loginPerf.totalBackendMs).toLocaleString('fa-IR') + ' ms'
+      : '—';
+
+    btn.disabled = false;
+
+    if (data.success) {
+      resultEl.textContent = 'LOGIN_OK';
+      loginStatus.className = 'status ok';
+      loginStatus.textContent = 'Login موفق بود.';
+    } else {
+      resultEl.textContent = data.code || 'FAILED';
+      loginStatus.className = 'status err';
+      loginStatus.textContent = data.message || 'Login ناموفق بود.';
+    }
+
+    detailsEl.textContent =
+      'browserLoginMs: ' + ms +
+      '\nbackendMs: ' + (data.loginPerf?.totalBackendMs ?? '') +
+      '\nloginPerf: ' + JSON.stringify(data.loginPerf || {}, null, 2);
+  });
+
+  document.getElementById('loginForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) {
+      loginStatus.className = 'status err';
+      loginStatus.textContent = 'کد کاربری و رمز عبور را وارد کن.';
+      return;
+    }
+
+    btn.disabled = true;
+    resultEl.textContent = 'WAITING';
+    loginMsEl.textContent = '...';
+    backendMsEl.textContent = '...';
+    loginStatus.className = 'status';
+    loginStatus.textContent = 'در حال Login روی Web App گرم‌شده...';
+
+    loginStartedAt = performance.now();
+    submitLogin(username,password);
+
+    clearTimeout(loginTimer);
+    loginTimer = setTimeout(() => {
+      btn.disabled = false;
+      const ms = Math.round(performance.now() - loginStartedAt);
+      loginMsEl.textContent = ms.toLocaleString('fa-IR') + ' ms';
+      resultEl.textContent = 'TIMEOUT';
+      loginStatus.className = 'status err';
+      loginStatus.textContent = 'تا ۲۰ ثانیه پاسخ Login نرسید.';
+    },20000);
+  });
+
+  warm();
+})();
+</script>
+</body>
+</html>
