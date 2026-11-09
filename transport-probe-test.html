@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Daily Market - Transport Probe</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;display:grid;place-items:center;
+      font-family:Tahoma,Arial,sans-serif;background:#f4f6f9;color:#151922;padding:20px
+    }
+    .card{
+      width:min(680px,100%);background:#fff;border:1px solid #e1e6ee;
+      border-radius:24px;padding:28px;box-shadow:0 18px 60px rgba(24,33,50,.10)
+    }
+    h1{margin:0 0 8px;font-size:1.35rem}
+    .sub{color:#687184;font-size:.88rem;line-height:1.9;margin-bottom:24px}
+    button{
+      width:100%;height:54px;border:0;border-radius:14px;
+      background:#c50024;color:#fff;font:inherit;font-weight:900;font-size:1rem;cursor:pointer
+    }
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .status{
+      margin-top:18px;border-radius:14px;padding:14px 16px;
+      background:#f5f6f8;color:#5e6674;font-size:.85rem;line-height:1.8
+    }
+    .status.ok{background:#effaf4;color:#147343}
+    .status.err{background:#fff0f2;color:#a30e27}
+    .grid{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .box{background:#f7f8fa;border:1px solid #e6e9ef;border-radius:14px;padding:14px}
+    .k{font-size:.72rem;color:#7c8493}
+    .v{font-size:1.15rem;font-weight:900;margin-top:5px}
+    code{
+      direction:ltr;display:block;overflow:auto;font-size:.72rem;margin-top:18px;
+      background:#111827;color:#e5e7eb;padding:12px;border-radius:12px;white-space:pre-wrap
+    }
+    iframe{display:none}
+    @media(max-width:600px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>Transport Probe</h1>
+  <div class="sub">
+    این تست هیچ Login، Session یا Spreadsheet ندارد؛ فقط زمان خالص POST → Apps Script → bridge → postMessage را اندازه می‌گیرد.
+  </div>
+
+  <button id="btn">اجرای تست Transport</button>
+
+  <div id="status" class="status">آماده تست.</div>
+
+  <div class="grid">
+    <div class="box"><div class="k">زمان کل Transport</div><div class="v" id="elapsed">—</div></div>
+    <div class="box"><div class="k">نتیجه</div><div class="v" id="result">—</div></div>
+  </div>
+
+  <code id="details">Test URL: https://script.google.com/macros/s/AKfycbw211nwCozxyIwXRu-Ei4ogFAVntXcFCqw1rc47OkVq8rDoMsVXsKJ2uRvVNeSFzyw_/exec</code>
+
+  <iframe name="dmTransportFrame" id="dmTransportFrame"></iframe>
+</div>
+
+<script>
+(() => {
+  const TEST_URL = 'https://script.google.com/macros/s/AKfycbw211nwCozxyIwXRu-Ei4ogFAVntXcFCqw1rc47OkVq8rDoMsVXsKJ2uRvVNeSFzyw_/exec';
+  const btn = document.getElementById('btn');
+  const statusEl = document.getElementById('status');
+  const elapsedEl = document.getElementById('elapsed');
+  const resultEl = document.getElementById('result');
+  const detailsEl = document.getElementById('details');
+
+  let startedAt = 0;
+  let timer = null;
+
+  function setStatus(text,type='') {
+    statusEl.className='status'+(type?' '+type:'');
+    statusEl.textContent=text;
+  }
+
+  function submitProbe() {
+    const form=document.createElement('form');
+    form.method='POST';
+    form.action=TEST_URL;
+    form.target='dmTransportFrame';
+    form.style.display='none';
+
+    const payload={
+      action:'transportProbe',
+      requestId:'TP-'+Date.now()
+    };
+
+    Object.keys(payload).forEach(key=>{
+      const input=document.createElement('input');
+      input.type='hidden';
+      input.name=key;
+      input.value=payload[key];
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+    setTimeout(()=>form.remove(),1000);
+  }
+
+  window.addEventListener('message', event => {
+    const data=event.data;
+    if(!data || data.source!=='DM_AUTH') return;
+    if(data.code!=='TRANSPORT_PROBE_OK') return;
+
+    clearTimeout(timer);
+    const ms=Math.round(performance.now()-startedAt);
+
+    btn.disabled=false;
+    elapsedEl.textContent=ms.toLocaleString('fa-IR')+' ms';
+    resultEl.textContent='OK';
+    setStatus('Transport موفق بود.','ok');
+
+    detailsEl.textContent =
+      'transportMs: '+ms+
+      '\nserverAt: '+(data.serverAt||'')+
+      '\ncode: '+(data.code||'');
+  });
+
+  btn.addEventListener('click', () => {
+    btn.disabled=true;
+    elapsedEl.textContent='...';
+    resultEl.textContent='WAITING';
+    setStatus('در حال اندازه‌گیری Transport...');
+
+    startedAt=performance.now();
+    submitProbe();
+
+    clearTimeout(timer);
+    timer=setTimeout(()=>{
+      btn.disabled=false;
+      const ms=Math.round(performance.now()-startedAt);
+      elapsedEl.textContent=ms.toLocaleString('fa-IR')+' ms';
+      resultEl.textContent='TIMEOUT';
+      setStatus('تا ۲۰ ثانیه پاسخ Transport دریافت نشد.','err');
+    },20000);
+  });
+})();
+</script>
+</body>
+</html>
