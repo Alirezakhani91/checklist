@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Daily Market - Session Performance Test</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;display:grid;place-items:center;
+      font-family:Tahoma,Arial,sans-serif;background:#f4f6f9;color:#151922;padding:20px
+    }
+    .card{
+      width:min(760px,100%);background:#fff;border:1px solid #e1e6ee;
+      border-radius:24px;padding:28px;box-shadow:0 18px 60px rgba(24,33,50,.10)
+    }
+    h1{margin:0 0 8px;font-size:1.35rem}
+    .sub{color:#687184;font-size:.88rem;line-height:1.9;margin-bottom:24px}
+    label{display:block;font-size:.82rem;font-weight:800;margin:14px 0 7px}
+    input{
+      width:100%;height:50px;border:1px solid #d9dee7;border-radius:14px;
+      padding:0 14px;font:inherit;font-size:1rem;outline:none
+    }
+    button{
+      width:100%;height:52px;border:0;border-radius:14px;margin-top:20px;
+      background:#c50024;color:#fff;font:inherit;font-weight:900;font-size:1rem;cursor:pointer
+    }
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .status{
+      margin-top:18px;border-radius:14px;padding:14px 16px;
+      background:#f5f6f8;color:#5e6674;font-size:.85rem;line-height:1.8
+    }
+    .status.ok{background:#effaf4;color:#147343}
+    .status.err{background:#fff0f2;color:#a30e27}
+    .grid{
+      margin-top:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px
+    }
+    .box{background:#f7f8fa;border:1px solid #e6e9ef;border-radius:14px;padding:12px}
+    .k{font-size:.72rem;color:#7c8493}
+    .v{font-size:1.08rem;font-weight:900;margin-top:4px}
+    .section-title{margin-top:24px;font-weight:900;font-size:.95rem}
+    code{
+      direction:ltr;display:block;overflow:auto;font-size:.72rem;margin-top:18px;
+      background:#111827;color:#e5e7eb;padding:12px;border-radius:12px;white-space:pre-wrap
+    }
+    iframe{display:none}
+    @media(max-width:600px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>تست دقیق Session Login</h1>
+  <div class="sub">
+    فقط به Deployment تستی مستقل وصل است. Production اصلی هیچ تغییری نکرده است.
+  </div>
+
+  <form id="loginForm">
+    <label for="username">کد کاربری</label>
+    <input id="username" autocomplete="username" inputmode="numeric">
+
+    <label for="password">رمز عبور</label>
+    <input id="password" type="password" autocomplete="current-password">
+
+    <button id="btn" type="submit">تست ورود</button>
+  </form>
+
+  <div id="status" class="status">آماده تست.</div>
+
+  <div class="section-title">نمای کلی</div>
+  <div class="grid">
+    <div class="box"><div class="k">زمان کل مرورگر</div><div class="v" id="browserMs">—</div></div>
+    <div class="box"><div class="k">کل Backend</div><div class="v" id="backendMs">—</div></div>
+    <div class="box"><div class="k">کل createSession</div><div class="v" id="createSessionMs">—</div></div>
+    <div class="box"><div class="k">نتیجه</div><div class="v" id="result">—</div></div>
+  </div>
+
+  <div class="section-title">ریز زمان‌های createSession</div>
+  <div class="grid" id="sessionGrid"></div>
+
+  <div class="section-title">ریز زمان‌های Login</div>
+  <div class="grid" id="loginGrid"></div>
+
+  <code id="details">Test URL: https://script.google.com/macros/s/AKfycbw211nwCozxyIwXRu-Ei4ogFAVntXcFCqw1rc47OkVq8rDoMsVXsKJ2uRvVNeSFzyw_/exec</code>
+
+  <iframe name="dmSessionPerfFrame" id="dmSessionPerfFrame"></iframe>
+</div>
+
+<script>
+(() => {
+  const TEST_URL = 'https://script.google.com/macros/s/AKfycbw211nwCozxyIwXRu-Ei4ogFAVntXcFCqw1rc47OkVq8rDoMsVXsKJ2uRvVNeSFzyw_/exec';
+  const btn = document.getElementById('btn');
+  const statusEl = document.getElementById('status');
+  const browserMsEl = document.getElementById('browserMs');
+  const backendMsEl = document.getElementById('backendMs');
+  const createSessionMsEl = document.getElementById('createSessionMs');
+  const resultEl = document.getElementById('result');
+  const sessionGrid = document.getElementById('sessionGrid');
+  const loginGrid = document.getElementById('loginGrid');
+  const detailsEl = document.getElementById('details');
+
+  let startedAt = 0;
+  let timer = null;
+
+  function setStatus(text,type='') {
+    statusEl.className='status'+(type?' '+type:'');
+    statusEl.textContent=text;
+  }
+
+  function box(label,value) {
+    const el=document.createElement('div');
+    el.className='box';
+    el.innerHTML='<div class="k">'+label+'</div><div class="v">'+
+      Number(value||0).toLocaleString('fa-IR')+' ms</div>';
+    return el;
+  }
+
+  function renderPerf(perf) {
+    sessionGrid.innerHTML='';
+    loginGrid.innerHTML='';
+
+    if(!perf || typeof perf!=='object') return;
+
+    backendMsEl.textContent =
+      perf.totalBackendMs!=null ? Number(perf.totalBackendMs).toLocaleString('fa-IR')+' ms' : '—';
+
+    createSessionMsEl.textContent =
+      perf.createSessionMs!=null ? Number(perf.createSessionMs).toLocaleString('fa-IR')+' ms' : '—';
+
+    const sessionItems = [
+      ['ensureSessionsSheetMs','Ensure Sessions Sheet'],
+      ['tokenAndDatesMs','Token + Dates'],
+      ['sessionAppendRowMs','SESSIONS appendRow'],
+      ['sessionInvalidateMs','Invalidate Session Cache'],
+      ['sessionScaleSettingsMs','Scale Settings'],
+      ['sessionGetLastRowMs','SESSIONS getLastRow'],
+      ['sessionCacheWriteMs','Session Cache Write'],
+      ['sessionTotalMs','جمع داخلی Session']
+    ];
+
+    sessionItems.forEach(([key,label]) => {
+      if(perf[key]!=null) sessionGrid.appendChild(box(label,perf[key]));
+    });
+
+    const loginItems = [
+      ['getSpreadsheetMs','بازکردن Spreadsheet'],
+      ['readUsersMs','خواندن USERS'],
+      ['findUserMs','پیدا کردن User'],
+      ['settingsMs','خواندن Settings'],
+      ['passwordHashMs','Hash رمز'],
+      ['resetFailedAttemptsMs','Reset Failed Attempts'],
+      ['clearLockedUntilMs','پاک کردن Lock'],
+      ['lastLoginWriteMs','ثبت Last Login'],
+      ['auditMs','ثبت Audit']
+    ];
+
+    loginItems.forEach(([key,label]) => {
+      if(perf[key]!=null) loginGrid.appendChild(box(label,perf[key]));
+    });
+  }
+
+  function submitLogin(username,password) {
+    const form=document.createElement('form');
+    form.method='POST';
+    form.action=TEST_URL;
+    form.target='dmSessionPerfFrame';
+    form.style.display='none';
+
+    const payload={
+      action:'login',
+      username,
+      password,
+      userAgent:navigator.userAgent
+    };
+
+    Object.keys(payload).forEach(key=>{
+      const input=document.createElement('input');
+      input.type='hidden';
+      input.name=key;
+      input.value=payload[key];
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+    setTimeout(()=>form.remove(),1000);
+  }
+
+  window.addEventListener('message', event => {
+    const data=event.data;
+    if(!data || data.source!=='DM_AUTH') return;
+
+    clearTimeout(timer);
+    const browserMs=Math.round(performance.now()-startedAt);
+    browserMsEl.textContent=browserMs.toLocaleString('fa-IR')+' ms';
+    btn.disabled=false;
+
+    if(data.success) {
+      resultEl.textContent='LOGIN_OK';
+      setStatus('ورود موفق بود. ریز زمان Session پایین نمایش داده شده است.','ok');
+      renderPerf(data.loginPerf);
+    } else {
+      resultEl.textContent=data.code||'FAILED';
+      setStatus(data.message||'ورود ناموفق بود.','err');
+      renderPerf(data.loginPerf);
+    }
+
+    detailsEl.textContent =
+      'browserLoginMs: '+browserMs+
+      '\nloginPerf: '+JSON.stringify(data.loginPerf||{},null,2);
+  });
+
+  document.getElementById('loginForm').addEventListener('submit', e => {
+    e.preventDefault();
+
+    const username=document.getElementById('username').value.trim();
+    const password=document.getElementById('password').value;
+
+    if(!username || !password) {
+      setStatus('کد کاربری و رمز عبور را وارد کن.','err');
+      return;
+    }
+
+    btn.disabled=true;
+    sessionGrid.innerHTML='';
+    loginGrid.innerHTML='';
+    browserMsEl.textContent='...';
+    backendMsEl.textContent='...';
+    createSessionMsEl.textContent='...';
+    resultEl.textContent='WAITING';
+    setStatus('در حال اندازه‌گیری Session...');
+
+    startedAt=performance.now();
+    submitLogin(username,password);
+
+    clearTimeout(timer);
+    timer=setTimeout(()=>{
+      btn.disabled=false;
+      const ms=Math.round(performance.now()-startedAt);
+      browserMsEl.textContent=ms.toLocaleString('fa-IR')+' ms';
+      resultEl.textContent='TIMEOUT';
+      setStatus('تا ۲۰ ثانیه پاسخ Login دریافت نشد.','err');
+    },20000);
+  });
+})();
+</script>
+</body>
+</html>
