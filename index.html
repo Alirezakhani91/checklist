@@ -283,6 +283,63 @@
       .brand-logo{width:min(92%,540px)}
     }
   </style>
+
+  <script>
+    // Checklist recovery guard:
+    // remove only legacy Service Workers and Cache entries that belong to /checklist/.
+    // Other GitHub Pages projects on this origin are left untouched.
+    (function () {
+      async function cleanupChecklistRuntime() {
+        try {
+          if ('serviceWorker' in navigator) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(
+              registrations
+                .filter(function (reg) {
+                  try {
+                    return new URL(reg.scope).pathname.indexOf('/checklist/') === 0;
+                  } catch (_) {
+                    return false;
+                  }
+                })
+                .map(function (reg) {
+                  return reg.unregister().catch(function () { return false; });
+                })
+            );
+          }
+
+          if ('caches' in window) {
+            const cacheNames = await caches.keys();
+            await Promise.all(
+              cacheNames.map(async function (cacheName) {
+                try {
+                  const cache = await caches.open(cacheName);
+                  const requests = await cache.keys();
+
+                  await Promise.all(
+                    requests
+                      .filter(function (request) {
+                        try {
+                          return new URL(request.url).pathname.indexOf('/checklist/') === 0;
+                        } catch (_) {
+                          return false;
+                        }
+                      })
+                      .map(function (request) {
+                        return cache.delete(request).catch(function () { return false; });
+                      })
+                  );
+                } catch (_) {}
+              })
+            );
+          }
+        } catch (_) {}
+      }
+
+      cleanupChecklistRuntime();
+    })();
+  </script>
+
 </head>
 <body>
   <main class="page">
