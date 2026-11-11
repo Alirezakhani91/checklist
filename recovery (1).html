@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#870015">
+  <title>بازیابی چک‌لیست دیلی مارکت</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;display:grid;place-items:center;
+      font-family:Tahoma,Arial,sans-serif;background:#070a13;color:#fff;padding:22px
+    }
+    .card{
+      width:min(520px,100%);padding:28px;border-radius:22px;
+      background:#111724;border:1px solid rgba(255,255,255,.08);
+      text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.32)
+    }
+    .spinner{
+      width:42px;height:42px;border:4px solid rgba(255,255,255,.14);
+      border-top-color:#e00024;border-radius:50%;margin:0 auto 20px;
+      animation:s .8s linear infinite
+    }
+    @keyframes s{to{transform:rotate(360deg)}}
+    h1{font-size:1.15rem;margin:0 0 10px}
+    p{color:#b7bfce;line-height:1.9;margin:0;font-size:.9rem}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="spinner"></div>
+    <h1>در حال بازیابی سامانه...</h1>
+    <p>نسخه ذخیره‌شده قبلی پاک می‌شود و آخرین نسخه چک‌لیست باز خواهد شد.</p>
+  </div>
+
+<script>
+(async function () {
+  try {
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(
+        registrations
+          .filter(function (reg) {
+            try {
+              return new URL(reg.scope).pathname.indexOf('/checklist/') === 0;
+            } catch (_) {
+              return false;
+            }
+          })
+          .map(function (reg) {
+            return reg.unregister().catch(function () { return false; });
+          })
+      );
+    }
+
+    if ('caches' in window) {
+      const cacheNames = await caches.keys();
+      await Promise.all(
+        cacheNames.map(async function (cacheName) {
+          try {
+            const cache = await caches.open(cacheName);
+            const requests = await cache.keys();
+            await Promise.all(
+              requests
+                .filter(function (request) {
+                  try {
+                    return new URL(request.url).pathname.indexOf('/checklist/') === 0;
+                  } catch (_) {
+                    return false;
+                  }
+                })
+                .map(function (request) {
+                  return cache.delete(request).catch(function () { return false; });
+                })
+            );
+          } catch (_) {}
+        })
+      );
+    }
+  } catch (_) {}
+
+  setTimeout(function () {
+    location.replace('./index.html?fresh=' + Date.now());
+  }, 700);
+})();
+</script>
+</body>
+</html>
