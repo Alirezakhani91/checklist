@@ -1,0 +1,2177 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#b5001d">
+<!-- Daily Market Area Head Dashboard V26 Checklist Operational Update + V25.2 GPS -->
+<title>رئیس ناحیه | چک لیست دیلی مارکت</title>
+
+<style>
+@font-face{
+  font-family:Vazir;
+  src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2") format("woff2");
+  font-weight:400;
+  font-display:swap
+}
+@font-face{
+  font-family:Vazir;
+  src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2") format("woff2");
+  font-weight:700;
+  font-display:swap
+}
+
+:root{
+  --red:#cb0023;
+  --red-dark:#990018;
+  --red-soft:#fff0f3;
+  --ink:#11141c;
+  --muted:#747b8b;
+  --bg:#f4f6fa;
+  --card:#fff;
+  --line:#e6e9ef;
+  --soft:#f8f9fc;
+  --green:#16865a;
+  --green-soft:#ebf8f2;
+  --yellow:#c98b00;
+  --yellow-soft:#fff8e7;
+  --orange:#dc6b12;
+  --orange-soft:#fff3e9;
+  --blue:#315fd8;
+  --blue-soft:#eef3ff;
+  --shadow:0 18px 50px rgba(23,30,48,.08);
+  --radius:22px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Vazir,Tahoma,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* ===== DESKTOP SHELL ===== */
+.app{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:260px minmax(0,1fr)
+}
+.sidebar{
+  position:sticky;
+  top:0;
+  height:100vh;
+  padding:28px 20px;
+  color:#fff;
+  background:linear-gradient(180deg,#910016 0%,#cb0023 48%,#a9001b 100%);
+  display:flex;
+  flex-direction:column;
+  z-index:20
+}
+.brand{padding:3px 8px 25px;border-bottom:1px solid rgba(255,255,255,.14)}
+.brand strong{font-size:1.65rem;font-weight:900}
+.brand span{display:block;font-size:.77rem;opacity:.8;margin-top:4px}
+.user-mini{display:flex;align-items:center;gap:11px;padding:20px 8px}
+.avatar{width:44px;height:44px;border-radius:15px;background:rgba(255,255,255,.15);display:grid;place-items:center;font-weight:900}
+.user-mini strong{display:block;font-size:.9rem}
+.user-mini span{display:block;font-size:.72rem;opacity:.76;margin-top:2px}
+.nav{display:grid;gap:8px}
+.nav-btn{
+  border:0;background:transparent;color:rgba(255,255,255,.78);
+  border-radius:14px;padding:13px 14px;text-align:right;display:flex;align-items:center;gap:11px
+}
+.nav-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+.nav-btn.active{background:#fff;color:#a6001b;font-weight:800;box-shadow:0 8px 20px rgba(83,0,14,.16)}
+.nav-btn.disabled{opacity:.4;cursor:default}
+.side-foot{margin-top:auto}
+.logout{width:100%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;border-radius:14px;padding:12px}
+
+.main{min-width:0}
+.topbar{
+  height:82px;background:rgba(255,255,255,.94);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;
+  padding:0 34px;position:sticky;top:0;z-index:15
+}
+.topbar h1{margin:0;font-size:1.08rem}
+.topbar p{margin:5px 0 0;color:var(--muted);font-size:.77rem}
+.icon-btn{width:42px;height:42px;border:1px solid var(--line);background:#fff;border-radius:13px;display:grid;place-items:center;color:#5a6272}
+.icon-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+.content{width:min(1460px,calc(100% - 48px));margin:28px auto 90px}
+
+/* ===== HERO / STATS ===== */
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}
+.hero h2{margin:0;font-size:1.75rem}
+.hero p{margin:7px 0 0;color:var(--muted);font-size:.88rem}
+.date-pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);padding:9px 13px;border-radius:999px;font-size:.76rem;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:18px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:19px;padding:17px 18px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 8px 28px rgba(20,28,48,.04)}
+.stat-num{font-size:1.55rem;font-weight:900;line-height:1}
+.stat-label{font-size:.75rem;color:var(--muted);margin-top:7px}
+.stat-icon{width:43px;height:43px;border-radius:14px;display:grid;place-items:center;background:var(--red-soft);color:var(--red)}
+.stat-icon.green{background:var(--green-soft);color:var(--green)}
+.stat-icon.yellow{background:var(--yellow-soft);color:var(--yellow)}
+.stat-icon.blue{background:var(--blue-soft);color:var(--blue)}
+.stat-icon svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.9}
+
+/* ===== ACTIVE VISIT ===== */
+.active-box{margin-bottom:18px;border:1px solid #cce9dd;background:linear-gradient(135deg,#effaf5,#fff);border-radius:22px;padding:18px 20px;box-shadow:0 10px 30px rgba(21,124,83,.06)}
+.active-box.pending{border-color:#f1dfb4;background:linear-gradient(135deg,#fff8e9,#fff)}
+.active-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.active-label{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:6px 10px;font-size:.7rem;font-weight:800;background:#e6f7ef;color:#13764f}
+.active-box.pending .active-label{background:#fff1cd;color:#946600}
+.active-title{font-size:1.03rem;font-weight:900;margin-top:9px}
+.active-meta{font-size:.73rem;color:var(--muted);margin-top:5px}
+.active-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ===== CARDS ===== */
+.grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,.72fr);gap:18px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+.panel-head{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:14px}
+.panel-head h3{margin:0;font-size:1.08rem}
+.panel-head p{margin:5px 0 0;color:var(--muted);font-size:.75rem}
+.panel-body{padding:16px 18px 20px}
+
+/* ===== ROUTE LIST ===== */
+.route-list{display:grid;gap:10px}
+.store-item{border:1px solid var(--line);border-radius:18px;padding:13px 14px;display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:12px;align-items:center;background:#fff;transition:.15s}
+.store-item:hover{border-color:#d5d9e2;transform:translateY(-1px)}
+.store-item.inprogress{border-color:#b9dfcf;background:#fbfffd}
+.store-item.pending{border-color:#efdba9;background:#fffdf7}
+.store-item.completed{background:#fafafa;opacity:.82}
+.seq{width:38px;height:38px;border-radius:12px;background:#171b25;color:#fff;display:grid;place-items:center;font-weight:900;font-size:.78rem}
+.store-item.completed .seq{background:var(--green)}
+.store-item.pending .seq{background:var(--yellow)}
+.store-item.inprogress .seq{background:var(--green)}
+.store-name{font-weight:900;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.store-code{font-size:.7rem;color:#7a8290;margin-top:3px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border-radius:999px;font-size:.64rem;font-weight:700;background:#f1f3f6;color:#636b79}
+.tag.red{background:#fff0f2;color:#b5001d}.tag.orange{background:#fff2e8;color:#bf5c0c}.tag.yellow{background:#fff7dc;color:#9c7000}.tag.green{background:#eaf8f1;color:#14774f}.tag.blue{background:#eef3ff;color:#315bd4}
+.action-btn{border:0;border-radius:13px;padding:10px 13px;font-weight:800;font-size:.76rem;white-space:nowrap}
+.action-btn.primary{background:linear-gradient(135deg,#e00026,#bd001f);color:#fff;box-shadow:0 8px 18px rgba(190,0,31,.15)}
+.action-btn.continue{background:#e9f7f1;color:#14754e}
+.action-btn.wait{background:#fff4d9;color:#916500;cursor:default}
+.action-btn.done{background:#f0f2f5;color:#727987;cursor:default}
+.action-btn:disabled{opacity:.5;cursor:not-allowed}
+.empty{border:1px dashed #d7dbe4;border-radius:18px;padding:35px 20px;text-align:center;color:#7c8492;background:#fcfcfd}
+.empty strong{display:block;color:#444b59;margin-bottom:5px}
+
+/* ===== SIDE TOOLS ===== */
+.side-card{padding:18px;border-bottom:1px solid var(--line)}
+.side-card:last-child{border-bottom:0}
+.side-card h4{margin:0;font-size:.9rem}
+.side-card p{margin:6px 0 14px;color:var(--muted);font-size:.72rem;line-height:1.9}
+.big-action{width:100%;border:0;border-radius:15px;padding:13px 14px;font-weight:900;background:#171b25;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px}
+.big-action svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9}
+.rule{display:flex;align-items:flex-start;gap:9px;padding:10px 0;border-bottom:1px dashed #eceef2;font-size:.72rem;color:#626a78;line-height:1.8}
+.rule:last-child{border-bottom:0}
+.rule-dot{width:8px;height:8px;border-radius:50%;background:var(--red);margin-top:7px;flex:0 0 auto}
+
+/* ===== BUTTONS ===== */
+.btn{border:0;border-radius:13px;padding:11px 14px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn.primary{background:linear-gradient(135deg,#e00026,#bd001f);color:#fff}
+.btn.dark{background:#181c26;color:#fff}.btn.correct{background:#edf3ff;color:#2855c7;border:1px solid #cedaff}.btn.ghost{background:#fff;border:1px solid var(--line);color:#4f5766}.btn.warn{background:#fff3d3;color:#8b6300}.btn.danger{background:#fff0f2;color:#a9001a}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ===== MODALS ===== */
+.modal{position:fixed;inset:0;z-index:200;background:rgba(9,13,23,.48);backdrop-filter:blur(5px);display:grid;place-items:center;padding:20px}
+.modal-card{width:min(590px,100%);max-height:min(88vh,820px);overflow:auto;background:#fff;border-radius:25px;border:1px solid var(--line);box-shadow:0 30px 90px rgba(8,14,28,.25)}
+.modal-head{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.modal-head h3{margin:0;font-size:1.05rem}.modal-head p{margin:5px 0 0;font-size:.72rem;color:var(--muted)}
+.close{width:37px;height:37px;border:1px solid var(--line);background:#fff;border-radius:11px;font-size:1.2rem}
+.modal-body{padding:20px 22px}
+.modal-foot{padding:15px 22px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end}
+
+/* GPS */
+.gps-visual{width:120px;height:120px;border-radius:50%;margin:8px auto 18px;background:radial-gradient(circle,#fff 0 22%,#ffe8ed 23% 38%,#ffd2dc 39% 55%,#fff1f4 56%);display:grid;place-items:center;position:relative;color:var(--red)}
+.gps-visual.scanning:after{content:"";position:absolute;inset:0;border:3px solid rgba(203,0,35,.3);border-top-color:var(--red);border-radius:50%;animation:spin 1s linear infinite}
+.gps-visual svg{width:38px;height:38px;stroke:currentColor;fill:none;stroke-width:1.7}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gps-title{text-align:center;font-size:1.08rem;font-weight:900}
+.gps-desc{text-align:center;color:var(--muted);font-size:.75rem;line-height:1.9;margin:7px auto 16px;max-width:430px}
+.gps-progress{height:7px;background:#eef0f4;border-radius:999px;overflow:hidden;margin:16px 0}
+.gps-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#e00026,#a9001b);border-radius:999px;transition:.25s}
+.gps-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.metric{border:1px solid var(--line);background:#fafbfc;border-radius:14px;padding:10px;text-align:center}
+.metric strong{display:block;font-size:.9rem}.metric span{font-size:.65rem;color:var(--muted)}
+.gps-result{margin-top:14px;padding:12px 13px;border-radius:14px;background:#f7f8fb;border:1px solid var(--line);font-size:.74rem;line-height:1.9}
+.gps-result.success{background:#effaf5;border-color:#cce8db;color:#176c4b}.gps-result.error{background:#fff4f5;border-color:#efcbd1;color:#9d1730}.gps-result.warn{background:#fff9eb;border-color:#eddcb3;color:#886500}
+
+/* UNPLANNED */
+.form-group{margin-bottom:14px}.form-label{font-size:.72rem;font-weight:800;margin-bottom:6px;display:block}.select,.search{width:100%;border:1px solid var(--line);background:#fff;border-radius:13px;padding:11px 12px;outline:none}
+.store-picker{display:grid;gap:8px;max-height:330px;overflow:auto;margin-top:10px}
+.pick-item{border:1px solid var(--line);border-radius:14px;padding:11px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff}
+.pick-item strong{font-size:.78rem}.pick-item span{display:block;font-size:.66rem;color:var(--muted);margin-top:3px}.pick-btn{border:0;background:#f0f2f6;border-radius:10px;padding:8px 10px;font-weight:800;font-size:.68rem}
+
+/* ===== LOADING / TOAST ===== */
+.loading{position:fixed;inset:0;z-index:300;background:rgba(245,247,250,.88);backdrop-filter:blur(6px);display:grid;place-items:center}
+.loading-card{background:#fff;border:1px solid var(--line);border-radius:21px;padding:23px 27px;text-align:center;box-shadow:var(--shadow)}
+.spinner{width:34px;height:34px;border:3px solid #eee;border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 11px}
+.toast-wrap{position:fixed;left:22px;bottom:22px;z-index:400;display:grid;gap:8px}.toast{max-width:350px;padding:12px 15px;border-radius:14px;background:#171b25;color:#fff;box-shadow:0 12px 34px rgba(0,0,0,.2);font-size:.75rem}.toast.success{background:#11744e}.toast.error{background:#a8001a}
+
+.mobile-head,.mobile-bottom{display:none}
+
+/* ===== TABLET ===== */
+@media(max-width:1120px){
+  .app{grid-template-columns:220px minmax(0,1fr)}
+  .sidebar{padding:24px 14px}
+  .content{width:calc(100% - 30px)}
+  .grid{grid-template-columns:minmax(0,1fr) 310px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:820px){
+  body{padding-bottom:74px}
+  .app{display:block}.sidebar,.topbar{display:none}
+  .mobile-head{display:flex;position:sticky;top:0;z-index:40;height:68px;padding:0 16px;align-items:center;justify-content:space-between;color:#fff;background:linear-gradient(135deg,#ae001a,#dd0029);box-shadow:0 7px 24px rgba(113,0,17,.14)}
+  .mobile-brand{font-weight:900;font-size:1.03rem}.mobile-brand small{display:block;font-size:.63rem;font-weight:400;opacity:.8;margin-top:2px}.mobile-user{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.15);display:grid;place-items:center;font-weight:900;font-size:.72rem}
+  .content{width:calc(100% - 20px);margin:15px auto 25px}.hero{display:block}.hero h2{font-size:1.25rem}.hero p{font-size:.76rem}.date-pill{margin-top:10px}
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px}.stat{padding:13px;border-radius:16px}.stat-num{font-size:1.25rem}.stat-label{font-size:.67rem}.stat-icon{width:36px;height:36px;border-radius:11px}
+  .active-box{padding:15px;border-radius:18px}.active-row{display:block}.active-actions{margin-top:12px}.active-actions .btn{flex:1}.active-actions{display:flex}
+  .grid{display:block}.panel{border-radius:19px}.panel + .panel{margin-top:12px}.panel-head{padding:16px}.panel-body{padding:13px}
+  .store-item{grid-template-columns:36px minmax(0,1fr);padding:11px}.seq{width:34px;height:34px}.store-action{grid-column:1/-1}.store-action .action-btn{width:100%;padding:11px}.store-name{font-size:.82rem}
+  .side-panel{display:none}
+  .mobile-bottom{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;right:0;left:0;height:66px;background:rgba(255,255,255,.97);backdrop-filter:blur(15px);border-top:1px solid var(--line);z-index:50;padding-bottom:env(safe-area-inset-bottom)}
+  .mobile-nav{border:0;background:transparent;color:#7c8492;font-size:.59rem;display:grid;place-items:center;align-content:center;gap:3px}.mobile-nav.active{color:var(--red);font-weight:900}.mobile-nav svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.9}
+  .modal{align-items:end;padding:0}.modal-card{width:100%;max-height:92vh;border-radius:24px 24px 0 0}.modal-head{padding:17px}.modal-body{padding:17px}.modal-foot{padding:12px 17px calc(14px + env(safe-area-inset-bottom))}.gps-metrics{grid-template-columns:repeat(3,1fr)}
+  .toast-wrap{left:10px;right:10px;bottom:80px}.toast{max-width:none}
+}
+
+@media(max-width:430px){
+  .stat{display:block}.stat-icon{margin-bottom:9px}.gps-metrics{grid-template-columns:1fr 1fr}.gps-metrics .metric:last-child{grid-column:1/-1}.modal-foot{display:grid;grid-template-columns:1fr}.modal-foot .btn{width:100%}
+}
+
+
+
+/* ===== CHECKLIST ===== */
+.checklist-modal{position:fixed;inset:0;z-index:260;background:#f4f6fa;display:flex;flex-direction:column;overflow:hidden}
+.checklist-top{height:78px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 28px;flex:0 0 auto}
+.checklist-top-main{min-width:0}.checklist-top h2{margin:0;font-size:1.15rem}.checklist-top p{margin:5px 0 0;color:var(--muted);font-size:.73rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.checklist-top-actions{display:flex;align-items:center;gap:8px}.checklist-close{width:40px;height:40px;border:1px solid var(--line);background:#fff;border-radius:12px;font-size:1.25rem}
+.checklist-layout{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 300px;direction:ltr}
+.checklist-main{min-width:0;overflow:auto;padding:24px 28px 120px;direction:rtl}
+.checklist-side{border-right:1px solid var(--line);background:#fff;padding:22px 18px;overflow:auto;direction:rtl}
+.checklist-progress-card{border:1px solid var(--line);border-radius:19px;padding:17px;background:#fff;box-shadow:0 8px 28px rgba(20,28,48,.04)}
+.checklist-progress-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.checklist-progress-head strong{font-size:.9rem}.checklist-progress-head span{font-size:.75rem;color:var(--muted)}
+.checklist-progress-track{height:9px;border-radius:999px;background:#eceff4;overflow:hidden;margin-top:13px}.checklist-progress-track span{display:block;height:100%;width:0;background:linear-gradient(90deg,#d90025,#8f0017);border-radius:999px;transition:.25s}
+.checklist-side-meta{display:grid;gap:9px;margin-top:14px}.checklist-meta-row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed #e8ebf0;font-size:.72rem;color:var(--muted)}.checklist-meta-row strong{color:#303746;font-size:.75rem;text-align:left}
+.section-nav{display:grid;gap:7px;margin-top:18px}.section-nav button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 11px;text-align:right;color:#596170;font-size:.73rem}.section-nav button.active{background:#181d27;color:#fff;border-color:#181d27;font-weight:800}.section-nav button.complete:not(.active){border-color:#cde7dc;background:#f5fbf8;color:#176e4c}
+.check-section{background:#fff;border:1px solid var(--line);border-radius:22px;margin-bottom:16px;overflow:hidden;box-shadow:0 9px 30px rgba(20,28,48,.035)}
+.check-section-head{padding:17px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fbfbfd}.check-section-head h3{margin:0;font-size:1rem}.check-section-head span{font-size:.68rem;color:var(--muted)}
+.check-subsection{padding:4px 18px 0}.check-sub-title{font-size:.72rem;color:#8b2639;font-weight:800;margin:14px 2px 6px}
+.question-card{padding:15px 0;border-bottom:1px solid #eef0f4}.question-card:last-child{border-bottom:0}.question-card.missing{background:#fff8f9;margin:0 -10px;padding:15px 10px;border-radius:12px;border-bottom-color:transparent}.question-top{display:flex;align-items:flex-start;gap:10px}.question-no{width:28px;height:28px;border-radius:9px;background:#f1f3f7;display:grid;place-items:center;font-weight:900;font-size:.68rem;color:#59606e;flex:0 0 auto}.question-text{font-size:.83rem;font-weight:800;line-height:1.8}.question-sub{font-size:.65rem;color:var(--muted);margin-top:3px}.answer-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 38px 0 0}.answer-options.two{grid-template-columns:repeat(2,1fr)}
+.answer-btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 8px;color:#555d6c;font-weight:800;font-size:.73rem;transition:.15s}.answer-btn:hover{background:#f7f8fa}.answer-btn.selected.bad{background:#fff0f2;border-color:#eab9c2;color:#ae001b}.answer-btn.selected.good{background:#fff8e8;border-color:#ebd6a1;color:#966b00}.answer-btn.selected.great{background:#eaf8f1;border-color:#bfdfd0;color:#14764e}.answer-btn.selected.yes{background:#eaf8f1;border-color:#bfdfd0;color:#14764e}.answer-btn.selected.no{background:#fff0f2;border-color:#eab9c2;color:#ae001b}
+.checklist-save-status{font-size:.68rem;color:var(--muted);margin-top:10px;text-align:center;min-height:18px}.checklist-save-status.saving{color:#996c00}.checklist-save-status.saved{color:#15734f}.checklist-save-status.error{color:#ad1730}
+.checklist-bottom{position:fixed;right:0;left:300px;bottom:0;z-index:270;background:rgba(255,255,255,.96);backdrop-filter:blur(15px);border-top:1px solid var(--line);padding:13px 28px;display:flex;align-items:center;justify-content:space-between;gap:14px;direction:rtl}.checklist-bottom-info{font-size:.72rem;color:var(--muted)}.checklist-bottom-actions{display:flex;gap:8px}.finish-btn{border:0;border-radius:14px;padding:12px 18px;background:linear-gradient(135deg,#d90025,#ae001c);color:#fff;font-weight:900}.draft-btn{border:1px solid var(--line);border-radius:14px;padding:12px 16px;background:#fff;color:#424957;font-weight:800}.finish-btn:disabled,.draft-btn:disabled{opacity:.5;cursor:not-allowed}
+.checklist-complete-box{text-align:center;padding:48px 20px}.complete-icon{width:74px;height:74px;border-radius:23px;background:#e9f8f1;color:#14784f;display:grid;place-items:center;margin:0 auto 16px;font-size:2rem}.checklist-complete-box h3{margin:0;font-size:1.25rem}.checklist-complete-box p{color:var(--muted);font-size:.78rem;line-height:1.9;max-width:450px;margin:8px auto 20px}
+
+@media(max-width:820px){
+  .checklist-modal{background:#f5f6f9}.checklist-top{height:auto;min-height:68px;padding:12px 14px}.checklist-top h2{font-size:.98rem}.checklist-top p{font-size:.66rem;max-width:250px}.checklist-top-actions .draft-btn{display:none}.checklist-layout{display:block;overflow:auto}.checklist-main{overflow:visible;padding:12px 10px 110px}.checklist-side{border:0;border-bottom:1px solid var(--line);padding:12px 10px;background:#f5f6f9}.checklist-progress-card{border-radius:16px;padding:13px}.checklist-side-meta{display:none}.section-nav{display:flex;overflow:auto;margin-top:10px;gap:6px}.section-nav button{white-space:nowrap;padding:8px 10px;font-size:.66rem}.check-section{border-radius:18px;margin-bottom:11px}.check-section-head{padding:13px 14px}.check-subsection{padding:3px 13px 0}.question-card{padding:13px 0}.question-text{font-size:.78rem}.answer-options{margin:10px 0 0;grid-template-columns:repeat(3,1fr);gap:6px}.answer-options.two{grid-template-columns:repeat(2,1fr)}.answer-btn{padding:10px 4px;font-size:.68rem}.question-no{width:25px;height:25px;border-radius:8px}.checklist-bottom{left:0;padding:10px 10px calc(10px + env(safe-area-inset-bottom));display:block}.checklist-bottom-info{display:none}.checklist-bottom-actions{display:grid;grid-template-columns:.8fr 1.4fr}.checklist-bottom-actions>*{width:100%}.checklist-save-status{text-align:right;margin:0 0 7px}.checklist-close{width:36px;height:36px}.checklist-top-actions{gap:5px}
+}
+
+
+
+/* ===== V22 CHECKLIST SECTION VISUAL SYSTEM =====
+   Visual-only upgrade. No checklist data / question IDs / save logic changes.
+*/
+.check-section,
+.section-nav button{
+  --sec-accent:#64748b;
+  --sec-accent-dark:#475569;
+  --sec-soft:#f8fafc;
+  --sec-soft-2:#f1f5f9;
+  --sec-border:#dfe6ee;
+}
+
+/* semantic section palettes */
+.check-section.theme-dairy,.section-nav button.theme-dairy{
+  --sec-accent:#2385d7;--sec-accent-dark:#1768aa;
+  --sec-soft:#eef8ff;--sec-soft-2:#e2f2ff;--sec-border:#cce7f8;
+}
+.check-section.theme-meat,.section-nav button.theme-meat{
+  --sec-accent:#c34761;--sec-accent-dark:#9d3049;
+  --sec-soft:#fff1f4;--sec-soft-2:#ffe5ea;--sec-border:#f3ccd5;
+}
+.check-section.theme-produce,.section-nav button.theme-produce{
+  --sec-accent:#31845a;--sec-accent-dark:#246746;
+  --sec-soft:#eff9f3;--sec-soft-2:#e0f2e7;--sec-border:#cae8d5;
+}
+.check-section.theme-grocery,.section-nav button.theme-grocery{
+  --sec-accent:#b77414;--sec-accent-dark:#8d590d;
+  --sec-soft:#fff8ea;--sec-soft-2:#fff0ce;--sec-border:#f0ddb4;
+}
+.check-section.theme-beverage,.section-nav button.theme-beverage{
+  --sec-accent:#16869b;--sec-accent-dark:#116878;
+  --sec-soft:#edfafd;--sec-soft-2:#dcf4f8;--sec-border:#c7e9ee;
+}
+.check-section.theme-warehouse,.section-nav button.theme-warehouse{
+  --sec-accent:#667085;--sec-accent-dark:#475467;
+  --sec-soft:#f5f7f9;--sec-soft-2:#edf0f3;--sec-border:#dce1e7;
+}
+.check-section.theme-cash,.section-nav button.theme-cash{
+  --sec-accent:#7658d6;--sec-accent-dark:#5d42b7;
+  --sec-soft:#f5f2ff;--sec-soft-2:#ebe5ff;--sec-border:#ddd4fa;
+}
+.check-section.theme-data,.section-nav button.theme-data{
+  --sec-accent:#315fc5;--sec-accent-dark:#244aa1;
+  --sec-soft:#eff4ff;--sec-soft-2:#e3ebff;--sec-border:#ccd9fb;
+}
+.check-section.theme-general-1,.section-nav button.theme-general-1{
+  --sec-accent:#4d7b7a;--sec-accent-dark:#386060;
+  --sec-soft:#eff8f7;--sec-soft-2:#e2f1ef;--sec-border:#cfe5e2;
+}
+.check-section.theme-general-2,.section-nav button.theme-general-2{
+  --sec-accent:#8a5a44;--sec-accent-dark:#6c4433;
+  --sec-soft:#faf4f0;--sec-soft-2:#f3e8e1;--sec-border:#e9d8cd;
+}
+.check-section.theme-general-3,.section-nav button.theme-general-3{
+  --sec-accent:#6a6fba;--sec-accent-dark:#51569c;
+  --sec-soft:#f3f3fd;--sec-soft-2:#e9e9fa;--sec-border:#d8d9f3;
+}
+.check-section.theme-general-4,.section-nav button.theme-general-4{
+  --sec-accent:#2d7b88;--sec-accent-dark:#215e68;
+  --sec-soft:#eff8fa;--sec-soft-2:#dff0f3;--sec-border:#cbe5e9;
+}
+
+/* Wider breathing room between product / operational groups */
+.check-section{
+  position:relative;
+  margin-bottom:24px;
+  border:1px solid var(--sec-border);
+  border-radius:24px;
+  background:linear-gradient(180deg,var(--sec-soft) 0%, color-mix(in srgb,var(--sec-soft) 78%, #ffffff) 100%);
+  overflow:hidden;
+  box-shadow:0 12px 34px rgba(20,28,48,.045);
+  scroll-margin-top:18px;
+}
+.check-section::before{
+  content:"";
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  width:5px;
+  background:var(--sec-accent);
+  z-index:2;
+}
+
+/* Section header */
+.check-section-head{
+  padding:17px 22px 15px 20px;
+  border-bottom:1px solid var(--sec-border);
+  background:
+    linear-gradient(135deg,color-mix(in srgb,var(--sec-accent) 12%, #ffffff) 0%, var(--sec-soft-2) 46%, var(--sec-soft) 100%);
+  display:block;
+}
+.check-section-head-main{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+}
+.check-section-identity{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.check-section-icon{
+  width:43px;
+  height:43px;
+  border-radius:14px;
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  color:var(--sec-accent-dark);
+  background:var(--sec-soft-2);
+  border:1px solid var(--sec-border);
+}
+.check-section-icon svg{
+  width:22px;
+  height:22px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.9;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.check-section-title-wrap{
+  min-width:0;
+}
+.check-section-kicker{
+  color:var(--sec-accent-dark);
+  font-size:.58rem;
+  font-weight:900;
+  letter-spacing:.02em;
+  margin-bottom:3px;
+}
+.check-section-head h3{
+  margin:0;
+  font-size:1.02rem;
+  line-height:1.6;
+  color:#222b39;
+}
+.check-section-status{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--sec-border);
+  border-radius:999px;
+  background:rgba(255,255,255,.78);
+  padding:7px 10px;
+  color:var(--sec-accent-dark);
+  font-size:.65rem;
+  font-weight:850;
+}
+.check-section-status .section-check{
+  display:none;
+  width:19px;
+  height:19px;
+  border-radius:50%;
+  background:var(--sec-accent);
+  color:#fff;
+  place-items:center;
+  font-size:.63rem;
+}
+.check-section.is-complete .check-section-status .section-check{
+  display:grid;
+}
+.check-section-progress{
+  height:4px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(100,116,139,.12);
+  margin-top:13px;
+}
+.check-section-progress span{
+  display:block;
+  height:100%;
+  border-radius:999px;
+  background:var(--sec-accent);
+  transition:width .22s ease;
+}
+
+/* Subsection creates another, softer visual hierarchy */
+.check-subsection{
+  padding:8px 20px 10px;
+  background:color-mix(in srgb,var(--sec-soft) 55%, #ffffff);
+}
+.check-sub-group{
+  padding:10px 12px 8px;
+  background:rgba(255,255,255,.42);
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:18px;
+}
+.check-sub-group + .check-sub-group{
+  border-top:0;
+  margin-top:10px;
+  padding-top:10px;
+}
+.check-sub-title{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin:7px 2px 5px;
+  padding:5px 9px;
+  border-radius:999px;
+  color:var(--sec-accent-dark);
+  background:var(--sec-soft);
+  border:1px solid var(--sec-border);
+  font-size:.65rem;
+  font-weight:900;
+}
+.check-sub-title::before{
+  content:"";
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--sec-accent);
+}
+
+/* Questions inherit their section accent */
+.question-card{
+  padding:16px 10px;
+  border-bottom:1px solid rgba(39,49,65,.08);
+  background:rgba(255,255,255,.34);
+  border-radius:14px;
+  margin-bottom:8px;
+}
+.question-card:last-child{
+  border-bottom:0;
+  margin-bottom:0;
+}
+.question-card.missing{
+  background:#fff8f9;
+  margin:2px -8px;
+  padding:15px 10px;
+  border-radius:14px;
+  border:1px solid #f5d9de;
+}
+.question-no{
+  width:30px;
+  height:30px;
+  border-radius:10px;
+  background:var(--sec-soft);
+  border:1px solid var(--sec-border);
+  color:var(--sec-accent-dark);
+}
+.question-text{
+  color:#273141;
+}
+
+/* Section nav mirrors each section's identity */
+.section-nav{
+  gap:8px;
+}
+.section-nav button{
+  position:relative;
+  overflow:hidden;
+  border-color:var(--sec-border);
+  background:#fff;
+  color:#525c6d;
+  transition:.15s ease;
+}
+.section-nav button::before{
+  content:"";
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  width:3px;
+  background:var(--sec-accent);
+}
+.section-nav button:hover{
+  border-color:var(--sec-accent);
+  background:var(--sec-soft);
+  color:var(--sec-accent-dark);
+}
+.section-nav button.active{
+  color:var(--sec-accent-dark);
+  background:var(--sec-soft);
+  border-color:var(--sec-accent);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--sec-accent) 10%,transparent);
+  font-weight:900;
+}
+.section-nav button.complete:not(.active){
+  border-color:var(--sec-border);
+  background:#fff;
+  color:var(--sec-accent-dark);
+}
+.section-nav-label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.section-nav-count{
+  direction:ltr;
+  flex:0 0 auto;
+  font-size:.59rem;
+  font-weight:900;
+  padding:3px 6px;
+  border-radius:999px;
+  background:var(--sec-soft);
+  color:var(--sec-accent-dark);
+}
+
+/* Notes are intentionally visually different from checklist sections */
+.notes-card{
+  margin-top:6px;
+  border:1px dashed #cfd6df;
+  box-shadow:none;
+  background:#fcfcfd;
+}
+
+@media(max-width:820px){
+  .check-section{
+    margin-bottom:16px;
+    border-radius:19px;
+  }
+  .check-section::before{
+    width:4px;
+  }
+  .check-section-head{
+    padding:13px 15px 12px 13px;
+  }
+  .check-section-head-main{
+    gap:9px;
+  }
+  .check-section-identity{
+    gap:9px;
+  }
+  .check-section-icon{
+    width:36px;
+    height:36px;
+    border-radius:11px;
+  }
+  .check-section-icon svg{
+    width:19px;
+    height:19px;
+  }
+  .check-section-kicker{
+    font-size:.53rem;
+  }
+  .check-section-head h3{
+    font-size:.9rem;
+  }
+  .check-section-status{
+    padding:5px 7px;
+    font-size:.56rem;
+  }
+  .check-section-status .section-check{
+    width:17px;
+    height:17px;
+  }
+  .check-section-progress{
+    margin-top:10px;
+  }
+  .check-subsection{
+    padding:5px 13px 8px;
+  }
+  .check-sub-title{
+    font-size:.59rem;
+    padding:4px 7px;
+  }
+  .question-card{
+    padding:14px 0;
+  }
+  .question-no{
+    width:27px;
+    height:27px;
+  }
+  .section-nav button{
+    padding:8px 10px 8px 12px;
+  }
+  .section-nav button::before{
+    width:3px;
+  }
+  .section-nav-label{
+    gap:6px;
+  }
+}
+
+
+/* ===== V22.2 SALES SECTIONS - DISTINCT LUXE CARDS ===== */
+.check-section{
+  position:relative;
+  margin-bottom:30px;
+  border:1px solid color-mix(in srgb,var(--sec-accent) 18%, #d9e2ec);
+  border-radius:30px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--sec-accent) 12%, #ffffff) 0%, var(--sec-soft-2) 48%, var(--sec-soft) 100%);
+  box-shadow:0 18px 40px rgba(20,28,48,.08), 0 6px 18px rgba(20,28,48,.04);
+  overflow:hidden;
+}
+.check-section::before{
+  width:0;
+  background:none;
+}
+.check-section::after{
+  content:"";
+  position:absolute;
+  left:-36px;
+  top:-42px;
+  width:170px;
+  height:170px;
+  border-radius:50%;
+  background:radial-gradient(circle at center, color-mix(in srgb,var(--sec-accent) 22%, #ffffff) 0%, rgba(255,255,255,0) 72%);
+  pointer-events:none;
+}
+.check-section-head{
+  position:relative;
+  z-index:1;
+  padding:20px 24px 18px;
+  border-bottom:0;
+  background:linear-gradient(135deg,var(--sec-accent) 0%, var(--sec-accent-dark) 100%);
+}
+.check-section-head::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,0) 36%);
+  pointer-events:none;
+}
+.check-section-icon{
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.26);
+  color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+  backdrop-filter:blur(8px);
+}
+.check-section-kicker{
+  color:rgba(255,255,255,.78);
+}
+.check-section-head h3{
+  color:#fff;
+  font-size:1.08rem;
+}
+.check-section-status{
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.22);
+  color:#fff;
+  backdrop-filter:blur(10px);
+}
+.check-section-status .section-check{
+  background:#fff;
+  color:var(--sec-accent-dark);
+}
+.check-section-progress{
+  margin-top:14px;
+  height:5px;
+  background:rgba(255,255,255,.22);
+}
+.check-section-progress span{
+  background:#fff;
+  box-shadow:0 0 10px rgba(255,255,255,.28);
+}
+.check-subsection{
+  position:relative;
+  z-index:1;
+  margin:14px;
+  padding:14px;
+  border-radius:22px;
+  background:rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85), 0 8px 24px rgba(15,23,42,.04);
+}
+.check-sub-group{
+  padding:14px 14px 10px;
+  background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, color-mix(in srgb,var(--sec-soft) 58%, #ffffff) 100%);
+  border:1px solid color-mix(in srgb,var(--sec-accent) 12%, #e3e8ef);
+  border-radius:20px;
+}
+.check-sub-group + .check-sub-group{
+  margin-top:12px;
+  padding-top:14px;
+}
+.check-sub-title{
+  margin:3px 0 10px;
+  padding:6px 12px;
+  font-size:.67rem;
+  letter-spacing:.01em;
+  box-shadow:0 2px 8px rgba(15,23,42,.04);
+}
+.question-card{
+  padding:16px 12px;
+  border:1px solid color-mix(in srgb,var(--sec-accent) 10%, #e8edf3);
+  border-radius:16px;
+  background:#fff;
+  margin-bottom:10px;
+  box-shadow:0 4px 12px rgba(15,23,42,.035);
+}
+.question-card:last-child{
+  margin-bottom:0;
+}
+.question-head{
+  align-items:flex-start;
+  gap:12px;
+}
+.question-no{
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  background:linear-gradient(180deg,var(--sec-soft) 0%, #ffffff 100%);
+  border:1px solid color-mix(in srgb,var(--sec-accent) 18%, #dfe7ee);
+  color:var(--sec-accent-dark);
+  box-shadow:0 2px 8px rgba(15,23,42,.04);
+}
+
+
+/* colorful sales sub-sections */
+.check-sub-group{
+  --sub-accent:var(--sec-accent);
+  --sub-accent-dark:var(--sec-accent-dark);
+  --sub-soft:color-mix(in srgb,var(--sec-soft) 78%, #ffffff);
+  --sub-soft-2:color-mix(in srgb,var(--sec-soft-2) 70%, #ffffff);
+  --sub-border:color-mix(in srgb,var(--sec-accent) 14%, #e3e8ef);
+}
+.check-sub-group[class*="subtheme-"]{
+  background:linear-gradient(180deg,var(--sub-soft) 0%, var(--sub-soft-2) 100%);
+  border:1px solid var(--sub-border);
+  box-shadow:0 10px 24px rgba(15,23,42,.05), inset 0 1px 0 rgba(255,255,255,.82);
+}
+.check-sub-group[class*="subtheme-"] .check-sub-title{
+  display:inline-flex;align-items:center;
+  gap:8px;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:900;
+  color:#fff;
+  background:linear-gradient(135deg,var(--sub-accent) 0%, var(--sub-accent-dark) 100%);
+  box-shadow:0 8px 18px color-mix(in srgb,var(--sub-accent) 24%, transparent);
+}
+.check-sub-group[class*="subtheme-"] .check-sub-title::before{
+  content:"";
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 0 0 4px rgba(255,255,255,.14);
+}
+.check-sub-group[class*="subtheme-"] .question-card{
+  border-color:color-mix(in srgb,var(--sub-accent) 14%, #e8edf3);
+  background:linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.92) 100%);
+}
+.check-sub-group[class*="subtheme-"] .question-no{
+  background:linear-gradient(180deg, color-mix(in srgb,var(--sub-soft) 92%, #ffffff) 0%, #ffffff 100%);
+  border-color:color-mix(in srgb,var(--sub-accent) 20%, #dfe7ee);
+  color:var(--sub-accent-dark);
+}
+.check-sub-group.subtheme-dairy{--sub-accent:#2793ef;--sub-accent-dark:#166fbe;--sub-soft:#eff8ff;--sub-soft-2:#dff0ff;--sub-border:#bfdffd}
+.check-sub-group.subtheme-meat{--sub-accent:#d34a68;--sub-accent-dark:#aa2f4a;--sub-soft:#fff0f4;--sub-soft-2:#ffe0e8;--sub-border:#f4c6d2}
+.check-sub-group.subtheme-produce{--sub-accent:#32965a;--sub-accent-dark:#237142;--sub-soft:#effaf2;--sub-soft-2:#ddf3e5;--sub-border:#c7e9d3}
+.check-sub-group.subtheme-beverage{--sub-accent:#14a4b8;--sub-accent-dark:#0f7f8e;--sub-soft:#eefcff;--sub-soft-2:#dcf5f8;--sub-border:#c1e9ef}
+.check-sub-group.subtheme-grocery{--sub-accent:#d08b1f;--sub-accent-dark:#a96e11;--sub-soft:#fff8eb;--sub-soft-2:#ffefcf;--sub-border:#f0deb3}
+.check-sub-group.subtheme-frozen{--sub-accent:#586be3;--sub-accent-dark:#3d4fc1;--sub-soft:#f1f4ff;--sub-soft-2:#e1e7ff;--sub-border:#cfd7fb}
+.check-sub-group.subtheme-bakery{--sub-accent:#b56a35;--sub-accent-dark:#8e4f22;--sub-soft:#fbf3ee;--sub-soft-2:#f2e3d6;--sub-border:#e7d2c2}
+.check-sub-group.subtheme-household{--sub-accent:#7c5bd7;--sub-accent-dark:#6043b8;--sub-soft:#f5f2ff;--sub-soft-2:#ebe4ff;--sub-border:#ddd3fa}
+.check-sub-group.subtheme-default{--sub-accent:#4d7b7a;--sub-accent-dark:#386060;--sub-soft:#eff8f7;--sub-soft-2:#e0efed;--sub-border:#cee2df}
+
+.question-text{
+  font-size:.93rem;
+  line-height:1.9;
+}
+.answer-btn{
+  border-radius:14px;
+}
+.answer-btn.selected{
+  box-shadow:0 8px 18px color-mix(in srgb,var(--sec-accent) 18%, transparent);
+}
+.section-nav button{
+  border-radius:14px;
+}
+.section-nav button.active{
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--sec-accent) 14%, transparent), 0 10px 20px rgba(15,23,42,.05);
+}
+.notes-card{
+  margin-top:14px;
+  border-radius:26px;
+  background:linear-gradient(180deg,#ffffff 0%, #fbfcfe 100%);
+  border:1px dashed #c7d2df;
+}
+
+@media(max-width:820px){
+  .check-section{
+    margin-bottom:18px;
+    border-radius:22px;
+  }
+  .check-section-head{
+    padding:15px 16px 14px;
+  }
+  .check-section-head h3{
+    font-size:.94rem;
+  }
+  .check-section-status{
+    padding:5px 8px;
+  }
+  .check-subsection{
+    margin:10px;
+    padding:10px;
+    border-radius:16px;
+  }
+  .check-sub-group{
+    padding:10px 10px 8px;
+    border-radius:16px;
+  }
+  .question-card{
+    padding:13px 10px;
+    border-radius:14px;
+    margin-bottom:8px;
+  }
+  .question-no{
+    width:29px;
+    height:29px;
+    border-radius:10px;
+  }
+  .question-text{
+    font-size:.8rem;
+    line-height:1.8;
+  }
+}
+
+
+.action-stack{display:flex;gap:7px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+.action-btn.cannot{background:#fff4e8;color:#9a5200;border:1px solid #f3d5b2}
+.cannot-tag{background:#fff0e1!important;color:#a15300!important}
+.notes-card{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+.notes-card h4{margin:0 0 5px;font-size:.86rem}.notes-card p{margin:0 0 10px;color:var(--muted);font-size:.68rem;line-height:1.8}
+.notes-card textarea{width:100%;min-height:110px;resize:vertical;border:1px solid #dfe3ea;border-radius:14px;padding:12px;font-family:inherit;font-size:.78rem;outline:0;background:#fafbfc}
+.notes-card textarea:focus{border-color:#bdc6d6;background:#fff;box-shadow:0 0 0 3px rgba(49,94,251,.07)}
+.cannot-modal .reason-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.reason-option{border:1px solid var(--line);background:#fff;border-radius:13px;padding:11px;text-align:right;font-family:inherit;font-weight:800;font-size:.72rem;color:#424957}
+.reason-option.active{border-color:#d00024;background:#fff5f6;color:#b3001d;box-shadow:0 0 0 2px rgba(201,0,34,.06)}
+.cannot-note{width:100%;min-height:90px;border:1px solid var(--line);border-radius:13px;padding:11px;font-family:inherit;resize:vertical;margin-top:10px}
+.route-delegated-banner{display:none;margin-bottom:12px;padding:12px 14px;border-radius:16px;background:#eef5ff;border:1px solid #dbe8ff;color:#2f5389;font-size:.72rem;line-height:1.8}
+.route-delegated-banner.show{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.route-delegated-banner button{border:0;background:#315efb;color:#fff;border-radius:11px;padding:9px 12px;font-family:inherit;font-weight:900}
+@media(max-width:820px){.action-stack{display:grid;grid-template-columns:1fr 1fr;width:100%}.action-stack .action-btn{width:100%}.cannot-modal .reason-grid{grid-template-columns:1fr}.route-delegated-banner.show{display:block}.route-delegated-banner button{width:100%;margin-top:8px}}
+
+
+.maintenance-sync-result{
+  margin:14px 0;
+  padding:12px 14px;
+  border-radius:12px;
+  text-align:right;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.maintenance-sync-result strong{
+  font-size:14px;
+}
+.maintenance-sync-result span{
+  font-size:12px;
+  line-height:1.7;
+}
+.maintenance-sync-result.success{
+  background:#eaf7ef;
+  color:#23623f;
+  border:1px solid #cce9d7;
+}
+.maintenance-sync-result.queued{
+  background:#fff6df;
+  color:#805f18;
+  border:1px solid #f0dfad;
+}
+
+</style>
+
+<style id="dm-firstpaint-style">
+/* First-paint loading fallback.
+   This exists so no spinner is ever visible while dm-loading.js is still downloading. */
+#loading:not(.hidden) .spinner,
+#loading:not(.hidden) .spin,
+#loadingScreen:not(.hidden) .spinner,
+#loadingScreen:not(.hidden) .spin{display:none!important}
+
+.dm-firstpaint-fallback{display:block;width:min(370px,calc(100vw - 46px));direction:rtl;text-align:right}
+.dm-loading-ui + .dm-firstpaint-fallback,.dm-loading-ui ~ .dm-firstpaint-fallback{display:none!important}
+.dm-firstpaint-title{display:block;font-weight:900;font-size:.9rem;line-height:1.8;color:#161b24}
+.dm-firstpaint-detail{display:block;margin-top:3px;font-size:.65rem;line-height:1.8;color:#7c8492}
+.dm-firstpaint-track{height:9px;margin-top:16px;border-radius:999px;overflow:hidden;background:#edf0f4;direction:ltr}
+.dm-firstpaint-bar{
+  width:8%;height:100%;border-radius:inherit;
+  background:linear-gradient(90deg,#aa001d,#d60025,#ef4862);
+  animation:dmFirstPaintProgress 7s cubic-bezier(.18,.72,.28,1) forwards;
+  position:relative
+}
+.dm-firstpaint-bar:after{
+  content:"";position:absolute;inset:0;width:30%;
+  transform:translateX(-140%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
+  animation:dmFirstPaintShine 1.25s linear infinite
+}
+@keyframes dmFirstPaintProgress{
+  0%{width:8%}12%{width:24%}35%{width:49%}60%{width:68%}82%{width:79%}100%{width:86%}
+}
+@keyframes dmFirstPaintShine{to{transform:translateX(430%)}}
+@media(max-width:600px){
+  .dm-firstpaint-fallback{width:min(330px,calc(100vw - 38px))}
+  .dm-firstpaint-title{font-size:.84rem}
+  .dm-firstpaint-track{height:8px;margin-top:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  .dm-firstpaint-bar{animation:none;width:55%}
+  .dm-firstpaint-bar:after{animation:none}
+}
+</style>
+
+
+<style id="regionalQuestionV25Styles">
+.regional-q-badge{display:inline-flex;align-items:center;gap:5px;margin-right:7px;padding:3px 7px;border-radius:999px;background:#fff0f2;color:#b31431;border:1px solid #f2ccd3;font-size:.54rem;font-weight:900;vertical-align:middle}.regional-text-answer{width:100%;min-height:76px;border:1px solid var(--sec-border,#dfe5ec);border-radius:14px;padding:11px 12px;font-family:inherit;line-height:1.9;resize:vertical;outline:none;background:#fff;color:#263142}.regional-text-answer:focus{border-color:var(--sec-accent,#315fc5);box-shadow:0 0 0 3px color-mix(in srgb,var(--sec-accent,#315fc5) 10%,transparent)}.regional-text-answer:disabled{background:#f7f8fa;color:#707887}
+
+<style id="v26ConditionalChecklistStyles">
+.question-card.conditional-followup{border-right:4px solid #d10020;background:linear-gradient(180deg,#fff8f9,#fff);padding-right:14px}.conditional-note{margin:8px 38px 0 0;padding:8px 10px;border-radius:11px;background:#fff0f2;color:#a91630;font-size:.64rem;line-height:1.8}.question-card.equipment-fault-yes{border-color:#efc4cc;background:#fff8f9}.question-card.equipment-fault-yes .question-no{background:#fff0f2;color:#b0001d;border-color:#edc8cf}@media(max-width:820px){.conditional-note{margin:8px 0 0}.question-card.conditional-followup{padding-right:10px}}
+</style>
+</style>
+</head>
+
+<body>
+<div class="loading" id="loading">
+  <div class="loading-card"><div class="spinner"></div><strong id="loadingText">در حال دریافت برنامه امروز...</strong></div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><strong>دیلی مارکت</strong><span>چک لیست · بازدید فروشگاهی</span></div>
+    <div class="user-mini"><div class="avatar" id="sideAvatar">ر</div><div><strong id="sideName">رئیس ناحیه</strong><span id="sideRegion">پنل بازدید</span></div></div>
+    <nav class="nav">
+      <button class="nav-btn active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/><path d="m7 10 2 2 4-4"/></svg>مسیر و Route امروز</button>
+      <button class="nav-btn" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>بازدید خارج برنامه</button>
+      <button class="nav-btn hidden" id="selfRouteNav" onclick="location.href='areahead-route.html'"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0-3 3"/></svg>برنامه‌ریزی مسیر من</button>
+      <button class="nav-btn" onclick="location.href='alerts.html'"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/><path d="M12 9v5M12 17h.01"/></svg>هشدارهای من</button>
+      <button class="nav-btn" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق بازدید</button>
+    </nav>
+    <div class="side-foot"><button class="logout" onclick="DMAuth.logout()">خروج از حساب</button></div>
+  </aside>
+
+  <main class="main">
+    <div class="mobile-head"><div class="mobile-brand">دیلی مارکت<small>مسیر و Route امروز</small></div><div class="mobile-user" id="mobileAvatar">ر</div></div>
+
+    <header class="topbar">
+      <div><h1>مسیر بازدید فروشگاه‌ها</h1><p id="topUserText">Route امروز رئیس ناحیه</p></div>
+      <button class="icon-btn" onclick="reloadData()" title="بروزرسانی"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg></button>
+    </header>
+
+    <div class="content">
+      <section class="hero">
+        <div><h2>Route امروز شما</h2><p>مسیر امروز مستقیماً نمایش داده می‌شود؛ برای شروع بازدید، حضور شما در محدوده فروشگاه بررسی می‌شود.</p></div>
+        <span class="date-pill" id="todayLabel">—</span>
+      </section>
+
+
+      <section class="active-box hidden" id="activeBox">
+        <div class="active-row">
+          <div>
+            <span class="active-label" id="activeLabel">بازدید فعال</span>
+            <div class="active-title" id="activeTitle">—</div>
+            <div class="active-meta" id="activeMeta">—</div>
+          </div>
+          <div class="active-actions" id="activeActions"></div>
+        </div>
+      </section>
+
+      <div class="route-delegated-banner" id="routeDelegatedBanner"><span><strong>مسیر‌بندی این ناحیه به شما واگذار شده است.</strong><br>برنامه هفتگی را خودتان می‌چینید؛ سیستم اجازه نمی‌دهد فروشگاه‌های سررسید ۱۴ روزه از برنامه جا بمانند.</span><button onclick="location.href='areahead-route.html'">برنامه‌ریزی مسیر من</button></div>
+
+      <section class="grid">
+        <div class="panel">
+          <div class="panel-head"><div><h3>مسیر و Route امروز</h3><p id="routeMeta">ترتیب تعیین‌شده توسط مدیر منطقه</p></div><span class="date-pill" id="routeBadge">—</span></div>
+          <div class="panel-body"><div class="route-list" id="routeList"></div></div>
+        </div>
+
+        <aside class="panel side-panel">
+          <div class="side-card"><h4>بازدید خارج از برنامه</h4><p>اگر به دلیل عملیاتی لازم است به فروشگاهی خارج از Route امروز مراجعه کنید، بازدید را از اینجا شروع کنید.</p><button class="big-action" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>شروع بازدید خارج برنامه</button></div>
+          <div class="side-card"><h4>قواعد حضور</h4><div class="rule"><span class="rule-dot"></span><span>شعاع تأیید خودکار حضور: <strong id="radiusRule">300 متر</strong></span></div><div class="rule"><span class="rule-dot"></span><span>چند نمونه GPS گرفته می‌شود و دقیق‌ترین نمونه برای تصمیم استفاده می‌شود.</span></div><div class="rule"><span class="rule-dot"></span><span>اگر دقت GPS بیشتر از <strong>200 متر</strong> باشد یا موقعیت دریافت نشود، ادامه فقط با تأیید مدیر منطقه ممکن است.</span></div></div>
+        </aside>
+      </section>
+    </div>
+
+    <nav class="mobile-bottom">
+      <button class="mobile-nav active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>Route</button>
+      <button class="mobile-nav" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>خارج برنامه</button>
+      <button class="mobile-nav" onclick="location.href='alerts.html'"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/></svg>هشدار</button>
+      <button class="mobile-nav hidden" id="selfRouteMobileNav" onclick="location.href='areahead-route.html'"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0-3 3"/></svg>مسیر من</button>
+      <button class="mobile-nav" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق</button>
+      <button class="mobile-nav" onclick="DMAuth.logout()"><svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3M14 3h6v18h-6"/></svg>خروج</button>
+    </nav>
+  </main>
+</div>
+
+
+<!-- CHECKLIST FULL SCREEN -->
+<div class="checklist-modal hidden" id="checklistModal">
+  <div class="checklist-top">
+    <div class="checklist-top-main">
+      <h2 id="checklistStoreTitle">چک‌لیست فروشگاه</h2>
+      <p id="checklistStoreSub">—</p>
+    </div>
+    <div class="checklist-top-actions">
+      <button class="draft-btn" id="topDraftBtn" onclick="saveChecklistDraft(true)">ذخیره موقت</button>
+      <button class="checklist-close" onclick="closeChecklist()">×</button>
+    </div>
+  </div>
+
+  <div class="checklist-layout">
+    <main class="checklist-main" id="checklistMain"></main>
+    <aside class="checklist-side">
+      <div class="checklist-progress-card">
+        <div class="checklist-progress-head"><strong>پیشرفت چک‌لیست</strong><span id="checklistProgressText">۰ از ۲۱</span></div>
+        <div class="checklist-progress-track"><span id="checklistProgressBar"></span></div>
+        <div class="checklist-save-status" id="checklistSaveStatus"></div>
+      </div>
+      <div class="checklist-side-meta">
+        <div class="checklist-meta-row"><span>شناسه بازدید</span><strong id="checklistVisitId">—</strong></div>
+        <div class="checklist-meta-row"><span>نوع بازدید</span><strong id="checklistVisitType">—</strong></div>
+        <div class="checklist-meta-row"><span>وضعیت</span><strong id="checklistStateText">در حال تکمیل</strong></div>
+      </div>
+      <div class="section-nav" id="checklistSectionNav"></div>
+    </aside>
+  </div>
+
+  <div class="checklist-bottom">
+    <div class="checklist-bottom-info" id="checklistBottomInfo">پاسخ‌ها به‌صورت پیش‌نویس قابل ذخیره هستند.</div>
+    <div class="checklist-bottom-actions">
+      <button class="draft-btn" id="draftBtn" onclick="saveChecklistDraft(true)">ذخیره موقت</button>
+      <button class="finish-btn" id="finishChecklistBtn" onclick="finishChecklist()">ثبت نهایی و پایان بازدید</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- CANNOT VISIT MODAL -->
+<div class="modal hidden cannot-modal" id="cannotVisitModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div><h3>امکان بازدید ندارم</h3><p id="cannotVisitStoreSub">—</p></div>
+      <button class="modal-close" onclick="closeCannotVisitModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin:0;color:#6f7786;font-size:.74rem;line-height:1.9">قبل از حذف یا جابه‌جایی برنامه، مدیر منطقه را مطلع کن. این اعلام به معنی انجام بازدید نیست و سابقه ۱۴ روزه فروشگاه را Reset نمی‌کند.</p>
+      <div class="reason-grid" id="cannotReasonGrid"></div>
+      <textarea class="cannot-note" id="cannotVisitNote" placeholder="توضیحات تکمیلی (برای گزینه «سایر» الزامی است)"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeCannotVisitModal()">انصراف</button>
+      <button class="btn warn" id="cannotVisitSubmitBtn" onclick="submitCannotVisit()">اطلاع به مدیر منطقه</button>
+    </div>
+  </div>
+</div>
+
+<!-- GPS MODAL -->
+<div class="modal hidden" id="gpsModal">
+  <div class="modal-card">
+    <div class="modal-head"><div><h3 id="gpsStoreTitle">بررسی موقعیت</h3><p id="gpsStoreSub">—</p></div><button class="close" onclick="closeGpsModal()">×</button></div>
+    <div class="modal-body">
+      <div class="gps-visual" id="gpsVisual"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z"/><circle cx="12" cy="10" r="2"/></svg></div>
+      <div class="gps-title" id="gpsTitle">آماده بررسی موقعیت</div>
+      <div class="gps-desc" id="gpsDesc">برای شروع بازدید، موقعیت فعلی گوشی بررسی می‌شود. دسترسی Location مرورگر باید فعال باشد.</div>
+      <div class="gps-progress"><span id="gpsProgress"></span></div>
+      <div class="gps-metrics hidden" id="gpsMetrics">
+        <div class="metric"><strong id="metricSamples">—</strong><span>نمونه GPS</span></div>
+        <div class="metric"><strong id="metricAccuracy">—</strong><span>دقت GPS</span></div>
+        <div class="metric"><strong id="metricDistance">—</strong><span>فاصله ثبت‌شده</span></div>
+      </div>
+      <div class="gps-result hidden" id="gpsResult"></div>
+    </div>
+    <div class="modal-foot" id="gpsFoot">
+      <button class="btn ghost" onclick="closeGpsModal()">انصراف</button>
+      <button class="btn primary" id="scanBtn" onclick="scanAndStart()">بررسی GPS و شروع بازدید</button>
+    </div>
+  </div>
+</div>
+
+<!-- UNPLANNED MODAL -->
+<div class="modal hidden" id="unplannedModal">
+  <div class="modal-card">
+    <div class="modal-head"><div><h3>بازدید خارج از برنامه</h3><p>یک فروشگاه زیرمجموعه خودت را انتخاب کن.</p></div><button class="close" onclick="closeUnplannedModal()">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">دلیل بازدید</label><select class="select" id="unplannedReason"><option value="URGENT_STORE_ISSUE">مشکل فوری فروشگاه</option><option value="MANAGER_REQUEST">درخواست مدیر منطقه</option><option value="ROUTE_REPLACEMENT">جایگزینی برنامه</option><option value="OTHER">سایر</option></select></div>
+      <div class="form-group"><label class="form-label">فروشگاه</label><input class="search" id="unplannedSearch" type="search" placeholder="جستجوی کد یا نام فروشگاه..." oninput="renderUnplannedStores()"></div>
+      <div class="store-picker" id="unplannedStores"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="dm-runtime.js?v=2026.11.11-PILOT-01"></script>
+<script src="app-config.js?v=2026.11.11-PILOT-01"></script>
+<script src="auth-client.js?v=2026.11.11-PILOT-01"></script>
+
+<script id="dm-firstpaint-script">
+(function(){
+  function install(){
+    var overlay=document.getElementById('loading')||document.getElementById('loadingScreen');
+    if(!overlay)return;
+    var card=overlay.querySelector('.loader,.loader-card,.loading-card')||overlay;
+    if(card.querySelector('.dm-loading-ui')){
+      var stale=card.querySelector('.dm-firstpaint-fallback');
+      if(stale) stale.remove();
+      return;
+    }
+    if(card.querySelector('.dm-firstpaint-fallback'))return;
+
+    var old=card.querySelector('strong');
+    var detail=old&&old.textContent?old.textContent.trim():'در حال آماده‌سازی اطلاعات سامانه';
+    if(old)old.style.display='none';
+
+    var box=document.createElement('div');
+    box.className='dm-firstpaint-fallback';
+    box.innerHTML=
+      '<strong class="dm-firstpaint-title">در حال دریافت و به‌روزرسانی اطلاعات…</strong>'+
+      '<span class="dm-firstpaint-detail"></span>'+
+      '<div class="dm-firstpaint-track"><div class="dm-firstpaint-bar"></div></div>';
+    box.querySelector('.dm-firstpaint-detail').textContent=detail;
+    card.appendChild(box);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+})();
+</script>
+
+<script src="dm-loading.js?v=2026.11.11-PILOT-01"></script>
+<script src="dm-instant.js?v=2026.11.11-PILOT-01"></script>
+<script>
+const state={
+  user:null,
+  data:null,
+  route:null,
+  stores:[],
+  settings:{geoRadiusM:300,softPassRadiusM:800,gpsMaxAccuracyM:200,gpsSampleCount:5,nearestStoreConflictRadiusM:250,nearestStoreConflictAdvantageM:300,locationCorrectionMaxAccuracyM:80,locationCorrectionMinSamples:3},
+  gpsTarget:null,
+  gpsBest:null,
+  gpsSamples:[],
+  gpsLastError:null,
+  gpsDecision:null,
+  pendingPoll:null,
+  checklistVisitId:'',
+  checklistData:null,
+  checklistAnswers:{},
+  checklistNotes:'',
+  checklistDirty:false,
+  cannotVisitTarget:null,
+  cannotVisitReason:'',
+  checklistSaving:false,
+  checklistSaveTimer:null
+};
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function initials(name){const p=String(name||'ر').trim().split(/\s+/);return (p[0]?.[0]||'ر')+(p[1]?.[0]||'');}
+function faDate(iso){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).format(new Date(iso+'T12:00:00'));}catch(_){return iso;}}
+function mText(v){if(v===''||v==null)return '—';const n=Number(v);return n<1000?`${Math.round(n)} متر`:`${(n/1000).toFixed(1)} کیلومتر`;}
+function toast(msg,type=''){const w=document.getElementById('toastWrap'),el=document.createElement('div');el.className='toast '+type;el.textContent=msg;w.appendChild(el);setTimeout(()=>el.remove(),4300);}
+function setLoading(on,text){DMLoading.set(!!on,text||'', 'loading');}
+function storeByCode(code){return state.stores.find(s=>s.storeCode===code)||null;}
+
+function applyAreaHeadBootstrap(res){
+  if(!res||!res.success)return false;
+  state.data=res;
+  state.route=res.route||{items:[]};
+  state.stores=res.allStores||[];
+  state.settings=res.settings||state.settings;
+  if(res.user)state.user=res.user;
+  renderAll();
+  schedulePendingPoll();
+  return true;
+}
+
+function hydrateAreaHeadInstant(){
+  try{
+    const hit=window.DMInstant?.peek?.('areaHeadBootstrap',{},6*60*60*1000);
+    if(hit?.data?.success){
+      applyAreaHeadBootstrap(hit.data);
+      setLoading(false);
+      return true;
+    }
+  }catch(_){}
+  return false;
+}
+
+async function init(){
+  const auth=await DMAuth.validateSession('AREA_HEAD');
+  if(!auth.ok){DMAuth.clearAuth();location.replace('index.html');return;}
+  state.user=auth.user;
+  document.getElementById('sideName').textContent=state.user.fullName||'رئیس ناحیه';
+  document.getElementById('sideAvatar').textContent=initials(state.user.fullName);
+  document.getElementById('mobileAvatar').textContent=initials(state.user.fullName);
+  document.getElementById('sideRegion').textContent=state.user.regionalManagerName||'پنل بازدید';
+  document.getElementById('topUserText').textContent=(state.user.fullName||'رئیس ناحیه')+' · '+(state.user.regionalManagerName||'');
+
+  const instant=hydrateAreaHeadInstant();
+  await loadData(instant,false);
+}
+
+async function loadData(silent=false,forceFresh=false){
+  let loadingTimer=null;
+  if(!silent){
+    // Avoid flashing a full-screen loader for fast cache hits.
+    loadingTimer=setTimeout(()=>setLoading(true,'در حال دریافت برنامه امروز...'),180);
+  }
+  try{
+    const params=forceFresh?{forceFresh:'true'}:{};
+    const res=await DMAuth.apiPost('areaHeadBootstrap',params,40000);
+    if(!res.success)throw new Error(res.message||'دریافت برنامه ناموفق بود.');
+    applyAreaHeadBootstrap(res);
+  }catch(e){toast(e.message||'خطا در دریافت اطلاعات','error');}
+  finally{
+    if(loadingTimer)clearTimeout(loadingTimer);
+    if(!silent)setLoading(false);
+  }
+}
+
+function renderAll(){
+  document.getElementById('todayLabel').textContent=faDate(state.data.serverDateIso);
+  document.getElementById('radiusRule').textContent=(state.settings.geoRadiusM||300)+' متر';
+  document.getElementById('routeBadge').textContent=(state.route.items?.length||0)+' بازدید';
+  const routeSource=String(state.route.sourceType||'').toUpperCase();
+  document.getElementById('routeMeta').textContent=state.route.routeId
+    ? (routeSource==='AREA_HEAD'?'مسیر ثبت‌شده توسط شما':'ترتیب تعیین‌شده توسط مدیر منطقه')
+    :'برای امروز Route ثبت نشده است.';
+  const canSelf=!!state.data.canSelfRoute;
+  document.getElementById('selfRouteNav').classList.toggle('hidden',!canSelf);
+  document.getElementById('selfRouteMobileNav').classList.toggle('hidden',!canSelf);
+  document.getElementById('routeDelegatedBanner').classList.toggle('show',canSelf);
+  renderActive();renderRoute();
+}
+
+function renderActive(){
+  const box=document.getElementById('activeBox'),v=state.data.openVisit;
+  if(!v){box.classList.add('hidden');return;}
+  box.classList.remove('hidden');box.classList.toggle('pending',v.visitStatus==='WAITING_LOCATION_APPROVAL'||v.visitStatus==='WAITING_LOCATION_CORRECTION');
+  const s=storeByCode(v.storeCode);
+  document.getElementById('activeTitle').textContent=(s?.storeName||v.storeCode)+' · کد '+v.storeCode;
+  const actions=document.getElementById('activeActions');
+  if(v.visitStatus==='WAITING_LOCATION_APPROVAL'){
+    document.getElementById('activeLabel').textContent='در انتظار تأیید مدیر منطقه';
+    document.getElementById('activeMeta').textContent='درخواست ثبت شده است. پس از تأیید مدیر منطقه، بازدید فعال می‌شود.';
+    actions.innerHTML=`<button class="btn ghost" onclick="reloadData()">بررسی وضعیت</button><button class="btn danger" onclick="cancelPending('${esc(v.visitId)}')">لغو درخواست</button>`;
+  }else if(v.visitStatus==='WAITING_LOCATION_CORRECTION'){
+    document.getElementById('activeLabel').textContent='در انتظار تأیید اصلاح لوکیشن';
+    document.getElementById('activeMeta').textContent='GPS واقعی فروشگاه برای مدیر منطقه ارسال شده است. با تأیید او، مختصات فروشگاه اصلاح و چک‌لیست باز می‌شود.';
+    actions.innerHTML=`<button class="btn ghost" onclick="reloadData()">بررسی وضعیت</button><button class="btn danger" onclick="cancelLocationCorrection('${esc(v.visitId)}')">لغو درخواست</button>`;
+  }else{
+    document.getElementById('activeLabel').textContent='بازدید فعال';
+    document.getElementById('activeMeta').textContent=`حضور تأیید شده · فاصله ${mText(v.distanceToStoreM)} · مرحله بعد چک‌لیست`;
+    actions.innerHTML=`<button class="btn dark" onclick="openChecklist('${esc(v.visitId)}')">ادامه به چک‌لیست</button><button class="btn danger" onclick="cancelVisit('${esc(v.visitId)}')">لغو شروع</button>`;
+  }
+}
+
+function priorityTag(x){
+  const m={NO_HISTORY:['blue','بدون سابقه'],OVERDUE:['red','۱۴+ روز'],WARN12:['orange','۱۲ روز'],WARN10:['yellow','۱۰ روز'],NORMAL:['green',x.priorityLabel||'عادی']};
+  const a=m[x.priorityLevel]||m.NORMAL;return `<span class="tag ${a[0]}">${esc(a[1])}</span>`;
+}
+function statusAction(item){
+  const hasOpen=!!state.data.openVisit;
+  if(item.uiStatus==='COMPLETED')return `<button class="action-btn done" disabled>تکمیل شده</button>`;
+  if(item.uiStatus==='IN_PROGRESS')return `<button class="action-btn continue" onclick="openChecklist('${esc(item.visit?.visitId||item.visitId||'')}')">ادامه بازدید</button>`;
+  if(item.uiStatus==='WAITING_APPROVAL')return `<button class="action-btn wait" disabled>در انتظار تأیید</button>`;
+  if(item.uiStatus==='WAITING_CORRECTION')return `<button class="action-btn wait" disabled>در انتظار اصلاح لوکیشن</button>`;
+  const reported=item.cannotVisit?`<span class="tag cannot-tag">عدم امکان بازدید اعلام شده</span>`:'';
+  return `<div class="action-stack"><button class="action-btn primary" onclick="openGps('${esc(item.storeCode)}','${esc(item.routeItemId)}',true,'')" ${hasOpen?'disabled':''}>شروع بازدید</button><button class="action-btn cannot" onclick="openCannotVisitModal('${esc(item.routeItemId)}','${esc(item.storeCode)}')" ${item.cannotVisit?'disabled':''}>${item.cannotVisit?'اطلاع داده شد':'امکان بازدید ندارم'}</button>${reported}</div>`;
+}
+
+function renderRoute(){
+  const list=document.getElementById('routeList'),items=state.route.items||[];
+  if(!items.length){list.innerHTML=`<div class="empty"><strong>برای امروز Route ثبت نشده است</strong><span>در صورت نیاز می‌توانی بازدید خارج از برنامه ثبت کنی.</span></div>`;return;}
+  list.innerHTML=items.map((x,i)=>{
+    const cls=x.uiStatus==='COMPLETED'?'completed':x.uiStatus==='IN_PROGRESS'?'inprogress':(x.uiStatus==='WAITING_APPROVAL'||x.uiStatus==='WAITING_CORRECTION')?'pending':'';
+    const gps=String(x.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="tag red">GPS نیازمند بررسی</span>':'';
+    return `<div class="store-item ${cls}"><div class="seq">${x.sequenceNo||i+1}</div><div><div class="store-name">${esc(x.storeName)}</div><div class="store-code">کد ${esc(x.storeCode)}</div><div class="tags">${priorityTag(x)}${gps}${x.distanceFromPreviousM?`<span class="tag">${mText(x.distanceFromPreviousM)} از قبلی</span>`:''}</div></div><div class="store-action">${statusAction(x)}</div></div>`;
+  }).join('');
+}
+
+
+function openCannotVisitModal(routeItemId,storeCode){
+  const item=(state.route.items||[]).find(x=>x.routeItemId===routeItemId);
+  if(!item)return;
+  if(item.uiStatus!=='NOT_STARTED'){toast('فقط قبل از شروع بازدید می‌توان عدم امکان مراجعه را اعلام کرد.','error');return;}
+  state.cannotVisitTarget={routeItemId,storeCode};
+  state.cannotVisitReason='';
+  document.getElementById('cannotVisitStoreSub').textContent=(item.storeName||storeCode)+' · کد '+storeCode;
+  document.getElementById('cannotVisitNote').value='';
+  const reasons=state.data.cannotVisitReasons||{};
+  document.getElementById('cannotReasonGrid').innerHTML=Object.keys(reasons).map(k=>`<button class="reason-option" data-reason="${esc(k)}" onclick="selectCannotReason('${esc(k)}',this)">${esc(reasons[k])}</button>`).join('');
+  document.getElementById('cannotVisitModal').classList.remove('hidden');
+}
+function closeCannotVisitModal(){document.getElementById('cannotVisitModal').classList.add('hidden');state.cannotVisitTarget=null;state.cannotVisitReason='';}
+function selectCannotReason(code,btn){
+  state.cannotVisitReason=code;
+  document.querySelectorAll('#cannotReasonGrid .reason-option').forEach(x=>x.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+async function submitCannotVisit(){
+  if(!state.cannotVisitTarget)return;
+  if(!state.cannotVisitReason){toast('دلیل عدم امکان بازدید را انتخاب کن.','error');return;}
+  const note=document.getElementById('cannotVisitNote').value.trim();
+  if(state.cannotVisitReason==='OTHER'&&!note){toast('برای گزینه «سایر» توضیح بنویس.','error');return;}
+  const btn=document.getElementById('cannotVisitSubmitBtn');btn.disabled=true;
+  try{
+    const res=await DMAuth.apiPost('reportCannotVisit',{
+      routeItemId:state.cannotVisitTarget.routeItemId,
+      reasonCode:state.cannotVisitReason,
+      note
+    },40000);
+    if(!res.success)throw new Error(res.message||'ارسال اطلاع ناموفق بود.');
+    closeCannotVisitModal();
+    toast(res.message||'به مدیر منطقه اطلاع داده شد.','success');
+    await reloadData();
+  }catch(e){toast(e.message||'خطا در ارسال اطلاع','error');}
+  finally{btn.disabled=false;}
+}
+
+function openGps(storeCode,routeItemId,planned,unplannedReason){
+  if(state.data.openVisit){toast('ابتدا بازدید باز فعلی را تعیین تکلیف کنید.','error');return;}
+  const s=storeByCode(storeCode);if(!s)return;
+  state.gpsTarget={storeCode,routeItemId:routeItemId||'',planned:!!planned,unplannedReason:unplannedReason||''};
+  state.gpsBest=null;state.gpsSamples=[];state.gpsLastError=null;state.gpsDecision=null;
+  document.getElementById('gpsStoreTitle').textContent=s.storeName;
+  document.getElementById('gpsStoreSub').textContent='کد '+s.storeCode+' · Auto تا '+(state.settings.geoRadiusM||300)+' متر · تأیید ساده تا '+(state.settings.softPassRadiusM||800)+' متر · دقت قابل اعتماد ≤ '+Math.min(200,Number(state.settings.gpsMaxAccuracyM||200))+' متر';
+  resetGpsUI();document.getElementById('gpsModal').classList.remove('hidden');
+}
+function closeGpsModal(){document.getElementById('gpsModal').classList.add('hidden');}
+function resetGpsUI(){
+  document.getElementById('gpsVisual').classList.remove('scanning');
+  document.getElementById('gpsTitle').textContent='آماده بررسی موقعیت';
+  document.getElementById('gpsDesc').textContent='برای شروع بازدید، موقعیت فعلی گوشی بررسی می‌شود. دسترسی Location مرورگر باید فعال باشد.';
+  document.getElementById('gpsProgress').style.width='0%';
+  document.getElementById('gpsMetrics').classList.add('hidden');document.getElementById('gpsResult').className='gps-result hidden';
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" onclick="closeGpsModal()">انصراف</button><button class="btn primary" id="scanBtn" onclick="scanAndStart()">بررسی GPS و شروع بازدید</button>`;
+}
+
+async function collectGpsSamplesFast(targetCount){
+  state.gpsSamples=[];state.gpsBest=null;state.gpsLastError=null;
+  if(!navigator.geolocation){
+    state.gpsLastError=new Error('مرورگر شما GPS را پشتیبانی نمی‌کند.');
+    return;
+  }
+
+  const started=Date.now();
+  const minSamples=Math.max(3,Number(state.settings.locationCorrectionMinSamples||3));
+  const requestedSamples=Math.max(minSamples,Number(targetCount||5));
+  const maxAttempts=Math.max(8,requestedSamples+3);
+  const hardWindowMs=22000;
+  const perAttemptTimeoutMs=6500;
+  const correctionAccuracy=Math.max(5,Number(state.settings.locationCorrectionMaxAccuracyM||80));
+  let attempts=0;
+
+  const updateUi=()=>{
+    const elapsed=Math.min(1,(Date.now()-started)/hardWindowMs);
+    const sampleProgress=Math.min(1,state.gpsSamples.length/requestedSamples);
+    const attemptProgress=Math.min(1,attempts/maxAttempts);
+    const pct=Math.round(Math.max(sampleProgress,attemptProgress*.72,elapsed*.62)*100);
+    document.getElementById('gpsProgress').style.width=`${Math.min(96,pct)}%`;
+    document.getElementById('metricSamples').textContent=`${state.gpsSamples.length}/${requestedSamples}`;
+    document.getElementById('metricAccuracy').textContent=state.gpsBest?mText(state.gpsBest.accuracy):'—';
+    document.getElementById('metricDistance').textContent='در حال بررسی';
+  };
+
+  const getFreshPosition=()=>new Promise(resolve=>{
+    navigator.geolocation.getCurrentPosition(
+      pos=>resolve({ok:true,pos}),
+      err=>resolve({ok:false,err}),
+      {enableHighAccuracy:true,timeout:perAttemptTimeoutMs,maximumAge:0}
+    );
+  });
+
+  while(attempts<maxAttempts && Date.now()-started<hardWindowMs){
+    attempts++;
+    updateUi();
+    const result=await getFreshPosition();
+
+    if(result.ok){
+      const pos=result.pos;
+      const p={
+        lat:pos.coords.latitude,
+        lng:pos.coords.longitude,
+        accuracy:pos.coords.accuracy,
+        timestamp:pos.timestamp,
+        attempt:attempts
+      };
+      state.gpsSamples.push(p);
+      if(!state.gpsBest||Number(p.accuracy)<Number(state.gpsBest.accuracy))state.gpsBest=p;
+      state.gpsLastError=null;
+      updateUi();
+
+      if(state.gpsSamples.length>=requestedSamples)break;
+      if(state.gpsSamples.length>=minSamples && state.gpsBest && Number(state.gpsBest.accuracy)<=correctionAccuracy)break;
+    }else{
+      state.gpsLastError=result.err;
+      if(result.err&&result.err.code===1)break;
+    }
+
+    if(attempts<maxAttempts && Date.now()-started<hardWindowMs){
+      await new Promise(r=>setTimeout(r,450));
+    }
+  }
+
+  document.getElementById('gpsProgress').style.width='100%';
+  updateUi();
+}
+
+function showInsufficientGpsSamples(minSamples){
+  const received=state.gpsSamples.length;
+  document.getElementById('gpsTitle').textContent='نمونه GPS کافی نیست';
+  document.getElementById('gpsDesc').textContent=
+    `برای تصمیم‌گیری مطمئن، حداقل ${minSamples} نمونه GPS لازم است؛ این دفعه فقط ${received} نمونه دریافت شد. چند ثانیه در فضای باز یا نزدیک پنجره بمان و دوباره تلاش کن.`;
+  const box=document.getElementById('gpsResult');
+  box.className='gps-result error';
+  box.textContent=`فرآیند با ${received} نمونه ادامه پیدا نکرد تا فاصله یا لوکیشن اشتباه تأیید نشود.`;
+  document.getElementById('gpsFoot').innerHTML=
+    `<button class="btn ghost" onclick="closeGpsModal()">انصراف</button><button class="btn primary" onclick="scanAndStart()">GPS دوباره</button>`;
+}
+
+async function scanAndStart(){
+  const count=Math.max(3,Number(state.settings.gpsSampleCount||5));
+  const minSamples=Math.max(3,Number(state.settings.locationCorrectionMinSamples||3));
+  state.gpsSamples=[];state.gpsBest=null;state.gpsLastError=null;state.gpsDecision=null;
+  document.getElementById('gpsVisual').classList.add('scanning');
+  document.getElementById('gpsTitle').textContent='در حال بررسی GPS...';
+  document.getElementById('gpsDesc').textContent='چند نمونه موقعیت به‌صورت همزمان پایش می‌شود؛ به محض رسیدن به دقت مناسب ادامه می‌دهیم.';
+  document.getElementById('gpsMetrics').classList.remove('hidden');
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" disabled>لطفاً صبر کنید...</button>`;
+
+  await collectGpsSamplesFast(count);
+
+  document.getElementById('gpsVisual').classList.remove('scanning');
+
+  if(state.gpsSamples.length<minSamples){
+    showInsufficientGpsSamples(minSamples);
+    return;
+  }
+
+  if(!state.gpsBest){
+    const raw=gpsErrorText(state.gpsLastError);
+    state.gpsDecision={
+      code:'GPS_UNAVAILABLE_MANAGER_APPROVAL',
+      approvalReason:'GPS_UNAVAILABLE'
+    };
+    showGpsFailure(
+      raw+' برای ادامه بازدید، تأیید مدیر منطقه لازم است.',
+      null,
+      true,
+      false,
+      null,
+      false,
+      null
+    );
+    return;
+  }
+
+  document.getElementById('gpsTitle').textContent='در حال تأیید موقعیت با سرور...';
+  try{
+    const res=await DMAuth.apiPost('startVisit',{
+      storeCode:state.gpsTarget.storeCode,
+      routeItemId:state.gpsTarget.routeItemId,
+      lat:state.gpsBest.lat,
+      lng:state.gpsBest.lng,
+      accuracy:state.gpsBest.accuracy,
+      gpsAttemptCount:state.gpsSamples.length,
+      unplannedReason:state.gpsTarget.unplannedReason
+    },40000);
+
+    state.gpsDecision=res||null;
+    if(res.gps){document.getElementById('metricDistance').textContent=mText(res.gps.distanceM);document.getElementById('metricAccuracy').textContent=mText(res.gps.accuracyM);}
+
+    if(res.success){
+      const box=document.getElementById('gpsResult');box.className='gps-result success';box.textContent=res.message||'حضور تأیید شد.';
+      document.getElementById('gpsTitle').textContent='حضور تأیید شد';
+      document.getElementById('gpsDesc').textContent='بازدید آغاز شد و Route این فروشگاه قفل شد.';
+      document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">ادامه</button>`;
+      return;
+    }
+
+    if(res.canSoftPass){showGpsFailure(res.message,res.gps,!!res.canRequestApproval,!!res.canRequestCorrection,res.correctionRule||null,true,res.softPass||null);return;}
+    if(res.canRequestApproval){showGpsFailure(res.message,res.gps,true,!!res.canRequestCorrection,res.correctionRule||null,false,null);return;}
+    showGpsFailure(res.message||'شروع بازدید ناموفق بود.',res.gps,false,false,null,false,null);
+  }catch(e){showGpsFailure(e.message||'ارتباط با سرور برقرار نشد.',null,false,false,null);}
+}
+
+function gpsErrorText(e){
+  if(!e)return 'موقعیت GPS دریافت نشد.';
+  if(e.code===1)return 'دسترسی Location در مرورگر رد شده است.';
+  if(e.code===2)return 'موقعیت فعلی گوشی قابل تشخیص نیست.';
+  if(e.code===3)return 'دریافت موقعیت بیش از حد طول کشید.';
+  return e.message||'موقعیت GPS دریافت نشد.';
+}
+
+function showGpsFailure(message,gps,canApprove,canCorrect=false,correctionRule=null,canSoftPass=false,softPass=null){
+  const decision=state.gpsDecision||{};
+  const code=String(decision.code||'').toUpperCase();
+  const approvalReason=String(decision.approvalReason||'').toUpperCase();
+  const lowAccuracy=code.includes('LOW_GPS_ACCURACY')||approvalReason.startsWith('LOW_GPS_ACCURACY');
+  const gpsUnavailable=code.includes('GPS_UNAVAILABLE')||approvalReason.startsWith('GPS_UNAVAILABLE');
+  const nearest=!!decision.nearestStore;
+
+  const reliableLimit=Math.min(200,Number(state.settings.gpsMaxAccuracyM||200));
+  const rule=correctionRule||{
+    maxAccuracyM:state.settings.locationCorrectionMaxAccuracyM||80,
+    minSamples:state.settings.locationCorrectionMinSamples||3
+  };
+
+  if(lowAccuracy){
+    document.getElementById('gpsTitle').textContent='دقت موقعیت مکانی کافی نیست';
+    const best=state.gpsBest&&Number.isFinite(Number(state.gpsBest.accuracy))
+      ? Math.round(Number(state.gpsBest.accuracy))
+      : null;
+    document.getElementById('gpsDesc').textContent=best!==null
+      ? `پس از چند بار بررسی، بهترین دقت GPS ${best} متر است؛ حد قابل اعتماد ${reliableLimit} متر است. فاصله نمایش‌داده‌شده مبنای تصمیم نیست و برای ادامه تأیید مدیر منطقه لازم است.`
+      : `دقت GPS قابل اعتماد دریافت نشد. برای ادامه تأیید مدیر منطقه لازم است.`;
+  }else if(gpsUnavailable){
+    document.getElementById('gpsTitle').textContent='موقعیت مکانی دریافت نشد';
+    document.getElementById('gpsDesc').textContent='پس از چند بار تلاش، موقعیت قابل استفاده‌ای از دستگاه دریافت نشد. Self Confirm مجاز نیست و برای ادامه باید درخواست تأیید مدیر منطقه ارسال شود.';
+  }else if(canSoftPass){
+    document.getElementById('gpsTitle').textContent='نیاز به تأیید ساده حضور';
+    document.getElementById('gpsDesc').textContent='GPS قابل اعتماد است و فاصله در محدوده تأیید ساده قرار دارد. اگر واقعاً در محل همین فروشگاه هستی، حضور خودت را تأیید کن. این مورد در Audit ثبت می‌شود.';
+  }else if(nearest){
+    const n=decision.nearestStore;
+    document.getElementById('gpsTitle').textContent='فروشگاه دیگری نزدیک‌تر است';
+    document.getElementById('gpsDesc').textContent=`GPS فعلی به یک فروشگاه دیگر دیلی‌مارکت (${n.distanceM!=null?mText(n.distanceM):'نزدیک'}) بسیار نزدیک‌تر است؛ Self Confirm مجاز نیست و برای ادامه تأیید مدیر منطقه لازم است.`;
+  }else if(canCorrect){
+    document.getElementById('gpsTitle').textContent='نیاز به تأیید مدیر منطقه';
+    document.getElementById('gpsDesc').textContent=`GPS قابل اعتماد است اما فاصله بیشتر از ${state.settings.softPassRadiusM||800} متر است. برای ادامه تأیید مدیر منطقه لازم است؛ اگر مختصات فروشگاه اشتباه است می‌توانی درخواست اصلاح لوکیشن هم ارسال کنی.`;
+  }else if(canApprove){
+    document.getElementById('gpsTitle').textContent='نیاز به تأیید مدیر منطقه';
+    document.getElementById('gpsDesc').textContent=`GPS قابل اعتماد است اما شرایط ورود خودکار یا تأیید ساده برقرار نیست؛ برای ادامه درخواست تأیید حضور برای مدیر منطقه ارسال کن.`;}else{
+    document.getElementById('gpsTitle').textContent='تأیید خودکار انجام نشد';
+    document.getElementById('gpsDesc').textContent='امکان شروع خودکار بازدید در حال حاضر وجود ندارد.';
+  }
+
+  const box=document.getElementById('gpsResult');
+  box.className=canSoftPass?'gps-result warn':'gps-result error';
+  box.textContent=message||'موقعیت تأیید نشد.';
+
+  if(gps){
+    document.getElementById('gpsMetrics').classList.remove('hidden');
+    document.getElementById('metricAccuracy').textContent=mText(gps.accuracyM);
+    document.getElementById('metricDistance').textContent=mText(gps.distanceM);
+  }
+
+  const correctionBtn=canCorrect
+    ? `<button class="btn correct" onclick="requestLocationCorrection()">📍 لوکیشن فروشگاه اشتباه است</button>`
+    : '';
+
+  const softBtn=canSoftPass
+    ? `<button class="btn warn" onclick="confirmSoftPresence()">بله، در فروشگاه هستم</button>`
+    : '';
+
+  const managerBtn=canApprove
+    ? `<button class="btn warn" onclick="requestManagerApproval()">درخواست تأیید مدیر منطقه</button>`
+    : '';
+
+  document.getElementById('gpsFoot').innerHTML=
+    `<button class="btn ghost" onclick="closeGpsModal()">انصراف</button>${correctionBtn}${softBtn}${managerBtn}<button class="btn primary" onclick="scanAndStart()">GPS دوباره</button>`;
+
+  if(!canCorrect&&state.gpsBest&&correctionRule&&!lowAccuracy){
+    document.getElementById('gpsDesc').textContent+=
+      ` برای اصلاح مختصات، GPS باید حداکثر ${rule.maxAccuracyM} متر و حداقل ${rule.minSamples} نمونه باشد.`;
+  }
+}
+
+async function confirmSoftPresence(){
+  const b=state.gpsBest;
+  const reliableLimit=Math.min(200,Number(state.settings.gpsMaxAccuracyM||200));
+  if(!b||!Number.isFinite(Number(b.accuracy))||Number(b.accuracy)>reliableLimit){
+    state.gpsDecision={
+      code:b?'LOW_GPS_ACCURACY_MANAGER_APPROVAL':'GPS_UNAVAILABLE_MANAGER_APPROVAL',
+      approvalReason:b?`LOW_GPS_ACCURACY | ${Math.round(Number(b.accuracy))}m | limit=${reliableLimit}m`:'GPS_UNAVAILABLE'
+    };
+    showGpsFailure(
+      b
+        ? `دقت موقعیت مکانی ${Math.round(Number(b.accuracy))} متر است و برای Self Confirm قابل اعتماد نیست.`
+        : 'موقعیت مکانی قابل استفاده دریافت نشده است.',
+      b?{accuracyM:b.accuracy,distanceM:null}:null,
+      true,false,null,false,null
+    );
+    return;
+  }
+  if(!confirm('تأیید می‌کنید که در حال حاضر در محل همین فروشگاه حضور دارید؟'))return;
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" disabled>در حال ثبت حضور...</button>`;
+  try{
+    const b=state.gpsBest;
+    const res=await DMAuth.apiPost('confirmSoftPresence',{
+      storeCode:state.gpsTarget.storeCode,
+      routeItemId:state.gpsTarget.routeItemId,
+      lat:b?b.lat:'',lng:b?b.lng:'',accuracy:b?b.accuracy:'',gpsAttemptCount:state.gpsSamples.length||0,
+      unplannedReason:state.gpsTarget.unplannedReason
+    },40000);
+    if(!res.success){
+      state.gpsDecision=res||state.gpsDecision;
+      if(res.canRequestApproval){showGpsFailure(res.message,res.gps,true,false,null,false,null);return;}
+      throw new Error(res.message||'ثبت حضور ناموفق بود.');
+    }
+    const box=document.getElementById('gpsResult');box.className='gps-result success';box.textContent=res.message||'حضور ثبت شد.';
+    document.getElementById('gpsTitle').textContent='بازدید آغاز شد';
+    document.getElementById('gpsDesc').textContent='حضور شما به‌صورت تأیید ساده ثبت شد و می‌توانی چک‌لیست را ادامه بدهی.';
+    document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">ادامه به بازدید</button>`;
+  }catch(e){showGpsFailure(e.message||'ثبت حضور ناموفق بود.',null,true,false,null,false,null);}
+}
+
+async function requestManagerApproval(){
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" disabled>در حال ارسال درخواست...</button>`;
+  try{
+    const b=state.gpsBest;
+    const res=await DMAuth.apiPost('requestLocationApproval',{
+      storeCode:state.gpsTarget.storeCode,
+      routeItemId:state.gpsTarget.routeItemId,
+      lat:b?b.lat:'',lng:b?b.lng:'',accuracy:b?b.accuracy:'',gpsAttemptCount:state.gpsSamples.length||1,
+      reason:(state.gpsDecision&&state.gpsDecision.approvalReason)?state.gpsDecision.approvalReason:(b?'GPS_NOT_VERIFIED':'GPS_UNAVAILABLE'),unplannedReason:state.gpsTarget.unplannedReason
+    },40000);
+    if(!res.success)throw new Error(res.message||'ثبت درخواست ناموفق بود.');
+    const box=document.getElementById('gpsResult');box.className='gps-result warn';box.textContent=res.message||'درخواست ثبت شد.';
+    document.getElementById('gpsTitle').textContent='درخواست ارسال شد';
+    document.getElementById('gpsDesc').textContent='مدیر منطقه می‌تواند حضور شما را تأیید یا رد کند.';
+    document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">متوجه شدم</button>`;
+  }catch(e){showGpsFailure(e.message||'ثبت درخواست ناموفق بود.',null,true,false,null);}
+}
+
+async function requestLocationCorrection(){
+  const b=state.gpsBest;
+  if(!b){toast('ابتدا GPS را دریافت کن.','error');return;}
+  const maxAcc=Number(state.settings.locationCorrectionMaxAccuracyM||80),minSamples=Number(state.settings.locationCorrectionMinSamples||3);
+  if(Number(b.accuracy)>maxAcc||state.gpsSamples.length<minSamples){
+    toast(`برای اصلاح لوکیشن، دقت GPS باید حداکثر ${maxAcc} متر و حداقل ${minSamples} نمونه باشد.`,'error');return;
+  }
+  const s=storeByCode(state.gpsTarget.storeCode);
+  if(!confirm(`لوکیشن ثبت‌شده ${s?.storeName||state.gpsTarget.storeCode} اشتباه است؟\nGPS فعلی برای مدیر منطقه ارسال می‌شود و فقط بعد از تأیید او مختصات فروشگاه تغییر می‌کند.`))return;
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" disabled>در حال ارسال موقعیت صحیح...</button>`;
+  try{
+    const res=await DMAuth.apiPost('requestStoreLocationCorrection',{
+      storeCode:state.gpsTarget.storeCode,routeItemId:state.gpsTarget.routeItemId,
+      lat:b.lat,lng:b.lng,accuracy:b.accuracy,gpsSampleCount:state.gpsSamples.length,
+      unplannedReason:state.gpsTarget.unplannedReason
+    },40000);
+    if(!res.success)throw new Error(res.message||'ثبت درخواست اصلاح ناموفق بود.');
+    const box=document.getElementById('gpsResult');box.className='gps-result warn';box.textContent=res.message||'موقعیت پیشنهادی ارسال شد.';
+    document.getElementById('gpsTitle').textContent='درخواست اصلاح لوکیشن ارسال شد';
+    document.getElementById('gpsDesc').textContent='تا تصمیم مدیر منطقه، مختصات فعلی فروشگاه تغییر نمی‌کند. پس از تأیید، لوکیشن اصلاح و چک‌لیست باز می‌شود.';
+    document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">متوجه شدم</button>`;
+  }catch(e){showGpsFailure(e.message||'ثبت درخواست اصلاح ناموفق بود.',null,true,false,null);}
+}
+
+
+/* ===== CHECKLIST ===== */
+function checklistLocalKey(visitId){return 'dmChecklistDraft:'+visitId;}
+function loadLocalChecklistDraft(visitId){
+  try{
+    const raw=localStorage.getItem(checklistLocalKey(visitId));if(!raw)return null;
+    const parsed=JSON.parse(raw);
+    if(parsed&&parsed.answers)return parsed;
+    return {answers:parsed||{},notes:''}; // backward compatibility
+  }catch(_){return null;}
+}
+function saveLocalChecklistDraft(){
+  if(!state.checklistVisitId)return;
+  try{localStorage.setItem(checklistLocalKey(state.checklistVisitId),JSON.stringify({answers:state.checklistAnswers||{},notes:state.checklistNotes||''}));}catch(_){}
+}
+function clearLocalChecklistDraft(visitId){try{localStorage.removeItem(checklistLocalKey(visitId));}catch(_){}}
+
+async function openChecklist(visitId){
+  if(!visitId){toast('شناسه بازدید پیدا نشد.','error');return;}
+  setLoading(true,'در حال دریافت چک‌لیست...');
+  try{
+    const res=await DMAuth.apiPost('checklistBootstrap',{visitId},40000);
+    if(!res.success)throw new Error(res.message||'چک‌لیست دریافت نشد.');
+    state.checklistVisitId=visitId;state.checklistData=res;
+    const local=loadLocalChecklistDraft(visitId);
+    state.checklistAnswers=Object.assign({},res.answers||{},local?.answers||{});
+    state.checklistNotes=local?.notes!=null?String(local.notes):String(res.visitNotes||'');
+    state.checklistDirty=Object.keys(local?.answers||{}).some(k=>String(local.answers[k]||'')!==String((res.answers||{})[k]||'')) || (local&&String(local.notes||'')!==String(res.visitNotes||''));
+    document.getElementById('checklistStoreTitle').textContent=res.store?.storeName||'چک‌لیست فروشگاه';
+    document.getElementById('checklistStoreSub').textContent='کد '+(res.store?.storeCode||'')+' · '+(res.readOnly?'بازدید تکمیل شده':'بازدید فعال');
+    document.getElementById('checklistVisitId').textContent=visitId;
+    document.getElementById('checklistVisitType').textContent=res.visit?.plannedFlag?'برنامه‌ریزی‌شده':'خارج از برنامه';
+    document.getElementById('checklistStateText').textContent=res.readOnly?'تکمیل شده':'در حال تکمیل';
+    document.getElementById('checklistModal').classList.remove('hidden');
+    document.body.style.overflow='hidden';
+    renderChecklist();
+    if(state.checklistDirty)setChecklistSaveStatus('پیش‌نویس محلی بازیابی شد.','saving');
+  }catch(e){toast(e.message||'خطا در دریافت چک‌لیست','error');}
+  finally{setLoading(false);}
+}
+
+function closeChecklist(){
+  if(state.checklistDirty){saveLocalChecklistDraft();}
+  if(state.checklistSaveTimer){clearTimeout(state.checklistSaveTimer);state.checklistSaveTimer=null;}
+  document.getElementById('checklistModal').classList.add('hidden');
+  document.body.style.overflow='';
+}
+
+function checklistSectionTheme(section,index){
+  const s=String(section||'').replace(/\u200c/g,' ').trim().toLowerCase();
+
+  if(/لبنی|شیر|ماست|پنیر|دوغ/.test(s))return'theme-dairy';
+  if(/گوشت|مرغ|پروتئ|ماهی|قصاب/.test(s))return'theme-meat';
+  if(/میوه|سبزی|صیفی|محصولات تازه/.test(s))return'theme-produce';
+  if(/نوشیدنی|آشامیدنی|آب|نوشابه/.test(s))return'theme-beverage';
+  if(/انبار|دپو|موجودی|قفسه/.test(s))return'theme-warehouse';
+  if(/صندوق|گاوصندوق|بانک|نقد|مالی/.test(s))return'theme-cash';
+  if(/دیتا|داده|هدف|فروش|شاخص/.test(s))return'theme-data';
+  if(/خشکبار|تنقلات|شیرینی|کنسرو|ادویه|نان|خواربار/.test(s))return'theme-grocery';
+
+  return'theme-general-'+((Number(index||0)%4)+1);
+}
+
+function checklistSubTheme(sub,index){
+  const s=String(sub||'').replace(/\u200c/g,' ').trim().toLowerCase();
+
+  if(/لبنی|شیر|ماست|پنیر|دوغ/.test(s))return'subtheme-dairy';
+  if(/گوشت|مرغ|پروتئ|ماهی|قصاب/.test(s))return'subtheme-meat';
+  if(/میوه|سبزی|صیفی|سالاد|محصولات تازه/.test(s))return'subtheme-produce';
+  if(/نوشیدنی|آشامیدنی|آب|نوشابه|دلستر|آبمیوه/.test(s))return'subtheme-beverage';
+  if(/خشکبار|تنقلات|شیرینی|کنسرو|ادویه|خواربار|حبوبات|برنج|روغن/.test(s))return'subtheme-grocery';
+  if(/منجمد|فریز|بستنی/.test(s))return'subtheme-frozen';
+  if(/نان|بیکری|قنادی/.test(s))return'subtheme-bakery';
+  if(/بهداشتی|شوینده|سلولزی|خانگی|غیرغذایی/.test(s))return'subtheme-household';
+
+  return'subtheme-default';
+}
+
+function checklistSectionIcon(section){
+  const s=String(section||'').replace(/\u200c/g,' ').trim().toLowerCase();
+
+  if(/لبنی|شیر|ماست|پنیر|دوغ/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v4l-2 3v9a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-9l-2-3V3"/><path d="M8 13h8"/></svg>`;
+
+  if(/گوشت|مرغ|پروتئ|ماهی|قصاب/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M7.5 14.5c-2.3-2.3-2.2-6 .2-8.2s6.2-2.4 8.5 0 2.3 6.2 0 8.5c-1.7 1.7-4.1 2.1-6.2 1.3L7.5 18.5"/><path d="M7.5 18.5 5 21l-2-2 2.5-2.5"/></svg>`;
+
+  if(/میوه|سبزی|صیفی|محصولات تازه/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M12 21c0-7 3-12 9-15 0 7-3 12-9 15Z"/><path d="M12 21C12 13 8 8 3 5c0 7 3 12 9 16Z"/><path d="M12 21V10"/></svg>`;
+
+  if(/نوشیدنی|آشامیدنی|آب|نوشابه/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M8 3h8l-1 18H9L8 3Z"/><path d="M9 8h6"/><path d="m16 3 3-2"/></svg>`;
+
+  if(/انبار|دپو|موجودی|قفسه/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="m3 7 9-4 9 4-9 4-9-4Z"/><path d="m3 7 9 4 9-4v10l-9 4-9-4V7Z"/><path d="M12 11v10"/></svg>`;
+
+  if(/صندوق|گاوصندوق|بانک|نقد|مالی/.test(s))
+    return`<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18"/><path d="M16 15h2"/></svg>`;
+
+  if(/دیتا|داده|هدف|فروش|شاخص/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>`;
+
+  if(/خشکبار|تنقلات|شیرینی|کنسرو|ادویه|نان|خواربار/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>`;
+
+  return`<svg viewBox="0 0 24 24"><path d="M8 4h8"/><path d="M9 2h6a2 2 0 0 1 2 2v2H7V4a2 2 0 0 1 2-2Z"/><path d="M6 5H4v16h16V5h-2"/><path d="m8 13 2 2 5-5"/></svg>`;
+}
+
+
+function checklistConditionalRuleClient(){
+  return {triggerQuestionId:'V4-EQUIPMENT-FAULT',triggerValue:'بله',dependentQuestionId:'V4-EQUIPMENT-FAULT-DESC'};
+}
+function isChecklistQuestionVisibleClient(q){
+  const r=checklistConditionalRuleClient();
+  if(String(q?.questionId||'')!==r.dependentQuestionId)return true;
+  return String(state.checklistAnswers?.[r.triggerQuestionId]||'').trim()===r.triggerValue;
+}
+function isChecklistQuestionRequiredClient(q){
+  const r=checklistConditionalRuleClient();
+  if(String(q?.questionId||'')===r.dependentQuestionId){
+    return String(state.checklistAnswers?.[r.triggerQuestionId]||'').trim()===r.triggerValue;
+  }
+  return !!q?.required;
+}
+function normalizeConditionalAnswersClient(){
+  const r=checklistConditionalRuleClient();
+  if(String(state.checklistAnswers?.[r.triggerQuestionId]||'').trim()!==r.triggerValue){
+    if(state.checklistAnswers)delete state.checklistAnswers[r.dependentQuestionId];
+  }
+}
+
+function renderChecklist(){
+  const data=state.checklistData;if(!data)return;
+  normalizeConditionalAnswersClient();
+  const template=(data.template||[]).filter(q=>isChecklistQuestionVisibleClient(q));const readOnly=!!data.readOnly;
+  const sections=[];const map={};
+
+  template.forEach(q=>{
+    const section=String(q.section||'سایر').trim()||'سایر';
+    if(!map[section]){map[section]=[];sections.push(section);}
+    map[section].push(q);
+  });
+
+  const main=document.getElementById('checklistMain');
+
+  main.innerHTML=sections.map((section,index)=>{
+    const qs=map[section];
+    const subs=[];const sm={};
+
+    qs.forEach(q=>{
+      const sub=q.subsection||'سایر';
+      if(!sm[sub]){sm[sub]=[];subs.push(sub);}
+      sm[sub].push(q);
+    });
+
+    const answered=qs.filter(q=>String(state.checklistAnswers[q.questionId]||'').trim()).length;
+    const required=qs.filter(q=>isChecklistQuestionRequiredClient(q));
+    const requiredAnswered=required.filter(q=>String(state.checklistAnswers[q.questionId]||'').trim()).length;
+    const complete=required.length?requiredAnswered===required.length:answered===qs.length;
+    const percent=qs.length?Math.round(answered*100/qs.length):0;
+    const theme=checklistSectionTheme(section,index);
+    const sectionNo=String(index+1).padStart(2,'0');
+
+    return `
+      <section class="check-section ${theme} ${complete?'is-complete':''}" id="checksec-${safeDomId(section)}">
+        <div class="check-section-head">
+          <div class="check-section-head-main">
+            <div class="check-section-identity">
+              <div class="check-section-icon">${checklistSectionIcon(section)}</div>
+              <div class="check-section-title-wrap">
+                <div class="check-section-kicker">بخش ${sectionNo}</div>
+                <h3>${esc(section)}</h3>
+              </div>
+            </div>
+            <div class="check-section-status">
+              <span class="section-check">✓</span>
+              <span>${answered} از ${qs.length}</span>
+            </div>
+          </div>
+          <div class="check-section-progress"><span style="width:${percent}%"></span></div>
+        </div>
+
+        <div class="check-subsection">
+          ${subs.map((sub,subIndex)=>`
+            <div class="check-sub-group ${checklistSubTheme(sub,subIndex)}">
+              <div class="check-sub-title">${esc(sub)}</div>
+              ${sm[sub].map(q=>renderChecklistQuestion(q,readOnly)).join('')}
+            </div>
+          `).join('')}
+        </div>
+      </section>`;
+  }).join('')+`
+    <section class="notes-card">
+      <h4>توضیحات بازدید</h4>
+      <p>اگر نکته، مشکل یا موضوعی برای پیگیری وجود دارد اینجا بنویس. این بخش اختیاری است.</p>
+      <textarea id="visitNotesInput" ${readOnly?'disabled':''} maxlength="3000" placeholder="توضیحات بازدید...">${esc(state.checklistNotes||'')}</textarea>
+    </section>`;
+
+  const notesInput=document.getElementById('visitNotesInput');
+  if(notesInput&&!readOnly)notesInput.addEventListener('input',()=>{
+    state.checklistNotes=notesInput.value;
+    state.checklistDirty=true;
+    saveLocalChecklistDraft();
+    setChecklistSaveStatus('تغییرات هنوز روی سرور ذخیره نشده‌اند.','saving');
+    if(state.checklistSaveTimer)clearTimeout(state.checklistSaveTimer);
+    state.checklistSaveTimer=setTimeout(()=>saveChecklistDraft(false),1200);
+  });
+
+  document.getElementById('checklistSectionNav').innerHTML=sections.map((section,index)=>{
+    const qs=map[section];
+    const complete=qs.every(q=>!isChecklistQuestionRequiredClient(q)||state.checklistAnswers[q.questionId]);
+    const answered=qs.filter(q=>state.checklistAnswers[q.questionId]).length;
+    const theme=checklistSectionTheme(section,index);
+
+    return `<button class="${theme} ${complete?'complete':''}" onclick="scrollChecklistSection('${safeDomId(section)}',this)">
+      <span class="section-nav-label">
+        <span>${esc(section)}</span>
+        <span class="section-nav-count">${answered}/${qs.length}${complete?' ✓':''}</span>
+      </span>
+    </button>`;
+  }).join('');
+
+  document.getElementById('finishChecklistBtn').disabled=readOnly;
+  document.getElementById('draftBtn').disabled=readOnly;
+  document.getElementById('topDraftBtn').disabled=readOnly;
+
+  if(readOnly)
+    document.getElementById('checklistBottomInfo').textContent='این چک‌لیست قبلاً نهایی شده و فقط قابل مشاهده است.';
+  else
+    document.getElementById('checklistBottomInfo').textContent=`برای پایان بازدید باید به همه ${template.filter(q=>isChecklistQuestionRequiredClient(q)).length} سؤال اجباری پاسخ داده شود. توضیحات انتهایی اختیاری است.`;
+
+  updateChecklistProgress();
+}
+
+function safeDomId(s){return String(s||'').replace(/[^a-zA-Z0-9\u0600-\u06ff]+/g,'-');}
+function renderChecklistQuestion(q,readOnly){
+  const value=state.checklistAnswers[q.questionId]||'';
+  const regionalBadge=q.source==='REGIONAL'?'<span class="regional-q-badge">اختصاصی منطقه</span>':'';
+  const required=isChecklistQuestionRequiredClient(q);
+  const isFault=q.questionId==='V4-EQUIPMENT-FAULT';
+  const isFaultDesc=q.questionId==='V4-EQUIPMENT-FAULT-DESC';
+  let typeLabel=q.responseType==='TEXT'?'پاسخ متنی':q.responseType==='TARGET_80'?'بالاتر از 80 درصد / زیر 80 درصد':q.responseType==='ACHIEVEMENT'?'محقق شده / محقق نشده':q.responseType==='WASTE_RATE'?'بالای نیم درصد / کمتر از نیم درصد':q.responseType==='YES_NO'?'بله / خیر':'ضعیف / خوب / عالی';
+
+  if(q.responseType==='TEXT'){
+    const placeholder=isFaultDesc?'نوع تجهیز، محل خرابی و شرح مشکل را بنویس...':'پاسخ را بنویس...';
+    const note=isFaultDesc?'<div class="conditional-note">به دلیل انتخاب «بله»، ثبت شرح خرابی برای پایان بازدید الزامی است.</div>':'';
+    return `<div class="question-card ${isFaultDesc?'conditional-followup':''}" id="question-${esc(q.questionId)}"><div class="question-top"><div class="question-no">${q.sortOrder}</div><div><div class="question-text">${esc(q.questionText)} ${regionalBadge}</div><div class="question-sub">${required?'پاسخ الزامی':'اختیاری'} · ${esc(typeLabel)}</div></div></div>${note}<textarea class="regional-text-answer" maxlength="1000" ${readOnly?'disabled':''} oninput="setChecklistTextAnswer('${esc(q.questionId)}',this.value)" placeholder="${esc(placeholder)}">${esc(value)}</textarea></div>`;
+  }
+
+  const options=q.options||[];const two=options.length===2;
+  const buttons=options.map((opt,i)=>{
+    let cls='';
+    if(value===opt){
+      if(isFault)cls=opt==='بله'?'bad':'great';
+      else if(q.responseType==='ACHIEVEMENT')cls=opt==='محقق شده'?'great':'bad';
+      else if(q.responseType==='TARGET_80')cls=(opt==='بالاتر از 80 درصد'||opt==='بالاتر از ۸۰ درصد')?'great':'bad';
+      else if(q.responseType==='WASTE_RATE')cls=opt==='کمتر از نیم درصد'?'great':'bad';
+      else if(q.responseType==='YES_NO')cls=i===0?'yes':'no';
+      else cls=i===0?'bad':i===1?'good':'great';
+    }
+    return `<button class="answer-btn ${value===opt?'selected '+cls:''}" ${readOnly?'disabled':''} onclick="setChecklistAnswer('${esc(q.questionId)}','${esc(opt)}')">${esc(opt)}</button>`;
+  }).join('');
+  const faultClass=isFault&&value==='بله'?'equipment-fault-yes':'';
+  return `<div class="question-card ${faultClass}" id="question-${esc(q.questionId)}"><div class="question-top"><div class="question-no">${q.sortOrder}</div><div><div class="question-text">${esc(q.questionText)} ${regionalBadge}</div><div class="question-sub">${required?'پاسخ الزامی':'اختیاری'} · ${esc(typeLabel)}</div></div></div><div class="answer-options ${two?'two':''}">${buttons}</div></div>`;
+}
+
+function setChecklistAnswer(questionId,value){
+  if(state.checklistData?.readOnly)return;
+  state.checklistAnswers[questionId]=value;
+  const rule=checklistConditionalRuleClient();
+  if(questionId===rule.triggerQuestionId&&value!==rule.triggerValue)delete state.checklistAnswers[rule.dependentQuestionId];
+  state.checklistDirty=true;saveLocalChecklistDraft();
+  renderChecklist();setChecklistSaveStatus('تغییرات هنوز روی سرور ذخیره نشده‌اند.','saving');
+  if(state.checklistSaveTimer)clearTimeout(state.checklistSaveTimer);
+  state.checklistSaveTimer=setTimeout(()=>saveChecklistDraft(false),1200);
+}
+
+
+function setChecklistTextAnswer(questionId,value){
+  if(state.checklistData?.readOnly)return;
+  state.checklistAnswers[questionId]=String(value||'').slice(0,1000);
+  state.checklistDirty=true;saveLocalChecklistDraft();updateChecklistProgress();
+  setChecklistSaveStatus('تغییرات هنوز روی سرور ذخیره نشده‌اند.','saving');
+  if(state.checklistSaveTimer)clearTimeout(state.checklistSaveTimer);
+  state.checklistSaveTimer=setTimeout(()=>saveChecklistDraft(false),1200);
+}
+
+function checklistProgressClient(){
+  normalizeConditionalAnswersClient();
+  const t=(state.checklistData?.template||[]).filter(q=>isChecklistQuestionVisibleClient(q));
+  const answered=t.filter(q=>String(state.checklistAnswers[q.questionId]||'').trim()).length;
+  const required=t.filter(q=>isChecklistQuestionRequiredClient(q));
+  const requiredAnswered=required.filter(q=>String(state.checklistAnswers[q.questionId]||'').trim()).length;
+  return {total:t.length,answered,required:required.length,requiredAnswered,remainingRequired:Math.max(0,required.length-requiredAnswered),percent:t.length?Math.round(answered/t.length*100):0};
+}
+function updateChecklistProgress(){
+  const p=checklistProgressClient();
+  document.getElementById('checklistProgressText').textContent=`${p.answered} از ${p.total}`;
+  document.getElementById('checklistProgressBar').style.width=p.percent+'%';
+}
+function setChecklistSaveStatus(text,cls=''){
+  const el=document.getElementById('checklistSaveStatus');el.textContent=text||'';el.className='checklist-save-status '+cls;
+}
+
+async function saveChecklistDraft(showToast=false){
+  if(!state.checklistVisitId||state.checklistData?.readOnly||state.checklistSaving)return;
+  state.checklistSaving=true;setChecklistSaveStatus('در حال ذخیره پیش‌نویس...','saving');
+  try{
+    const res=await DMAuth.apiPost('saveChecklistDraft',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{}),visitNotes:state.checklistNotes||''},40000);
+    if(!res.success)throw new Error(res.message||'ذخیره پیش‌نویس ناموفق بود.');
+    state.checklistDirty=false;clearLocalChecklistDraft(state.checklistVisitId);setChecklistSaveStatus('پیش‌نویس ذخیره شد.','saved');
+    if(showToast)toast('پیش‌نویس چک‌لیست ذخیره شد.','success');
+  }catch(e){state.checklistDirty=true;saveLocalChecklistDraft();setChecklistSaveStatus('ذخیره سرور ناموفق بود؛ نسخه محلی حفظ شد.','error');if(showToast)toast(e.message||'خطا در ذخیره پیش‌نویس','error');}
+  finally{state.checklistSaving=false;}
+}
+
+function highlightMissingQuestions(){
+  const t=(state.checklistData?.template||[]).filter(q=>isChecklistQuestionVisibleClient(q));let first=null;
+  t.forEach(q=>{
+    const el=document.getElementById('question-'+q.questionId);if(!el)return;
+    const missing=isChecklistQuestionRequiredClient(q)&&!String(state.checklistAnswers[q.questionId]||'').trim();el.classList.toggle('missing',missing);if(missing&&!first)first=el;
+  });
+  if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+async function finishChecklist(){
+  if(state.checklistData?.readOnly)return;
+  const p=checklistProgressClient();
+  if(p.remainingRequired>0){highlightMissingQuestions();toast(`${p.remainingRequired} سؤال هنوز بدون پاسخ است.`,'error');return;}
+  if(!confirm('چک‌لیست نهایی شود و این بازدید پایان پیدا کند؟ پس از ثبت نهایی امکان ویرایش وجود ندارد.'))return;
+  setLoading(true,'در حال ثبت نهایی و پایان بازدید...');
+  try{
+    const res=await DMAuth.apiPost('completeChecklist',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{}),visitNotes:state.checklistNotes||''},50000);
+    if(!res.success){if(res.code==='CHECKLIST_INCOMPLETE'){highlightMissingQuestions();}throw new Error(res.message||'ثبت نهایی ناموفق بود.');}
+    let maintenanceResult=null;
+    const completedVisitId=state.checklistVisitId;
+    const hasEquipmentFault=String(state.checklistAnswers['V4-EQUIPMENT-FAULT']||'').trim()==='بله';
+
+    if(hasEquipmentFault){
+      try{
+        const now=new Date();
+        maintenanceResult=await DMAuth.apiPost('createMaintenanceRequest',{
+          visitId:completedVisitId,
+          priority:'normal',
+          reportedDate:now.toLocaleDateString('fa-IR'),
+          reportedTime:now.toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})
+        },50000);
+      }catch(syncError){
+        maintenanceResult={
+          success:true,
+          synced:false,
+          queued:true,
+          message:'بازدید تکمیل شد؛ ارسال گزارش خرابی به واحد فنی در صف همگام‌سازی قرار گرفت.'
+        };
+      }
+    }
+
+    clearLocalChecklistDraft(completedVisitId);state.checklistDirty=false;state.checklistNotes='';
+
+    const maintenanceHtml=hasEquipmentFault
+      ?(
+        maintenanceResult&&maintenanceResult.synced
+          ?`<div class="maintenance-sync-result success"><strong>تیکت فنی ثبت شد</strong><span>${maintenanceResult.ticketNumber?'شماره تیکت: '+esc(maintenanceResult.ticketNumber):'گزارش خرابی با موفقیت به واحد فنی ارسال شد.'}</span></div>`
+          :`<div class="maintenance-sync-result queued"><strong>گزارش خرابی محفوظ شد</strong><span>ارسال به واحد فنی در صف همگام‌سازی است و از بین نمی‌رود.</span></div>`
+      )
+      :'';
+
+    document.getElementById('checklistMain').innerHTML=`<div class="checklist-complete-box"><div class="complete-icon">✓</div><h3>بازدید با موفقیت تکمیل شد</h3><p>چک‌لیست ثبت شد، زمان پایان بازدید ذخیره شد و وضعیت این فروشگاه در Route امروز به «تکمیل شده» تغییر کرد.</p>${maintenanceHtml}<button class="btn primary" onclick="closeChecklist();reloadData()">بازگشت به برنامه امروز</button></div>`;
+    document.getElementById('checklistSectionNav').innerHTML='';document.getElementById('checklistBottomInfo').textContent=`مدت بازدید: ${res.durationMinutes||0} دقیقه`;
+    document.getElementById('finishChecklistBtn').disabled=true;document.getElementById('draftBtn').disabled=true;document.getElementById('topDraftBtn').disabled=true;setChecklistSaveStatus('ثبت نهایی انجام شد.','saved');
+
+    if(hasEquipmentFault&&maintenanceResult&&maintenanceResult.synced){
+      toast('بازدید تکمیل شد و تیکت خرابی برای واحد فنی ثبت شد.','success');
+    }else if(hasEquipmentFault){
+      toast('بازدید تکمیل شد؛ گزارش خرابی در صف ارسال واحد فنی است.','success');
+    }else{
+      toast(res.message||'بازدید تکمیل شد.','success');
+    }
+  }catch(e){toast(e.message||'خطا در ثبت نهایی چک‌لیست','error');}
+  finally{setLoading(false);}
+}
+
+function scrollChecklistSection(id,btn){
+  const el=document.getElementById('checksec-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('#checklistSectionNav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');
+}
+
+/* ===== UNPLANNED ===== */
+function openUnplannedModal(){
+  if(state.data.openVisit){toast('ابتدا بازدید باز فعلی را تعیین تکلیف کنید.','error');return;}
+  document.getElementById('unplannedSearch').value='';renderUnplannedStores();document.getElementById('unplannedModal').classList.remove('hidden');
+}
+function closeUnplannedModal(){document.getElementById('unplannedModal').classList.add('hidden');}
+function renderUnplannedStores(){
+  const q=String(document.getElementById('unplannedSearch').value||'').toLowerCase();
+  const list=document.getElementById('unplannedStores');
+  const arr=state.stores.filter(s=>!q||(s.storeCode+' '+s.storeName).toLowerCase().includes(q));
+  list.innerHTML=arr.map(s=>`<div class="pick-item"><div><strong>${esc(s.storeName)}</strong><span>کد ${esc(s.storeCode)} · ${esc(s.priorityLabel||'')}</span></div><button class="pick-btn" onclick="chooseUnplanned('${esc(s.storeCode)}')">انتخاب</button></div>`).join('');
+}
+function chooseUnplanned(code){
+  const reason=document.getElementById('unplannedReason').value;closeUnplannedModal();openGps(code,'',false,reason);
+}
+
+/* ===== OPEN VISIT ACTIONS ===== */
+async function cancelPending(visitId){
+  if(!confirm('درخواست تأیید مدیر منطقه لغو شود؟'))return;
+  setLoading(true,'در حال لغو درخواست...');
+  try{const r=await DMAuth.apiPost('cancelPendingApproval',{visitId},30000);if(!r.success)throw new Error(r.message);toast(r.message||'درخواست لغو شد.','success');await loadData(true);}catch(e){toast(e.message||'خطا','error');}finally{setLoading(false);}
+}
+async function cancelLocationCorrection(visitId){
+  if(!confirm('درخواست اصلاح لوکیشن لغو شود؟'))return;
+  setLoading(true,'در حال لغو درخواست اصلاح...');
+  try{const r=await DMAuth.apiPost('cancelPendingLocationCorrection',{visitId},30000);if(!r.success)throw new Error(r.message);toast(r.message||'درخواست اصلاح لغو شد.','success');await loadData(true);}catch(e){toast(e.message||'خطا','error');}finally{setLoading(false);}
+}
+async function cancelVisit(visitId){
+  if(!confirm('شروع این بازدید لغو شود؟ این کار در Audit ثبت می‌شود.'))return;
+  setLoading(true,'در حال لغو شروع بازدید...');
+  try{const r=await DMAuth.apiPost('cancelVisitStart',{visitId,reason:'STARTED_BY_MISTAKE'},30000);if(!r.success)throw new Error(r.message);toast(r.message||'بازدید لغو شد.','success');await loadData(true);}catch(e){toast(e.message||'خطا','error');}finally{setLoading(false);}
+}
+
+function schedulePendingPoll(){
+  if(state.pendingPoll)clearTimeout(state.pendingPoll);
+  const status=String(state.data?.openVisit?.visitStatus||'');
+  if(status!=='WAITING_LOCATION_APPROVAL'&&status!=='WAITING_LOCATION_CORRECTION')return;
+
+  state.pendingPoll=setTimeout(async()=>{
+    try{
+      const oldVisitId=String(state.data?.openVisit?.visitId||'');
+      const oldStatus=String(state.data?.openVisit?.visitStatus||'');
+      const r=await DMAuth.apiPost('areaHeadVisitState',{},15000);
+      if(!r?.success){schedulePendingPoll();return;}
+      const next=r.openVisit||null;
+      const newVisitId=String(next?.visitId||'');
+      const newStatus=String(next?.visitStatus||'');
+
+      if(oldVisitId!==newVisitId||oldStatus!==newStatus){
+        // Decision changed: one fresh bootstrap synchronizes Route/Checklist state.
+        await loadData(true,true);
+        return;
+      }
+      schedulePendingPoll();
+    }catch(_){schedulePendingPoll();}
+  },8000);
+}
+async function reloadData(){await loadData(false,true);}
+
+
+DMInstant.on('areaHeadBootstrap',(res)=>{
+  applyAreaHeadBootstrap(res);
+});
+
+init()
+  .then(()=>{ if(window.DMRuntime) DMRuntime.ready('areahead-ready'); })
+  .catch(e=>{
+    if(window.DMRuntime) DMRuntime.fail('areahead-init:'+String(e&&e.message||e),{autoRepair:true,showOverlay:true});
+    setLoading(false);
+    toast(e.message||'خطای غیرمنتظره','error');
+  });
+</script>
+</body>
+</html>
