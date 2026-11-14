@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '25.1.0-v54-route-ui';
+  const VERSION='V55-SLA-WARNING-OTHER-DIRECT';
   const PREFIX = 'dmInstant:v20:';
   const MAX_ENTRIES = 28;
   const MAX_ITEM_CHARS = 780000;
@@ -430,9 +430,251 @@
     }
   }
 
+
+  /* =========================================================
+   * V55 AREA HEAD ROUTE POLICY
+   * - 14-day SLA is WARNING ONLY; never blocks week save.
+   * - Enables OTHER day status directly and robustly.
+   * - OTHER requires note.
+   * ======================================================= */
+  function installAreaHeadRouteV55_(){
+    try{
+      const path=String(location.pathname||'').toLowerCase();
+      if(!path.endsWith('/areahead-route.html') && !path.endsWith('areahead-route.html')) return false;
+
+      const select=document.getElementById('dayStatusType');
+      if(!select || typeof window.saveWeek!=='function') return false;
+
+      // ---- OTHER option ----
+      if(!Array.from(select.options).some(o=>String(o.value||'').toUpperCase()==='OTHER')){
+        const opt=document.createElement('option');
+        opt.value='OTHER';
+        opt.textContent='سایر';
+        select.appendChild(opt);
+      }
+
+      const note=document.getElementById('dayStatusNote');
+      const sub=document.getElementById('dayStatusSub');
+
+      function syncOtherUi(){
+        const type=String(select.value||'').toUpperCase();
+        if(note){
+          note.placeholder=type==='OTHER'
+            ? 'توضیحات «سایر» الزامی است'
+            : 'توضیح اختیاری';
+        }
+        if(sub && !String(sub.textContent||'').includes('سایر')){
+          sub.textContent='در صورت مرخصی، انبارگردانی، افتتاحیه یا سایر، این روز از Route و انتظار عملکرد روزانه خارج می‌شود.';
+        }
+      }
+
+      if(!select.__v55OtherBound){
+        select.addEventListener('change',syncOtherUi);
+        select.__v55OtherBound=true;
+      }
+
+      // ---- label helpers ----
+      const oldLabel=window.dayStatusLabel;
+      if(typeof oldLabel==='function' && !oldLabel.__v55Wrapped){
+        const wrapped=function(d){
+          try{
+            const t=String(
+              d?.dayStatus?.eventType ||
+              d?.leave?.eventType ||
+              (d?.isLeave?'LEAVE':'')
+            ).toUpperCase();
+            if(t==='OTHER') return 'سایر';
+          }catch(_){}
+          return oldLabel.apply(this,arguments);
+        };
+        wrapped.__v55Wrapped=true;
+        window.dayStatusLabel=wrapped;
+      }
+
+      const oldClass=window.dayStatusClass;
+      if(typeof oldClass==='function' && !oldClass.__v55Wrapped){
+        const wrapped=function(d){
+          try{
+            const t=String(
+              d?.dayStatus?.eventType ||
+              d?.leave?.eventType ||
+              (d?.isLeave?'LEAVE':'')
+            ).toUpperCase();
+            if(t==='OTHER') return 'leave';
+          }catch(_){}
+          return oldClass.apply(this,arguments);
+        };
+        wrapped.__v55Wrapped=true;
+        window.dayStatusClass=wrapped;
+      }
+
+      // ---- OTHER validation ----
+      const oldSaveDayStatus=window.saveDayStatus;
+      if(typeof oldSaveDayStatus==='function' && !oldSaveDayStatus.__v55Wrapped){
+        const wrapped=async function(){
+          const type=String(select.value||'').toUpperCase();
+          const value=String(note?.value||'').trim();
+          if(type==='OTHER' && !value){
+            if(typeof window.toast==='function'){
+              window.toast('برای گزینه «سایر»، توضیحات الزامی است.','error');
+            }else{
+              alert('برای گزینه «سایر»، توضیحات الزامی است.');
+            }
+            return;
+          }
+          return oldSaveDayStatus.apply(this,arguments);
+        };
+        wrapped.__v55Wrapped=true;
+        window.saveDayStatus=wrapped;
+      }
+
+      // ---- Convert SLA UI from "mandatory" to "warning" semantics ----
+      try{
+        const kMandatory=document.getElementById('kMandatory');
+        const kViolations=document.getElementById('kViolations');
+        if(kMandatory?.parentElement?.querySelector('span')){
+          kMandatory.parentElement.querySelector('span').textContent='هشدار ۱۴روزه';
+        }
+        if(kViolations?.parentElement?.querySelector('span')){
+          kViolations.parentElement.querySelector('span').textContent='هشدارهای بدون برنامه';
+        }
+
+        const guard=document.querySelector('.guard');
+        if(guard){
+          const h=guard.querySelector('.guard-head h3');
+          const p=guard.querySelector('.guard-head p');
+          if(h) h.textContent='هشدار SLA چهارده‌روزه';
+          if(p) p.textContent='این موارد برای اولویت‌بندی و پیگیری مدیریتی هستند و مانع ثبت برنامه هفتگی نمی‌شوند.';
+        }
+      }catch(_){}
+
+      // ---- Wrap refreshClientSla to make displayed language advisory ----
+      const oldRefresh=window.refreshClientSla;
+      if(typeof oldRefresh==='function' && !oldRefresh.__v55Wrapped){
+        const wrapped=function(){
+          const result=oldRefresh.apply(this,arguments);
+          try{
+            document.querySelectorAll('.tag.red').forEach(el=>{
+              if(String(el.textContent||'').includes('اجباری SLA')) el.textContent='هشدار SLA';
+            });
+
+            const list=document.getElementById('mandatoryList');
+            if(list){
+              list.querySelectorAll('.mandatory').forEach(card=>{
+                card.innerHTML=card.innerHTML
+                  .replaceAll('اجباری SLA','هشدار SLA')
+                  .replaceAll('فروشگاه اجباری','فروشگاه دارای هشدار');
+              });
+            }
+
+            const saveInfo=document.getElementById('saveInfo');
+            const s=(typeof window.clientSla==='function')?window.clientSla():null;
+            const count=Number(s?.violations?.length||0);
+            if(saveInfo && count>0 && typeof window.canEditSelectedWeek==='function' && window.canEditSelectedWeek()){
+              saveInfo.textContent=`${count} هشدار ۱۴روزه باقی مانده است؛ با این حال برنامه قابل ثبت است.`;
+            }
+          }catch(_){}
+          return result;
+        };
+        wrapped.__v55Wrapped=true;
+        window.refreshClientSla=wrapped;
+      }
+
+      // ---- THE IMPORTANT PART: week save is no longer blocked by SLA ----
+      if(typeof window.saveWeek==='function' && !window.saveWeek.__v55WarningOnly){
+        const v55SaveWeek=async function(){
+          if(typeof window.canEditSelectedWeek==='function' && !window.canEditSelectedWeek()){
+            window.toast?.('فقط هفته جاری و هفته بعد قابل ثبت هستند.','error');
+            return;
+          }
+
+          const s=(typeof window.clientSla==='function')
+            ? window.clientSla()
+            : {violations:[]};
+          const warningCount=Number(s?.violations?.length||0);
+
+          const confirmText=warningCount
+            ? `برنامه هفتگی ثبت شود؟ ${warningCount} هشدار ۱۴روزه باقی می‌ماند و صرفاً برای پیگیری مدیریتی نمایش داده خواهد شد.`
+            : 'برنامه هفتگی ثبت شود؟';
+
+          if(!confirm(confirmText)) return;
+
+          if(typeof window.setLoading==='function'){
+            window.setLoading(true,'در حال ثبت برنامه...');
+          }
+
+          try{
+            const days=window.state?.days||[];
+            const plan=days.map(d=>({
+              dateIso:d.dateIso,
+              dateFa:'',
+              storeCodes:(typeof window.dayIsUnavailable==='function' && window.dayIsUnavailable(d))
+                ? []
+                : (d.items||[]).map(x=>x.storeCode)
+            }));
+
+            const r=await window.DMAuth.apiPost(
+              'areaHeadSaveWeekRoutes',
+              {
+                weekStartIso:window.state?.weekStartIso||'',
+                planJson:JSON.stringify(plan)
+              },
+              60000
+            );
+
+            if(!r.success){
+              throw new Error(r.message||'ثبت برنامه ناموفق بود.');
+            }
+
+            window.toast?.(
+              warningCount
+                ? `برنامه ثبت شد؛ ${warningCount} هشدار ۱۴روزه برای پیگیری باقی مانده است.`
+                : (r.message||'برنامه ثبت شد.'),
+              'success'
+            );
+
+            if(typeof window.reload==='function') await window.reload();
+          }catch(e){
+            window.toast?.(e?.message||'خطا در ثبت برنامه','error');
+          }finally{
+            if(typeof window.setLoading==='function') window.setLoading(false);
+          }
+        };
+
+        v55SaveWeek.__v55WarningOnly=true;
+        window.saveWeek=v55SaveWeek;
+      }
+
+      syncOtherUi();
+
+      // Re-apply advisory labels after render cycles.
+      setTimeout(()=>{
+        try{ window.refreshClientSla?.(); }catch(_){}
+      },0);
+
+      return true;
+    }catch(err){
+      console.warn('[V55 areahead-route]',err);
+      return false;
+    }
+  }
+
+  function startAreaHeadRouteV55Installer_(){
+    let tries=0;
+    const run=()=>{
+      tries++;
+      const ok=installAreaHeadRouteV55_();
+      if(ok || tries>=200){
+        if(timer) clearInterval(timer);
+      }
+    };
+    run();
+    const timer=setInterval(run,100);
+  }
+
   function init() {
     ensureStatus();
-    installAreaHeadRouteV54Ui_();
+    startAreaHeadRouteV55Installer_();
     if(!patchApiPost()){
       let tries=0;
       const timer=setInterval(()=>{
