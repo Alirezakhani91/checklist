@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '25.1.0';
+  const VERSION = '25.1.0-v54-route-ui';
   const PREFIX = 'dmInstant:v20:';
   const MAX_ENTRIES = 28;
   const MAX_ITEM_CHARS = 780000;
@@ -318,8 +318,121 @@
     return true;
   }
 
+
+  /* ==========================================================
+   * V54 PRODUCTION UI HOTFIX
+   * Scope: areahead-route.html only.
+   * - Enables day status OTHER for Area Heads.
+   * - Requires a note for OTHER before submit.
+   * - Does not alter API caching, GPS, visit writes or other pages.
+   * ======================================================== */
+  function installAreaHeadRouteV54Ui_() {
+    try {
+      const path = String(location.pathname || '').toLowerCase();
+      if (!/\/areahead-route\.html$/.test(path)) return;
+
+      const select = document.getElementById('dayStatusType');
+      if (!select) return;
+
+      if (!Array.from(select.options).some(o => String(o.value).toUpperCase() === 'OTHER')) {
+        const opt = document.createElement('option');
+        opt.value = 'OTHER';
+        opt.textContent = 'سایر';
+        select.appendChild(opt);
+      }
+
+      const note = document.getElementById('dayStatusNote');
+      const sub = document.getElementById('dayStatusSub');
+
+      if (sub && !String(sub.textContent || '').includes('سایر')) {
+        sub.textContent = 'در صورت مرخصی، انبارگردانی، افتتاحیه یا سایر، این روز از Route و انتظار عملکرد روزانه خارج می‌شود.';
+      }
+
+      function syncOtherUi() {
+        const type = String(select.value || '').toUpperCase();
+        if (note) {
+          note.placeholder = type === 'OTHER'
+            ? 'توضیحات «سایر» الزامی است'
+            : 'توضیح اختیاری';
+        }
+      }
+
+      select.addEventListener('change', syncOtherUi);
+
+      // Existing functions are global classic-script functions on this page.
+      const oldLabel = window.dayStatusLabel;
+      if (typeof oldLabel === 'function' && !oldLabel.__v54Wrapped) {
+        const wrapped = function(d) {
+          try {
+            const t = String(
+              d?.dayStatus?.eventType ||
+              d?.leave?.eventType ||
+              (d?.isLeave ? 'LEAVE' : '')
+            ).toUpperCase();
+            if (t === 'OTHER') return 'سایر';
+          } catch (_) {}
+          return oldLabel.apply(this, arguments);
+        };
+        wrapped.__v54Wrapped = true;
+        window.dayStatusLabel = wrapped;
+      }
+
+      const oldClass = window.dayStatusClass;
+      if (typeof oldClass === 'function' && !oldClass.__v54Wrapped) {
+        const wrapped = function(d) {
+          try {
+            const t = String(
+              d?.dayStatus?.eventType ||
+              d?.leave?.eventType ||
+              (d?.isLeave ? 'LEAVE' : '')
+            ).toUpperCase();
+            if (t === 'OTHER') return 'leave';
+          } catch (_) {}
+          return oldClass.apply(this, arguments);
+        };
+        wrapped.__v54Wrapped = true;
+        window.dayStatusClass = wrapped;
+      }
+
+      const oldRenderFields = window.renderDayStatusFields;
+      if (typeof oldRenderFields === 'function' && !oldRenderFields.__v54Wrapped) {
+        const wrapped = function() {
+          const result = oldRenderFields.apply(this, arguments);
+          syncOtherUi();
+          return result;
+        };
+        wrapped.__v54Wrapped = true;
+        window.renderDayStatusFields = wrapped;
+      }
+
+      const oldSave = window.saveDayStatus;
+      if (typeof oldSave === 'function' && !oldSave.__v54Wrapped) {
+        const wrapped = function() {
+          const type = String(select.value || '').toUpperCase();
+          const value = String(note?.value || '').trim();
+          if (type === 'OTHER' && !value) {
+            if (typeof window.toast === 'function') {
+              window.toast('برای گزینه «سایر»، توضیحات الزامی است.', 'error');
+            } else {
+              alert('برای گزینه «سایر»، توضیحات الزامی است.');
+            }
+            return;
+          }
+          return oldSave.apply(this, arguments);
+        };
+        wrapped.__v54Wrapped = true;
+        window.saveDayStatus = wrapped;
+      }
+
+      syncOtherUi();
+    } catch (err) {
+      console.warn('[V54 areahead-route UI hotfix]', err);
+    }
+  }
+
   function init() {
     ensureStatus();
+    installAreaHeadRouteV54Ui_();
     if(!patchApiPost()){
       let tries=0;
       const timer=setInterval(()=>{
