@@ -201,7 +201,7 @@ async function init(){const a=await DMAuth.validateSession('AREA_HEAD');if(!a.ok
 async function reload(){
   setLoading(true,'در حال دریافت برنامه و SLA...');
   try{
-    const r=await DMAuth.apiPost('areaHeadRouteBootstrap',{weekStartIso:state.weekStartIso},50000);
+    const r=await DMAuth.apiPost('areaHeadRouteBootstrap',{weekStartIso:state.weekStartIso,forceFresh:true,_dmNoCache:true},50000);
     if(!r.success){
       if(r.code==='SELF_ROUTING_NOT_ALLOWED'){toast(r.message,'error');setTimeout(()=>location.replace('areahead-dashboard.html'),1400);return}
       throw new Error(r.message||'خطا');
@@ -272,37 +272,89 @@ function refreshClientSla(){
 async function suggestMySmartRoute(){if(!canEditSelectedWeek()){toast('هفته گذشته فقط قابل مشاهده است.','error');return}setLoading(true,'در حال ساخت Smart Route بر اساس SLA، فاصله و زمان...');try{const r=await DMAuth.apiPost('areaHeadSuggestWeekRoutes',{weekStartIso:state.weekStartIso},60000);if(!r.success)throw new Error(r.message||'ساخت Smart Route ناموفق بود.');const by={};state.days.forEach(d=>by[d.dateIso]=d);(r.days||[]).forEach(sd=>{const d=by[sd.dateIso];if(!d||dayIsUnavailable(d)||isPast(d)||d.items.some(locked))return;d.items=(sd.items||[]).map(x=>Object.assign({},state.storeMap[x.storeCode]||{},x,{locked:false,visitId:''}));d.smartMeta=sd.smartMeta||null;});state.smartSuggestion=r;dirty('SMART');renderDays();renderSmartSummary();renderRoute();renderPool();refreshClientSla();const c=(r.capacityConflicts||[]).length;toast(c?`Smart Route ساخته شد؛ ${c} تعارض ظرفیت/SLA را با مدیر منطقه بررسی کن.`:'Smart Route ساخته شد؛ تعداد بازدید هر روز بر اساس مسیر و زمان داینامیک است.',c?'':'success')}catch(e){toast(e.message||'خطا در ساخت Smart Route','error')}finally{setLoading(false)}}
 function autoPlaceMandatory(){if(!canEditSelectedWeek()){toast('هفته گذشته فقط قابل مشاهده است.','error');return}const s=clientSla();if(!s.violations.length){toast('همه هشدارهای ۱۴روزه در برنامه پوشش داده شده‌اند.','success');return}let added=0;s.violations.forEach(m=>{let candidates=state.days.filter(d=>!dayIsUnavailable(d)&&!isPast(d)&&d.dateIso<=m.effectiveDeadlineIso&&!d.items.some(x=>x.storeCode===m.storeCode));if(!candidates.length)return;candidates.sort((a,b)=>(a.items.length-b.items.length)||a.dateIso.localeCompare(b.dateIso));const d=candidates[0],st=state.storeMap[m.storeCode];if(st){d.items.push(Object.assign({},st,{locked:false,visitId:'',plannedStatus:'PLANNED'}));added++}});if(added){dirty();renderDays();renderDayStatusBox();renderRoute();renderPool();refreshClientSla();toast(`${added} فروشگاه دارای هشدار به برنامه اضافه شد.`,'success')}else toast('برای برخی فروشگاه‌های دارای هشدار روز کاری خالی وجود ندارد؛ این موارد صرفاً برای پیگیری مدیریتی باقی می‌مانند.','error')}
 async function saveWeek(){
-  if(!canEditSelectedWeek()){toast('فقط هفته جاری و هفته بعد قابل ثبت هستند.','error');return}
+  if(!canEditSelectedWeek()){
+    toast('فقط هفته جاری و هفته بعد قابل ثبت هستند.','error');
+    return;
+  }
+
   const s=clientSla();
   const warningCount=Number(s?.violations?.length||0);
-  const confirmText=warningCount
-    ? `برنامه هفتگی ثبت شود؟ ${warningCount} هشدار ۱۴ روزه باقی می‌ماند و صرفاً برای پیگیری مدیریتی نمایش داده خواهد شد.`
-    : 'برنامه هفتگی ثبت شود؟';
+
+  const plan=state.days.map(d=>({
+    dateIso:d.dateIso,
+    dateFa:'',
+    storeCodes:dayIsUnavailable(d)?[]:d.items.map(x=>x.storeCode)
+  }));
+
+  const requestedStoreCount=plan.reduce((sum,d)=>sum+(d.storeCodes?.length||0),0);
+
+  const confirmText=requestedStoreCount===0
+    ? 'در برنامه این هفته هیچ فروشگاهی قرار نگرفته است. آیا برنامه خالی ذخیره شود؟'
+    : (
+        warningCount
+          ? `برنامه با ${requestedStoreCount} بازدید ثبت شود؟ ${warningCount} هشدار ۱۴ روزه فقط برای پیگیری باقی می‌ماند.`
+          : `برنامه با ${requestedStoreCount} بازدید ثبت شود؟`
+      );
+
   if(!confirm(confirmText))return;
 
-  setLoading(true,'در حال ثبت برنامه...');
+  setLoading(true,'در حال ذخیره و تأیید Route...');
+
   try{
-    const plan=state.days.map(d=>({
-      dateIso:d.dateIso,
-      dateFa:'',
-      storeCodes:dayIsUnavailable(d)?[]:d.items.map(x=>x.storeCode)
-    }));
+    // Clear any client snapshot before the operational write.
+    try{window.DMInstant?.clearUserCache?.();}catch(_){}
 
     const r=await DMAuth.apiPost('areaHeadSaveWeekRoutes',{
       weekStartIso:state.weekStartIso,
       planJson:JSON.stringify(plan)
-    },60000);
+    },70000);
 
-    if(!r.success)throw new Error(r.message||'ثبت برنامه ناموفق بود.');
+    if(!r.success){
+      throw new Error(r.message||'ثبت برنامه ناموفق بود.');
+    }
+
+    if(!r.verified || !r.week || !Array.isArray(r.week.days)){
+      throw new Error('سرور ذخیره Route را تأیید نکرد؛ پیام موفقیت نمایش داده نمی‌شود.');
+    }
+
+    // V59: use the server's read-back verified week immediately.
+    state.data=state.data||{};
+    state.data.week=r.week;
+    state.data.sla=r.sla||state.data.sla;
+
+    state.days=(r.week.days||[]).map(d=>({
+      dateIso:d.dateIso,
+      items:(d.items||[]).map(x=>Object.assign({},state.storeMap[x.storeCode]||{},x)),
+      routeId:d.routeId||'',
+      status:d.status||'DRAFT',
+      sourceType:d.sourceType||'',
+      isUnavailable:!!(d.isUnavailable||d.isLeave),
+      isLeave:!!d.isLeave,
+      dayStatus:d.dayStatus||d.leave||null,
+      leave:d.leave||d.dayStatus||null,
+      smartMeta:d.smartMeta||null
+    }));
+
+    state.sla=r.sla||state.sla;
+    state.dirty=false;
+
+    // Prevent an old in-flight Instant snapshot from replacing the verified state.
+    state.__v59VerifiedAt=Date.now();
+
+    const keep=state.days.some(d=>d.dateIso===state.selectedIso);
+    state.selectedIso=keep
+      ? state.selectedIso
+      : (state.days.find(d=>!isPast(d))?.dateIso||state.days[0]?.dateIso||'');
+
+    render();
 
     toast(
-      warningCount
-        ? `برنامه ثبت شد؛ ${warningCount} هشدار ۱۴ روزه برای پیگیری باقی مانده است.`
-        : (r.message||'برنامه ثبت شد.'),
+      r.message ||
+      `برنامه ذخیره و تأیید شد؛ ${Number(r.savedStoreCount||0)} بازدید ثبت شده است.`,
       'success'
     );
-    state.dirty=false;
-    await reload();
+
+    try{window.DMInstant?.clearUserCache?.();}catch(_){}
   }catch(e){
     toast(e.message||'خطا در ثبت برنامه','error');
   }finally{
@@ -312,6 +364,7 @@ async function saveWeek(){
 
 DMInstant.on('areaHeadRouteBootstrap',(res,params)=>{
   if(!res||!res.success)return;
+  if(state.__v59VerifiedAt && Date.now()-state.__v59VerifiedAt<8000)return;
   if(params?.weekStartIso&&state.weekStartIso&&params.weekStartIso!==state.weekStartIso)return;
   state.data=res;state.todayIso=res.todayIso||state.todayIso;state.weekStartIso=res.week?.startIso||state.weekStartIso;state.currentWeekStartIso=res.weekAccess?.currentWeekStartIso||state.currentWeekStartIso;state.settings=res.settings||state.settings;state.stores=res.stores||[];
   state.storeMap={};state.stores.forEach(s=>state.storeMap[s.storeCode]=s);
