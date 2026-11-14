@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION='V55-SLA-WARNING-OTHER-DIRECT';
+  const VERSION='V56-SLA-WARNING-OTHER-ENABLED';
   const PREFIX = 'dmInstant:v20:';
   const MAX_ENTRIES = 28;
   const MAX_ITEM_CHARS = 780000;
@@ -446,12 +446,17 @@
       if(!select || typeof window.saveWeek!=='function') return false;
 
       // ---- OTHER option ----
-      if(!Array.from(select.options).some(o=>String(o.value||'').toUpperCase()==='OTHER')){
-        const opt=document.createElement('option');
-        opt.value='OTHER';
-        opt.textContent='سایر';
-        select.appendChild(opt);
+      let otherOpt=Array.from(select.options).find(o=>String(o.value||'').toUpperCase()==='OTHER');
+      if(!otherOpt){
+        otherOpt=document.createElement('option');
+        otherOpt.value='OTHER';
+        select.appendChild(otherOpt);
       }
+      // V56: OTHER may already exist in legacy HTML as a manager-only disabled option.
+      // Always convert it to a normal Area Head option.
+      otherOpt.disabled=false;
+      otherOpt.removeAttribute('disabled');
+      otherOpt.textContent='سایر';
 
       const note=document.getElementById('dayStatusNote');
       const sub=document.getElementById('dayStatusSub');
@@ -646,6 +651,24 @@
       }
 
       syncOtherUi();
+
+      // Keep OTHER enabled even if legacy page rendering touches the select later.
+      const forceOtherEnabled=()=>{
+        try{
+          const s=document.getElementById('dayStatusType');
+          if(!s)return;
+          const o=Array.from(s.options).find(x=>String(x.value||'').toUpperCase()==='OTHER');
+          if(o){
+            o.disabled=false;
+            o.removeAttribute('disabled');
+            o.textContent='سایر';
+          }
+        }catch(_){}
+      };
+      forceOtherEnabled();
+      setTimeout(forceOtherEnabled,250);
+      setTimeout(forceOtherEnabled,1000);
+      setTimeout(forceOtherEnabled,3000);
 
       // Re-apply advisory labels after render cycles.
       setTimeout(()=>{
