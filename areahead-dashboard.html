@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b5001d">
-<!-- Daily Market Area Head Dashboard V25 Regional Checklist -->
+<!-- Daily Market Area Head Dashboard V26 Checklist Operational Update + V25.2 GPS -->
 <title>رئیس ناحیه | چک لیست دیلی مارکت</title>
 
 <style>
@@ -797,8 +797,7 @@ button{cursor:pointer}
   box-shadow:0 10px 24px rgba(15,23,42,.05), inset 0 1px 0 rgba(255,255,255,.82);
 }
 .check-sub-group[class*="subtheme-"] .check-sub-title{
-  display:inline-flex;
-  align-items:center;
+  display:inline-flex;align-items:center;
   gap:8px;
   border-radius:999px;
   font-size:.72rem;
@@ -913,6 +912,34 @@ button{cursor:pointer}
 .route-delegated-banner button{border:0;background:#315efb;color:#fff;border-radius:11px;padding:9px 12px;font-family:inherit;font-weight:900}
 @media(max-width:820px){.action-stack{display:grid;grid-template-columns:1fr 1fr;width:100%}.action-stack .action-btn{width:100%}.cannot-modal .reason-grid{grid-template-columns:1fr}.route-delegated-banner.show{display:block}.route-delegated-banner button{width:100%;margin-top:8px}}
 
+
+.maintenance-sync-result{
+  margin:14px 0;
+  padding:12px 14px;
+  border-radius:12px;
+  text-align:right;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.maintenance-sync-result strong{
+  font-size:14px;
+}
+.maintenance-sync-result span{
+  font-size:12px;
+  line-height:1.7;
+}
+.maintenance-sync-result.success{
+  background:#eaf7ef;
+  color:#23623f;
+  border:1px solid #cce9d7;
+}
+.maintenance-sync-result.queued{
+  background:#fff6df;
+  color:#805f18;
+  border:1px solid #f0dfad;
+}
+
 </style>
 
 <style id="dm-firstpaint-style">
@@ -958,6 +985,10 @@ button{cursor:pointer}
 
 <style id="regionalQuestionV25Styles">
 .regional-q-badge{display:inline-flex;align-items:center;gap:5px;margin-right:7px;padding:3px 7px;border-radius:999px;background:#fff0f2;color:#b31431;border:1px solid #f2ccd3;font-size:.54rem;font-weight:900;vertical-align:middle}.regional-text-answer{width:100%;min-height:76px;border:1px solid var(--sec-border,#dfe5ec);border-radius:14px;padding:11px 12px;font-family:inherit;line-height:1.9;resize:vertical;outline:none;background:#fff;color:#263142}.regional-text-answer:focus{border-color:var(--sec-accent,#315fc5);box-shadow:0 0 0 3px color-mix(in srgb,var(--sec-accent,#315fc5) 10%,transparent)}.regional-text-answer:disabled{background:#f7f8fa;color:#707887}
+
+<style id="v26ConditionalChecklistStyles">
+.question-card.conditional-followup{border-right:4px solid #d10020;background:linear-gradient(180deg,#fff8f9,#fff);padding-right:14px}.conditional-note{margin:8px 38px 0 0;padding:8px 10px;border-radius:11px;background:#fff0f2;color:#a91630;font-size:.64rem;line-height:1.8}.question-card.equipment-fault-yes{border-color:#efc4cc;background:#fff8f9}.question-card.equipment-fault-yes .question-no{background:#fff0f2;color:#b0001d;border-color:#edc8cf}@media(max-width:820px){.conditional-note{margin:8px 0 0}.question-card.conditional-followup{padding-right:10px}}
+</style>
 </style>
 </head>
 
@@ -998,3 +1029,1142 @@ button{cursor:pointer}
       <section class="active-box hidden" id="activeBox">
         <div class="active-row">
           <div>
+            <span class="active-label" id="activeLabel">بازدید فعال</span>
+            <div class="active-title" id="activeTitle">—</div>
+            <div class="active-meta" id="activeMeta">—</div>
+          </div>
+          <div class="active-actions" id="activeActions"></div>
+        </div>
+      </section>
+
+      <div class="route-delegated-banner" id="routeDelegatedBanner"><span><strong>مسیر‌بندی این ناحیه به شما واگذار شده است.</strong><br>برنامه هفتگی را خودتان می‌چینید؛ سیستم اجازه نمی‌دهد فروشگاه‌های سررسید ۱۴ روزه از برنامه جا بمانند.</span><button onclick="location.href='areahead-route.html'">برنامه‌ریزی مسیر من</button></div>
+
+      <section class="grid">
+        <div class="panel">
+          <div class="panel-head"><div><h3>مسیر و Route امروز</h3><p id="routeMeta">ترتیب تعیین‌شده توسط مدیر منطقه</p></div><span class="date-pill" id="routeBadge">—</span></div>
+          <div class="panel-body"><div class="route-list" id="routeList"></div></div>
+        </div>
+
+        <aside class="panel side-panel">
+          <div class="side-card"><h4>بازدید خارج از برنامه</h4><p>اگر به دلیل عملیاتی لازم است به فروشگاهی خارج از Route امروز مراجعه کنید، بازدید را از اینجا شروع کنید.</p><button class="big-action" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>شروع بازدید خارج برنامه</button></div>
+          <div class="side-card"><h4>قواعد حضور</h4><div class="rule"><span class="rule-dot"></span><span>شعاع تأیید خودکار حضور: <strong id="radiusRule">300 متر</strong></span></div><div class="rule"><span class="rule-dot"></span><span>چند نمونه GPS گرفته می‌شود و دقیق‌ترین نمونه برای تصمیم استفاده می‌شود.</span></div><div class="rule"><span class="rule-dot"></span><span>اگر دقت GPS بیشتر از <strong>200 متر</strong> باشد یا موقعیت دریافت نشود، ادامه فقط با تأیید مدیر منطقه ممکن است.</span></div></div>
+        </aside>
+      </section>
+    </div>
+
+    <nav class="mobile-bottom">
+      <button class="mobile-nav active"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>Route</button>
+      <button class="mobile-nav" onclick="openUnplannedModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>خارج برنامه</button>
+      <button class="mobile-nav" onclick="location.href='alerts.html'"><svg viewBox="0 0 24 24"><path d="M12 3 2.7 20h18.6z"/></svg>هشدار</button>
+      <button class="mobile-nav hidden" id="selfRouteMobileNav" onclick="location.href='areahead-route.html'"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 7h7a3 3 0 0 1 0 6H9a3 3 0 0 0-3 3"/></svg>مسیر من</button>
+      <button class="mobile-nav" onclick="location.href='visit-history.html'"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>سوابق</button>
+      <button class="mobile-nav" onclick="DMAuth.logout()"><svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3M14 3h6v18h-6"/></svg>خروج</button>
+    </nav>
+  </main>
+</div>
+
+
+<!-- CHECKLIST FULL SCREEN -->
+<div class="checklist-modal hidden" id="checklistModal">
+  <div class="checklist-top">
+    <div class="checklist-top-main">
+      <h2 id="checklistStoreTitle">چک‌لیست فروشگاه</h2>
+      <p id="checklistStoreSub">—</p>
+    </div>
+    <div class="checklist-top-actions">
+      <button class="draft-btn" id="topDraftBtn" onclick="saveChecklistDraft(true)">ذخیره موقت</button>
+      <button class="checklist-close" onclick="closeChecklist()">×</button>
+    </div>
+  </div>
+
+  <div class="checklist-layout">
+    <main class="checklist-main" id="checklistMain"></main>
+    <aside class="checklist-side">
+      <div class="checklist-progress-card">
+        <div class="checklist-progress-head"><strong>پیشرفت چک‌لیست</strong><span id="checklistProgressText">۰ از ۲۱</span></div>
+        <div class="checklist-progress-track"><span id="checklistProgressBar"></span></div>
+        <div class="checklist-save-status" id="checklistSaveStatus"></div>
+      </div>
+      <div class="checklist-side-meta">
+        <div class="checklist-meta-row"><span>شناسه بازدید</span><strong id="checklistVisitId">—</strong></div>
+        <div class="checklist-meta-row"><span>نوع بازدید</span><strong id="checklistVisitType">—</strong></div>
+        <div class="checklist-meta-row"><span>وضعیت</span><strong id="checklistStateText">در حال تکمیل</strong></div>
+      </div>
+      <div class="section-nav" id="checklistSectionNav"></div>
+    </aside>
+  </div>
+
+  <div class="checklist-bottom">
+    <div class="checklist-bottom-info" id="checklistBottomInfo">پاسخ‌ها به‌صورت پیش‌نویس قابل ذخیره هستند.</div>
+    <div class="checklist-bottom-actions">
+      <button class="draft-btn" id="draftBtn" onclick="saveChecklistDraft(true)">ذخیره موقت</button>
+      <button class="finish-btn" id="finishChecklistBtn" onclick="finishChecklist()">ثبت نهایی و پایان بازدید</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- CANNOT VISIT MODAL -->
+<div class="modal hidden cannot-modal" id="cannotVisitModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div><h3>امکان بازدید ندارم</h3><p id="cannotVisitStoreSub">—</p></div>
+      <button class="modal-close" onclick="closeCannotVisitModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin:0;color:#6f7786;font-size:.74rem;line-height:1.9">قبل از حذف یا جابه‌جایی برنامه، مدیر منطقه را مطلع کن. این اعلام به معنی انجام بازدید نیست و سابقه ۱۴ روزه فروشگاه را Reset نمی‌کند.</p>
+      <div class="reason-grid" id="cannotReasonGrid"></div>
+      <textarea class="cannot-note" id="cannotVisitNote" placeholder="توضیحات تکمیلی (برای گزینه «سایر» الزامی است)"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeCannotVisitModal()">انصراف</button>
+      <button class="btn warn" id="cannotVisitSubmitBtn" onclick="submitCannotVisit()">اطلاع به مدیر منطقه</button>
+    </div>
+  </div>
+</div>
+
+<!-- GPS MODAL -->
+<div class="modal hidden" id="gpsModal">
+  <div class="modal-card">
+    <div class="modal-head"><div><h3 id="gpsStoreTitle">بررسی موقعیت</h3><p id="gpsStoreSub">—</p></div><button class="close" onclick="closeGpsModal()">×</button></div>
+    <div class="modal-body">
+      <div class="gps-visual" id="gpsVisual"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z"/><circle cx="12" cy="10" r="2"/></svg></div>
+      <div class="gps-title" id="gpsTitle">آماده بررسی موقعیت</div>
+      <div class="gps-desc" id="gpsDesc">برای شروع بازدید، موقعیت فعلی گوشی بررسی می‌شود. دسترسی Location مرورگر باید فعال باشد.</div>
+      <div class="gps-progress"><span id="gpsProgress"></span></div>
+      <div class="gps-metrics hidden" id="gpsMetrics">
+        <div class="metric"><strong id="metricSamples">—</strong><span>نمونه GPS</span></div>
+        <div class="metric"><strong id="metricAccuracy">—</strong><span>دقت GPS</span></div>
+        <div class="metric"><strong id="metricDistance">—</strong><span>فاصله ثبت‌شده</span></div>
+      </div>
+      <div class="gps-result hidden" id="gpsResult"></div>
+    </div>
+    <div class="modal-foot" id="gpsFoot">
+      <button class="btn ghost" onclick="closeGpsModal()">انصراف</button>
+      <button class="btn primary" id="scanBtn" onclick="scanAndStart()">بررسی GPS و شروع بازدید</button>
+    </div>
+  </div>
+</div>
+
+<!-- UNPLANNED MODAL -->
+<div class="modal hidden" id="unplannedModal">
+  <div class="modal-card">
+    <div class="modal-head"><div><h3>بازدید خارج از برنامه</h3><p>یک فروشگاه زیرمجموعه خودت را انتخاب کن.</p></div><button class="close" onclick="closeUnplannedModal()">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">دلیل بازدید</label><select class="select" id="unplannedReason"><option value="URGENT_STORE_ISSUE">مشکل فوری فروشگاه</option><option value="MANAGER_REQUEST">درخواست مدیر منطقه</option><option value="ROUTE_REPLACEMENT">جایگزینی برنامه</option><option value="OTHER">سایر</option></select></div>
+      <div class="form-group"><label class="form-label">فروشگاه</label><input class="search" id="unplannedSearch" type="search" placeholder="جستجوی کد یا نام فروشگاه..." oninput="renderUnplannedStores()"></div>
+      <div class="store-picker" id="unplannedStores"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="app-config.js"></script>
+<script src="auth-client.js"></script>
+
+<script id="dm-firstpaint-script">
+(function(){
+  function install(){
+    var overlay=document.getElementById('loading')||document.getElementById('loadingScreen');
+    if(!overlay)return;
+    var card=overlay.querySelector('.loader,.loader-card,.loading-card')||overlay;
+    if(card.querySelector('.dm-loading-ui')){
+      var stale=card.querySelector('.dm-firstpaint-fallback');
+      if(stale) stale.remove();
+      return;
+    }
+    if(card.querySelector('.dm-firstpaint-fallback'))return;
+
+    var old=card.querySelector('strong');
+    var detail=old&&old.textContent?old.textContent.trim():'در حال آماده‌سازی اطلاعات سامانه';
+    if(old)old.style.display='none';
+
+    var box=document.createElement('div');
+    box.className='dm-firstpaint-fallback';
+    box.innerHTML=
+      '<strong class="dm-firstpaint-title">در حال دریافت و به‌روزرسانی اطلاعات…</strong>'+
+      '<span class="dm-firstpaint-detail"></span>'+
+      '<div class="dm-firstpaint-track"><div class="dm-firstpaint-bar"></div></div>';
+    box.querySelector('.dm-firstpaint-detail').textContent=detail;
+    card.appendChild(box);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+})();
+</script>
+
+<script src="dm-loading.js"></script>
+<script src="dm-instant.js"></script>
+<script>
+const state={
+  user:null,
+  data:null,
+  route:null,
+  stores:[],
+  settings:{geoRadiusM:300,softPassRadiusM:800,gpsMaxAccuracyM:200,gpsSampleCount:5,nearestStoreConflictRadiusM:250,nearestStoreConflictAdvantageM:300,locationCorrectionMaxAccuracyM:80,locationCorrectionMinSamples:3},
+  gpsTarget:null,
+  gpsBest:null,
+  gpsSamples:[],
+  gpsLastError:null,
+  gpsDecision:null,
+  pendingPoll:null,
+  checklistVisitId:'',
+  checklistData:null,
+  checklistAnswers:{},
+  checklistNotes:'',
+  checklistDirty:false,
+  cannotVisitTarget:null,
+  cannotVisitReason:'',
+  checklistSaving:false,
+  checklistSaveTimer:null
+};
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function initials(name){const p=String(name||'ر').trim().split(/\s+/);return (p[0]?.[0]||'ر')+(p[1]?.[0]||'');}
+function faDate(iso){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).format(new Date(iso+'T12:00:00'));}catch(_){return iso;}}
+function mText(v){if(v===''||v==null)return '—';const n=Number(v);return n<1000?`${Math.round(n)} متر`:`${(n/1000).toFixed(1)} کیلومتر`;}
+function toast(msg,type=''){const w=document.getElementById('toastWrap'),el=document.createElement('div');el.className='toast '+type;el.textContent=msg;w.appendChild(el);setTimeout(()=>el.remove(),4300);}
+function setLoading(on,text){DMLoading.set(!!on,text||'', 'loading');}
+function storeByCode(code){return state.stores.find(s=>s.storeCode===code)||null;}
+
+function applyAreaHeadBootstrap(res){
+  if(!res||!res.success)return false;
+  state.data=res;
+  state.route=res.route||{items:[]};
+  state.stores=res.allStores||[];
+  state.settings=res.settings||state.settings;
+  if(res.user)state.user=res.user;
+  renderAll();
+  schedulePendingPoll();
+  return true;
+}
+
+function hydrateAreaHeadInstant(){
+  try{
+    const hit=window.DMInstant?.peek?.('areaHeadBootstrap',{},6*60*60*1000);
+    if(hit?.data?.success){
+      applyAreaHeadBootstrap(hit.data);
+      setLoading(false);
+      return true;
+    }
+  }catch(_){}
+  return false;
+}
+
+async function init(){
+  const auth=await DMAuth.validateSession('AREA_HEAD');
+  if(!auth.ok){DMAuth.clearAuth();location.replace('index.html');return;}
+  state.user=auth.user;
+  document.getElementById('sideName').textContent=state.user.fullName||'رئیس ناحیه';
+  document.getElementById('sideAvatar').textContent=initials(state.user.fullName);
+  document.getElementById('mobileAvatar').textContent=initials(state.user.fullName);
+  document.getElementById('sideRegion').textContent=state.user.regionalManagerName||'پنل بازدید';
+  document.getElementById('topUserText').textContent=(state.user.fullName||'رئیس ناحیه')+' · '+(state.user.regionalManagerName||'');
+
+  const instant=hydrateAreaHeadInstant();
+  await loadData(instant,false);
+}
+
+async function loadData(silent=false,forceFresh=false){
+  let loadingTimer=null;
+  if(!silent){
+    // Avoid flashing a full-screen loader for fast cache hits.
+    loadingTimer=setTimeout(()=>setLoading(true,'در حال دریافت برنامه امروز...'),180);
+  }
+  try{
+    const params=forceFresh?{forceFresh:'true'}:{};
+    const res=await DMAuth.apiPost('areaHeadBootstrap',params,40000);
+    if(!res.success)throw new Error(res.message||'دریافت برنامه ناموفق بود.');
+    applyAreaHeadBootstrap(res);
+  }catch(e){toast(e.message||'خطا در دریافت اطلاعات','error');}
+  finally{
+    if(loadingTimer)clearTimeout(loadingTimer);
+    if(!silent)setLoading(false);
+  }
+}
+
+function renderAll(){
+  document.getElementById('todayLabel').textContent=faDate(state.data.serverDateIso);
+  document.getElementById('radiusRule').textContent=(state.settings.geoRadiusM||300)+' متر';
+  document.getElementById('routeBadge').textContent=(state.route.items?.length||0)+' بازدید';
+  const routeSource=String(state.route.sourceType||'').toUpperCase();
+  document.getElementById('routeMeta').textContent=state.route.routeId
+    ? (routeSource==='AREA_HEAD'?'مسیر ثبت‌شده توسط شما':'ترتیب تعیین‌شده توسط مدیر منطقه')
+    :'برای امروز Route ثبت نشده است.';
+  const canSelf=!!state.data.canSelfRoute;
+  document.getElementById('selfRouteNav').classList.toggle('hidden',!canSelf);
+  document.getElementById('selfRouteMobileNav').classList.toggle('hidden',!canSelf);
+  document.getElementById('routeDelegatedBanner').classList.toggle('show',canSelf);
+  renderActive();renderRoute();
+}
+
+function renderActive(){
+  const box=document.getElementById('activeBox'),v=state.data.openVisit;
+  if(!v){box.classList.add('hidden');return;}
+  box.classList.remove('hidden');box.classList.toggle('pending',v.visitStatus==='WAITING_LOCATION_APPROVAL'||v.visitStatus==='WAITING_LOCATION_CORRECTION');
+  const s=storeByCode(v.storeCode);
+  document.getElementById('activeTitle').textContent=(s?.storeName||v.storeCode)+' · کد '+v.storeCode;
+  const actions=document.getElementById('activeActions');
+  if(v.visitStatus==='WAITING_LOCATION_APPROVAL'){
+    document.getElementById('activeLabel').textContent='در انتظار تأیید مدیر منطقه';
+    document.getElementById('activeMeta').textContent='درخواست ثبت شده است. پس از تأیید مدیر منطقه، بازدید فعال می‌شود.';
+    actions.innerHTML=`<button class="btn ghost" onclick="reloadData()">بررسی وضعیت</button><button class="btn danger" onclick="cancelPending('${esc(v.visitId)}')">لغو درخواست</button>`;
+  }else if(v.visitStatus==='WAITING_LOCATION_CORRECTION'){
+    document.getElementById('activeLabel').textContent='در انتظار تأیید اصلاح لوکیشن';
+    document.getElementById('activeMeta').textContent='GPS واقعی فروشگاه برای مدیر منطقه ارسال شده است. با تأیید او، مختصات فروشگاه اصلاح و چک‌لیست باز می‌شود.';
+    actions.innerHTML=`<button class="btn ghost" onclick="reloadData()">بررسی وضعیت</button><button class="btn danger" onclick="cancelLocationCorrection('${esc(v.visitId)}')">لغو درخواست</button>`;
+  }else{
+    document.getElementById('activeLabel').textContent='بازدید فعال';
+    document.getElementById('activeMeta').textContent=`حضور تأیید شده · فاصله ${mText(v.distanceToStoreM)} · مرحله بعد چک‌لیست`;
+    actions.innerHTML=`<button class="btn dark" onclick="openChecklist('${esc(v.visitId)}')">ادامه به چک‌لیست</button><button class="btn danger" onclick="cancelVisit('${esc(v.visitId)}')">لغو شروع</button>`;
+  }
+}
+
+function priorityTag(x){
+  const m={NO_HISTORY:['blue','بدون سابقه'],OVERDUE:['red','۱۴+ روز'],WARN12:['orange','۱۲ روز'],WARN10:['yellow','۱۰ روز'],NORMAL:['green',x.priorityLabel||'عادی']};
+  const a=m[x.priorityLevel]||m.NORMAL;return `<span class="tag ${a[0]}">${esc(a[1])}</span>`;
+}
+function statusAction(item){
+  const hasOpen=!!state.data.openVisit;
+  if(item.uiStatus==='COMPLETED')return `<button class="action-btn done" disabled>تکمیل شده</button>`;
+  if(item.uiStatus==='IN_PROGRESS')return `<button class="action-btn continue" onclick="openChecklist('${esc(item.visit?.visitId||item.visitId||'')}')">ادامه بازدید</button>`;
+  if(item.uiStatus==='WAITING_APPROVAL')return `<button class="action-btn wait" disabled>در انتظار تأیید</button>`;
+  if(item.uiStatus==='WAITING_CORRECTION')return `<button class="action-btn wait" disabled>در انتظار اصلاح لوکیشن</button>`;
+  const reported=item.cannotVisit?`<span class="tag cannot-tag">عدم امکان بازدید اعلام شده</span>`:'';
+  return `<div class="action-stack"><button class="action-btn primary" onclick="openGps('${esc(item.storeCode)}','${esc(item.routeItemId)}',true,'')" ${hasOpen?'disabled':''}>شروع بازدید</button><button class="action-btn cannot" onclick="openCannotVisitModal('${esc(item.routeItemId)}','${esc(item.storeCode)}')" ${item.cannotVisit?'disabled':''}>${item.cannotVisit?'اطلاع داده شد':'امکان بازدید ندارم'}</button>${reported}</div>`;
+}
+
+function renderRoute(){
+  const list=document.getElementById('routeList'),items=state.route.items||[];
+  if(!items.length){list.innerHTML=`<div class="empty"><strong>برای امروز Route ثبت نشده است</strong><span>در صورت نیاز می‌توانی بازدید خارج از برنامه ثبت کنی.</span></div>`;return;}
+  list.innerHTML=items.map((x,i)=>{
+    const cls=x.uiStatus==='COMPLETED'?'completed':x.uiStatus==='IN_PROGRESS'?'inprogress':(x.uiStatus==='WAITING_APPROVAL'||x.uiStatus==='WAITING_CORRECTION')?'pending':'';
+    const gps=String(x.locationStatus||'OK').toUpperCase()!=='OK'?'<span class="tag red">GPS نیازمند بررسی</span>':'';
+    return `<div class="store-item ${cls}"><div class="seq">${x.sequenceNo||i+1}</div><div><div class="store-name">${esc(x.storeName)}</div><div class="store-code">کد ${esc(x.storeCode)}</div><div class="tags">${priorityTag(x)}${gps}${x.distanceFromPreviousM?`<span class="tag">${mText(x.distanceFromPreviousM)} از قبلی</span>`:''}</div></div><div class="store-action">${statusAction(x)}</div></div>`;
+  }).join('');
+}
+
+
+function openCannotVisitModal(routeItemId,storeCode){
+  const item=(state.route.items||[]).find(x=>x.routeItemId===routeItemId);
+  if(!item)return;
+  if(item.uiStatus!=='NOT_STARTED'){toast('فقط قبل از شروع بازدید می‌توان عدم امکان مراجعه را اعلام کرد.','error');return;}
+  state.cannotVisitTarget={routeItemId,storeCode};
+  state.cannotVisitReason='';
+  document.getElementById('cannotVisitStoreSub').textContent=(item.storeName||storeCode)+' · کد '+storeCode;
+  document.getElementById('cannotVisitNote').value='';
+  const reasons=state.data.cannotVisitReasons||{};
+  document.getElementById('cannotReasonGrid').innerHTML=Object.keys(reasons).map(k=>`<button class="reason-option" data-reason="${esc(k)}" onclick="selectCannotReason('${esc(k)}',this)">${esc(reasons[k])}</button>`).join('');
+  document.getElementById('cannotVisitModal').classList.remove('hidden');
+}
+function closeCannotVisitModal(){document.getElementById('cannotVisitModal').classList.add('hidden');state.cannotVisitTarget=null;state.cannotVisitReason='';}
+function selectCannotReason(code,btn){
+  state.cannotVisitReason=code;
+  document.querySelectorAll('#cannotReasonGrid .reason-option').forEach(x=>x.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+async function submitCannotVisit(){
+  if(!state.cannotVisitTarget)return;
+  if(!state.cannotVisitReason){toast('دلیل عدم امکان بازدید را انتخاب کن.','error');return;}
+  const note=document.getElementById('cannotVisitNote').value.trim();
+  if(state.cannotVisitReason==='OTHER'&&!note){toast('برای گزینه «سایر» توضیح بنویس.','error');return;}
+  const btn=document.getElementById('cannotVisitSubmitBtn');btn.disabled=true;
+  try{
+    const res=await DMAuth.apiPost('reportCannotVisit',{
+      routeItemId:state.cannotVisitTarget.routeItemId,
+      reasonCode:state.cannotVisitReason,
+      note
+    },40000);
+    if(!res.success)throw new Error(res.message||'ارسال اطلاع ناموفق بود.');
+    closeCannotVisitModal();
+    toast(res.message||'به مدیر منطقه اطلاع داده شد.','success');
+    await reloadData();
+  }catch(e){toast(e.message||'خطا در ارسال اطلاع','error');}
+  finally{btn.disabled=false;}
+}
+
+function openGps(storeCode,routeItemId,planned,unplannedReason){
+  if(state.data.openVisit){toast('ابتدا بازدید باز فعلی را تعیین تکلیف کنید.','error');return;}
+  const s=storeByCode(storeCode);if(!s)return;
+  state.gpsTarget={storeCode,routeItemId:routeItemId||'',planned:!!planned,unplannedReason:unplannedReason||''};
+  state.gpsBest=null;state.gpsSamples=[];state.gpsLastError=null;state.gpsDecision=null;
+  document.getElementById('gpsStoreTitle').textContent=s.storeName;
+  document.getElementById('gpsStoreSub').textContent='کد '+s.storeCode+' · Auto تا '+(state.settings.geoRadiusM||300)+' متر · تأیید ساده تا '+(state.settings.softPassRadiusM||800)+' متر · دقت قابل اعتماد ≤ '+Math.min(200,Number(state.settings.gpsMaxAccuracyM||200))+' متر';
+  resetGpsUI();document.getElementById('gpsModal').classList.remove('hidden');
+}
+function closeGpsModal(){document.getElementById('gpsModal').classList.add('hidden');}
+function resetGpsUI(){
+  document.getElementById('gpsVisual').classList.remove('scanning');
+  document.getElementById('gpsTitle').textContent='آماده بررسی موقعیت';
+  document.getElementById('gpsDesc').textContent='برای شروع بازدید، موقعیت فعلی گوشی بررسی می‌شود. دسترسی Location مرورگر باید فعال باشد.';
+  document.getElementById('gpsProgress').style.width='0%';
+  document.getElementById('gpsMetrics').classList.add('hidden');document.getElementById('gpsResult').className='gps-result hidden';
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" onclick="closeGpsModal()">انصراف</button><button class="btn primary" id="scanBtn" onclick="scanAndStart()">بررسی GPS و شروع بازدید</button>`;
+}
+
+async function collectGpsSamplesFast(targetCount){
+  state.gpsSamples=[];state.gpsBest=null;state.gpsLastError=null;
+  if(!navigator.geolocation){
+    state.gpsLastError=new Error('مرورگر شما GPS را پشتیبانی نمی‌کند.');
+    return;
+  }
+
+  const started=Date.now();
+  const minSamples=Math.max(3,Number(state.settings.locationCorrectionMinSamples||3));
+  const requestedSamples=Math.max(minSamples,Number(targetCount||5));
+  const maxAttempts=Math.max(8,requestedSamples+3);
+  const hardWindowMs=22000;
+  const perAttemptTimeoutMs=6500;
+  const correctionAccuracy=Math.max(5,Number(state.settings.locationCorrectionMaxAccuracyM||80));
+  let attempts=0;
+
+  const updateUi=()=>{
+    const elapsed=Math.min(1,(Date.now()-started)/hardWindowMs);
+    const sampleProgress=Math.min(1,state.gpsSamples.length/requestedSamples);
+    const attemptProgress=Math.min(1,attempts/maxAttempts);
+    const pct=Math.round(Math.max(sampleProgress,attemptProgress*.72,elapsed*.62)*100);
+    document.getElementById('gpsProgress').style.width=`${Math.min(96,pct)}%`;
+    document.getElementById('metricSamples').textContent=`${state.gpsSamples.length}/${requestedSamples}`;
+    document.getElementById('metricAccuracy').textContent=state.gpsBest?mText(state.gpsBest.accuracy):'—';
+    document.getElementById('metricDistance').textContent='در حال بررسی';
+  };
+
+  const getFreshPosition=()=>new Promise(resolve=>{
+    navigator.geolocation.getCurrentPosition(
+      pos=>resolve({ok:true,pos}),
+      err=>resolve({ok:false,err}),
+      {enableHighAccuracy:true,timeout:perAttemptTimeoutMs,maximumAge:0}
+    );
+  });
+
+  while(attempts<maxAttempts && Date.now()-started<hardWindowMs){
+    attempts++;
+    updateUi();
+    const result=await getFreshPosition();
+
+    if(result.ok){
+      const pos=result.pos;
+      const p={
+        lat:pos.coords.latitude,
+        lng:pos.coords.longitude,
+        accuracy:pos.coords.accuracy,
+        timestamp:pos.timestamp,
+        attempt:attempts
+      };
+      state.gpsSamples.push(p);
+      if(!state.gpsBest||Number(p.accuracy)<Number(state.gpsBest.accuracy))state.gpsBest=p;
+      state.gpsLastError=null;
+      updateUi();
+
+      if(state.gpsSamples.length>=requestedSamples)break;
+      if(state.gpsSamples.length>=minSamples && state.gpsBest && Number(state.gpsBest.accuracy)<=correctionAccuracy)break;
+    }else{
+      state.gpsLastError=result.err;
+      if(result.err&&result.err.code===1)break;
+    }
+
+    if(attempts<maxAttempts && Date.now()-started<hardWindowMs){
+      await new Promise(r=>setTimeout(r,450));
+    }
+  }
+
+  document.getElementById('gpsProgress').style.width='100%';
+  updateUi();
+}
+
+function showInsufficientGpsSamples(minSamples){
+  const received=state.gpsSamples.length;
+  document.getElementById('gpsTitle').textContent='نمونه GPS کافی نیست';
+  document.getElementById('gpsDesc').textContent=
+    `برای تصمیم‌گیری مطمئن، حداقل ${minSamples} نمونه GPS لازم است؛ این دفعه فقط ${received} نمونه دریافت شد. چند ثانیه در فضای باز یا نزدیک پنجره بمان و دوباره تلاش کن.`;
+  const box=document.getElementById('gpsResult');
+  box.className='gps-result error';
+  box.textContent=`فرآیند با ${received} نمونه ادامه پیدا نکرد تا فاصله یا لوکیشن اشتباه تأیید نشود.`;
+  document.getElementById('gpsFoot').innerHTML=
+    `<button class="btn ghost" onclick="closeGpsModal()">انصراف</button><button class="btn primary" onclick="scanAndStart()">GPS دوباره</button>`;
+}
+
+async function scanAndStart(){
+  const count=Math.max(3,Number(state.settings.gpsSampleCount||5));
+  const minSamples=Math.max(3,Number(state.settings.locationCorrectionMinSamples||3));
+  state.gpsSamples=[];state.gpsBest=null;state.gpsLastError=null;state.gpsDecision=null;
+  document.getElementById('gpsVisual').classList.add('scanning');
+  document.getElementById('gpsTitle').textContent='در حال بررسی GPS...';
+  document.getElementById('gpsDesc').textContent='چند نمونه موقعیت به‌صورت همزمان پایش می‌شود؛ به محض رسیدن به دقت مناسب ادامه می‌دهیم.';
+  document.getElementById('gpsMetrics').classList.remove('hidden');
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" disabled>لطفاً صبر کنید...</button>`;
+
+  await collectGpsSamplesFast(count);
+
+  document.getElementById('gpsVisual').classList.remove('scanning');
+
+  if(state.gpsSamples.length<minSamples){
+    showInsufficientGpsSamples(minSamples);
+    return;
+  }
+
+  if(!state.gpsBest){
+    const raw=gpsErrorText(state.gpsLastError);
+    state.gpsDecision={
+      code:'GPS_UNAVAILABLE_MANAGER_APPROVAL',
+      approvalReason:'GPS_UNAVAILABLE'
+    };
+    showGpsFailure(
+      raw+' برای ادامه بازدید، تأیید مدیر منطقه لازم است.',
+      null,
+      true,
+      false,
+      null,
+      false,
+      null
+    );
+    return;
+  }
+
+  document.getElementById('gpsTitle').textContent='در حال تأیید موقعیت با سرور...';
+  try{
+    const res=await DMAuth.apiPost('startVisit',{
+      storeCode:state.gpsTarget.storeCode,
+      routeItemId:state.gpsTarget.routeItemId,
+      lat:state.gpsBest.lat,
+      lng:state.gpsBest.lng,
+      accuracy:state.gpsBest.accuracy,
+      gpsAttemptCount:state.gpsSamples.length,
+      unplannedReason:state.gpsTarget.unplannedReason
+    },40000);
+
+    state.gpsDecision=res||null;
+    if(res.gps){document.getElementById('metricDistance').textContent=mText(res.gps.distanceM);document.getElementById('metricAccuracy').textContent=mText(res.gps.accuracyM);}
+
+    if(res.success){
+      const box=document.getElementById('gpsResult');box.className='gps-result success';box.textContent=res.message||'حضور تأیید شد.';
+      document.getElementById('gpsTitle').textContent='حضور تأیید شد';
+      document.getElementById('gpsDesc').textContent='بازدید آغاز شد و Route این فروشگاه قفل شد.';
+      document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">ادامه</button>`;
+      return;
+    }
+
+    if(res.canSoftPass){showGpsFailure(res.message,res.gps,!!res.canRequestApproval,!!res.canRequestCorrection,res.correctionRule||null,true,res.softPass||null);return;}
+    if(res.canRequestApproval){showGpsFailure(res.message,res.gps,true,!!res.canRequestCorrection,res.correctionRule||null,false,null);return;}
+    showGpsFailure(res.message||'شروع بازدید ناموفق بود.',res.gps,false,false,null,false,null);
+  }catch(e){showGpsFailure(e.message||'ارتباط با سرور برقرار نشد.',null,false,false,null);}
+}
+
+function gpsErrorText(e){
+  if(!e)return 'موقعیت GPS دریافت نشد.';
+  if(e.code===1)return 'دسترسی Location در مرورگر رد شده است.';
+  if(e.code===2)return 'موقعیت فعلی گوشی قابل تشخیص نیست.';
+  if(e.code===3)return 'دریافت موقعیت بیش از حد طول کشید.';
+  return e.message||'موقعیت GPS دریافت نشد.';
+}
+
+function showGpsFailure(message,gps,canApprove,canCorrect=false,correctionRule=null,canSoftPass=false,softPass=null){
+  const decision=state.gpsDecision||{};
+  const code=String(decision.code||'').toUpperCase();
+  const approvalReason=String(decision.approvalReason||'').toUpperCase();
+  const lowAccuracy=code.includes('LOW_GPS_ACCURACY')||approvalReason.startsWith('LOW_GPS_ACCURACY');
+  const gpsUnavailable=code.includes('GPS_UNAVAILABLE')||approvalReason.startsWith('GPS_UNAVAILABLE');
+  const nearest=!!decision.nearestStore;
+
+  const reliableLimit=Math.min(200,Number(state.settings.gpsMaxAccuracyM||200));
+  const rule=correctionRule||{
+    maxAccuracyM:state.settings.locationCorrectionMaxAccuracyM||80,
+    minSamples:state.settings.locationCorrectionMinSamples||3
+  };
+
+  if(lowAccuracy){
+    document.getElementById('gpsTitle').textContent='دقت موقعیت مکانی کافی نیست';
+    const best=state.gpsBest&&Number.isFinite(Number(state.gpsBest.accuracy))
+      ? Math.round(Number(state.gpsBest.accuracy))
+      : null;
+    document.getElementById('gpsDesc').textContent=best!==null
+      ? `پس از چند بار بررسی، بهترین دقت GPS ${best} متر است؛ حد قابل اعتماد ${reliableLimit} متر است. فاصله نمایش‌داده‌شده مبنای تصمیم نیست و برای ادامه تأیید مدیر منطقه لازم است.`
+      : `دقت GPS قابل اعتماد دریافت نشد. برای ادامه تأیید مدیر منطقه لازم است.`;
+  }else if(gpsUnavailable){
+    document.getElementById('gpsTitle').textContent='موقعیت مکانی دریافت نشد';
+    document.getElementById('gpsDesc').textContent='پس از چند بار تلاش، موقعیت قابل استفاده‌ای از دستگاه دریافت نشد. Self Confirm مجاز نیست و برای ادامه باید درخواست تأیید مدیر منطقه ارسال شود.';
+  }else if(canSoftPass){
+    document.getElementById('gpsTitle').textContent='نیاز به تأیید ساده حضور';
+    document.getElementById('gpsDesc').textContent='GPS قابل اعتماد است و فاصله در محدوده تأیید ساده قرار دارد. اگر واقعاً در محل همین فروشگاه هستی، حضور خودت را تأیید کن. این مورد در Audit ثبت می‌شود.';
+  }else if(nearest){
+    const n=decision.nearestStore;
+    document.getElementById('gpsTitle').textContent='فروشگاه دیگری نزدیک‌تر است';
+    document.getElementById('gpsDesc').textContent=`GPS فعلی به یک فروشگاه دیگر دیلی‌مارکت (${n.distanceM!=null?mText(n.distanceM):'نزدیک'}) بسیار نزدیک‌تر است؛ Self Confirm مجاز نیست و برای ادامه تأیید مدیر منطقه لازم است.`;
+  }else if(canCorrect){
+    document.getElementById('gpsTitle').textContent='نیاز به تأیید مدیر منطقه';
+    document.getElementById('gpsDesc').textContent=`GPS قابل اعتماد است اما فاصله بیشتر از ${state.settings.softPassRadiusM||800} متر است. برای ادامه تأیید مدیر منطقه لازم است؛ اگر مختصات فروشگاه اشتباه است می‌توانی درخواست اصلاح لوکیشن هم ارسال کنی.`;
+  }else if(canApprove){
+    document.getElementById('gpsTitle').textContent='نیاز به تأیید مدیر منطقه';
+    document.getElementById('gpsDesc').textContent=`GPS قابل اعتماد است اما شرایط ورود خودکار یا تأیید ساده برقرار نیست؛ برای ادامه درخواست تأیید حضور برای مدیر منطقه ارسال کن.`;}else{
+    document.getElementById('gpsTitle').textContent='تأیید خودکار انجام نشد';
+    document.getElementById('gpsDesc').textContent='امکان شروع خودکار بازدید در حال حاضر وجود ندارد.';
+  }
+
+  const box=document.getElementById('gpsResult');
+  box.className=canSoftPass?'gps-result warn':'gps-result error';
+  box.textContent=message||'موقعیت تأیید نشد.';
+
+  if(gps){
+    document.getElementById('gpsMetrics').classList.remove('hidden');
+    document.getElementById('metricAccuracy').textContent=mText(gps.accuracyM);
+    document.getElementById('metricDistance').textContent=mText(gps.distanceM);
+  }
+
+  const correctionBtn=canCorrect
+    ? `<button class="btn correct" onclick="requestLocationCorrection()">📍 لوکیشن فروشگاه اشتباه است</button>`
+    : '';
+
+  const softBtn=canSoftPass
+    ? `<button class="btn warn" onclick="confirmSoftPresence()">بله، در فروشگاه هستم</button>`
+    : '';
+
+  const managerBtn=canApprove
+    ? `<button class="btn warn" onclick="requestManagerApproval()">درخواست تأیید مدیر منطقه</button>`
+    : '';
+
+  document.getElementById('gpsFoot').innerHTML=
+    `<button class="btn ghost" onclick="closeGpsModal()">انصراف</button>${correctionBtn}${softBtn}${managerBtn}<button class="btn primary" onclick="scanAndStart()">GPS دوباره</button>`;
+
+  if(!canCorrect&&state.gpsBest&&correctionRule&&!lowAccuracy){
+    document.getElementById('gpsDesc').textContent+=
+      ` برای اصلاح مختصات، GPS باید حداکثر ${rule.maxAccuracyM} متر و حداقل ${rule.minSamples} نمونه باشد.`;
+  }
+}
+
+async function confirmSoftPresence(){
+  const b=state.gpsBest;
+  const reliableLimit=Math.min(200,Number(state.settings.gpsMaxAccuracyM||200));
+  if(!b||!Number.isFinite(Number(b.accuracy))||Number(b.accuracy)>reliableLimit){
+    state.gpsDecision={
+      code:b?'LOW_GPS_ACCURACY_MANAGER_APPROVAL':'GPS_UNAVAILABLE_MANAGER_APPROVAL',
+      approvalReason:b?`LOW_GPS_ACCURACY | ${Math.round(Number(b.accuracy))}m | limit=${reliableLimit}m`:'GPS_UNAVAILABLE'
+    };
+    showGpsFailure(
+      b
+        ? `دقت موقعیت مکانی ${Math.round(Number(b.accuracy))} متر است و برای Self Confirm قابل اعتماد نیست.`
+        : 'موقعیت مکانی قابل استفاده دریافت نشده است.',
+      b?{accuracyM:b.accuracy,distanceM:null}:null,
+      true,false,null,false,null
+    );
+    return;
+  }
+  if(!confirm('تأیید می‌کنید که در حال حاضر در محل همین فروشگاه حضور دارید؟'))return;
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" disabled>در حال ثبت حضور...</button>`;
+  try{
+    const b=state.gpsBest;
+    const res=await DMAuth.apiPost('confirmSoftPresence',{
+      storeCode:state.gpsTarget.storeCode,
+      routeItemId:state.gpsTarget.routeItemId,
+      lat:b?b.lat:'',lng:b?b.lng:'',accuracy:b?b.accuracy:'',gpsAttemptCount:state.gpsSamples.length||0,
+      unplannedReason:state.gpsTarget.unplannedReason
+    },40000);
+    if(!res.success){
+      state.gpsDecision=res||state.gpsDecision;
+      if(res.canRequestApproval){showGpsFailure(res.message,res.gps,true,false,null,false,null);return;}
+      throw new Error(res.message||'ثبت حضور ناموفق بود.');
+    }
+    const box=document.getElementById('gpsResult');box.className='gps-result success';box.textContent=res.message||'حضور ثبت شد.';
+    document.getElementById('gpsTitle').textContent='بازدید آغاز شد';
+    document.getElementById('gpsDesc').textContent='حضور شما به‌صورت تأیید ساده ثبت شد و می‌توانی چک‌لیست را ادامه بدهی.';
+    document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">ادامه به بازدید</button>`;
+  }catch(e){showGpsFailure(e.message||'ثبت حضور ناموفق بود.',null,true,false,null,false,null);}
+}
+
+async function requestManagerApproval(){
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" disabled>در حال ارسال درخواست...</button>`;
+  try{
+    const b=state.gpsBest;
+    const res=await DMAuth.apiPost('requestLocationApproval',{
+      storeCode:state.gpsTarget.storeCode,
+      routeItemId:state.gpsTarget.routeItemId,
+      lat:b?b.lat:'',lng:b?b.lng:'',accuracy:b?b.accuracy:'',gpsAttemptCount:state.gpsSamples.length||1,
+      reason:(state.gpsDecision&&state.gpsDecision.approvalReason)?state.gpsDecision.approvalReason:(b?'GPS_NOT_VERIFIED':'GPS_UNAVAILABLE'),unplannedReason:state.gpsTarget.unplannedReason
+    },40000);
+    if(!res.success)throw new Error(res.message||'ثبت درخواست ناموفق بود.');
+    const box=document.getElementById('gpsResult');box.className='gps-result warn';box.textContent=res.message||'درخواست ثبت شد.';
+    document.getElementById('gpsTitle').textContent='درخواست ارسال شد';
+    document.getElementById('gpsDesc').textContent='مدیر منطقه می‌تواند حضور شما را تأیید یا رد کند.';
+    document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">متوجه شدم</button>`;
+  }catch(e){showGpsFailure(e.message||'ثبت درخواست ناموفق بود.',null,true,false,null);}
+}
+
+async function requestLocationCorrection(){
+  const b=state.gpsBest;
+  if(!b){toast('ابتدا GPS را دریافت کن.','error');return;}
+  const maxAcc=Number(state.settings.locationCorrectionMaxAccuracyM||80),minSamples=Number(state.settings.locationCorrectionMinSamples||3);
+  if(Number(b.accuracy)>maxAcc||state.gpsSamples.length<minSamples){
+    toast(`برای اصلاح لوکیشن، دقت GPS باید حداکثر ${maxAcc} متر و حداقل ${minSamples} نمونه باشد.`,'error');return;
+  }
+  const s=storeByCode(state.gpsTarget.storeCode);
+  if(!confirm(`لوکیشن ثبت‌شده ${s?.storeName||state.gpsTarget.storeCode} اشتباه است؟\nGPS فعلی برای مدیر منطقه ارسال می‌شود و فقط بعد از تأیید او مختصات فروشگاه تغییر می‌کند.`))return;
+  document.getElementById('gpsFoot').innerHTML=`<button class="btn ghost" disabled>در حال ارسال موقعیت صحیح...</button>`;
+  try{
+    const res=await DMAuth.apiPost('requestStoreLocationCorrection',{
+      storeCode:state.gpsTarget.storeCode,routeItemId:state.gpsTarget.routeItemId,
+      lat:b.lat,lng:b.lng,accuracy:b.accuracy,gpsSampleCount:state.gpsSamples.length,
+      unplannedReason:state.gpsTarget.unplannedReason
+    },40000);
+    if(!res.success)throw new Error(res.message||'ثبت درخواست اصلاح ناموفق بود.');
+    const box=document.getElementById('gpsResult');box.className='gps-result warn';box.textContent=res.message||'موقعیت پیشنهادی ارسال شد.';
+    document.getElementById('gpsTitle').textContent='درخواست اصلاح لوکیشن ارسال شد';
+    document.getElementById('gpsDesc').textContent='تا تصمیم مدیر منطقه، مختصات فعلی فروشگاه تغییر نمی‌کند. پس از تأیید، لوکیشن اصلاح و چک‌لیست باز می‌شود.';
+    document.getElementById('gpsFoot').innerHTML=`<button class="btn primary" onclick="closeGpsModal();reloadData()">متوجه شدم</button>`;
+  }catch(e){showGpsFailure(e.message||'ثبت درخواست اصلاح ناموفق بود.',null,true,false,null);}
+}
+
+
+/* ===== CHECKLIST ===== */
+function checklistLocalKey(visitId){return 'dmChecklistDraft:'+visitId;}
+function loadLocalChecklistDraft(visitId){
+  try{
+    const raw=localStorage.getItem(checklistLocalKey(visitId));if(!raw)return null;
+    const parsed=JSON.parse(raw);
+    if(parsed&&parsed.answers)return parsed;
+    return {answers:parsed||{},notes:''}; // backward compatibility
+  }catch(_){return null;}
+}
+function saveLocalChecklistDraft(){
+  if(!state.checklistVisitId)return;
+  try{localStorage.setItem(checklistLocalKey(state.checklistVisitId),JSON.stringify({answers:state.checklistAnswers||{},notes:state.checklistNotes||''}));}catch(_){}
+}
+function clearLocalChecklistDraft(visitId){try{localStorage.removeItem(checklistLocalKey(visitId));}catch(_){}}
+
+async function openChecklist(visitId){
+  if(!visitId){toast('شناسه بازدید پیدا نشد.','error');return;}
+  setLoading(true,'در حال دریافت چک‌لیست...');
+  try{
+    const res=await DMAuth.apiPost('checklistBootstrap',{visitId},40000);
+    if(!res.success)throw new Error(res.message||'چک‌لیست دریافت نشد.');
+    state.checklistVisitId=visitId;state.checklistData=res;
+    const local=loadLocalChecklistDraft(visitId);
+    state.checklistAnswers=Object.assign({},res.answers||{},local?.answers||{});
+    state.checklistNotes=local?.notes!=null?String(local.notes):String(res.visitNotes||'');
+    state.checklistDirty=Object.keys(local?.answers||{}).some(k=>String(local.answers[k]||'')!==String((res.answers||{})[k]||'')) || (local&&String(local.notes||'')!==String(res.visitNotes||''));
+    document.getElementById('checklistStoreTitle').textContent=res.store?.storeName||'چک‌لیست فروشگاه';
+    document.getElementById('checklistStoreSub').textContent='کد '+(res.store?.storeCode||'')+' · '+(res.readOnly?'بازدید تکمیل شده':'بازدید فعال');
+    document.getElementById('checklistVisitId').textContent=visitId;
+    document.getElementById('checklistVisitType').textContent=res.visit?.plannedFlag?'برنامه‌ریزی‌شده':'خارج از برنامه';
+    document.getElementById('checklistStateText').textContent=res.readOnly?'تکمیل شده':'در حال تکمیل';
+    document.getElementById('checklistModal').classList.remove('hidden');
+    document.body.style.overflow='hidden';
+    renderChecklist();
+    if(state.checklistDirty)setChecklistSaveStatus('پیش‌نویس محلی بازیابی شد.','saving');
+  }catch(e){toast(e.message||'خطا در دریافت چک‌لیست','error');}
+  finally{setLoading(false);}
+}
+
+function closeChecklist(){
+  if(state.checklistDirty){saveLocalChecklistDraft();}
+  if(state.checklistSaveTimer){clearTimeout(state.checklistSaveTimer);state.checklistSaveTimer=null;}
+  document.getElementById('checklistModal').classList.add('hidden');
+  document.body.style.overflow='';
+}
+
+function checklistSectionTheme(section,index){
+  const s=String(section||'').replace(/\u200c/g,' ').trim().toLowerCase();
+
+  if(/لبنی|شیر|ماست|پنیر|دوغ/.test(s))return'theme-dairy';
+  if(/گوشت|مرغ|پروتئ|ماهی|قصاب/.test(s))return'theme-meat';
+  if(/میوه|سبزی|صیفی|محصولات تازه/.test(s))return'theme-produce';
+  if(/نوشیدنی|آشامیدنی|آب|نوشابه/.test(s))return'theme-beverage';
+  if(/انبار|دپو|موجودی|قفسه/.test(s))return'theme-warehouse';
+  if(/صندوق|گاوصندوق|بانک|نقد|مالی/.test(s))return'theme-cash';
+  if(/دیتا|داده|هدف|فروش|شاخص/.test(s))return'theme-data';
+  if(/خشکبار|تنقلات|شیرینی|کنسرو|ادویه|نان|خواربار/.test(s))return'theme-grocery';
+
+  return'theme-general-'+((Number(index||0)%4)+1);
+}
+
+function checklistSubTheme(sub,index){
+  const s=String(sub||'').replace(/\u200c/g,' ').trim().toLowerCase();
+
+  if(/لبنی|شیر|ماست|پنیر|دوغ/.test(s))return'subtheme-dairy';
+  if(/گوشت|مرغ|پروتئ|ماهی|قصاب/.test(s))return'subtheme-meat';
+  if(/میوه|سبزی|صیفی|سالاد|محصولات تازه/.test(s))return'subtheme-produce';
+  if(/نوشیدنی|آشامیدنی|آب|نوشابه|دلستر|آبمیوه/.test(s))return'subtheme-beverage';
+  if(/خشکبار|تنقلات|شیرینی|کنسرو|ادویه|خواربار|حبوبات|برنج|روغن/.test(s))return'subtheme-grocery';
+  if(/منجمد|فریز|بستنی/.test(s))return'subtheme-frozen';
+  if(/نان|بیکری|قنادی/.test(s))return'subtheme-bakery';
+  if(/بهداشتی|شوینده|سلولزی|خانگی|غیرغذایی/.test(s))return'subtheme-household';
+
+  return'subtheme-default';
+}
+
+function checklistSectionIcon(section){
+  const s=String(section||'').replace(/\u200c/g,' ').trim().toLowerCase();
+
+  if(/لبنی|شیر|ماست|پنیر|دوغ/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v4l-2 3v9a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-9l-2-3V3"/><path d="M8 13h8"/></svg>`;
+
+  if(/گوشت|مرغ|پروتئ|ماهی|قصاب/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M7.5 14.5c-2.3-2.3-2.2-6 .2-8.2s6.2-2.4 8.5 0 2.3 6.2 0 8.5c-1.7 1.7-4.1 2.1-6.2 1.3L7.5 18.5"/><path d="M7.5 18.5 5 21l-2-2 2.5-2.5"/></svg>`;
+
+  if(/میوه|سبزی|صیفی|محصولات تازه/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M12 21c0-7 3-12 9-15 0 7-3 12-9 15Z"/><path d="M12 21C12 13 8 8 3 5c0 7 3 12 9 16Z"/><path d="M12 21V10"/></svg>`;
+
+  if(/نوشیدنی|آشامیدنی|آب|نوشابه/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M8 3h8l-1 18H9L8 3Z"/><path d="M9 8h6"/><path d="m16 3 3-2"/></svg>`;
+
+  if(/انبار|دپو|موجودی|قفسه/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="m3 7 9-4 9 4-9 4-9-4Z"/><path d="m3 7 9 4 9-4v10l-9 4-9-4V7Z"/><path d="M12 11v10"/></svg>`;
+
+  if(/صندوق|گاوصندوق|بانک|نقد|مالی/.test(s))
+    return`<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18"/><path d="M16 15h2"/></svg>`;
+
+  if(/دیتا|داده|هدف|فروش|شاخص/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>`;
+
+  if(/خشکبار|تنقلات|شیرینی|کنسرو|ادویه|نان|خواربار/.test(s))
+    return`<svg viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>`;
+
+  return`<svg viewBox="0 0 24 24"><path d="M8 4h8"/><path d="M9 2h6a2 2 0 0 1 2 2v2H7V4a2 2 0 0 1 2-2Z"/><path d="M6 5H4v16h16V5h-2"/><path d="m8 13 2 2 5-5"/></svg>`;
+}
+
+
+function checklistConditionalRuleClient(){
+  return {triggerQuestionId:'V4-EQUIPMENT-FAULT',triggerValue:'بله',dependentQuestionId:'V4-EQUIPMENT-FAULT-DESC'};
+}
+function isChecklistQuestionVisibleClient(q){
+  const r=checklistConditionalRuleClient();
+  if(String(q?.questionId||'')!==r.dependentQuestionId)return true;
+  return String(state.checklistAnswers?.[r.triggerQuestionId]||'').trim()===r.triggerValue;
+}
+function isChecklistQuestionRequiredClient(q){
+  const r=checklistConditionalRuleClient();
+  if(String(q?.questionId||'')===r.dependentQuestionId){
+    return String(state.checklistAnswers?.[r.triggerQuestionId]||'').trim()===r.triggerValue;
+  }
+  return !!q?.required;
+}
+function normalizeConditionalAnswersClient(){
+  const r=checklistConditionalRuleClient();
+  if(String(state.checklistAnswers?.[r.triggerQuestionId]||'').trim()!==r.triggerValue){
+    if(state.checklistAnswers)delete state.checklistAnswers[r.dependentQuestionId];
+  }
+}
+
+function renderChecklist(){
+  const data=state.checklistData;if(!data)return;
+  normalizeConditionalAnswersClient();
+  const template=(data.template||[]).filter(q=>isChecklistQuestionVisibleClient(q));const readOnly=!!data.readOnly;
+  const sections=[];const map={};
+
+  template.forEach(q=>{
+    const section=String(q.section||'سایر').trim()||'سایر';
+    if(!map[section]){map[section]=[];sections.push(section);}
+    map[section].push(q);
+  });
+
+  const main=document.getElementById('checklistMain');
+
+  main.innerHTML=sections.map((section,index)=>{
+    const qs=map[section];
+    const subs=[];const sm={};
+
+    qs.forEach(q=>{
+      const sub=q.subsection||'سایر';
+      if(!sm[sub]){sm[sub]=[];subs.push(sub);}
+      sm[sub].push(q);
+    });
+
+    const answered=qs.filter(q=>String(state.checklistAnswers[q.questionId]||'').trim()).length;
+    const required=qs.filter(q=>isChecklistQuestionRequiredClient(q));
+    const requiredAnswered=required.filter(q=>String(state.checklistAnswers[q.questionId]||'').trim()).length;
+    const complete=required.length?requiredAnswered===required.length:answered===qs.length;
+    const percent=qs.length?Math.round(answered*100/qs.length):0;
+    const theme=checklistSectionTheme(section,index);
+    const sectionNo=String(index+1).padStart(2,'0');
+
+    return `
+      <section class="check-section ${theme} ${complete?'is-complete':''}" id="checksec-${safeDomId(section)}">
+        <div class="check-section-head">
+          <div class="check-section-head-main">
+            <div class="check-section-identity">
+              <div class="check-section-icon">${checklistSectionIcon(section)}</div>
+              <div class="check-section-title-wrap">
+                <div class="check-section-kicker">بخش ${sectionNo}</div>
+                <h3>${esc(section)}</h3>
+              </div>
+            </div>
+            <div class="check-section-status">
+              <span class="section-check">✓</span>
+              <span>${answered} از ${qs.length}</span>
+            </div>
+          </div>
+          <div class="check-section-progress"><span style="width:${percent}%"></span></div>
+        </div>
+
+        <div class="check-subsection">
+          ${subs.map((sub,subIndex)=>`
+            <div class="check-sub-group ${checklistSubTheme(sub,subIndex)}">
+              <div class="check-sub-title">${esc(sub)}</div>
+              ${sm[sub].map(q=>renderChecklistQuestion(q,readOnly)).join('')}
+            </div>
+          `).join('')}
+        </div>
+      </section>`;
+  }).join('')+`
+    <section class="notes-card">
+      <h4>توضیحات بازدید</h4>
+      <p>اگر نکته، مشکل یا موضوعی برای پیگیری وجود دارد اینجا بنویس. این بخش اختیاری است.</p>
+      <textarea id="visitNotesInput" ${readOnly?'disabled':''} maxlength="3000" placeholder="توضیحات بازدید...">${esc(state.checklistNotes||'')}</textarea>
+    </section>`;
+
+  const notesInput=document.getElementById('visitNotesInput');
+  if(notesInput&&!readOnly)notesInput.addEventListener('input',()=>{
+    state.checklistNotes=notesInput.value;
+    state.checklistDirty=true;
+    saveLocalChecklistDraft();
+    setChecklistSaveStatus('تغییرات هنوز روی سرور ذخیره نشده‌اند.','saving');
+    if(state.checklistSaveTimer)clearTimeout(state.checklistSaveTimer);
+    state.checklistSaveTimer=setTimeout(()=>saveChecklistDraft(false),1200);
+  });
+
+  document.getElementById('checklistSectionNav').innerHTML=sections.map((section,index)=>{
+    const qs=map[section];
+    const complete=qs.every(q=>!isChecklistQuestionRequiredClient(q)||state.checklistAnswers[q.questionId]);
+    const answered=qs.filter(q=>state.checklistAnswers[q.questionId]).length;
+    const theme=checklistSectionTheme(section,index);
+
+    return `<button class="${theme} ${complete?'complete':''}" onclick="scrollChecklistSection('${safeDomId(section)}',this)">
+      <span class="section-nav-label">
+        <span>${esc(section)}</span>
+        <span class="section-nav-count">${answered}/${qs.length}${complete?' ✓':''}</span>
+      </span>
+    </button>`;
+  }).join('');
+
+  document.getElementById('finishChecklistBtn').disabled=readOnly;
+  document.getElementById('draftBtn').disabled=readOnly;
+  document.getElementById('topDraftBtn').disabled=readOnly;
+
+  if(readOnly)
+    document.getElementById('checklistBottomInfo').textContent='این چک‌لیست قبلاً نهایی شده و فقط قابل مشاهده است.';
+  else
+    document.getElementById('checklistBottomInfo').textContent=`برای پایان بازدید باید به همه ${template.filter(q=>isChecklistQuestionRequiredClient(q)).length} سؤال اجباری پاسخ داده شود. توضیحات انتهایی اختیاری است.`;
+
+  updateChecklistProgress();
+}
+
+function safeDomId(s){return String(s||'').replace(/[^a-zA-Z0-9\u0600-\u06ff]+/g,'-');}
+function renderChecklistQuestion(q,readOnly){
+  const value=state.checklistAnswers[q.questionId]||'';
+  const regionalBadge=q.source==='REGIONAL'?'<span class="regional-q-badge">اختصاصی منطقه</span>':'';
+  const required=isChecklistQuestionRequiredClient(q);
+  const isFault=q.questionId==='V4-EQUIPMENT-FAULT';
+  const isFaultDesc=q.questionId==='V4-EQUIPMENT-FAULT-DESC';
+  let typeLabel=q.responseType==='TEXT'?'پاسخ متنی':q.responseType==='TARGET_80'?'بالاتر از 80 درصد / زیر 80 درصد':q.responseType==='ACHIEVEMENT'?'محقق شده / محقق نشده':q.responseType==='WASTE_RATE'?'بالای نیم درصد / کمتر از نیم درصد':q.responseType==='YES_NO'?'بله / خیر':'ضعیف / خوب / عالی';
+
+  if(q.responseType==='TEXT'){
+    const placeholder=isFaultDesc?'نوع تجهیز، محل خرابی و شرح مشکل را بنویس...':'پاسخ را بنویس...';
+    const note=isFaultDesc?'<div class="conditional-note">به دلیل انتخاب «بله»، ثبت شرح خرابی برای پایان بازدید الزامی است.</div>':'';
+    return `<div class="question-card ${isFaultDesc?'conditional-followup':''}" id="question-${esc(q.questionId)}"><div class="question-top"><div class="question-no">${q.sortOrder}</div><div><div class="question-text">${esc(q.questionText)} ${regionalBadge}</div><div class="question-sub">${required?'پاسخ الزامی':'اختیاری'} · ${esc(typeLabel)}</div></div></div>${note}<textarea class="regional-text-answer" maxlength="1000" ${readOnly?'disabled':''} oninput="setChecklistTextAnswer('${esc(q.questionId)}',this.value)" placeholder="${esc(placeholder)}">${esc(value)}</textarea></div>`;
+  }
+
+  const options=q.options||[];const two=options.length===2;
+  const buttons=options.map((opt,i)=>{
+    let cls='';
+    if(value===opt){
+      if(isFault)cls=opt==='بله'?'bad':'great';
+      else if(q.responseType==='ACHIEVEMENT')cls=opt==='محقق شده'?'great':'bad';
+      else if(q.responseType==='TARGET_80')cls=(opt==='بالاتر از 80 درصد'||opt==='بالاتر از ۸۰ درصد')?'great':'bad';
+      else if(q.responseType==='WASTE_RATE')cls=opt==='کمتر از نیم درصد'?'great':'bad';
+      else if(q.responseType==='YES_NO')cls=i===0?'yes':'no';
+      else cls=i===0?'bad':i===1?'good':'great';
+    }
+    return `<button class="answer-btn ${value===opt?'selected '+cls:''}" ${readOnly?'disabled':''} onclick="setChecklistAnswer('${esc(q.questionId)}','${esc(opt)}')">${esc(opt)}</button>`;
+  }).join('');
+  const faultClass=isFault&&value==='بله'?'equipment-fault-yes':'';
+  return `<div class="question-card ${faultClass}" id="question-${esc(q.questionId)}"><div class="question-top"><div class="question-no">${q.sortOrder}</div><div><div class="question-text">${esc(q.questionText)} ${regionalBadge}</div><div class="question-sub">${required?'پاسخ الزامی':'اختیاری'} · ${esc(typeLabel)}</div></div></div><div class="answer-options ${two?'two':''}">${buttons}</div></div>`;
+}
+
+function setChecklistAnswer(questionId,value){
+  if(state.checklistData?.readOnly)return;
+  state.checklistAnswers[questionId]=value;
+  const rule=checklistConditionalRuleClient();
+  if(questionId===rule.triggerQuestionId&&value!==rule.triggerValue)delete state.checklistAnswers[rule.dependentQuestionId];
+  state.checklistDirty=true;saveLocalChecklistDraft();
+  renderChecklist();setChecklistSaveStatus('تغییرات هنوز روی سرور ذخیره نشده‌اند.','saving');
+  if(state.checklistSaveTimer)clearTimeout(state.checklistSaveTimer);
+  state.checklistSaveTimer=setTimeout(()=>saveChecklistDraft(false),1200);
+}
+
+
+function setChecklistTextAnswer(questionId,value){
+  if(state.checklistData?.readOnly)return;
+  state.checklistAnswers[questionId]=String(value||'').slice(0,1000);
+  state.checklistDirty=true;saveLocalChecklistDraft();updateChecklistProgress();
+  setChecklistSaveStatus('تغییرات هنوز روی سرور ذخیره نشده‌اند.','saving');
+  if(state.checklistSaveTimer)clearTimeout(state.checklistSaveTimer);
+  state.checklistSaveTimer=setTimeout(()=>saveChecklistDraft(false),1200);
+}
+
+function checklistProgressClient(){
+  normalizeConditionalAnswersClient();
+  const t=(state.checklistData?.template||[]).filter(q=>isChecklistQuestionVisibleClient(q));
+  const answered=t.filter(q=>String(state.checklistAnswers[q.questionId]||'').trim()).length;
+  const required=t.filter(q=>isChecklistQuestionRequiredClient(q));
+  const requiredAnswered=required.filter(q=>String(state.checklistAnswers[q.questionId]||'').trim()).length;
+  return {total:t.length,answered,required:required.length,requiredAnswered,remainingRequired:Math.max(0,required.length-requiredAnswered),percent:t.length?Math.round(answered/t.length*100):0};
+}
+function updateChecklistProgress(){
+  const p=checklistProgressClient();
+  document.getElementById('checklistProgressText').textContent=`${p.answered} از ${p.total}`;
+  document.getElementById('checklistProgressBar').style.width=p.percent+'%';
+}
+function setChecklistSaveStatus(text,cls=''){
+  const el=document.getElementById('checklistSaveStatus');el.textContent=text||'';el.className='checklist-save-status '+cls;
+}
+
+async function saveChecklistDraft(showToast=false){
+  if(!state.checklistVisitId||state.checklistData?.readOnly||state.checklistSaving)return;
+  state.checklistSaving=true;setChecklistSaveStatus('در حال ذخیره پیش‌نویس...','saving');
+  try{
+    const res=await DMAuth.apiPost('saveChecklistDraft',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{}),visitNotes:state.checklistNotes||''},40000);
+    if(!res.success)throw new Error(res.message||'ذخیره پیش‌نویس ناموفق بود.');
+    state.checklistDirty=false;clearLocalChecklistDraft(state.checklistVisitId);setChecklistSaveStatus('پیش‌نویس ذخیره شد.','saved');
+    if(showToast)toast('پیش‌نویس چک‌لیست ذخیره شد.','success');
+  }catch(e){state.checklistDirty=true;saveLocalChecklistDraft();setChecklistSaveStatus('ذخیره سرور ناموفق بود؛ نسخه محلی حفظ شد.','error');if(showToast)toast(e.message||'خطا در ذخیره پیش‌نویس','error');}
+  finally{state.checklistSaving=false;}
+}
+
+function highlightMissingQuestions(){
+  const t=(state.checklistData?.template||[]).filter(q=>isChecklistQuestionVisibleClient(q));let first=null;
+  t.forEach(q=>{
+    const el=document.getElementById('question-'+q.questionId);if(!el)return;
+    const missing=isChecklistQuestionRequiredClient(q)&&!String(state.checklistAnswers[q.questionId]||'').trim();el.classList.toggle('missing',missing);if(missing&&!first)first=el;
+  });
+  if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+async function finishChecklist(){
+  if(state.checklistData?.readOnly)return;
+  const p=checklistProgressClient();
+  if(p.remainingRequired>0){highlightMissingQuestions();toast(`${p.remainingRequired} سؤال هنوز بدون پاسخ است.`,'error');return;}
+  if(!confirm('چک‌لیست نهایی شود و این بازدید پایان پیدا کند؟ پس از ثبت نهایی امکان ویرایش وجود ندارد.'))return;
+  setLoading(true,'در حال ثبت نهایی و پایان بازدید...');
+  try{
+    const res=await DMAuth.apiPost('completeChecklist',{visitId:state.checklistVisitId,answersJson:JSON.stringify(state.checklistAnswers||{}),visitNotes:state.checklistNotes||''},50000);
+    if(!res.success){if(res.code==='CHECKLIST_INCOMPLETE'){highlightMissingQuestions();}throw new Error(res.message||'ثبت نهایی ناموفق بود.');}
+    let maintenanceResult=null;
+    const completedVisitId=state.checklistVisitId;
+    const hasEquipmentFault=String(state.checklistAnswers['V4-EQUIPMENT-FAULT']||'').trim()==='بله';
+
+    if(hasEquipmentFault){
+      try{
+        const now=new Date();
+        maintenanceResult=await DMAuth.apiPost('createMaintenanceRequest',{
+          visitId:completedVisitId,
+          priority:'normal',
+          reportedDate:now.toLocaleDateString('fa-IR'),
+          reportedTime:now.toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})
+        },50000);
+      }catch(syncError){
+        maintenanceResult={
+          success:true,
+          synced:false,
+          queued:true,
+          message:'بازدید تکمیل شد؛ ارسال گزارش خرابی به واحد فنی در صف همگام‌سازی قرار گرفت.'
+        };
+      }
+    }
+
+    clearLocalChecklistDraft(completedVisitId);state.checklistDirty=false;state.checklistNotes='';
+
+    const maintenanceHtml=hasEquipmentFault
+      ?(
+        maintenanceResult&&maintenanceResult.synced
+          ?`<div class="maintenance-sync-result success"><strong>تیکت فنی ثبت شد</strong><span>${maintenanceResult.ticketNumber?'شماره تیکت: '+esc(maintenanceResult.ticketNumber):'گزارش خرابی با موفقیت به واحد فنی ارسال شد.'}</span></div>`
+          :`<div class="maintenance-sync-result queued"><strong>گزارش خرابی محفوظ شد</strong><span>ارسال به واحد فنی در صف همگام‌سازی است و از بین نمی‌رود.</span></div>`
+      )
+      :'';
+
+    document.getElementById('checklistMain').innerHTML=`<div class="checklist-complete-box"><div class="complete-icon">✓</div><h3>بازدید با موفقیت تکمیل شد</h3><p>چک‌لیست ثبت شد، زمان پایان بازدید ذخیره شد و وضعیت این فروشگاه در Route امروز به «تکمیل شده» تغییر کرد.</p>${maintenanceHtml}<button class="btn primary" onclick="closeChecklist();reloadData()">بازگشت به برنامه امروز</button></div>`;
+    document.getElementById('checklistSectionNav').innerHTML='';document.getElementById('checklistBottomInfo').textContent=`مدت بازدید: ${res.durationMinutes||0} دقیقه`;
+    document.getElementById('finishChecklistBtn').disabled=true;document.getElementById('draftBtn').disabled=true;document.getElementById('topDraftBtn').disabled=true;setChecklistSaveStatus('ثبت نهایی انجام شد.','saved');
+
+    if(hasEquipmentFault&&maintenanceResult&&maintenanceResult.synced){
+      toast('بازدید تکمیل شد و تیکت خرابی برای واحد فنی ثبت شد.','success');
+    }else if(hasEquipmentFault){
+      toast('بازدید تکمیل شد؛ گزارش خرابی در صف ارسال واحد فنی است.','success');
+    }else{
+      toast(res.message||'بازدید تکمیل شد.','success');
+    }
+  }catch(e){toast(e.message||'خطا در ثبت نهایی چک‌لیست','error');}
+  finally{setLoading(false);}
+}
+
+function scrollChecklistSection(id,btn){
+  const el=document.getElementById('checksec-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('#checklistSectionNav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');
+}
+
+/* ===== UNPLANNED ===== */
+function openUnplannedModal(){
+  if(state.data.openVisit){toast('ابتدا بازدید باز فعلی را تعیین تکلیف کنید.','error');return;}
+  document.getElementById('unplannedSearch').value='';renderUnplannedStores();document.getElementById('unplannedModal').classList.remove('hidden');
+}
+function closeUnplannedModal(){document.getElementById('unplannedModal').classList.add('hidden');}
+function renderUnplannedStores(){
+  const q=String(document.getElementById('unplannedSearch').value||'').toLowerCase();
+  const list=document.getElementById('unplannedStores');
+  const arr=state.stores.filter(s=>!q||(s.storeCode+' '+s.storeName).toLowerCase().includes(q));
+  list.innerHTML=arr.map(s=>`<div class="pick-item"><div><strong>${esc(s.storeName)}</strong><span>کد ${esc(s.storeCode)} · ${esc(s.priorityLabel||'')}</span></div><button class="pick-btn" onclick="chooseUnplanned('${esc(s.storeCode)}')">انتخاب</button></div>`).join('');
+}
+function chooseUnplanned(code){
+  const reason=document.getElementById('unplannedReason').value;closeUnplannedModal();openGps(code,'',false,reason);
+}
+
+/* ===== OPEN VISIT ACTIONS ===== */
+async function cancelPending(visitId){
+  if(!confirm('درخواست تأیید مدیر منطقه لغو شود؟'))return;
+  setLoading(true,'در حال لغو درخواست...');
+  try{const r=await DMAuth.apiPost('cancelPendingApproval',{visitId},30000);if(!r.success)throw new Error(r.message);toast(r.message||'درخواست لغو شد.','success');await loadData(true);}catch(e){toast(e.message||'خطا','error');}finally{setLoading(false);}
+}
+async function cancelLocationCorrection(visitId){
+  if(!confirm('درخواست اصلاح لوکیشن لغو شود؟'))return;
+  setLoading(true,'در حال لغو درخواست اصلاح...');
+  try{const r=await DMAuth.apiPost('cancelPendingLocationCorrection',{visitId},30000);if(!r.success)throw new Error(r.message);toast(r.message||'درخواست اصلاح لغو شد.','success');await loadData(true);}catch(e){toast(e.message||'خطا','error');}finally{setLoading(false);}
+}
+async function cancelVisit(visitId){
+  if(!confirm('شروع این بازدید لغو شود؟ این کار در Audit ثبت می‌شود.'))return;
+  setLoading(true,'در حال لغو شروع بازدید...');
+  try{const r=await DMAuth.apiPost('cancelVisitStart',{visitId,reason:'STARTED_BY_MISTAKE'},30000);if(!r.success)throw new Error(r.message);toast(r.message||'بازدید لغو شد.','success');await loadData(true);}catch(e){toast(e.message||'خطا','error');}finally{setLoading(false);}
+}
+
+function schedulePendingPoll(){
+  if(state.pendingPoll)clearTimeout(state.pendingPoll);
+  const status=String(state.data?.openVisit?.visitStatus||'');
+  if(status!=='WAITING_LOCATION_APPROVAL'&&status!=='WAITING_LOCATION_CORRECTION')return;
+
+  state.pendingPoll=setTimeout(async()=>{
+    try{
+      const oldVisitId=String(state.data?.openVisit?.visitId||'');
+      const oldStatus=String(state.data?.openVisit?.visitStatus||'');
+      const r=await DMAuth.apiPost('areaHeadVisitState',{},15000);
+      if(!r?.success){schedulePendingPoll();return;}
+      const next=r.openVisit||null;
+      const newVisitId=String(next?.visitId||'');
+      const newStatus=String(next?.visitStatus||'');
+
+      if(oldVisitId!==newVisitId||oldStatus!==newStatus){
+        // Decision changed: one fresh bootstrap synchronizes Route/Checklist state.
+        await loadData(true,true);
+        return;
+      }
+      schedulePendingPoll();
+    }catch(_){schedulePendingPoll();}
+  },8000);
+}
+async function reloadData(){await loadData(false,true);}
+
+
+DMInstant.on('areaHeadBootstrap',(res)=>{
+  applyAreaHeadBootstrap(res);
+});
+
+init().catch(e=>{setLoading(false);toast(e.message||'خطای غیرمنتظره','error');});
+</script>
+</body>
+</html>
